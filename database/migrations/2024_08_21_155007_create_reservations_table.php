@@ -16,12 +16,20 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Room::class);
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->nullable();
             $table->date('date_in');
             $table->date('date_out');
             $table->integer('adult_count');
             $table->integer('children_count');
             $table->smallInteger('status');
+
+            // Optional parameter for reservation records
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->string('email')->nullable();
+
             $table->timestamps();
         });
     }
