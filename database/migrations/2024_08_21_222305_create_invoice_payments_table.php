@@ -1,7 +1,6 @@
 <?php
 
-use App\Models\Amenity;
-use App\Models\Room;
+use App\Models\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('room_amenities', function (Blueprint $table) {
+        Schema::create('invoice_payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Room::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Amenity::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Invoice::class)->constrained();
+            $table->decimal('amount');
+            $table->date('payment_date');
+            $table->string('proof_image_path');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('room_amenities');
+        Schema::dropIfExists('invoice_payments');
     }
 };

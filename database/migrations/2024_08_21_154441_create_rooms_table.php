@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(RoomType::class);
-            $table->foreignIdFor(Building::class);
+            $table->foreignIdFor(RoomType::class)->constrained();
+            $table->foreignIdFor(Building::class)->constrained();
             $table->string('room_number');
             $table->smallInteger('floor_number');
             $table->smallInteger('capacity');

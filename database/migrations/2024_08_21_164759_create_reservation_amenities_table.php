@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('reservation_amenities', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Reservation::class);
-            $table->foreignIdFor(Amenity::class);
+            $table->foreignIdFor(Reservation::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Amenity::class)->constrained()->cascadeOnDelete();
             $table->smallInteger('quantity');
             $table->timestamps();
         });

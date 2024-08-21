@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Reservation extends Model
 {
@@ -31,5 +32,9 @@ class Reservation extends Model
 
     public function amenities(): BelongsToMany {
         return $this->belongsToMany(Amenity::class, 'reservation_amenities');
+    }
+
+    public function invoice(): HasOne {
+        return $this->hasOne(Invoice::class);
     }
 }
