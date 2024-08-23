@@ -14,7 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-inter antialiased">
+    <body class="font-inter antialiased text-zinc-800">
         <x-navigations.guest />
 
         <main class="min-h-screen">
