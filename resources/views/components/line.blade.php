@@ -1,0 +1,1 @@
+<span {{ $attributes->merge(['class' => 'h-[1px] w-8 inline-block']) }}></span>
