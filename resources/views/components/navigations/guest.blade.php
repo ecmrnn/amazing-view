@@ -1,7 +1,7 @@
 <div class="fixed w-full top-0">
     {{-- <x-banner /> --}}
     
-    <nav class="px-5 border-b bg-white/75 backdrop-blur-xl text-sm font-semibold">
+    <nav class="px-5 border-b bg-white/75 before:backdrop-blur-xl before:backdrop-hack text-sm font-semibold">
         <div class="py-3 max-w-screen-xl mx-auto">
             {{-- Desktop --}}
             <div class="hidden md:flex items-center justify-between">
@@ -28,6 +28,23 @@
                 {{-- Burger --}}
                 <x-burger x-on:click="alert(open)" />
 
+                <div class="md:hidden fixed top-0 right-0 border-l w-3/4 h-screen bg-white/80 backdrop-blur-xl p-5 flex flex-col items-start">
+                    <div class="mb-5 w-full flex justify-between">
+                        <div>
+                            <x-link-button href="/login">Sign In</x-link-button>
+                        </div>
+
+                        <div>
+                            <x-close-button x-on:click="alert('closing')" />
+                        </div>
+                    </div>
+
+                    <x-nav-link :active="Request::is('/')" href="/">Home</x-nav-link>
+                    <x-nav-link :active="Request::is('rooms*')" href="/rooms">Rooms</x-nav-link>
+                    <x-nav-link :active="Request::is('about')" href="/about">About</x-nav-link>
+                    <x-nav-link :active="Request::is('contact')" href="/contact">Contact</x-nav-link>
+                    <x-nav-link :active="Request::is('reservation')" href="/reservation">Reservation</x-nav-link>
+                </div>
             </div>
         </div>
     </nav>
