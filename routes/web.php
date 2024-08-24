@@ -15,6 +15,18 @@ Route::get('/', function () {
     return view('index');
 });
 
+Route::get('/rooms', function () {
+    return view('rooms');
+});
+
+Route::get('/about', function () {
+    return view('about');
+});
+
+Route::get('/contact', function () {
+    return view('contact');
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

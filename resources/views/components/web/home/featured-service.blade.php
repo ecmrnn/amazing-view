@@ -1,9 +1,5 @@
 <div class="space-y-5">
-    <div class="rounded-lg aspect-video overflow-hidden"
-        style="background-image: url(https://placehold.co/400);
-            background-position: center;
-            background-size: cover;">
-    </div>
+    <x-img-lg />
 
     <hgroup>
         <span class="text-xs">01.</span>

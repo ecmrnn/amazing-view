@@ -11,10 +11,10 @@
     
                 <div class="space-x-5">
                     <x-nav-link :active="Request::is('/')" href="/">Home</x-nav-link>
-                    <x-nav-link :active="Request::is('/rooms/*')" href="/rooms">Rooms</x-nav-link>
-                    <x-nav-link :active="Request::is('/about')" href="/about">About</x-nav-link>
-                    <x-nav-link :active="Request::is('/contact')" href="/contact">Contact</x-nav-link>
-                    <x-nav-link :active="Request::is('/reservation')" href="/reservation">Reservation</x-nav-link>
+                    <x-nav-link :active="Request::is('rooms*')" href="/rooms">Rooms</x-nav-link>
+                    <x-nav-link :active="Request::is('about')" href="/about">About</x-nav-link>
+                    <x-nav-link :active="Request::is('contact')" href="/contact">Contact</x-nav-link>
+                    <x-nav-link :active="Request::is('reservation')" href="/reservation">Reservation</x-nav-link>
                     <x-link-button href="/login">Sign In</x-link-button>
                 </div>
             </div>

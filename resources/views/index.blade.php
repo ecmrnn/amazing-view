@@ -1,5 +1,4 @@
 <x-guest-layout>
-
     {{-- Landing Page --}}
     <div class="max-w-screen-xl mx-auto grid place-items-center h-screen">
         <x-web.home.landing />
@@ -10,7 +9,7 @@
         <x-slot:heading>Featured Services</x-slot:heading>
         <x-slot:subheading>Experience our featured services!</x-slot:subheading>
 
-        <div class="space-y-5 sm:space-y-0 sm:grid grid-cols-3 gap-5">
+        <div class="grid sm:grid-cols-3 gap-5">
             <x-web.home.featured-service />
             <x-web.home.featured-service />
             <x-web.home.featured-service />
@@ -22,7 +21,7 @@
         <x-slot:heading>Amazing View Mountain Resort</x-slot:heading>
         <x-slot:subheading>Book your dream getaway!</x-slot:subheading>
 
-        <div class="space-y-5 sm:space-y-0 sm:grid grid-cols-2 gap-5">
+        <div class="grid sm:grid-cols-2 gap-5">
             <x-web.home.story />
         </div>
     </x-section>
