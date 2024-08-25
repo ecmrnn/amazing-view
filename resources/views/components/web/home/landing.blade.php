@@ -9,5 +9,5 @@
         welcome to your perfect escape!
     </p>
 
-    <x-link-button href="/rooms">Book a Room</x-link-button>
+    <x-link-button href="/reservation">Book a Room</x-link-button>
 </div>

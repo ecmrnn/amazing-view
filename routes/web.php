@@ -4,13 +4,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
-    // Home
-    // About
-    // Contact
-    // Rooms
-    // Reservation
-    // Login
-
 Route::get('/', function () {
     return view('index');
 });
@@ -25,6 +18,10 @@ Route::get('/about', function () {
 
 Route::get('/contact', function () {
     return view('contact');
+});
+
+Route::get('/reservation', function () {
+    return view('reservation');
 });
 
 Route::get('/dashboard', function () {

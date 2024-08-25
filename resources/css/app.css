@@ -6,6 +6,8 @@ html {
     scroll-behavior: smooth;
 }
 
+[x-cloak] { display: none !important; }
+
 @font-face {
     font-family: Inter;
     src: url(fonts/Inter/Inter-VariableFont_opsz\,wght.ttf);
