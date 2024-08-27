@@ -10,7 +10,9 @@
     <x-input-label for="message">Message</x-input-label>
     <x-textarea x-on:keyup="count = max - $el.value.length" x-bind:maxlength="max" name="message" id="message"></x-textarea>
 
-    <p class="text-xs">Remaining Characters: <span x-html="count"></span> / 200</p>
+    <p class="text-xs text-right">Remaining Characters: <span x-html="count"></span> / 200</p>
 
-    <x-primary-button class="inline-block ml-auto">Send Email</x-primary-button>
+    <div class="flex justify-end">
+        <x-primary-button class="inline-block ml-auto">Send Email</x-primary-button>
+    </div>
 </form>

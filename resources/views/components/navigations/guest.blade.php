@@ -9,13 +9,17 @@
                     <img src="https://placehold.co/40x40" alt="Alternative Logo">
                 </a>
     
-                <div class="space-x-5">
+                <div class="gap-5 flex items-center">
                     <livewire:nav-link :active="Request::is('/')" to="Home" href="/"/>
                     <livewire:nav-link :active="Request::is('rooms*')" to="Rooms" href="/rooms"/>
                     <livewire:nav-link :active="Request::is('about')" to="About" href="/about"/>
                     <livewire:nav-link :active="Request::is('contact')" to="Contact" href="/contact"/>
                     <livewire:nav-link :active="Request::is('reservation')" to="Reservation" href="/reservation"/>
-                    <livewire:button-link name="Sign in" href="/login" />
+                    <div class="w-[1px] h-4 bg-slate-200 inline-block"></div>
+                    <div class="inline-flex gap-1 text-xs">
+                        <livewire:button-link type="secondary" name="Sign up" href="/register" />
+                        <livewire:button-link name="Sign in" href="/login" />
+                    </div>
                 </div>
             </div>
     
@@ -47,8 +51,9 @@
                         <livewire:nav-link :active="Request::is('reservation')" to="Reservation" href="/reservation"/>
                     </div>
 
-                    <div class="mt-3 p-5 border-t">
+                    <div class="mt-3 p-5 inline-flex w-full gap-1 border-t">
                         <livewire:button-link name="Sign in" href="/login" />
+                        <livewire:button-link type="secondary" name="Sign up" href="/register" />
                     </div>
                 </div>
             </div>
