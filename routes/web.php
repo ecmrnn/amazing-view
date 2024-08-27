@@ -20,6 +20,11 @@ Route::get('/contact', function () {
     return view('contact');
 });
 
+// Send an email
+Route::post('/email', function () {
+    return 'hello email!';
+});
+
 Route::get('/reservation', function () {
     return view('reservation');
 });

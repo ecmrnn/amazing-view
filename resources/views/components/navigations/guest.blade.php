@@ -10,12 +10,12 @@
                 </a>
     
                 <div class="space-x-5">
-                    <x-nav-link :active="Request::is('/')" href="/">Home</x-nav-link>
-                    <x-nav-link :active="Request::is('rooms*')" href="/rooms">Rooms</x-nav-link>
-                    <x-nav-link :active="Request::is('about')" href="/about">About</x-nav-link>
-                    <x-nav-link :active="Request::is('contact')" href="/contact">Contact</x-nav-link>
-                    <x-nav-link :active="Request::is('reservation')" href="/reservation">Reservation</x-nav-link>
-                    <x-link-button href="/login">Sign In</x-link-button>
+                    <livewire:nav-link :active="Request::is('/')" to="Home" href="/"/>
+                    <livewire:nav-link :active="Request::is('rooms*')" to="Rooms" href="/rooms"/>
+                    <livewire:nav-link :active="Request::is('about')" to="About" href="/about"/>
+                    <livewire:nav-link :active="Request::is('contact')" to="Contact" href="/contact"/>
+                    <livewire:nav-link :active="Request::is('reservation')" to="Reservation" href="/reservation"/>
+                    <livewire:button-link name="Sign in" href="/login" />
                 </div>
             </div>
     
@@ -40,15 +40,15 @@
                     </div>
 
                     <div class="px-5 flex flex-col items-start">
-                        <x-nav-link :active="Request::is('/')" href="/">Home</x-nav-link>
-                        <x-nav-link :active="Request::is('rooms*')" href="/rooms">Rooms</x-nav-link>
-                        <x-nav-link :active="Request::is('about')" href="/about">About</x-nav-link>
-                        <x-nav-link :active="Request::is('contact')" href="/contact">Contact</x-nav-link>
-                        <x-nav-link :active="Request::is('reservation')" href="/reservation">Reservation</x-nav-link>
+                        <livewire:nav-link :active="Request::is('/')" to="Home" href="/"/>
+                        <livewire:nav-link :active="Request::is('rooms*')" to="Rooms" href="/rooms"/>
+                        <livewire:nav-link :active="Request::is('about')" to="About" href="/about"/>
+                        <livewire:nav-link :active="Request::is('contact')" to="Contact" href="/contact"/>
+                        <livewire:nav-link :active="Request::is('reservation')" to="Reservation" href="/reservation"/>
                     </div>
 
                     <div class="mt-3 p-5 border-t">
-                        <x-link-button href="/login">Sign In</x-link-button>
+                        <livewire:button-link name="Sign in" href="/login" />
                     </div>
                 </div>
             </div>

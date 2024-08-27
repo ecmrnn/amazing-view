@@ -13,7 +13,7 @@
                 welcome to your perfect escape!
             </p>
 
-            <x-link-button href="/rooms">Book a Room</x-link-button>
+            <x-button-link href="/rooms">Book a Room</x-button-link>
         </div>
 
         <div class="space-y-5">
