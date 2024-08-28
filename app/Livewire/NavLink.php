@@ -14,7 +14,7 @@ class NavLink extends Component
 
     public function isActive($active) {
         ($active ?? false)
-            ? $this->classes .= ' text-zinc-800'
+            ? $this->classes .= ' text-blue-600'
             : $this->classes .= ' text-zinc-800/50 hover:text-zinc-800 hover:border-blue-500';
     }
     

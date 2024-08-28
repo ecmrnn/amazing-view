@@ -11,7 +11,7 @@
     $pClass = "text-xs text-zinc-800/50";
 
     if ($step <= $currentStep) {
-        $iconClass .= "bg-blue-500 border-blue-600 *:text-white";
+        $iconClass .= "bg-gradient-to-r from-blue-500 to-blue-600 border-blue-600 *:text-white";
         $spanClass = "font-semibold text-2xl";
         $pClass = "text-xs";
     }

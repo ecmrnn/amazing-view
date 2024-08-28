@@ -12,7 +12,7 @@
                 @csrf
                 <!-- Email Address -->
                 <div>
-                    <x-form.text-input label="Email" id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+                    <x-form.input-text label="Email" id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
                     <x-form.input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
                 <div class="text-sm">

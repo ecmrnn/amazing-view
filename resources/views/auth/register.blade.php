@@ -14,12 +14,12 @@
             <div class="mt-5 space-y-3">
                 <!-- First Name -->
                 <div>
-                    <x-form.text-input label="First Name" id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
+                    <x-form.input-text label="First Name" id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="first_name" />
                     <x-form.input-error :messages="$errors->get('first_name')" class="mt-2" />
                     </div>
                     <!-- Last Name -->
                 <div>
-                    <x-form.text-input label="Last Name" id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
+                    <x-form.input-text label="Last Name" id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
                     <x-form.input-error :messages="$errors->get('last_name')" class="mt-2" />
                 </div>
             </div>
@@ -32,12 +32,12 @@
             <div class="space-y-3">
                 <!-- Email Address -->
                 <div>
-                    <x-form.text-input label="Email" id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                    <x-form.input-text label="Email" id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
                     <x-form.input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
                 <!-- Password -->
                 <div>
-                    <x-form.text-input label="Password" id="password" class="block mt-1 w-full"
+                    <x-form.input-text label="Password" id="password" class="block mt-1 w-full"
                                     type="password"
                                     name="password"
                                     required autocomplete="new-password" />
@@ -45,7 +45,7 @@
                 </div>
                 <!-- Confirm Password -->
                 <div>
-                    <x-form.text-input label="Confirm Password" id="password_confirmation" class="block mt-1 w-full"
+                    <x-form.input-text label="Confirm Password" id="password_confirmation" class="block mt-1 w-full"
                                     type="password"
                                     name="password_confirmation" required autocomplete="new-password" />
                     <x-form.input-error :messages="$errors->get('password_confirmation')" class="mt-2" />

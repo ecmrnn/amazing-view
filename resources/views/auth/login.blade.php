@@ -7,7 +7,7 @@
             <h1 class="font-semibold text-2xl mb-5">Amazing View <br /> Mountain Resort</h1>
             <!-- Email Address -->
             <div>
-                <x-form.text-input label="Email" id="email" class="block mt-1 w-full"
+                <x-form.input-text label="Email" id="email" class="block mt-1 w-full"
                                 type="email"
                                 name="email"
                                 :value="old('email')"
@@ -17,7 +17,7 @@
             
             <!-- Password -->
             <div class="mt-4">
-                <x-form.text-input label="Password" id="password" class="block mt-1 w-full"
+                <x-form.input-text label="Password" id="password" class="block mt-1 w-full"
                                 type="password"
                                 name="password"
                                 required autocomplete="current-password" />

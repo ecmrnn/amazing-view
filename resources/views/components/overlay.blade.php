@@ -1,1 +1,1 @@
-<div class="absolute top-0 left-0 w-full h-full bg-black/50"></div>
+<div class="absolute top-0 left-0 w-full h-full bg-gradient-to-tl from-blue-500/80 to-blue-800/90"></div>
