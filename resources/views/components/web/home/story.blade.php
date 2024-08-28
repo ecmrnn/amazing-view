@@ -5,5 +5,7 @@
 
     <p class="text-justify sm:text-left sm:max-w-sm">Nestled amidst the rolling hills of Mabitac, Laguna, the Amazing View Mountain Resort  beckons weary souls seeking solace in nature’s embrace. The air carries  whispers of pine and adventure, urging visitors to explore its hidden trails.</p>
 
-    <x-button-link href="/about">Explore our Resort</x-button-link>
+    <a href="/about" class="block" wire:navigate>
+        <x-primary-button>Explore our Resort</x-primary-button>
+    </a>
 </div>

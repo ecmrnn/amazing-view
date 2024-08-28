@@ -5,7 +5,7 @@
     </div>
 
     {{-- Featured Services --}}
-    <x-section class="min-h-screen">
+    <x-section class="min-h-screen" id="services">
         <x-slot:heading>Featured Services</x-slot:heading>
         <x-slot:subheading>Experience our featured services!</x-slot:subheading>
 

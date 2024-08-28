@@ -57,7 +57,7 @@
             </x-primary-button>
 
             <div class="text-sm text-center">
-                <livewire:nav-link href="/login" to="Already have an account?" />
+                <x-nav-link class="inline-block" href="/login">Already have an account?</x-nav-link>
             </div>
         </div>
     </form>

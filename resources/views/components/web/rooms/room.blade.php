@@ -16,5 +16,7 @@
     
     <p class="">The Family Room at our resort is a spacious and comfortable accommodation, featuring two beds and one bathroom.</p>
     
-    <x-button-link href="#">More Details</x-button-link>
+    <a class="block" href="#" wire:navigate>
+        <x-primary-button>More Details</x-primary-button>
+    </a>
 </div>

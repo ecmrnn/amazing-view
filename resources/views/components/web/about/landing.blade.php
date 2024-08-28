@@ -8,5 +8,7 @@
         Know our story and the reasons why should you stay at our hotel.
     </p>
 
-    <x-button-link href="#story">Read our Story</x-button-link>
+    <a class="block" href="#story">
+        <x-primary-button>Read our Story</x-primary-button>
+    </a>
 </div>

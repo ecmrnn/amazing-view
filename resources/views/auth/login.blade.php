@@ -27,7 +27,7 @@
             <!-- Remember Me -->
             <div class="block mt-4">
                 <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500" name="remember">
+                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:outline-none focus:ring-0 focus:border-blue-600" name="remember">
                     <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                 </label>
             </div>
@@ -38,7 +38,7 @@
 
             @if (Route::has('password.request'))
                 <div class="text-sm text-center">
-                    <livewire:nav-link href="/forgot-password" to="I can't remember my password" />
+                    <x-nav-link class="inline-block" href="/forgot-password">I can't remember my password</x-nav-link>
                 </div>
             @endif
 
@@ -46,7 +46,9 @@
                 <p class="text-sm">Doesn&apos;t have an account yet? Click here to create one!</p>
 
                 <div class="shrink-0">
-                    <livewire:button-link type="secondary" href="/register" name="Sign up" />
+                    <a href="/register" class="">
+                        <x-secondary-button>Sign up</x-secondary-button>
+                    </a>
                 </div>
             </div>
         </div>

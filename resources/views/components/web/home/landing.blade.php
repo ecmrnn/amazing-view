@@ -9,5 +9,12 @@
         welcome to your perfect escape!
     </p>
 
-    <livewire:button-link name="Book a Room" href="/reservation" />
+    <div class="flex gap-1 items-center justify-center">
+        <a href="#services">
+            <x-secondary-button>Explore more</x-secondary-button>
+        </a>
+        <a href="/reservation" wire:navigate>
+            <x-primary-button>Book a Room</x-primary-button>
+        </a>
+    </div>
 </div>

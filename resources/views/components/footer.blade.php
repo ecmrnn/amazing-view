@@ -13,24 +13,28 @@
                 welcome to your perfect escape!
             </p>
 
-            <x-button-link href="/rooms">Book a Room</x-button-link>
+            <div class="text-xs">
+                <a href="/rooms" wire:navigate>
+                    <x-primary-button>Book a Room</x-primary-button>
+                </a>
+            </div>
         </div>
 
         <div class="space-y-5">
             <h3 class="text-xl font-semibold">Navigate through our site</h3>
 
             <div class="space-y-3">
-                <x-footer-link href="/">Home</x-footer-link>
-                <x-footer-link href="/">Rooms</x-footer-link>
-                <x-footer-link href="/">About</x-footer-link>
-                <x-footer-link href="/">Contact</x-footer-link>
+                <x-footer-link wire:navigate href="/">Home</x-footer-link>
+                <x-footer-link wire:navigate href="/rooms">Rooms</x-footer-link>
+                <x-footer-link wire:navigate href="/about">About</x-footer-link>
+                <x-footer-link wire:navigate href="/contact">Contact</x-footer-link>
             </div>
         </div>
         <div class="space-y-5">
             <h3 class="text-xl font-semibold">Stay connected with us!</h3>
             
             <div class="space-y-3">
-                <x-footer-link href="/">Facebook</x-footer-link>
+                <x-footer-link href="https://facebook.com" target="_blank">Facebook</x-footer-link>
                 <x-footer-link href="/">Instagram</x-footer-link>
                 <x-footer-link href="/">Twitter</x-footer-link>
                 <x-footer-link href="/">Youtube</x-footer-link>

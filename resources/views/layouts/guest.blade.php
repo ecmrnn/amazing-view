@@ -19,11 +19,12 @@
     </head>
     <body x-data="{ open : false }" class="font-inter antialiased text-zinc-800">
         <x-navigations.guest />
-
+        
         <main class="min-h-screen">
             {{ $slot }}
         </main>
-
+        
         <x-footer />
+        @livewireScripts
     </body>
 </html>

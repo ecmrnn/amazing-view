@@ -5,27 +5,33 @@
         <div class="py-3 max-w-screen-xl mx-auto">
             {{-- Desktop --}}
             <div class="hidden md:flex items-center justify-between">
-                <a href="/" class="block rounded-lg overflow-hidden" wire:navigate>
+                <a href="/" class="block rounded-lg overflow-hidden border border-transparent focus:outline-none focus:ring-0 focus:border-blue-600" wire:navigate>
                     <img src="https://placehold.co/40x40" alt="Alternative Logo">
                 </a>
     
                 <div class="gap-5 flex items-center">
-                    <livewire:nav-link :active="Request::is('/')" to="Home" href="/"/>
-                    <livewire:nav-link :active="Request::is('rooms*')" to="Rooms" href="/rooms"/>
-                    <livewire:nav-link :active="Request::is('about')" to="About" href="/about"/>
-                    <livewire:nav-link :active="Request::is('contact')" to="Contact" href="/contact"/>
-                    <livewire:nav-link :active="Request::is('reservation')" to="Reservation" href="/reservation"/>
+                    <x-nav-link wire:navigate :active="Request::is('/')" href="/">Home</x-nav-link>
+                    <x-nav-link wire:navigate :active="Request::is('rooms*')" href="/rooms">Rooms</x-nav-link>
+                    <x-nav-link wire:navigate :active="Request::is('about')" href="/about">About</x-nav-link>
+                    <x-nav-link wire:navigate :active="Request::is('contact')" href="/contact">Contact</x-nav-link>
+                    <x-nav-link wire:navigate :active="Request::is('reservation')"  href="/reservation">Reservation</x-nav-link>
+
                     <div class="w-[1px] h-4 bg-slate-200 inline-block"></div>
+
                     <div class="inline-flex gap-1 text-xs">
-                        <livewire:button-link type="secondary" name="Sign up" href="/register" />
-                        <livewire:button-link name="Sign in" href="/login" />
+                        <a href="/register" wire:navigate>
+                            <x-secondary-button>Sign up</x-secondary-button>
+                        </a>
+                        <a href="/login" wire:navigate>
+                            <x-primary-button>Sign in</x-primary-button>
+                        </a>
                     </div>
                 </div>
             </div>
     
             {{-- Mobile --}}
             <div class="md:hidden flex justify-between items-center relative z-50">
-                <a href="/" class="block rounded-lg overflow-hidden">
+                <a href="/" class="block rounded-lg overflow-hidden" wire:navigate>
                     <img src="https://placehold.co/40x40" alt="Alternative Logo">
                 </a>
     
@@ -44,16 +50,20 @@
                     </div>
 
                     <div class="px-5 flex flex-col items-start">
-                        <livewire:nav-link :active="Request::is('/')" to="Home" href="/"/>
-                        <livewire:nav-link :active="Request::is('rooms*')" to="Rooms" href="/rooms"/>
-                        <livewire:nav-link :active="Request::is('about')" to="About" href="/about"/>
-                        <livewire:nav-link :active="Request::is('contact')" to="Contact" href="/contact"/>
-                        <livewire:nav-link :active="Request::is('reservation')" to="Reservation" href="/reservation"/>
+                        <x-nav-link wire:navigate :active="Request::is('/')" href="/">Home</x-nav-link>
+                        <x-nav-link wire:navigate :active="Request::is('rooms*')" href="/rooms">Rooms</x-nav-link>
+                        <x-nav-link wire:navigate :active="Request::is('about')" href="/about">About</x-nav-link>
+                        <x-nav-link wire:navigate :active="Request::is('contact')" href="/contact">Contact</x-nav-link>
+                        <x-nav-link wire:navigate :active="Request::is('reservation')" href="/reservation">Reservation</x-nav-link>
                     </div>
 
                     <div class="mt-3 p-5 inline-flex w-full gap-1 border-t">
-                        <livewire:button-link name="Sign in" href="/login" />
-                        <livewire:button-link type="secondary" name="Sign up" href="/register" />
+                        <a href="/register" wire:navigate>
+                            <x-secondary-button>Sign up</x-secondary-button>
+                        </a>
+                        <a href="/login" wire:navigate>
+                            <x-primary-button>Sign in</x-primary-button>
+                        </a>
                     </div>
                 </div>
             </div>

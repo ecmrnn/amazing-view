@@ -9,5 +9,7 @@
         book now your dream getaway!
     </p>
 
-    <x-button-link href="#rooms">Explore More</x-button-link>
+    <a class="block" href="#rooms">
+        <x-primary-button>Explore More</x-primary-button>
+    </a>
 </div>

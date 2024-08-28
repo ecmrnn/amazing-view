@@ -16,7 +16,7 @@
                     <x-form.input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
                 <div class="text-sm">
-                    <livewire:nav-link href="/login" to="I remember my password!" />
+                    <x-nav-link class="inline-block" href="/login">I remember my password!</x-nav-link>
                 </div>
                 <div class="mt-4">
                     <x-primary-button>

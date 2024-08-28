@@ -8,5 +8,7 @@
         welcome to your perfect escape!
     </p>
 
-    <x-button-link href="#form">Get Started!</x-button-link>
+    <a class="block" href="#form">
+        <x-primary-button>Get Started!</x-primary-button>
+    </a>
 </div>

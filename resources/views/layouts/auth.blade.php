@@ -16,8 +16,8 @@
     </head>
     <body class="font-inter antialiased text-zinc-800">
         {{-- Back --}}
-        <div class="fixed top-0 left-0 p-5 ml-2 text-xs">
-            <livewire:nav-link href="/" to="Back to Home" />
+        <div class="fixed top-0 left-0 p-5 ml-2 text-xs font-semibold">
+            <x-nav-link href="/">Back to Home</x-nav-link>
         </div>
         <main class="min-h-screen grid sm:grid-cols-2 lg:grid-cols-3">
             <div class="sm:col-span-2 md:col-span-1">
