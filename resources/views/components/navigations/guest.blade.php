@@ -1,11 +1,11 @@
-<div class="fixed w-full top-0">
+<div class="fixed w-full top-0 z-10">
     {{-- <x-banner /> --}}
     
     <nav class="px-5 border-b bg-white/75 before:backdrop-blur-xl before:backdrop-hack text-sm font-semibold">
         <div class="py-3 max-w-screen-xl mx-auto">
             {{-- Desktop --}}
             <div class="hidden md:flex items-center justify-between">
-                <a href="/" class="block rounded-lg overflow-hidden">
+                <a href="/" class="block rounded-lg overflow-hidden" wire:navigate>
                     <img src="https://placehold.co/40x40" alt="Alternative Logo">
                 </a>
     
@@ -24,7 +24,7 @@
             </div>
     
             {{-- Mobile --}}
-            <div class="md:hidden flex justify-between items-center relative">
+            <div class="md:hidden flex justify-between items-center relative z-50">
                 <a href="/" class="block rounded-lg overflow-hidden">
                     <img src="https://placehold.co/40x40" alt="Alternative Logo">
                 </a>
