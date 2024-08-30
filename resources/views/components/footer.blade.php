@@ -1,8 +1,6 @@
-<footer class="py-10 px-5 bg-blue-950 text-white">
-    <div class="max-w-screen-xl mx-auto space-y-10
-        md:space-y-0 md:grid md:grid-cols-3
-        lg:grid-cols-4  gap-10">
-        <div class="space-y-5 md:col-span-3 lg:col-span-1 lg:border-r border-dashed border-white/50">
+<footer class="px-5 py-10 text-white bg-blue-950">
+    <div class="max-w-screen-xl gap-10 mx-auto space-y-10 md:space-y-0 md:grid md:grid-cols-3 lg:grid-cols-4">
+        <div class="space-y-5 border-dashed md:col-span-3 lg:col-span-1 lg:border-r border-white/50">
             <h2 class="text-3xl font-semibold">
                 <span>Amazing View</span><br />
                 <span>Mountain Resort</span>
@@ -24,10 +22,10 @@
             <h3 class="text-xl font-semibold">Navigate through our site</h3>
 
             <div class="space-y-3">
-                <x-footer-link wire:navigate href="/">Home</x-footer-link>
-                <x-footer-link wire:navigate href="/rooms">Rooms</x-footer-link>
-                <x-footer-link wire:navigate href="/about">About</x-footer-link>
-                <x-footer-link wire:navigate href="/contact">Contact</x-footer-link>
+                <x-footer-link href="/">Home</x-footer-link>
+                <x-footer-link href="/rooms">Rooms</x-footer-link>
+                <x-footer-link href="/about">About</x-footer-link>
+                <x-footer-link href="/contact">Contact</x-footer-link>
             </div>
         </div>
         <div class="space-y-5">

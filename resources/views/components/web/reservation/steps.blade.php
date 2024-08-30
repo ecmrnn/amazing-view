@@ -18,7 +18,7 @@
 @endphp
 
 <div>
-    <div class="flex gap-5 items-center">
+    <div class="flex items-center gap-5">
         <div class="{{ $iconClass }}">
             <span class="material-symbols-outlined">{{ $step >= $currentStep ? $icon : 'check' }}</span>
         </div>

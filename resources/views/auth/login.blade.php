@@ -46,7 +46,7 @@
                 <p class="text-sm">Doesn&apos;t have an account yet? Click here to create one!</p>
 
                 <div class="shrink-0">
-                    <a href="/register" class="">
+                    <a href="/register" wire:navigate>
                         <x-secondary-button>Sign up</x-secondary-button>
                     </a>
                 </div>

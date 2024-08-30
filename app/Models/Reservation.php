@@ -13,7 +13,6 @@ class Reservation extends Model
     use HasFactory;
 
     protected $fillable =[
-        'room_id',
         'user_id',
         'date_in',
         'date_out',
@@ -22,8 +21,8 @@ class Reservation extends Model
         'status',
     ];
 
-    public function room(): BelongsTo {
-        return $this->BelongsTo(Room::class);
+    public function rooms(): BelongsToMany {
+        return $this->BelongsToMany(Room::class, 'room_reservations');
     }
 
     public function user(): BelongsTo {

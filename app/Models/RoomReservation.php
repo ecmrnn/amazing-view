@@ -4,14 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class RoomAmenity extends Model
+class RoomReservation extends Model
 {
     use HasFactory;
 
     protected $fillable =[
         'room_id',
-        'amenity_id',
+        'reservation_id',
     ];
 }

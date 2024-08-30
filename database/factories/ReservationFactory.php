@@ -19,7 +19,6 @@ class ReservationFactory extends Factory
     public function definition(): array
     {
         return [
-            'room_id' => Room::factory(),
             'user_id' => User::factory(),
             'date_in' => fake()->date(),
             'date_out' => fake()->date(),
