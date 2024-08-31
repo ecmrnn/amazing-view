@@ -1,6 +1,6 @@
 <x-guest-layout>
     {{-- Landing Page --}}
-    <div class="px-5 bg-slate-50">
+     <div class="px-5 bg-slate-50">
         <x-web.reservation.landing />
     </div>
 
@@ -33,56 +33,65 @@
                     <x-form.form-section class="grid lg:grid-cols-2">
                         <x-form.form-header step="1" title="Reservation Date &amp; Guest Count" class="lg:col-span-2" />
 
-                        <div class="p-5 border-b border-dashed lg:border-r lg:border-b-0">
-                            <div class="grid grid-cols-2 gap-2" x-effect="date_in == '' ? date_out = '' : ''">
-                                
-                                <x-form.input-group>
-                                    <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
-                                    <x-form.input-date 
-                                        x-model="date_in"
-                                        x-bind:min="`${min.getFullYear()}-${String(min.getMonth() + 1).padStart(2, '0')}-${String(min.getDate()).padStart(2, '0')}`"
-                                        id="date_in" class="block w-full" />
-                                </x-form.input-group>
-
-                                <x-form.input-group>
-                                    <x-form.input-label for="date_out">Check-Out Date</x-form.input-label>
-                                    <x-form.input-date
-                                        x-bind:disabled="date_in == ''"
-                                        x-bind:value="date_in == '' ? null : date_out"
-                                        x-bind:min="date_in"
-                                        x-model="date_out"
-                                        id="date_out" class="block w-full" />
-                                </x-form.input-group>
+                        <x-form.form-body class="grid lg:grid-cols-2 lg:col-span-2">
+                            <div class="p-5 border-b border-dashed lg:border-r lg:border-b-0">
+                                <div class="grid grid-cols-2 gap-2" x-effect="date_in == '' ? date_out = '' : ''">
+                                    <x-form.input-group>
+                                        <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
+                                        <x-form.input-date
+                                            x-model="date_in"
+                                            x-bind:min="`${min.getFullYear()}-${String(min.getMonth() + 1).padStart(2, '0')}-${String(min.getDate()).padStart(2, '0')}`"
+                                            id="date_in" class="block w-full" />
+                                    </x-form.input-group>
+                                    <x-form.input-group>
+                                        <x-form.input-label for="date_out">Check-Out Date</x-form.input-label>
+                                        <x-form.input-date
+                                            x-bind:disabled="date_in == ''"
+                                            x-bind:value="date_in == '' ? null : date_out"
+                                            x-bind:min="date_in"
+                                            x-model="date_out"
+                                            id="date_out" class="block w-full" />
+                                    </x-form.input-group>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="p-5">
-                            <div class="grid grid-cols-2 gap-2">
-                                <x-form.input-group>
-                                    <x-form.input-label for="adult_count">Number of Adults</x-form.input-label>
-                                    <x-form.input-number x-model="adult_count" min="1" id="adult_count" class="block w-full" />
-                                </x-form.input-group>
-
-                                <x-form.input-group>
-                                    <x-form.input-label for="children_count">Number of Children</x-form.input-label>
-                                    <x-form.input-number x-model="children_count" id="children_count" class="block w-full" />
-                                </x-form.input-group>
+                            
+                            <div class="p-5">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <x-form.input-group>
+                                        <x-form.input-label for="adult_count">Number of Adults</x-form.input-label>
+                                        <x-form.input-number x-model="adult_count" min="1" id="adult_count" class="block w-full" />
+                                    </x-form.input-group>
+                                    <x-form.input-group>
+                                        <x-form.input-label for="children_count">Number of Children</x-form.input-label>
+                                        <x-form.input-number x-model="children_count" id="children_count" class="block w-full" />
+                                    </x-form.input-group>
+                                </div>
                             </div>
-                        </div>
+                        </x-form.form-body>
                     </x-form.form-section>
 
                     <x-line-vertical />
 
                     <x-form.form-section>
-                        <x-form.form-header class="form-header" step="2" title="Available Rooms" />
-                        <div class="p-5 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint, iusto!
-                        </div>
+                        <x-form.form-header class="form-header" step="2" title="Select a Room" />
+                        
+                        <x-form.form-body class="p-5">
+                            <p class="text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint, iusto!</p>
+                            <h3 class="my-5 text-lg font-semibold">Room Categories</h3>
+                        
+                            <div class="grid gap-2 p-3 border rounded-lg sm:grid-cols-2 md:grid-cols-1">
+                                {{-- Room Categories --}}
+                                <x-web.reservation.step-1.room-category />
+                                <x-web.reservation.step-1.room-category />
+                                <x-web.reservation.step-1.room-category />
+                                <x-web.reservation.step-1.room-category />
+                            </div>
+                        </x-form.form-body>
                     </x-form.form-section>
                 </form>
         
                 {{-- Summary --}}
-                <aside class="p-5 pt-3 space-y-5 border rounded-lg">
+                <aside class="self-start p-5 pt-3 space-y-5 border rounded-lg ">
                     <h2 class="text-lg font-semibold">Reservation Summary</h2>
 
                     <div>
