@@ -11,13 +11,7 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
-        'reservation_id',
-        'balance',
-        'issue_date',
-        'due_date',
-        'status',
-    ];
+    protected $guarded = [];
 
     public function payments(): HasMany {
         return $this->hasMany(InvoicePayment::class);

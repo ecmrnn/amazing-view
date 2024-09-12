@@ -12,14 +12,7 @@ class Reservation extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
-        'user_id',
-        'date_in',
-        'date_out',
-        'adult_count',
-        'children_count',
-        'status',
-    ];
+    protected $guarded = [];
 
     public function rooms(): BelongsToMany {
         return $this->BelongsToMany(Room::class, 'room_reservations');

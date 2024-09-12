@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('room_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->decimal('rate');
+            $table->decimal('min_rate');
+            $table->decimal('max_rate');
             $table->text('description');
             $table->string('image_1_path');
             $table->string('image_2_path');

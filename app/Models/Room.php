@@ -6,30 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Room extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
-        'room_type_id',
-        'building_id',
-        'room_number',
-        'floor_number',
-        'capacity',
-        'image_1_path',
-        'image_2_path',
-        'image_3_path',
-        'image_4_path',
-        'status',
-    ];
+    protected $guarded = [];
 
     public function building(): BelongsTo {
         return $this->belongsTo(Building::class);
     }
     
     public function type(): BelongsTo {
-        return $this->BelongsTo(RoomType::class);
+        return $this->BelongsTo(RoomType::class, 'room_type_id');
     }
 
     public function reservations(): BelongsToMany {

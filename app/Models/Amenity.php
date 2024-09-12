@@ -10,12 +10,7 @@ class Amenity extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
-        'name',
-        'quantity',
-        'price',
-        'is_reservable',
-    ];
+    protected $guarded = [];
 
     public function rooms(): BelongsToMany {
         return $this->belongsToMany(Room::class, 'room_amenities');

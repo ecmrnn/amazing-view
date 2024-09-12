@@ -38,7 +38,19 @@
                 {{-- Burger --}}
                 <x-burger x-on:click="open = true" />
 
-                <div x-cloak x-show="open" x-on:click.outside="open = false" x-transition class="fixed top-0 right-0 w-3/4 h-screen border-l md:hidden bg-white/80 backdrop-blur-xl">
+                <div x-show="open"
+                    x-transition.opacity.duration.600ms 
+                    x-on:click="open = false"
+                    class="fixed inset-0 bg-gradient-to-b from-blue-800/75 to-blue-500/50 backdrop-blur-sm"></div>
+
+                <div x-cloak x-show="open" x-on:click.outside="open = false"
+                    x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700" 
+                    x-transition:enter-start="translate-x-full" 
+                    x-transition:enter-end="translate-x-0" 
+                    x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700" 
+                    x-transition:leave-start="translate-x-0" 
+                    x-transition:leave-end="translate-x-full" 
+                     class="fixed top-0 right-0 w-3/4 h-screen bg-white border-l md:hidden">
                     <div class="flex items-center justify-between p-5">
                         <div>
                             <p class="font-semibold">Main Menu</p>
@@ -57,7 +69,7 @@
                         <x-nav-link :active="Request::is('reservation')" href="/reservation">Reservation</x-nav-link>
                     </div>
 
-                    <div class="inline-flex w-full gap-1 p-5 mt-3 border-t">
+                    <div class="inline-flex w-full gap-1 p-5 mt-3 border-t border-slate-200">
                         <a href="/register" wire:navigate>
                             <x-secondary-button>Sign up</x-secondary-button>
                         </a>

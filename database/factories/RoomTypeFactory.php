@@ -18,7 +18,8 @@ class RoomTypeFactory extends Factory
     {
         return [
             'name' => fake()->word(),
-            'rate' => fake()->randomElement([2500, 5000, 7500]),
+            'min_rate' => fake()->randomElement([2500, 5000, 7500]),
+            'max_rate' => fake()->randomElement([7000, 7500]),
             'description' => fake()->paragraph(5),
             'image_1_path' => fake()->imageUrl(),
             'image_2_path' => fake()->imageUrl(),

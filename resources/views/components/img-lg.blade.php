@@ -1,4 +1,4 @@
-@props(['src' => 'https://placehold.co/500'])
+@props(['src' => 'https://placehold.co/400'])
 
 <div {{ $attributes->merge(['class' => 'rounded-lg overflow-hidden aspect-video']) }}
     style="background-image: url({{ $src }});

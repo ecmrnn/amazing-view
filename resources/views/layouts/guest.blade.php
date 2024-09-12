@@ -17,7 +17,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body x-data="{ open : false }" class="font-inter antialiased text-zinc-800">
+    <body x-data="{ open : false }" class="antialiased font-inter text-zinc-800">
         <x-navigations.guest />
         
         <main class="min-h-screen">
@@ -25,6 +25,16 @@
         </main>
         
         <x-footer />
+
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.store('step', {
+                    count: @json($step),
+                });
+            });
+        </script>
+        
         @livewireScripts
+        @livewireStyles
     </body>
 </html>

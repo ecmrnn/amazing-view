@@ -19,7 +19,9 @@ return new class extends Migration
             $table->foreignIdFor(Building::class)->constrained();
             $table->string('room_number');
             $table->smallInteger('floor_number');
-            $table->smallInteger('capacity');
+            $table->smallInteger('min_capacity');
+            $table->smallInteger('max_capacity');
+            $table->decimal('rate');
             $table->string('image_1_path');
             $table->string('image_2_path');
             $table->string('image_3_path');
