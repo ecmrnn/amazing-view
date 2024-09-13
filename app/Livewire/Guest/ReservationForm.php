@@ -24,6 +24,7 @@ class ReservationForm extends Component
     public $available_rooms = [];
     public $suggested_rooms;
     public $reservable_amenities;
+    public $room_type_name = '';
     // Guest Details
 
     // Operational Variables
@@ -33,6 +34,7 @@ class ReservationForm extends Component
     public function mount() {
         $this->room_types = RoomType::all();
         $this->reservable_amenities = Amenity::where('is_reservable', 1)->get();
+
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
     }
@@ -104,6 +106,15 @@ class ReservationForm extends Component
     // Populate 'suggested_rooms' property
     public function suggestRooms() {
         $this->suggested_rooms = Room::where('status', 0)->get();
+    }
+
+    // Populate 'available_rooms' property
+    public function getAvailableRooms(RoomType $roomType) {
+        // Query the available rooms for a specific room type
+        $this->available_rooms = $roomType->rooms()->where('status', 0)->get();
+
+        // Set the name for the selected room type
+        $this->room_type_name = $roomType->name;
     }
 
     public function toggleAmenity(Amenity $amenity_clicked) {

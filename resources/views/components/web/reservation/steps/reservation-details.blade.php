@@ -1,8 +1,9 @@
 @props([
     'roomTypes' => [],
-    'avilableRooms' => [],
+    'availableRooms' => [],
     'suggestedRooms' => [],
     'reservableAmenities' => [],
+    'roomTypeName' => '',
 ])
 
 {{-- Reservation Date & Guest Count --}}
@@ -72,7 +73,7 @@
 </div>
 
 <div x-show="can_select_a_room">
-    <x-secondary-button class="block" x-on:click="can_select_a_room = false">Edit reservation date &amp; guest count</x-secondary-button>
+    <x-secondary-button class="block capitalize" x-on:click="can_select_a_room = false">Edit reservation date &amp; guest count</x-secondary-button>
     <x-line-vertical />
 </div>
 
@@ -151,29 +152,30 @@
 
 <x-primary-button
     x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }"
-    type="submit">Step 2: Guest Details</x-primary-button>
+    type="submit">Next: Guest Details</x-primary-button>
 
 {{-- Available Rooms Modal --}}
 <x-modal.full name="show-available-rooms">
     <div class="space-y-3">
         <div class="flex items-start justify-between gap-3">
-            <hgroup>
-                <h2 class="text-lg font-semibold">La Terraza Rooms</h2>
-                <p class="text-sm">Here are the available <span
-                        class="font-semibold text-blue-500">La Terraza Rooms</span></p>
+            <div wire:loading.delay wire:target="getAvailableRooms" class="self-center text-sm font-semibold">We are loading your amazing rooms...</div>
+            
+            <hgroup wire:loading.remove wire:target="getAvailableRooms">
+                <h2 class="text-lg font-semibold capitalize">{{ $roomTypeName }}</h2>
+                @if (count($availableRooms) > 0)
+                <p class="text-sm">Here are the available <span class="font-semibold text-blue-500 capitalize">{{ $roomTypeName }}</span> rooms.</p>
+                @endif
             </hgroup>
 
             <x-close-button x-on:click="show = false" />
         </div>
 
-        <div class="border divide-y rounded-lg divide-dashed
-             *:p-3">
-             {{-- @foreach ($collection as $item)
-                 
-             @endforeach --}}
-            <x-web.reservation.step-1.available-room />
-            <x-web.reservation.step-1.available-room />
-            <x-web.reservation.step-1.available-room />
+        <div class="border divide-y rounded-lg divide-dashed *:p-3" wire:loading.remove wire:target="getAvailableRooms">
+            @forelse ($availableRooms as $room)
+                <x-web.reservation.step-1.available-room :room="$room" />
+            @empty
+                <div class="text-sm font-semibold text-center">No available rooms for this category.</div>  
+            @endforelse 
         </div>
     </div>
 </x-modal.full>

@@ -15,9 +15,6 @@
         <p class="text-xs text-zinc-800/50">Good for {{ $room->max_capacity }} guests.</p>
 
         <div class="flex flex-col gap-1 sm:flex-row lg:flex-col xl:flex-row">
-            {{-- @if ()
-                
-            @endif --}}
             <x-primary-button type="button" x-on:click="$wire.addRoom({{ $room->id }})">Book this Room</x-primary-button>
             <x-secondary-button type="button">Details</x-secondary-button>
         </div>

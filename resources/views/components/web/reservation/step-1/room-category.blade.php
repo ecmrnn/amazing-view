@@ -15,7 +15,11 @@
                 <p class="text-sm font-semibold">&#8369;{{ $room->min_rate }} to &#8369;{{ $room->max_rate }} &#47; night</p>
             </hgroup>
             
-            <x-secondary-button x-on:click.prevent="$dispatch('open-modal', 'show-available-rooms')">View Rooms</x-secondary-button>
+            <x-secondary-button 
+                x-on:click.prevent="$dispatch('open-modal', 'show-available-rooms')"
+                wire:click="getAvailableRooms({{ $room->id }})">
+                View Rooms
+            </x-secondary-button>
         </div>
 
         <p class="text-sm">{{ $room->description }}</p>

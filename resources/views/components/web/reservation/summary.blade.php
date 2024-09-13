@@ -57,7 +57,13 @@
                             </div>
 
                             {{-- Remove Room button --}}
-                            <button class="absolute text-xs font-semibold text-red-500 top-2 right-3" wire:click="removeRoom({{ $room->id }})">Remove</button>
+                            <button 
+                                class="absolute text-xs font-semibold text-red-500 top-2 right-3"
+                                wire:click="removeRoom({{ $room->id }})"
+                            >
+                                <span wire:loading.remove wire:target="removeRoom">Remove</span>
+                                <span wire:loading wire:target="removeRoom">Removing</span>
+                            </button>
                         </div>
                     @endforeach
                 </div>

@@ -1,23 +1,30 @@
+@props([
+    'image_1_path' => 'https://placehold.co/500',
+    'image_2_path' => 'https://placehold.co/500',
+    'image_3_path' => 'https://placehold.co/500',
+    'image_4_path' => 'https://placehold.co/500',
+])
+
 <div x-data="{
     imageGalleryOpened: false,
     imageGalleryActiveUrl: null,
     imageGalleryImageIndex: null,
     imageGallery: [
         {
-            'photo': 'https://placehold.co/500',
-            'alt': 'Photo of Mountains'
+            'photo': '{{ $image_1_path }}',
+            'alt': 'Photo of a Room'
         },
         {
-            'photo': 'https://placehold.co/550',
-            'alt': 'Photo of Mountains 02'
+            'photo': '{{ $image_2_path }}',
+            'alt': 'Photo of a Room'
         },
         {
-            'photo': 'https://placehold.co/540',
-            'alt': 'Photo of Mountains 03'
+            'photo': '{{ $image_3_path }}',
+            'alt': 'Photo of a Room'
         },
         {
-            'photo': 'https://placehold.co/530',
-            'alt': 'Photo of Mountains 04'
+            'photo': '{{ $image_4_path }}',
+            'alt': 'Photo of a Room'
         }
     ],
     imageGalleryOpen(event) {
