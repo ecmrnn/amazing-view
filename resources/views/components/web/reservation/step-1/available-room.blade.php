@@ -1,6 +1,10 @@
-@props(['room' => []])
+@props([
+    'key' => '',
+    'room' => [],
+    'selectedRooms' => [],
+])
 
-<div class="grid items-start gap-3 md:grid-cols-4">
+<div key="{{ $key }}" class="grid items-start gap-3 md:grid-cols-4">
     <div class="w-full md:max-w-[250px]">
         <x-img-gallery
             :image_1_path="$room->image_1_path"
@@ -33,6 +37,10 @@
     </div>
 
     <div class="flex md:justify-end">
-        <x-secondary-button type="button" wire:click='addRoom(({{ $room->id }}))' class="flex-shrink-0">Book this Room</x-secondary-button>
+        @if ($selectedRooms->contains('id', $room->id))
+            <x-secondary-button type="button" wire:click="removeRoom({{ $room->id }})">Remove Room</x-secondary-button>
+        @else
+            <x-primary-button type="button" wire:click='addRoom(({{ $room->id }}))' class="flex-shrink-0">Book this Room</x-primary-button>
+        @endif
     </div>
 </div>

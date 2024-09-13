@@ -1,6 +1,7 @@
 @props([
     'key' => '',
     'room' => '',
+    'selectedRooms' => [],
 ])
 
 <div key="{{ $key }}" class="flex gap-3 border-slate-200 lg:block lg:space-y-2">
@@ -15,7 +16,13 @@
         <p class="text-xs text-zinc-800/50">Good for {{ $room->max_capacity }} guests.</p>
 
         <div class="flex flex-col gap-1 sm:flex-row lg:flex-col xl:flex-row">
-            <x-primary-button type="button" x-on:click="$wire.addRoom({{ $room->id }})">Book this Room</x-primary-button>
+            {{-- Identify if the room is already selected or not --}}
+            @if ($selectedRooms->contains('id', $room->id))
+                <x-secondary-button type="button" wire:click="removeRoom({{ $room->id }})">Remove Room</x-secondary-button>
+            @else
+                <x-primary-button type="button" wire:click="addRoom({{ $room->id }})">Book this Room</x-primary-button>
+            @endif
+            
             <x-secondary-button type="button">Details</x-secondary-button>
         </div>
     </div>

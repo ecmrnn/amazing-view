@@ -21,10 +21,10 @@ class ReservationForm extends Component
     #[Validate] public $children_count = 0;
     #[Validate] public $selected_rooms;
     #[Validate] public $selected_amenities;
-    public $available_rooms = [];
+    public $available_rooms;
     public $suggested_rooms;
     public $reservable_amenities;
-    public $room_type_name = '';
+    public $room_type_name;
     // Guest Details
 
     // Operational Variables

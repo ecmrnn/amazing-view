@@ -1,6 +1,7 @@
 @props([
     'roomTypes' => [],
     'availableRooms' => [],
+    'selectedRooms' => [],
     'suggestedRooms' => [],
     'reservableAmenities' => [],
     'roomTypeName' => '',
@@ -100,7 +101,7 @@
                     <h3 class="text-lg font-semibold">Suggested Rooms</h3>
                     <div class="grid-cols-3 gap-2 space-y-3 lg:space-y-0 lg:grid">
                         @foreach ($suggestedRooms as $room)
-                            <x-web.reservation.step-1.suggested-room :key="$room->id" :room="$room" />
+                            <x-web.reservation.step-1.suggested-room :key="$room->id" :selectedRooms="$selectedRooms" :room="$room" />
                         @endforeach
                     </div>
                 </div>
@@ -172,7 +173,7 @@
 
         <div class="border divide-y rounded-lg divide-dashed *:p-3" wire:loading.remove wire:target="getAvailableRooms">
             @forelse ($availableRooms as $room)
-                <x-web.reservation.step-1.available-room :room="$room" />
+                <x-web.reservation.step-1.available-room :key="$room->id" :selectedRooms="$selectedRooms" :room="$room" />
             @empty
                 <div class="text-sm font-semibold text-center">No available rooms for this category.</div>  
             @endforelse 

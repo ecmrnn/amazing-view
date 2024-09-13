@@ -33,6 +33,7 @@
                     <x-web.reservation.steps.reservation-details
                         :roomTypes="$room_types"
                         :suggestedRooms="$suggested_rooms"
+                        :selectedRooms="$selected_rooms"
                         :availableRooms="$available_rooms"
                         :reservableAmenities="$reservable_amenities"
                         :roomTypeName="$room_type_name"
