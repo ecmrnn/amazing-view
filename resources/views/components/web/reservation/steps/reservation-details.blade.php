@@ -1,5 +1,5 @@
 @props([
-    'roomTypes' => [],
+    'roomTypes',
     'availableRooms' => [],
     'selectedRooms' => [],
     'suggestedRooms' => [],
@@ -109,11 +109,14 @@
             
             {{-- Room Categories --}}
             <div class="p-5 m-5 space-y-5 bg-white border rounded-lg border-slate-200">
+
                 <h3 class="text-lg font-semibold">Our Rooms</h3>
                 <div class="grid gap-2 sm:grid-cols-2 md:grid-cols-1">
-                    @foreach ($roomTypes as $room)
+                    @forelse ($roomTypes as $room)
                         <x-web.reservation.step-1.room-category :key="$room->id" :room="$room" />
-                    @endforeach
+                    @empty
+                        <div class="p-5 text-center">Oof! No rooms found in the system yet.</div>
+                    @endforelse
                 </div>
             </div>
         </x-form.form-body>
@@ -164,7 +167,7 @@
             <hgroup wire:loading.remove wire:target="getAvailableRooms">
                 <h2 class="text-lg font-semibold capitalize">{{ $roomTypeName }}</h2>
                 @if (count($availableRooms) > 0)
-                <p class="text-sm">Here are the available <span class="font-semibold text-blue-500 capitalize">{{ $roomTypeName }}</span> rooms.</p>
+                    <p class="text-sm">Here are the available <span class="font-semibold text-blue-500 capitalize">{{ $roomTypeName }}</span> rooms.</p>
                 @endif
             </hgroup>
 

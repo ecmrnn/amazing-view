@@ -6,7 +6,13 @@
         children_count: $wire.entangle('children_count'),
         capacity: $wire.entangle('capacity'),
         can_select_a_room: $wire.entangle('can_select_a_room'),
-        available_rooms: [],
+
+        {{-- Guest Details --}}
+        region: $wire.entangle('region'),
+        province: $wire.entangle('province'),
+        city: $wire.entangle('city'),
+        district: $wire.entangle('district'),
+        baranggay: $wire.entangle('baranggay'),
 
         formatDate(date) {
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -28,6 +34,7 @@
     <article class="relative grid gap-5 md:grid-cols-3">
         {{-- Form --}}
         <form wire:submit="submit" class="md:col-span-2">
+            {{-- Step 1: Reservation Details --}}
             <template x-if="$store.step.count == 1">
                 <div>
                     <x-web.reservation.steps.reservation-details
@@ -37,6 +44,18 @@
                         :availableRooms="$available_rooms"
                         :reservableAmenities="$reservable_amenities"
                         :roomTypeName="$room_type_name"
+                    />
+                </div>
+            </template>
+
+            {{-- Step 2: Guest Details --}}
+            <template x-if="$store.step.count == 2">
+                <div>
+                    <x-web.reservation.steps.guest-details
+                        :region="$region"
+                        :province="$province"
+                        :city="$city"
+                        :district="$district"
                     />
                 </div>
             </template>

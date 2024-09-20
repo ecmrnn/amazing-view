@@ -9,7 +9,7 @@
 
     <div class="w-full space-y-2">
         <hgroup>
-            <h4 class="font-semibold capitalize text-md">{{ $room->type->name }}: Room {{ $room->room_number }}</h4>
+            <h4 class="font-semibold capitalize text-md">{{ $room->roomType->name }}: Room {{ $room->room_number }}</h4>
             <p class="text-sm font-semibold">&#8369;{{ $room->rate }} &#47; night</p>
         </hgroup>
 

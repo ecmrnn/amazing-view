@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         view()->share([
-            "step" => 1,
+            "step" => 2,
         ]);
     }
 }

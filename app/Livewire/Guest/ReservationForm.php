@@ -26,15 +26,18 @@ class ReservationForm extends Component
     public $reservable_amenities;
     public $room_type_name;
     // Guest Details
+    public $region;
+    public $province;
+    public $city;
+    public $district;
+    public $baranggay;
 
     // Operational Variables
     public $can_select_a_room = false;
     public $room_types;
 
     public function mount() {
-        $this->room_types = RoomType::all();
         $this->reservable_amenities = Amenity::where('is_reservable', 1)->get();
-
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
     }
@@ -161,6 +164,10 @@ class ReservationForm extends Component
 
     public function render()
     {
+        $this->room_types = RoomType::withCount(['rooms' => function ($query) {
+            $query->where('status', Room::STATUS_AVAILABLE);
+        }])->get();
+
         return view('livewire.guest.reservation-form');
     }
 }

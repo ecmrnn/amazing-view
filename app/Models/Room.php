@@ -12,13 +12,18 @@ class Room extends Model
 {
     use HasFactory;
 
+    public const STATUS_AVAILABLE = 0;
+    public const STATUS_UNAVAILABLE = 1;
+    public const STATUS_OCCUPIED = 2;
+    public const STATUS_RESERVED = 3;
+
     protected $guarded = [];
 
     public function building(): BelongsTo {
         return $this->belongsTo(Building::class);
     }
     
-    public function type(): BelongsTo {
+    public function roomType(): BelongsTo {
         return $this->BelongsTo(RoomType::class, 'room_type_id');
     }
 
