@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Guest;
 
+use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -26,11 +27,22 @@ class ReservationForm extends Component
     public $reservable_amenities;
     public $room_type_name;
     // Guest Details
+    public $first_name;
+    public $last_name;
+    public $email;
+    public $phone;
+    // Address
     public $region;
     public $province;
     public $city;
-    public $district;
+    public $district; 
     public $baranggay;
+    // Populated Address Arrays
+    public $regions = [];
+    public $provinces = [];
+    public $cities = [];
+    public $districts = [];
+    public $baranggays = [];
 
     // Operational Variables
     public $can_select_a_room = false;
@@ -40,6 +52,9 @@ class ReservationForm extends Component
         $this->reservable_amenities = Amenity::where('is_reservable', 1)->get();
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
+
+        $this->regions = AddressController::getRegions();
+        $this->districts = AddressController::getDistricts();
     }
 
     // Custome Validation Messages
@@ -120,6 +135,7 @@ class ReservationForm extends Component
         $this->room_type_name = $roomType->name;
     }
 
+    // Selects and Deselect Amenity
     public function toggleAmenity(Amenity $amenity_clicked) {
         // If: the amenity is already selected, remove it from the 'selected_amenities'
         // Else: push it to the 'selected_amenities'
@@ -130,6 +146,23 @@ class ReservationForm extends Component
         } else {
             $this->selected_amenities->push($amenity_clicked);
         } 
+    }
+
+    // Address Get Methods
+    public function getProvinces($region) {
+        $this->provinces = AddressController::getProvinces($region);
+    }
+
+    public function getCities($province) {
+        $this->cities = AddressController::getCities($province);
+    }
+
+    public function getBaranggays($city) {
+        $this->baranggays = AddressController::getBaranggays($city);
+    }
+
+    public function getDistrictBaranggays($district) {
+        $this->baranggays = AddressController::getDistrictBaranggays($district);
     }
 
     public function submit()
@@ -147,6 +180,9 @@ class ReservationForm extends Component
                     'children_count' => $this->rules()['children_count'],
                     'selected_rooms' => $this->rules()['selected_rooms'],
                 ]);
+                break;
+            case 2:
+                // $this->validate();
                 break;
             default:
                 # code...

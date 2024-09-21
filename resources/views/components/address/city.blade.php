@@ -1,16 +1,14 @@
-@props(['province' => ''])
+@props(['cities' => []])
 
-<div x-data="{ cities: [] }"
-        @if (!empty($province))
-            x-init="cities = await (await fetch('https://psgc.cloud/api/provinces/{{ $province }}/cities-municipalities')).json()"
-        @endif
-    >
+<div>
     <div>
         <x-form.select {{ $attributes->merge(['class' => '']) }}>
-            <option value="">Select City</option>
-            <template x-for="city in cities" :key="city.id">
-                <option :value="city.name" x-text="city.name"></option>
-            </template> 
+            <option value="">Select City &#47 Municipality</option>
+            @forelse ($cities as $city)
+                <option value="{{ $city['name'] }}">{{ $city['name'] }}</option>
+            @empty
+                
+            @endforelse
         </x-form.select>
     </div>
 </div>

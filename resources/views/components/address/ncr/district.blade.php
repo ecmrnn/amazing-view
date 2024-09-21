@@ -1,12 +1,14 @@
-<div x-data="{ districts: [] }"
-        x-init="districts = await (await fetch('https://psgc.cloud/api/sub-municipalities')).json()"
-    >
+@props(['districts'])
+
+<div>
     <div>
         <x-form.select {{ $attributes->merge(['class' => '']) }}>
             <option value="">Select District</option>
-            <template x-for="dist in districts" :key="dist.id">
-                <option :value="dist.code" x-text="dist.name"></option>
-            </template> 
+            @forelse ($districts as $district)
+                <option value="{{ $district['name'] }}">{{ $district['name'] }}</option>
+            @empty
+                {{-- No Districts --}}
+            @endforelse
         </x-form.select>
     </div>
 </div>

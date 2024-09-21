@@ -1,11 +1,14 @@
-<div x-data="{ regions: [] }"
-x-init="regions = await (await fetch('https://psgc.cloud/api/regions')).json()">
+@props(['regions'])
+
+<div>
     <div>
         <x-form.select {{ $attributes->merge(['class' => '']) }}>
             <option value="">Select Region</option>
-            <template x-for="region in regions" :key="region.id">
-                <option :value="region.name" x-text="region.name"></option>
-            </template> 
+            @forelse ($regions as $region)
+                <option key="{{ $region['id'] }}" value="{{ $region['name'] }}">{{ $region['name'] }}</option>
+            @empty
+                {{-- No Regions --}}
+            @endforelse
         </x-form.select>
     </div>
 </div>

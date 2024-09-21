@@ -33,7 +33,7 @@
     {{-- Reservation form --}}
     <article class="relative grid gap-5 md:grid-cols-3">
         {{-- Form --}}
-        <form wire:submit="submit" class="md:col-span-2">
+        <form wire:submit="submit" x-bind:class="$store.step.count == 3 ? 'md:col-span-3' : 'md:col-span-2'" class="">
             {{-- Step 1: Reservation Details --}}
             <template x-if="$store.step.count == 1">
                 <div>
@@ -53,19 +53,35 @@
                 <div>
                     <x-web.reservation.steps.guest-details
                         :region="$region"
+                        :regions="$regions"
                         :province="$province"
+                        :provinces="$provinces"
                         :city="$city"
+                        :cities="$cities"
                         :district="$district"
+                        :districts="$districts"
+                        :baranggay="$baranggay"
+                        :baranggays="$baranggays"
+                    />
+                </div>
+            </template>
+
+            {{-- Step 3: Payment --}}
+            <template x-if="$store.step.count == 3">
+                <div>
+                    <x-web.reservation.steps.payment
                     />
                 </div>
             </template>
         </form>
     
         {{-- Summary --}}
-        <x-web.reservation.summary 
-            :selectedRooms="$selected_rooms"
-            :selectedAmenities="$selected_amenities"
-        />
+        <div x-show="$store.step.count < 3">
+            <x-web.reservation.summary 
+                :selectedRooms="$selected_rooms"
+                :selectedAmenities="$selected_amenities"
+            />
+        </div>
     </article>
 
     {{-- Global step counter --}}
