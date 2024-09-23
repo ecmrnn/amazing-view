@@ -8,11 +8,16 @@
         can_select_a_room: $wire.entangle('can_select_a_room'),
 
         {{-- Guest Details --}}
+        first_name: $wire.entangle('first_name'),
+        last_name: $wire.entangle('last_name'),
+        email: $wire.entangle('email'),
+        phone: $wire.entangle('phone'),
         region: $wire.entangle('region'),
         province: $wire.entangle('province'),
         city: $wire.entangle('city'),
         district: $wire.entangle('district'),
         baranggay: $wire.entangle('baranggay'),
+        street: $wire.entangle('street'),
 
         formatDate(date) {
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -62,6 +67,7 @@
                         :districts="$districts"
                         :baranggay="$baranggay"
                         :baranggays="$baranggays"
+                        :address="$address"
                     />
                 </div>
             </template>

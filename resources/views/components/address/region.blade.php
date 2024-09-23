@@ -1,4 +1,4 @@
-@props(['regions'])
+@props(['regions' => []])
 
 <div>
     <div>

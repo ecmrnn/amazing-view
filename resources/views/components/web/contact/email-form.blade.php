@@ -1,4 +1,4 @@
-<form x-data="{ count : 200, max : 200 }" class="mx-auto md:ml-auto md:mx-0 space-y-3" action="/email" method="post">
+<form x-data="{ count : 200, max : 200 }" class="mx-auto space-y-3 md:ml-auto md:mx-0" action="/email" method="post">
     @csrf
 
     <h2 class="text-lg font-semibold">Send us an email here!</h2>

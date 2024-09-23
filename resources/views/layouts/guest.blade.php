@@ -34,6 +34,7 @@
             });
         </script>
         
+        @filepondScripts
         @livewireScripts
         @livewireStyles
     </body>

@@ -33,6 +33,7 @@
             </div>
         </main>
 
+        @filepondScripts
         @livewireScripts
     </body>
 </html>

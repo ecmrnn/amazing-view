@@ -6,13 +6,17 @@ use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Providers\AppServiceProvider;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Spatie\LivewireFilepond\WithFilePond;
 
 class ReservationForm extends Component
 {
-    public $step = 1;
+    use WithFilePond;
+
+    public $step = 3;
     public $capacity = 0;
 
     // Reservation Details
@@ -27,22 +31,26 @@ class ReservationForm extends Component
     public $reservable_amenities;
     public $room_type_name;
     // Guest Details
-    public $first_name;
-    public $last_name;
-    public $email;
-    public $phone;
+    #[Validate] public $first_name;
+    #[Validate] public $last_name;
+    #[Validate] public $email;
+    #[Validate] public $phone;
     // Address
-    public $region;
-    public $province;
-    public $city;
+    #[Validate] public $region;
+    #[Validate] public $province;
+    #[Validate] public $city;
+    #[Validate] public $baranggay;
+    #[Validate] public $street;
+    #[Validate] public $address = []; /* Complete concatenated Address property */
     public $district; 
-    public $baranggay;
     // Populated Address Arrays
     public $regions = [];
     public $provinces = [];
     public $cities = [];
-    public $districts = [];
     public $baranggays = [];
+    public $districts = [];
+    // Payment
+    #[Validate] public $proof_image_path;
 
     // Operational Variables
     public $can_select_a_room = false;
@@ -62,6 +70,8 @@ class ReservationForm extends Component
     {
         return [
             'selected_rooms.required' => 'Atleast 1 :attribute is required.',
+            'proof_image_path.required' => 'Upload your proof of payment here.',
+            'proof_image_path.image' => 'File must be a valid image format (JPG, JPEG, PNG).',
         ];
     }
 
@@ -74,6 +84,12 @@ class ReservationForm extends Component
             'adult_count' => 'required|integer|min:1',
             'children_count' => 'integer|min:0',
             'selected_rooms' => 'required',
+            'first_name' => 'required|min:2',
+            'last_name' => 'required|min:2',
+            'email' => 'required|email:rfc,dns',
+            'phone' => 'required|min:11|starts_with:09',
+            'address' => 'required',
+            'proof_image_path' => 'required|image',
         ];
     }
 
@@ -85,6 +101,10 @@ class ReservationForm extends Component
             'adult_count' => 'adult',
             'children_count' => 'children',
             'selected_rooms' => 'room',
+            'first_name' => 'first name',
+            'last_name' => 'last name',
+            'phone' => 'contact number',
+            'proof_image_path' => 'proof of payment',
         ];
     }
 
@@ -151,18 +171,31 @@ class ReservationForm extends Component
     // Address Get Methods
     public function getProvinces($region) {
         $this->provinces = AddressController::getProvinces($region);
+        $this->setAddress();
     }
 
     public function getCities($province) {
         $this->cities = AddressController::getCities($province);
+        $this->setAddress();
     }
 
     public function getBaranggays($city) {
         $this->baranggays = AddressController::getBaranggays($city);
+        $this->setAddress();
     }
 
     public function getDistrictBaranggays($district) {
         $this->baranggays = AddressController::getDistrictBaranggays($district);
+        $this->setAddress();
+    }
+
+    // Concatenates the address altogether
+    public function setAddress() {
+        empty($this->street) ? $this->address[0] = null: $this->address[0] = trim($this->street) . ', ';
+        empty($this->baranggay) ? $this->address[1] = null: $this->address[1] = trim($this->baranggay) . ', ';
+        empty($this->district) ? $this->address[2] = null: $this->address[2] = trim($this->district) . ', ';
+        empty($this->city) ? $this->address[3] = null: $this->address[3] = trim($this->city) . ', ';
+        empty($this->province) ? $this->address[4] = null: $this->address[4] = trim($this->province);
     }
 
     public function submit()
@@ -182,10 +215,20 @@ class ReservationForm extends Component
                 ]);
                 break;
             case 2:
-                // $this->validate();
+                $this->validate([
+                    'first_name' => $this->rules()['first_name'],
+                    'last_name' => $this->rules()['last_name'],
+                    'email' => $this->rules()['email'],
+                    'phone' => $this->rules()['phone'],
+                    'address' => $this->rules()['address'],
+                ]);
+                break;
+            case 3:
+                $this->validate([
+                    'proof_image_path' => $this->rules()['proof_image_path']
+                ]);
                 break;
             default:
-                # code...
                 break;
         }
 
