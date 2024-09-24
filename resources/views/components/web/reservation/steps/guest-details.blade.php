@@ -16,7 +16,7 @@
 <x-form.form-section>
     <x-form.form-header step="1" title="Personal &amp; Contact Information" />
 
-    <div class="lg:grid-cols-2 lg:col-span-2">
+    <div x-show="!can_select_address" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body>
             <div class="grid grid-cols-2">
                 {{-- Personal Information --}}
@@ -67,6 +67,7 @@
                             label="Contact Number"
                             id="phone"
                             minlength="11"
+                            maxlength="11"
                         />
                         <x-form.input-error field="phone" />
                     </div>
@@ -78,10 +79,16 @@
 
 <x-line-vertical />
 
+<x-secondary-button x-show="!can_select_address" wire:click="selectAddress()">Select Address</x-secondary-button>
+<x-secondary-button x-show="can_select_address">Edit Personal &amp; Contact Information</x-secondary-button>
+
+<x-line-vertical />
+
+{{-- Address --}}
 <x-form.form-section>
     <x-form.form-header step="2" title="Address" />
 
-    <div>
+    <div x-show="can_select_address" x-collapse.duration.1000ms>
         <x-form.form-body>
             <div class="p-5 space-y-3 overflow-auto"
                     x-init="
@@ -171,10 +178,6 @@
                 />
 
                 <x-form.input-error field="address" />
-
-                <div>
-                    {{ trim(implode($address), ', ') }}
-                </div>
 
                 {{-- Loaders --}}
                 <div wire:loading wire:target="getProvinces" class="text-xs font-semibold">Loading 

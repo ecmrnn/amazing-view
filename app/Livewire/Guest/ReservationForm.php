@@ -16,7 +16,7 @@ class ReservationForm extends Component
 {
     use WithFilePond;
 
-    public $step = 3;
+    public $step = 1;
     public $capacity = 0;
 
     // Reservation Details
@@ -36,12 +36,12 @@ class ReservationForm extends Component
     #[Validate] public $email;
     #[Validate] public $phone;
     // Address
-    #[Validate] public $region;
-    #[Validate] public $province;
-    #[Validate] public $city;
-    #[Validate] public $baranggay;
-    #[Validate] public $street;
     #[Validate] public $address = []; /* Complete concatenated Address property */
+    public $region;
+    public $province;
+    public $city;
+    public $baranggay;
+    public $street;
     public $district; 
     // Populated Address Arrays
     public $regions = [];
@@ -54,7 +54,13 @@ class ReservationForm extends Component
 
     // Operational Variables
     public $can_select_a_room = false;
+    public $can_submit_payment = false;
+    public $can_select_address = false;
     public $room_types;
+    public $sub_total = 0;
+    public $vat = 0;
+    public $net_total = 0;
+    private $vat_percent = .12; /* Should be in Global */
 
     public function mount() {
         $this->reservable_amenities = Amenity::where('is_reservable', 1)->get();
@@ -71,7 +77,8 @@ class ReservationForm extends Component
         return [
             'selected_rooms.required' => 'Atleast 1 :attribute is required.',
             'proof_image_path.required' => 'Upload your proof of payment here.',
-            'proof_image_path.image' => 'File must be a valid image format (JPG, JPEG, PNG).',
+            'proof_image_path.mimes' => 'File must be a valid image format (JPG, JPEG, PNG).',
+            'proof_image_path.max' => 'Maximum file size is 1MB (1024KB).',
         ];
     }
 
@@ -87,9 +94,9 @@ class ReservationForm extends Component
             'first_name' => 'required|min:2',
             'last_name' => 'required|min:2',
             'email' => 'required|email:rfc,dns',
-            'phone' => 'required|min:11|starts_with:09',
+            'phone' => 'required|digits:11|starts_with:09',
             'address' => 'required',
-            'proof_image_path' => 'required|image',
+            'proof_image_path' => 'required|mimes:jpg,jpeg,png|file|max:1000',
         ];
     }
 
@@ -112,11 +119,17 @@ class ReservationForm extends Component
         if ($room && !$this->selected_rooms->contains('id', $room->id)) {
             $this->selected_rooms->push($room);
             $this->capacity += $room->max_capacity;
+            $this->sub_total += $room->rate;
+            $this->vat = ($this->vat_percent * $this->sub_total);
+            $this->net_total = $this->sub_total + $this->vat;
         }
     }
 
     public function removeRoom(Room $room_to_delete) {
         $this->capacity -= $room_to_delete->max_capacity;
+        $this->sub_total -= $room_to_delete->rate;
+        $this->vat = ($this->vat_percent * $this->sub_total);
+        $this->net_total = $this->sub_total + $this->vat;
         $this->selected_rooms = $this->selected_rooms->reject(function ($room) use ($room_to_delete) {
             return $room->id == $room_to_delete->id;
         });
@@ -140,6 +153,19 @@ class ReservationForm extends Component
         // Turn can_select_a_room to 'true'
         $this->can_select_a_room = true;
     }
+
+    public function selectAddress() {
+        // Validate the following variables
+        $this->validate([
+            'first_name' => $this->rules()['first_name'],
+            'last_name' => $this->rules()['last_name'],
+            'email' => $this->rules()['email'],
+            'phone' => $this->rules()['phone'],
+        ]);
+
+        // Turn can_select_a_room to 'true'
+        $this->can_select_address = true;
+    }
     
     // Populate 'suggested_rooms' property
     public function suggestRooms() {
@@ -162,10 +188,14 @@ class ReservationForm extends Component
         if ($this->selected_amenities->contains('id', $amenity_clicked->id)) {
             $this->selected_amenities = $this->selected_amenities->reject(function ($amenity) use ($amenity_clicked) {
                 return $amenity->id == $amenity_clicked->id;
+                $this->sub_total -= $amenity_clicked->price;
             });
         } else {
             $this->selected_amenities->push($amenity_clicked);
+            $this->sub_total += $amenity_clicked->price;
         } 
+        $this->vat = ($this->vat_percent * $this->sub_total);
+        $this->net_total = $this->sub_total + $this->vat;
     }
 
     // Address Get Methods
@@ -198,7 +228,7 @@ class ReservationForm extends Component
         empty($this->province) ? $this->address[4] = null: $this->address[4] = trim($this->province);
     }
 
-    public function submit()
+    public function submit($previous = false)
     {
         // Validate input for each step
         // 1: Reservation Details

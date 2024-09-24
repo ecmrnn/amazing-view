@@ -65,18 +65,14 @@
 <x-line-vertical />
 
 {{-- Buttons prior to selecting a room --}}
-<div x-show="!can_select_a_room">
-    <div class="flex items-center gap-5">
-        <x-secondary-button class="block" wire:click="selectRoom()">Select a Room</x-secondary-button>
-        <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
-    </div>
-    <x-line-vertical />
+<div x-show="!can_select_a_room" class="flex items-center gap-5">
+    <x-secondary-button class="block" wire:click="selectRoom()">Select a Room</x-secondary-button>
+    <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
 </div>
 
-<div x-show="can_select_a_room">
-    <x-secondary-button class="block capitalize" x-on:click="can_select_a_room = false">Edit reservation date &amp; guest count</x-secondary-button>
-    <x-line-vertical />
-</div>
+<x-secondary-button x-show="can_select_a_room" class="block capitalize" x-on:click="can_select_a_room = false">Edit reservation date &amp; guest count</x-secondary-button>
+
+<x-line-vertical />
 
 {{-- Select a Room --}}
 <x-form.form-section>

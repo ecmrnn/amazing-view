@@ -1,7 +1,24 @@
+@props([
+    'date_in' => '',
+    'date_out' => '',
+    'adult_count' => '',
+    'children_count' => '',
+    'selected_rooms' => [],
+    'selected_amenities' => [],
+    'first_name' => '',
+    'last_name' => '',
+    'email' => '',
+    'phone' => '',
+    'address' => [],
+    'sub_total' => 0,
+    'vat' => 0,
+    'net_total' => 0,
+])
+
 <x-form.form-section>
     <x-form.form-header step="1" title="Reservation Summary" />
 
-    <div class="lg:grid-cols-2 lg:col-span-2">
+    <div x-show="!can_submit_payment" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body>
             <div class="p-5 space-y-3">
                 <p class="text-sm">Kindly check if the information you provided is <strong class="text-blue-500">correct</strong>.</p>
@@ -12,10 +29,10 @@
                     <div class="px-3 py-2 space-y-2 border-b border-dashed md:border-b-0 md:border-r">
                         <h4 class="font-semibold">Guest Details</h4>
                         <div class="space-y-1 text-xs">
-                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">ar_on_you</span><span>Juan Dela Cruz</span></p>
-                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">cottage</span><span>410 Manila East Rd., Hulo, Pililla, Rizal</span></p>
-                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">call</span><span>+63 958 5575 678</span></p>
-                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">mail</span><span>delacruz.juan@gmail.com</span></p>
+                            <p class="flex items-center gap-3 capitalize"><span class="material-symbols-outlined">ar_on_you</span><span>{{ $first_name . " " . $last_name }}</span></p>
+                            <p class="flex items-center gap-3 capitalize"><span class="material-symbols-outlined">cottage</span><span>{{ trim(implode($address), ', ') }}</span></p>
+                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">call</span><span>{{ $phone }}</span></p>
+                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">mail</span><span>{{ $email }}</span></p>
                         </div>
                     </div>
 
@@ -25,8 +42,16 @@
                         <div class="space-y-1 text-xs">
                             <p class="flex items-center gap-3"><span class="material-symbols-outlined">airline_seat_flat</span><span>Overnight</span></p>
                             <p class="flex items-center gap-3"><span class="material-symbols-outlined">acute</span><span>2:00 PM - 12:00 PM</span></p>
-                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">face</span><span>2 Adults, 1 Children</span></p>
-                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">door_front</span><span>Room 1, Room 2</span></p>
+                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">face</span><span>{{ $adult_count }} Adults, {{ $children_count }} Children</span></p>
+                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">door_front</span>
+                                <span class="space-x-1">
+                                    @foreach ($selected_rooms as $room)
+                                        <span key="{{ $room->id }}" class="inline-block px-2 py-1 font-semibold capitalize rounded-md bg-slate-200">
+                                            {{ $room->roomType->name . " " . $room->room_number }}
+                                        </span>
+                                    @endforeach
+                                </span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -39,8 +64,8 @@
                     </div>
 
                     <div class="gap-5 text-xs md:flex">
-                        <p class="flex items-center gap-3"><span class="material-symbols-outlined">calendar_month</span><span><strong>Check in:</strong> January 10, 2024</span></p>
-                        <p class="flex items-center gap-3"><span class="material-symbols-outlined">calendar_month</span><span><strong>Check out:</strong> January 11, 2024</span></p>
+                        <p class="flex items-center gap-3"><span class="material-symbols-outlined">calendar_month</span><span><strong>Check in: </strong>{{ date_format(date_create($date_in),"F j, Y") }}</span></p>
+                        <p class="flex items-center gap-3"><span class="material-symbols-outlined">calendar_month</span><span><strong>Check out: </strong>{{ date_format(date_create($date_out),"F j, Y") }}</span></p>
                     </div>
                 </div>
 
@@ -52,18 +77,27 @@
 
                     {{-- Bills to Pay --}}
                     <div class="pt-3 border-t border-dashed">
-                        <div class="flex justify-between px-3 py-1 text-sm rounded-lg hover:bg-slate-100">
-                            <p>Room 1</p>
-                            <p>1000.00</p>
+                        @foreach ($selected_rooms as $room)
+                            <div key="{{ $room->id }}" class="flex justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out rounded-lg hover:bg-slate-100">
+                                <p class="capitalize">{{ $room->roomType->name . " " . $room->room_number }}</p>
+                                <p>{{ $room->rate }}</p>
+                            </div>
+                        @endforeach
+
+                        <div class="flex items-center px-3 py-1">
+                            <x-line class="bg-zinc-800/50" />
                         </div>
-                        <div class="flex justify-between px-3 py-1 text-sm rounded-lg hover:bg-slate-100">
-                            <p>Room 1</p>
-                            <p>1000.00</p>
-                        </div>
-                        <div class="flex justify-between px-3 py-1 text-sm rounded-lg hover:bg-slate-100">
-                            <p>Room 1</p>
-                            <p>1000.00</p>
-                        </div>
+
+                        @forelse ($selected_amenities as $amenity)
+                            <div key="{{ $amenity->id }}" class="flex justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out rounded-lg hover:bg-slate-100">
+                                <p class="capitalize">{{ $amenity->name }}</p>
+                                <p>{{ $amenity->price }}</p>
+                            </div>
+                        @empty
+                            <div class="py-1 text-sm text-zinc-800/50">
+                                <p>No selected amenities</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -74,9 +108,9 @@
                         <p class="font-semibold text-blue-500">Net Total</p>
                     </div>
                     <div class="text-sm text-right">
-                        <p class="font-semibold">1000.00</p>
-                        <p class="">500.00</p>
-                        <p class="font-semibold text-blue-500">1500.00</p>
+                        <p class="font-semibold">{{ number_format($sub_total, 2) }}</p>
+                        <p class="">{{ number_format($vat, 2) }}</p>
+                        <p class="font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -86,10 +120,15 @@
 
 <x-line-vertical />
 
+<x-secondary-button x-show="!can_submit_payment" x-on:click="$wire.set('can_submit_payment', true)">Send Payment</x-secondary-button>
+<x-secondary-button x-show="can_submit_payment" x-on:click="$wire.set('can_submit_payment', false)">Check Reservation Summary</x-secondary-button>
+
+<x-line-vertical />
+
 <x-form.form-section>
     <x-form.form-header step="2" title="Payment" />
 
-    <div class="lg:grid-cols-2 lg:col-span-2">
+    <div x-show="can_submit_payment" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body>
             <div class="p-5 space-y-3">
                 <p class="max-w-sm text-sm">Upload your proof of payment here.</p>
@@ -128,7 +167,7 @@
 
                 <x-form.input-error field="proof_image_path" />
                 
-                <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Max image size &lpar;<strong class="text-blue-500">1MB</strong>&rpar;</p>
+                <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Maximum image size &lpar;<strong class="text-blue-500">1MB or 1024KB</strong>&rpar;</p>
             </div>
         </x-form.form-body>
     </div>

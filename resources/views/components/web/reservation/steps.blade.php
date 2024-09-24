@@ -1,15 +1,45 @@
 @props([
+    'currentStep' => '',
     'step' => '',
     'name' => '',
     'icon' => ''
 ])
 
-<div x-data="{ currentStep: $store.step.count }" x-effect="currentStep = $store.step.count">
+<div x-data="{ currentStep: {{ $currentStep }} }">
     <div class="flex items-center gap-5">
-        <div x-bind:class="({{ $step }} <= currentStep) ? 'w-[45px] shrink-0 aspect-square grid place-items-center rounded-md border bg-gradient-to-r from-blue-500 to-blue-600 border-blue-600 *:text-white' : 'w-[45px] shrink-0 aspect-square grid place-items-center rounded-md border *:text-zinc-800/25'">
-            <span x-text="({{ $step }} >= currentStep) ? '{{ $icon }}' : 'check'" class="material-symbols-outlined"></span>
+        <div 
+            @if ($step <= $currentStep)
+                class="w-[45px] shrink-0 aspect-square grid place-items-center rounded-md border bg-gradient-to-r from-blue-500 to-blue-600 border-blue-600 *:text-white"
+            @else
+                class="w-[45px] shrink-0 aspect-square grid place-items-center rounded-md border *:text-zinc-800/25"
+            @endif
+            >
+            <span class="material-symbols-outlined">
+                @if ($step >= $currentStep)
+                    {{ $icon }}
+                @else
+                    check
+                @endif
+            </span>
         </div>
-        <span x-bind:class="({{ $step }} <= currentStep) ? 'font-semibold text-2xl' : 'font-semibold text-2xl text-zinc-800/25'">{{ $step }}</span>
-        <p x-bind:class="({{ $step }}) <= currentStep ? 'text-xs' : 'text-xs text-zinc-800/50'">{{ $name }}</p>
+
+        <span
+            @if ($step <= $currentStep)
+                class="text-2xl font-semibold"
+            @else
+                class="text-2xl font-semibold text-zinc-800/25"
+            @endif
+            >
+            {{ $step }}
+        </span>
+        <p 
+            @if ($step <= $currentStep)
+                class="text-xs"
+            @else
+                class="text-xs text-zinc-800/50"
+            @endif
+            >
+            {{ $name }}
+        </p>
     </div>
 </div>
