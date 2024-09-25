@@ -4,17 +4,21 @@ namespace App\Livewire\Guest;
 
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
+use App\Models\Reservation;
+use App\Models\ReservationAmenity;
 use App\Models\Room;
+use App\Models\RoomReservation;
 use App\Models\RoomType;
-use App\Providers\AppServiceProvider;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class ReservationForm extends Component
 {
     use WithFilePond;
+    use WithPagination;
 
     public $step = 1;
     public $capacity = 0;
@@ -26,9 +30,9 @@ class ReservationForm extends Component
     #[Validate] public $children_count = 0;
     #[Validate] public $selected_rooms;
     #[Validate] public $selected_amenities;
-    public $available_rooms;
+    public $available_rooms = [];
     public $suggested_rooms;
-    public $reservable_amenities;
+    public $reservable_amenities = [];
     public $room_type_name;
     // Guest Details
     #[Validate] public $first_name;
@@ -61,6 +65,7 @@ class ReservationForm extends Component
     public $vat = 0;
     public $net_total = 0;
     private $vat_percent = .12; /* Should be in Global */
+    public $reservation_rid;
 
     public function mount() {
         $this->reservable_amenities = Amenity::where('is_reservable', 1)->get();
@@ -169,7 +174,7 @@ class ReservationForm extends Component
     
     // Populate 'suggested_rooms' property
     public function suggestRooms() {
-        $this->suggested_rooms = Room::where('status', 0)->get();
+        $this->suggested_rooms = Room::where('status', 0)->limit(3)->get();
     }
 
     // Populate 'available_rooms' property
@@ -202,7 +207,7 @@ class ReservationForm extends Component
     public function getProvinces($region) {
         $this->provinces = AddressController::getProvinces($region);
         $this->setAddress();
-    }
+    }   
 
     public function getCities($province) {
         $this->cities = AddressController::getCities($province);
@@ -257,6 +262,9 @@ class ReservationForm extends Component
                 $this->validate([
                     'proof_image_path' => $this->rules()['proof_image_path']
                 ]);
+
+                // Store the reservation
+                $this->store();
                 break;
             default:
                 break;
@@ -269,6 +277,63 @@ class ReservationForm extends Component
         if ($this->step != 3) {
             $this->dispatch('next-step', $this->step);
         }
+    }
+
+    public function store() {
+        $this->validate([
+            'date_in' => $this->rules()['date_in'],
+            'date_out' => $this->rules()['date_out'],
+            'adult_count' => $this->rules()['adult_count'],
+            'children_count' => $this->rules()['children_count'],
+            'selected_rooms' => $this->rules()['selected_rooms'],
+            'first_name' => $this->rules()['first_name'],
+            'last_name' => $this->rules()['last_name'],
+            'email' => $this->rules()['email'],
+            'phone' => $this->rules()['phone'],
+            'address' => $this->rules()['address'],
+        ]);
+
+        // Create Reservation
+        $reservation = Reservation::create([
+            'date_in' => $this->date_in,
+            'date_out' => $this->date_out,
+            'adult_count' => $this->adult_count,
+            'children_count' => $this->children_count,
+            'status' => Reservation::STATUS_PENDING,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'phone' => $this->phone,
+            'address' => trim(implode($this->address), ', '),
+            'email' => $this->email,
+        ]);
+
+        $this->reservation_rid = $reservation->rid;
+
+        if (!empty($this->selected_rooms)) {
+            // Store rooms
+            foreach ($this->selected_rooms as $room) {
+                RoomReservation::create([
+                    'reservation_id' => $reservation->id,
+                    'room_id' => $room->id,
+                ]);
+            }
+        }
+
+        if (!empty($this->selected_amenities)) {
+            // Store amenities
+            foreach ($this->selected_amenities as $amenity) {
+                ReservationAmenity::create([
+                    'reservation_id' => $reservation->id,
+                    'amenity_id' => $amenity->id,
+                    'quantity' => 0,
+                ]);
+            }
+        }
+
+        // Create Invoice
+        
+
+        // Send Email
     }
 
     public function render()

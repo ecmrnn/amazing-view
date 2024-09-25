@@ -1,11 +1,11 @@
-@props([
+{{-- @props([
     'roomTypes',
     'availableRooms' => [],
     'selectedRooms' => [],
     'suggestedRooms' => [],
     'reservableAmenities' => [],
     'roomTypeName' => '',
-])
+]) --}}
 
 {{-- Reservation Date & Guest Count --}}
 <x-form.form-section class="grid lg:grid-cols-2">
@@ -92,14 +92,18 @@
             
             <div wire:loading.delay wire:target="suggestRooms" class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-lg">Amazing rooms incoming!</div>
 
-            @if (!empty($suggestedRooms))
-                <div class="p-5 m-5 space-y-5 bg-white border rounded-lg border-slate-200">
-                    <h3 class="text-lg font-semibold">Suggested Rooms</h3>
-                    <div class="grid-cols-3 gap-2 space-y-3 lg:space-y-0 lg:grid">
-                        @foreach ($suggestedRooms as $room)
-                            <x-web.reservation.step-1.suggested-room :key="$room->id" :selectedRooms="$selectedRooms" :room="$room" />
-                        @endforeach
+            @if (!empty($suggested_rooms))
+            <div class="p-5 m-5 space-y-5 bg-white border rounded-lg border-slate-200">
+                <h3 class="text-lg font-semibold">Suggested Rooms</h3>
+                <div class="grid-cols-3 gap-2 space-y-3 lg:space-y-0 lg:grid">
+                    @forelse ($suggested_rooms as $room)
+                        {{-- <p>{{ $room->room_number }}</p> --}}
+                        <x-web.reservation.step-1.suggested-room :key="$room->id" :selectedRooms="$selected_rooms" :room="$room" />
+                    @empty
+                        <div class="col-span-3 text-center text-zinc-800/50">No available rooms at the moment...</div>
+                    @endforelse
                     </div>
+                    {{-- {{ $suggested_rooms->links() }} --}}
                 </div>
             @endif
             
@@ -108,10 +112,10 @@
 
                 <h3 class="text-lg font-semibold">Our Rooms</h3>
                 <div class="grid gap-2 sm:grid-cols-2 md:grid-cols-1">
-                    @forelse ($roomTypes as $room)
+                    @forelse ($room_types as $room)
                         <x-web.reservation.step-1.room-category :key="$room->id" :room="$room" />
                     @empty
-                        <div class="p-5 text-center">Oof! No rooms found in the system yet.</div>
+                        <div class="p-5 text-center text-zinc-800/50">Oof! No rooms found in the system yet.</div>
                     @endforelse
                 </div>
             </div>
@@ -130,7 +134,7 @@
             <div class="p-5 space-y-3">
                 <p class="text-sm">Enhance your stay by availing our additional services.</p>
                 <div class="grid gap-2 sm:grid-cols-2">
-                    @forelse ($reservableAmenities as $amenity)
+                    @forelse ($reservable_amenities as $amenity)
                         <div key="{{ $amenity->id }}">
                             <x-form.checkbox-toggle id="amenity{{ $amenity->id }}" name="amenity" wire:click="toggleAmenity({{ $amenity->id }})">
                                 <div class="select-none">
@@ -140,7 +144,7 @@
                             </x-form.checkbox-toggle>
                         </div>
                     @empty
-                        <div class="px-3 py-2 text-center text-zinc-800/50">No reservable amenities...</div>
+                        <div class="col-span-2 text-center text-zinc-800/50">No reservable amenities...</div>
                     @endforelse
                 </div>
             </div>
@@ -161,9 +165,9 @@
             <div wire:loading.delay wire:target="getAvailableRooms" class="self-center text-sm font-semibold">We are loading your amazing rooms...</div>
             
             <hgroup wire:loading.remove wire:target="getAvailableRooms">
-                <h2 class="text-lg font-semibold capitalize">{{ $roomTypeName }}</h2>
-                @if (count($availableRooms) > 0)
-                    <p class="text-sm">Here are the available <span class="font-semibold text-blue-500 capitalize">{{ $roomTypeName }}</span> rooms.</p>
+                <h2 class="text-lg font-semibold capitalize">{{ $room_type_name }}</h2>
+                @if (count($available_rooms) > 0)
+                    <p class="text-sm">Here are the available <span class="font-semibold text-blue-500 capitalize">{{ $room_type_name }}</span> rooms.</p>
                 @endif
             </hgroup>
 
@@ -171,10 +175,10 @@
         </div>
 
         <div class="border divide-y rounded-lg divide-dashed *:p-3" wire:loading.remove wire:target="getAvailableRooms">
-            @forelse ($availableRooms as $room)
-                <x-web.reservation.step-1.available-room :key="$room->id" :selectedRooms="$selectedRooms" :room="$room" />
+            @forelse ($available_rooms as $room)
+                <x-web.reservation.step-1.available-room :key="$room->id" :selectedRooms="$selected_rooms" :room="$room" />
             @empty
-                <div class="text-sm font-semibold text-center">No available rooms for this category.</div>  
+                <div class="text-sm font-semibold text-center text-zinc-800/50">No available rooms for this category.</div>  
             @endforelse 
         </div>
     </div>

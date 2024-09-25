@@ -53,62 +53,64 @@
             {{-- Step 1: Reservation Details --}}
             @if ($step == 1)
                 <div>
-                    <x-web.reservation.steps.reservation-details
-                        :roomTypes="$room_types"
-                        :suggestedRooms="$suggested_rooms"
-                        :selectedRooms="$selected_rooms"
-                        :availableRooms="$available_rooms"
-                        :reservableAmenities="$reservable_amenities"
-                        :roomTypeName="$room_type_name"
-                    />
+                    @include('components.web.reservation.steps.reservation-details', [
+                        'suggested_rooms' => $suggested_rooms,
+                        'room_types' => $room_types,
+                        'selected_rooms' => $selected_rooms,
+                        'available_rooms' => $available_rooms,
+                        'reservable_amenities' => $reservable_amenities,
+                        'room_type_name' => $room_type_name,
+                    ])
                 </div>
             @endif
 
             {{-- Step 2: Guest Details --}}
             @if ($step == 2)
                 <div>
-                    <x-web.reservation.steps.guest-details
-                        :region="$region"
-                        :regions="$regions"
-                        :province="$province"
-                        :provinces="$provinces"
-                        :city="$city"
-                        :cities="$cities"
-                        :district="$district"
-                        :districts="$districts"
-                        :baranggay="$baranggay"
-                        :baranggays="$baranggays"
-                        :address="$address"
-                    />
+                    @include('components.web.reservation.steps.guest-details', [
+                        'region' => $region,
+                        'regions' => $regions,
+                        'province' => $province,
+                        'provinces' => $provinces,
+                        'city' => $city,
+                        'cities' => $cities,
+                        'district' => $district,
+                        'districts' => $districts,
+                        'baranggay' => $baranggay,
+                        'baranggays' => $baranggays,
+                        'address' => $address,
+                    ])
                 </div>
             @endif
 
             {{-- Step 3: Payment --}}
             @if ($step == 3)
                 <div>
-                    <x-web.reservation.steps.payment
-                        :date_in="$date_in"
-                        :date_out="$date_out"
-                        :adult_count="$adult_count"
-                        :children_count="$children_count"
-                        :selected_rooms="$selected_rooms"
-                        :selected_amenities="$selected_amenities"
-                        :first_name="$first_name"
-                        :last_name="$last_name"
-                        :email="$email"
-                        :phone="$phone"
-                        :address="$address"
-                        :sub_total="$sub_total"
-                        :vat="$vat"
-                        :net_total="$net_total"
-                    />
+                    @include('components.web.reservation.steps.payment', [
+                        'date_in' => $date_in,
+                        'date_out' => $date_out,
+                        'adult_count' => $adult_count,
+                        'children_count' => $children_count,
+                        'selected_rooms' => $selected_rooms,
+                        'selected_amenities' => $selected_amenities,
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'address' => $address,
+                        'sub_total' => $sub_total,
+                        'vat' => $vat,
+                        'net_total' => $net_total,
+                    ])
                 </div>                
             @endif
 
             {{-- Success Message --}}
             @if ($step == 4)
                 <div>
-                    <x-web.reservation.steps.success />
+                    @include('components.web.reservation.steps.success', [
+                        'reservation_id' => $reservation_rid
+                    ]);
                 </div>
             @endif
         </form>
@@ -116,9 +118,9 @@
         {{-- Summary --}}
         @if ($step < 3)
             <x-web.reservation.summary 
-            :selectedRooms="$selected_rooms"
-            :selectedAmenities="$selected_amenities"
-        />
+                :selectedRooms="$selected_rooms"
+                :selectedAmenities="$selected_amenities"
+            />
         @endif
     </article>
 

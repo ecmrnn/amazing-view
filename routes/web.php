@@ -27,7 +27,11 @@ Route::post('/email', function () {
 
 Route::get('/reservation', function () {
     return view('reservation');
-});
+})->name('reservation');
+
+Route::get('/search', function () {
+    return view('search');
+})->name('search');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

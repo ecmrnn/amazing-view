@@ -1,17 +1,3 @@
-@props([
-    'region',
-    'regions',
-    'province',
-    'provinces',
-    'city',
-    'cities',
-    'district',
-    'districts',
-    'baranggay',
-    'baranggays',
-    'address' => [],
-])
-
 {{-- Personal & Contact Information --}}
 <x-form.form-section>
     <x-form.form-header step="1" title="Personal &amp; Contact Information" />

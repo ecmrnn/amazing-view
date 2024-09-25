@@ -1,20 +1,3 @@
-@props([
-    'date_in' => '',
-    'date_out' => '',
-    'adult_count' => '',
-    'children_count' => '',
-    'selected_rooms' => [],
-    'selected_amenities' => [],
-    'first_name' => '',
-    'last_name' => '',
-    'email' => '',
-    'phone' => '',
-    'address' => [],
-    'sub_total' => 0,
-    'vat' => 0,
-    'net_total' => 0,
-])
-
 <x-form.form-section>
     <x-form.form-header step="1" title="Reservation Summary" />
 
@@ -88,7 +71,7 @@
                             <x-line class="bg-zinc-800/50" />
                         </div>
 
-                        @forelse ($selected_amenities as $amenity)
+                        {{-- @forelse ($selected_amenities as $amenity)
                             <div key="{{ $amenity->id }}" class="flex justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out rounded-lg hover:bg-slate-100">
                                 <p class="capitalize">{{ $amenity->name }}</p>
                                 <p>{{ $amenity->price }}</p>
@@ -97,11 +80,11 @@
                             <div class="py-1 text-sm text-zinc-800/50">
                                 <p>No selected amenities</p>
                             </div>
-                        @endforelse
+                        @endforelse --}}
                     </div>
                 </div>
 
-                <div class="flex justify-end gap-5 px-6">
+                {{-- <div class="flex justify-end gap-5 px-6">
                     <div class="text-sm text-right">
                         <p class="font-semibold">Sub-Total</p>
                         <p class="">12% VAT</p>
@@ -112,7 +95,7 @@
                         <p class="">{{ number_format($vat, 2) }}</p>
                         <p class="font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </x-form.form-body>
     </div>

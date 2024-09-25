@@ -1,4 +1,4 @@
-<div class="pt-40 pb-20 space-y-5 max-w-screen-xl mx-auto">
+<div class="max-w-screen-xl pt-40 pb-20 mx-auto space-y-5">
     <x-h1>
         Book a Room
     </x-h1>
@@ -8,7 +8,12 @@
         welcome to your perfect escape!
     </p>
 
-    <a class="block" href="#form">
-        <x-primary-button>Get Started!</x-primary-button>
-    </a>
+    <div class="flex gap-1">
+        <a class="inline-block" href="#form">
+            <x-primary-button>Get Started!</x-primary-button>
+        </a>
+        <a class="inline-block" href="{{ route('search') }}" wire:navigate>
+            <x-secondary-button>Find my Reservation</x-secondary-button>
+        </a>
+    </div>
 </div>
