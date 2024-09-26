@@ -7,11 +7,7 @@
     <div class="relative w-full lg:max-w-xs">
         <x-img-lg class="w-full" src="{{ $room->image_1_path }}" />
         <div class="absolute px-3 py-2 text-xs font-semibold rounded-lg bg-white/90 backdrop-blur-md top-2 left-2">
-            @if ($room->rooms_count > 0)
-                <span>{{ $room->rooms_count }}</span> Room&lpar;s&rpar; Available
-            @else
-                <span>No Rooms</span>
-            @endif
+            {{--  --}}
         </div>
     </div>
 

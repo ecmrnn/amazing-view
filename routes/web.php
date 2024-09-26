@@ -4,34 +4,23 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
-Route::get('/', function () {
-    return view('index');
+Route::name('guest.')->group(function () {
+    Route::view('/', 'index')->name('home');
+    Route::view('/rooms', 'rooms')->name('rooms');
+    Route::view('/about', 'about')->name('about');
+    Route::view('/contact', 'contact')->name('contact');
+    Route::view('/reservation', 'reservation')->name('reservation');
+    Route::view('/search', 'search')->name('search');
+
+    // Add route for specific room details
+    // ...
+
+    // Send an email
+    Route::post('/email', function () {
+        return 'hello email!';
+    });
 });
 
-Route::get('/rooms', function () {
-    return view('rooms');
-});
-
-Route::get('/about', function () {
-    return view('about');
-});
-
-Route::get('/contact', function () {
-    return view('contact');
-});
-
-// Send an email
-Route::post('/email', function () {
-    return 'hello email!';
-});
-
-Route::get('/reservation', function () {
-    return view('reservation');
-})->name('reservation');
-
-Route::get('/search', function () {
-    return view('search');
-})->name('search');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

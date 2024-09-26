@@ -9,7 +9,7 @@
         <a href="{{ route('reservation') }}" wire:navigate>
             <x-secondary-button type="button">Start Again</x-secondary-button>
         </a>
-        <a href="{{ route('search') }}" wire:navigate>
+        <a href="{{ route('search', ['rid' => $reservation_rid]) }}" wire:navigate>
             <x-primary-button type="button">View Reservation</x-primary-button>
         </a>
     </div>

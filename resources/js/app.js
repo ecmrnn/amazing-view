@@ -1,10 +1,5 @@
 import './bootstrap';
-import collapse from '@alpinejs/collapse'
- 
-Alpine.plugin(collapse)
+import collapse from '@alpinejs/collapse';
+import persist from '@alpinejs/persist';
 
-// import Alpine from 'alpinejs';
-
-// window.Alpine = Alpine;
-
-// Alpine.start();
+Alpine.plugin(collapse);

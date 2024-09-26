@@ -1,23 +1,23 @@
 <div x-data="{
         {{-- Reservation Details --}}
         min: new Date(),
-        date_in: $wire.entangle('date_in'),
-        date_out: $wire.entangle('date_out'),
-        adult_count: $wire.entangle('adult_count'),
-        children_count: $wire.entangle('children_count'),
-        capacity: $wire.entangle('capacity'),
+        date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
+        date_out: $persist($wire.entangle('date_out')).using(sessionStorage),
+        adult_count: $persist($wire.entangle('adult_count')).using(sessionStorage),
+        children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
+        capacity: $persist($wire.entangle('capacity')).using(sessionStorage),
 
         {{-- Guest Details --}}
-        first_name: $wire.entangle('first_name'),
-        last_name: $wire.entangle('last_name'),
-        email: $wire.entangle('email'),
-        phone: $wire.entangle('phone'),
+        first_name: $persist($wire.entangle('first_name')).using(sessionStorage),
+        last_name: $persist($wire.entangle('last_name')).using(sessionStorage),
+        email: $persist($wire.entangle('email')).using(sessionStorage),
+        phone: $persist($wire.entangle('phone')).using(sessionStorage),
         region: $wire.entangle('region'),
         province: $wire.entangle('province'),
         city: $wire.entangle('city'),
         district: $wire.entangle('district'),
         baranggay: $wire.entangle('baranggay'),
-        street: $wire.entangle('street'),
+        street: $persist($wire.entangle('street')).using(sessionStorage),
 
         {{-- Operations --}}
         can_select_a_room: $wire.entangle('can_select_a_room'),
@@ -28,7 +28,31 @@
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
             return new Date(date).toLocaleDateString('en-US', options)
         },
+
+        resetProperties() {
+            localStorage.removeItem('_x_date_in');
+            this.date_in = null;
+            localStorage.removeItem('_x_date_out');
+            this.date_out = null;
+            localStorage.setItem('_x_adult_count', 1);
+            this.adult_count = 1;
+            localStorage.setItem('_x_children_count', 0);
+            this.children_count = 0;
+            localStorage.setItem('_x_capacity', 0);
+            this.capacity = 0;
+            localStorage.removeItem('_x_first_name');
+            this.first_name = null;
+            localStorage.removeItem('_x_last_name');
+            this.last_name = null;
+            localStorage.removeItem('_x_email');
+            this.email = null;
+            localStorage.removeItem('_x_phone');
+            this.phone = null;
+            localStorage.removeItem('_x_street');
+            this.street = null;
+        }
     }"
+    x-on:reservation-created.window="resetProperties()"
     class="max-w-screen-xl py-5 mx-auto space-y-5">
 
     {{-- Reservation steps --}}

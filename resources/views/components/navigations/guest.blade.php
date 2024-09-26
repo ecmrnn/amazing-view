@@ -10,19 +10,19 @@
                 </a>
     
                 <div class="flex items-center gap-5">
-                    <x-nav-link :active="Request::is('/')" href="/">Home</x-nav-link>
-                    <x-nav-link :active="Request::is('rooms*')" href="/rooms">Rooms</x-nav-link>
-                    <x-nav-link :active="Request::is('about')" href="/about">About</x-nav-link>
-                    <x-nav-link :active="Request::is('contact')" href="/contact">Contact</x-nav-link>
-                    <x-nav-link :active="Request::is('reservation')"  href="/reservation">Reservation</x-nav-link>
+                    <x-nav-link :active="Request::is('/')" href="{{ route('guest.home') }}">Home</x-nav-link>
+                    <x-nav-link :active="Request::is('rooms*')" href="{{ route('guest.rooms') }}">Rooms</x-nav-link>
+                    <x-nav-link :active="Request::is('about')" href="{{ route('guest.about') }}">About</x-nav-link>
+                    <x-nav-link :active="Request::is('contact')" href="{{ route('guest.contact') }}">Contact</x-nav-link>
+                    <x-nav-link :active="Request::is('reservation')  || Request::is('search')"  href="{{ route('guest.reservation') }}">Reservation</x-nav-link>
 
                     <div class="w-[1px] h-4 bg-slate-200 inline-block"></div>
 
                     <div class="inline-flex gap-1 text-xs">
-                        <a href="/register" wire:navigate>
+                        <a href="{{ route('register') }}" wire:navigate>
                             <x-secondary-button>Sign up</x-secondary-button>
                         </a>
-                        <a href="/login" wire:navigate>
+                        <a href="{{ route('login') }}" wire:navigate>
                             <x-primary-button>Sign in</x-primary-button>
                         </a>
                     </div>
@@ -31,7 +31,7 @@
     
             {{-- Mobile --}}
             <div class="relative z-50 flex items-center justify-between md:hidden">
-                <a href="/" class="block overflow-hidden rounded-lg" wire:navigate>
+                <a href="{{ route('guest.home') }}" class="block overflow-hidden rounded-lg" wire:navigate>
                     <img src="https://placehold.co/40x40" alt="Alternative Logo">
                 </a>
     
@@ -62,18 +62,18 @@
                     </div>
 
                     <div class="flex flex-col items-start px-5">
-                        <x-nav-link :active="Request::is('/')" href="/">Home</x-nav-link>
-                        <x-nav-link :active="Request::is('rooms*')" href="/rooms">Rooms</x-nav-link>
-                        <x-nav-link :active="Request::is('about')" href="/about">About</x-nav-link>
-                        <x-nav-link :active="Request::is('contact')" href="/contact">Contact</x-nav-link>
-                        <x-nav-link :active="Request::is('reservation')" href="/reservation">Reservation</x-nav-link>
+                        <x-nav-link :active="Request::is('/')" href="{{ route('guest.home') }}">Home</x-nav-link>
+                        <x-nav-link :active="Request::is('rooms*')" href="{{ route('guest.rooms') }}">Rooms</x-nav-link>
+                        <x-nav-link :active="Request::is('about')" href="{{ route('guest.about') }}">About</x-nav-link>
+                        <x-nav-link :active="Request::is('contact')" href="{{ route('guest.contact') }}">Contact</x-nav-link>
+                        <x-nav-link :active="Request::is('reservation') || Request::is('search')" href="{{ route('guest.reservation') }}">Reservation</x-nav-link>
                     </div>
 
                     <div class="inline-flex w-full gap-1 p-5 mt-3 border-t border-slate-200">
-                        <a href="/register" wire:navigate>
+                        <a href="{{ route('register') }}" wire:navigate>
                             <x-secondary-button>Sign up</x-secondary-button>
                         </a>
-                        <a href="/login" wire:navigate>
+                        <a href="{{ route('login') }}" wire:navigate>
                             <x-primary-button>Sign in</x-primary-button>
                         </a>
                     </div>

@@ -8,7 +8,6 @@ use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
-use App\Models\RoomReservation;
 use App\Models\RoomType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,8 +18,7 @@ use Spatie\LivewireFilepond\WithFilePond;
 
 class ReservationForm extends Component
 {
-    use WithFilePond;
-    use WithPagination;
+    use WithFilePond, WithPagination;
 
     public $step = 1;
     public $capacity = 0;
@@ -32,10 +30,10 @@ class ReservationForm extends Component
     #[Validate] public $children_count = 0;
     #[Validate] public $selected_rooms;
     #[Validate] public $selected_amenities;
-    public $available_rooms = [];
     public $suggested_rooms;
     public $reservable_amenities = [];
     public $room_type_name;
+    public $room_type_id;
     // Guest Details
     #[Validate] public $first_name;
     #[Validate] public $last_name;
@@ -68,6 +66,7 @@ class ReservationForm extends Component
     private $vat_percent = .12; /* Should be in Global */
     public $reservation_rid;
     public $night_count;
+    public $show_available_rooms = false;
 
     public function mount() {
         $this->reservable_amenities = Amenity::where('is_reservable', 1)->get();
@@ -194,11 +193,11 @@ class ReservationForm extends Component
 
     // Populate 'available_rooms' property
     public function getAvailableRooms(RoomType $room_type) {
-        $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
+        // Negate the value of the show_available_rooms
+        $this->show_available_rooms = true;
 
-        $this->available_rooms = Room::whereNotIn('id', $reserved_rooms)
-                                    ->where('room_type_id', $room_type->id)
-                                    ->get();
+        // Set the id for the selected room type
+        $this->room_type_id = $room_type->id;
 
         // Set the name for the selected room type
         $this->room_type_name = $room_type->name;
@@ -359,15 +358,28 @@ class ReservationForm extends Component
             'status' => Invoice::STATUS_PENDING,
         ]); 
 
-        // Send Email
+        // Dispatch event
+        $this->dispatch('reservation-created');
     }
 
     public function render()
     {
+        $available_rooms = [];
+
+        if ($this->show_available_rooms) {
+            $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
+
+            $available_rooms = Room::whereNotIn('id', $reserved_rooms)
+                                        ->where('room_type_id', $this->room_type_id)
+                                        ->paginate(10);
+        }
+
         $this->room_types = RoomType::withCount(['rooms' => function ($query) {
             $query->where('status', Room::STATUS_AVAILABLE);
         }])->get();
 
-        return view('livewire.guest.reservation-form');
+        return view('livewire.guest.reservation-form', [
+            'available_rooms' => $available_rooms
+        ]);
     }
 }

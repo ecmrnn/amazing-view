@@ -1,38 +1,44 @@
 <x-auth-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
-    <form method="POST" action="{{ route('login') }}" class="grid place-items-center md:min-h-screen py-20 px-5">
+    <form method="POST" action="{{ route('login') }}" class="grid px-5 py-20 place-items-center md:min-h-screen">
         @csrf
         <div class="max-w-sm">
-            <h1 class="font-semibold text-2xl mb-5">Amazing View <br /> Mountain Resort</h1>
+            <h1 class="mb-5 text-2xl font-semibold">Amazing View <br /> Mountain Resort</h1>
             <!-- Email Address -->
             <div>
-                <x-form.input-text label="Email" id="email" class="block mt-1 w-full"
-                                type="email"
-                                name="email"
-                                :value="old('email')"
-                                required autocomplete="username" />
-                <x-form.input-error :messages="$errors->get('email')" class="mt-2" />
+                <x-form.input-text
+                    label="Email"
+                    id="email"
+                    class="block w-full mt-1"
+                    type="text"
+                    name="email"
+                    :value="old('email')"
+                />
+                <x-form.input-error field="email" class="mt-2" />
             </div>
             
             <!-- Password -->
             <div class="mt-4">
-                <x-form.input-text label="Password" id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
-                <x-form.input-error :messages="$errors->get('password')" class="mt-2" />
+                <x-form.input-text
+                    label="Password"
+                    id="password"
+                    class="block w-full mt-1"
+                    type="password"
+                    name="password"
+                />
+                <x-form.input-error field="password" class="mt-2" />
             </div>
             
             <!-- Remember Me -->
             <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:outline-none focus:ring-0 focus:border-blue-600" name="remember">
-                    <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                <label for="remember_me" class="inline-flex items-center select-none">
+                    <input id="remember_me" type="checkbox" class="text-blue-600 border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:border-blue-600" name="remember">
+                    <span class="text-sm text-gray-600 ms-2">{{ __('Remember me') }}</span>
                 </label>
             </div>
             
-            <x-primary-button class="w-full block mt-4">
+            <x-primary-button class="block w-full mt-4">
                 Sign in
             </x-primary-button>
 
@@ -42,7 +48,7 @@
                 </div>
             @endif
 
-            <div class="p-3 rounded-lg border flex gap-3">
+            <div class="flex gap-3 p-3 border rounded-lg">
                 <p class="text-sm">Doesn&apos;t have an account yet? Click here to create one!</p>
 
                 <div class="shrink-0">

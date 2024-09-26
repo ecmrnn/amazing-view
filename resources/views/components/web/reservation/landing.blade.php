@@ -12,7 +12,7 @@
         <a class="inline-block" href="#form">
             <x-primary-button>Get Started!</x-primary-button>
         </a>
-        <a class="inline-block" href="{{ route('search') }}" wire:navigate>
+        <a class="inline-block" href="{{ route('guest.search') }}" wire:navigate>
             <x-secondary-button>Find my Reservation</x-secondary-button>
         </a>
     </div>

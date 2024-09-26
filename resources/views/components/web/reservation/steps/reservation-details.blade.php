@@ -103,7 +103,6 @@
                         <div class="col-span-3 text-center text-zinc-800/50">No available rooms at the moment...</div>
                     @endforelse
                     </div>
-                    {{-- {{ $suggested_rooms->links() }} --}}
                 </div>
             @endif
             
@@ -190,7 +189,11 @@
                 <x-web.reservation.step-1.available-room :key="$room->id" :selectedRooms="$selected_rooms" :room="$room" />
             @empty
                 <div class="text-sm font-semibold text-center text-zinc-800/50">No available rooms for this category.</div>  
-            @endforelse 
+            @endforelse
+
+            @if (count($available_rooms) > 0)
+                {{ $available_rooms->links() }}
+            @endif
         </div>
     </div>
 </x-modal.full>

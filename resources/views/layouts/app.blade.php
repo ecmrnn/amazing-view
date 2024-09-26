@@ -34,5 +34,7 @@
         </div>
 
         @filepondScripts
+        @livewireScripts
+        @livewireStyles
     </body>
 </html>
