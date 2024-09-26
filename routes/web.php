@@ -21,29 +21,17 @@ Route::name('guest.')->group(function () {
     });
 });
 
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 // Authenticated Routes
-Route::middleware('auth')->group(function () {
-    // Front-desk
-        // Dashboard
-        // Reservations
-        // Guests 
-        // Rooms
-        // Invoices
-        // Profile
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Global Auth routes
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
     
-    // Admin
-        // Dashboard
-        // Users
-        // Inventory (Amenities)
-        // Reports
-        // Billings
-        // Website
-        // Profile
+    // Frontdesk
+    Route::middleware('frontdesk')->name('frontdesk.')->group(function () {
+        // frontdesk routes goes here...
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

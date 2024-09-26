@@ -11,6 +11,10 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+
+    public const ROLE_GUEST = 0;
+    public const ROLE_FRONTDESK = 1;
+    public const ROLE_ADMIN = 2;
     
     protected $guarded = [];
 

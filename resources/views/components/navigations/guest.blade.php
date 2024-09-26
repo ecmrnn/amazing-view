@@ -18,14 +18,22 @@
 
                     <div class="w-[1px] h-4 bg-slate-200 inline-block"></div>
 
-                    <div class="inline-flex gap-1 text-xs">
-                        <a href="{{ route('register') }}" wire:navigate>
-                            <x-secondary-button>Sign up</x-secondary-button>
-                        </a>
+                    @guest
+                        <div class="inline-flex gap-1 text-xs">
+                            <a href="{{ route('register') }}" wire:navigate>
+                                <x-secondary-button>Sign up</x-secondary-button>
+                            </a>
+                            <a href="{{ route('login') }}" wire:navigate>
+                                <x-primary-button>Sign in</x-primary-button>
+                            </a>
+                        </div>
+                    @endguest
+
+                    @auth
                         <a href="{{ route('login') }}" wire:navigate>
-                            <x-primary-button>Sign in</x-primary-button>
+                            <x-primary-button><span class="uppercase">{{ Auth::user()->first_name[0] . Auth::user()->last_name[0] }}</span></x-primary-button>
                         </a>
-                    </div>
+                    @endauth
                 </div>
             </div>
     

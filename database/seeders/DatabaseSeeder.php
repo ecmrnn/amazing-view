@@ -105,6 +105,7 @@ class DatabaseSeeder extends Seeder
             'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
+
         DB::table('rooms')->insert([
             'room_type_id' => 2,
             'building_id' => 1,
@@ -126,23 +127,53 @@ class DatabaseSeeder extends Seeder
             'price' => 250,
             'is_reservable' => 1,
         ]);
+
         DB::table('amenities')->insert([
             'name' => 'Pet',
             'quantity' => 0,
             'price' => 250,
             'is_reservable' => 1,
         ]);
+
         DB::table('amenities')->insert([
             'name' => 'Breakfast',
             'quantity' => 0,
             'price' => 500,
             'is_reservable' => 1,
         ]);
+
         DB::table('amenities')->insert([
             'name' => 'Dinner',
             'quantity' => 0,
             'price' => 500,
             'is_reservable' => 1,
+        ]);
+
+        DB::table('users')->insert([
+            'first_name' => 'ec',
+            'last_name' => 'maranan',
+            'role' => 1,
+            'status' => 0,
+            'email' => 'frontdesk@test.com',
+            'password' => bcrypt('frontdesk123'),
+        ]);
+
+        DB::table('users')->insert([
+            'first_name' => 'marnie',
+            'last_name' => 'maranan',
+            'role' => 2,
+            'status' => 0,
+            'email' => 'admin@test.com',
+            'password' => bcrypt('admin123'),
+        ]);
+
+        DB::table('users')->insert([
+            'first_name' => 'juan',
+            'last_name' => 'dela cruz',
+            'role' => 0,
+            'status' => 0,
+            'email' => 'guest@test.com',
+            'password' => bcrypt('guest123'),
         ]);
     }
 }
