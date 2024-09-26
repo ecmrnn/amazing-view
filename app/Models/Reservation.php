@@ -17,9 +17,10 @@ class Reservation extends Model
 
     public const STATUS_CONFIRMED = 0;
     public const STATUS_PENDING = 1;
-    public const STATUS_OK = 2;
-    public const STATUS_DUE = 3;
-    public const STATUS_PAID = 4;
+    public const STATUS_EXPIRED = 2;
+    public const STATUS_CHECKED_IN = 3;
+    public const STATUS_CHECKED_OUT = 4;
+    public const STATUS_COMPLETED = 5;
 
     public function rooms(): BelongsToMany {
         return $this->BelongsToMany(Room::class, 'room_reservations');

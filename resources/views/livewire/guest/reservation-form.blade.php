@@ -59,6 +59,7 @@
                         'selected_rooms' => $selected_rooms,
                         'available_rooms' => $available_rooms,
                         'reservable_amenities' => $reservable_amenities,
+                        'selected_amenities' => $selected_amenities,
                         'room_type_name' => $room_type_name,
                     ])
                 </div>
@@ -101,6 +102,7 @@
                         'sub_total' => $sub_total,
                         'vat' => $vat,
                         'net_total' => $net_total,
+                        'night_count' => $night_count,
                     ])
                 </div>                
             @endif

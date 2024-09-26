@@ -11,6 +11,11 @@ class Invoice extends Model
 {
     use HasFactory;
 
+    public const STATUS_PARTIAL = 0;
+    public const STATUS_PAID = 1;
+    public const STATUS_PENDING = 2;
+    public const STATUS_DUE = 3;
+
     protected $guarded = [];
 
     public function payments(): HasMany {

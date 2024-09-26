@@ -16,7 +16,7 @@
         
                         <div class="space-x-3">
                             <strong class="text-xs">Status: </strong>
-                            <strong class="px-3 py-2 text-xs font-semibold text-white border border-orange-500 rounded-full bg-orange-500/75">{{ $reservation->status }}</strong>
+                            <x-status.reservation :status="$reservation->status" />
                         </div>
                     </hgroup>
         
@@ -77,7 +77,11 @@
                             @foreach ($selected_rooms as $room)
                                 <div key="{{ $room->id }}" class="flex justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out rounded-lg hover:bg-slate-100">
                                     <p class="capitalize">{{ $room->roomType->name . " " . $room->room_number }}</p>
-                                    <p>{{ $room->rate }}</p>
+                                    <p>{{ $room->rate }}
+                                        @if ($night_count > 1)
+                                            {{ " x " . $night_count }}
+                                        @endif
+                                    </p>
                                 </div>
                             @endforeach
     
@@ -105,9 +109,9 @@
                             <p class="font-semibold text-blue-500">Net Total</p>
                         </div>
                         <div class="text-sm text-right">
-                            {{-- <p class="font-semibold">{{ number_format($sub_total, 2) }}</p>
+                            <p class="font-semibold">{{ number_format($sub_total, 2) }}</p>
                             <p class="">{{ number_format($vat, 2) }}</p>
-                            <p class="font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p> --}}
+                            <p class="font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p>
                         </div>
                     </div>
                 </div>

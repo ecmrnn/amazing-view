@@ -135,8 +135,19 @@
                 <p class="text-sm">Enhance your stay by availing our additional services.</p>
                 <div class="grid gap-2 sm:grid-cols-2">
                     @forelse ($reservable_amenities as $amenity)
+                        @php
+                            $checked = false;
+                            if ($selected_amenities->contains('id', $amenity->id)) {
+                                $checked = true;
+                            }
+                        @endphp
+
                         <div key="{{ $amenity->id }}">
-                            <x-form.checkbox-toggle id="amenity{{ $amenity->id }}" name="amenity" wire:click="toggleAmenity({{ $amenity->id }})">
+                            <x-form.checkbox-toggle
+                                :checked="$checked"
+                                id="amenity{{ $amenity->id }}"
+                                name="amenity"
+                                wire:click="toggleAmenity({{ $amenity->id }})">
                                 <div class="select-none">
                                     <div class="w-full font-semibold capitalize text-md">{{ $amenity->name }}</div>
                                     <div class="w-full text-xs">Standard Fee: &#8369;{{ $amenity->price }}</div>
@@ -156,7 +167,7 @@
 
 <x-primary-button
     x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }"
-    type="submit">Next: Guest Details</x-primary-button>
+    type="submit">Guest Details</x-primary-button>
 
 {{-- Available Rooms Modal --}}
 <x-modal.full name="show-available-rooms">

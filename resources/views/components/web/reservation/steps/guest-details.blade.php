@@ -180,6 +180,6 @@
 <x-line-vertical />
 
 <div class="flex gap-3">
-    <x-secondary-button>Reservation Details</x-secondary-button>
+    <x-secondary-button wire:click="submit(true)">Reservation Details</x-secondary-button>
     <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="submit">Payment</x-primary-button>
 </div>

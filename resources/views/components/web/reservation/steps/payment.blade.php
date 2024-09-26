@@ -23,7 +23,13 @@
                     <div class="px-3 py-2 space-y-2">
                         <h4 class="font-semibold">Reservation Details</h4>
                         <div class="space-y-1 text-xs">
-                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">airline_seat_flat</span><span>Overnight</span></p>
+                            <p class="flex items-center gap-3"><span class="material-symbols-outlined">airline_seat_flat</span>
+                                @if ($date_in == $date_out)
+                                    <span>Day Tour</span>
+                                @else
+                                    <span>Overnight</span>
+                                @endif
+                            </p>
                             <p class="flex items-center gap-3"><span class="material-symbols-outlined">acute</span><span>2:00 PM - 12:00 PM</span></p>
                             <p class="flex items-center gap-3"><span class="material-symbols-outlined">face</span><span>{{ $adult_count }} Adults, {{ $children_count }} Children</span></p>
                             <p class="flex items-center gap-3"><span class="material-symbols-outlined">door_front</span>
@@ -63,7 +69,11 @@
                         @foreach ($selected_rooms as $room)
                             <div key="{{ $room->id }}" class="flex justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out rounded-lg hover:bg-slate-100">
                                 <p class="capitalize">{{ $room->roomType->name . " " . $room->room_number }}</p>
-                                <p>{{ $room->rate }}</p>
+                                <p>{{ $room->rate }}
+                                    @if ($night_count > 1)
+                                        {{ " x " . $night_count }}
+                                    @endif
+                                </p>
                             </div>
                         @endforeach
 
@@ -71,7 +81,7 @@
                             <x-line class="bg-zinc-800/50" />
                         </div>
 
-                        {{-- @forelse ($selected_amenities as $amenity)
+                        @forelse ($selected_amenities as $amenity)
                             <div key="{{ $amenity->id }}" class="flex justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out rounded-lg hover:bg-slate-100">
                                 <p class="capitalize">{{ $amenity->name }}</p>
                                 <p>{{ $amenity->price }}</p>
@@ -80,11 +90,11 @@
                             <div class="py-1 text-sm text-zinc-800/50">
                                 <p>No selected amenities</p>
                             </div>
-                        @endforelse --}}
+                        @endforelse
                     </div>
                 </div>
 
-                {{-- <div class="flex justify-end gap-5 px-6">
+                <div class="flex justify-end gap-5 px-6">
                     <div class="text-sm text-right">
                         <p class="font-semibold">Sub-Total</p>
                         <p class="">12% VAT</p>
@@ -95,7 +105,7 @@
                         <p class="">{{ number_format($vat, 2) }}</p>
                         <p class="font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p>
                     </div>
-                </div> --}}
+                </div>
             </div>
         </x-form.form-body>
     </div>
@@ -159,6 +169,6 @@
 <x-line-vertical />
 
 <div class="flex gap-3">
-    <x-secondary-button>Guest Details</x-secondary-button>
+    <x-secondary-button wire:click="submit(true)">Guest Details</x-secondary-button>
     <x-primary-button type="submit">Submit</x-primary-button>
 </div>

@@ -34,4 +34,18 @@ class Room extends Model
     public function amenities(): BelongsToMany {
         return $this->belongsToMany(Amenity::class, 'room_amenities');
     }
+
+    // Get all reserved rooms between a specific range of dates
+    public function scopeReservedRooms($query, $date_in, $date_out) {
+        return $query->whereHas('reservations', function ($query) use ($date_in, $date_out) {
+            $query->where(function ($query) use ($date_in, $date_out) {
+                $query->whereBetween('date_in', [$date_in, $date_out])
+                    ->orWhereBetween('date_out', [$date_in, $date_out])
+                    ->orWhere(function ($query) use ($date_in, $date_out) {
+                        $query->where('date_in', '<', $date_in)
+                            ->where('date_out', '>', $date_out);
+                    });
+            });
+        });
+    }
 }

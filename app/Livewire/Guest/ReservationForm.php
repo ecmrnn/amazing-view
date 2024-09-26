@@ -4,11 +4,13 @@ namespace App\Livewire\Guest;
 
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
+use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomReservation;
 use App\Models\RoomType;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -39,7 +41,6 @@ class ReservationForm extends Component
     #[Validate] public $last_name;
     #[Validate] public $email;
     #[Validate] public $phone;
-    // Address
     #[Validate] public $address = []; /* Complete concatenated Address property */
     public $region;
     public $province;
@@ -66,6 +67,7 @@ class ReservationForm extends Component
     public $net_total = 0;
     private $vat_percent = .12; /* Should be in Global */
     public $reservation_rid;
+    public $night_count;
 
     public function mount() {
         $this->reservable_amenities = Amenity::where('is_reservable', 1)->get();
@@ -123,8 +125,9 @@ class ReservationForm extends Component
     public function addRoom(Room $room) {
         if ($room && !$this->selected_rooms->contains('id', $room->id)) {
             $this->selected_rooms->push($room);
+
             $this->capacity += $room->max_capacity;
-            $this->sub_total += $room->rate;
+            $this->sub_total += ($room->rate * $this->night_count);
             $this->vat = ($this->vat_percent * $this->sub_total);
             $this->net_total = $this->sub_total + $this->vat;
         }
@@ -132,7 +135,8 @@ class ReservationForm extends Component
 
     public function removeRoom(Room $room_to_delete) {
         $this->capacity -= $room_to_delete->max_capacity;
-        $this->sub_total -= $room_to_delete->rate;
+
+        $this->sub_total -= ($room_to_delete->rate * $this->night_count);
         $this->vat = ($this->vat_percent * $this->sub_total);
         $this->net_total = $this->sub_total + $this->vat;
         $this->selected_rooms = $this->selected_rooms->reject(function ($room) use ($room_to_delete) {
@@ -151,12 +155,18 @@ class ReservationForm extends Component
             'adult_count' => $this->rules()['adult_count'],
             'children_count' => $this->rules()['children_count'],
         ]);
-        
-        // Retrieve available rooms for the selected date
-        // ...
+
+        // Get the number of nights between 'date_in' and 'date_out'
+        $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));
+
+        // If 'date_in' == 'date_out', 'night_count' = 1
+        $this->night_count != 0 ?: $this->night_count = 1;
 
         // Turn can_select_a_room to 'true'
         $this->can_select_a_room = true;
+
+        // Reset the suggested_rooms property
+        $this->suggested_rooms = [];
     }
 
     public function selectAddress() {
@@ -174,16 +184,24 @@ class ReservationForm extends Component
     
     // Populate 'suggested_rooms' property
     public function suggestRooms() {
-        $this->suggested_rooms = Room::where('status', 0)->limit(3)->get();
+        $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
+
+        $this->suggested_rooms = Room::whereNotIn('id', $reserved_rooms)
+                                    ->limit(3)
+                                    ->orderBy('rate')
+                                    ->get();
     }
 
     // Populate 'available_rooms' property
-    public function getAvailableRooms(RoomType $roomType) {
-        // Query the available rooms for a specific room type
-        $this->available_rooms = $roomType->rooms()->where('status', 0)->get();
+    public function getAvailableRooms(RoomType $room_type) {
+        $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
+
+        $this->available_rooms = Room::whereNotIn('id', $reserved_rooms)
+                                    ->where('room_type_id', $room_type->id)
+                                    ->get();
 
         // Set the name for the selected room type
-        $this->room_type_name = $roomType->name;
+        $this->room_type_name = $room_type->name;
     }
 
     // Selects and Deselect Amenity
@@ -193,12 +211,13 @@ class ReservationForm extends Component
         if ($this->selected_amenities->contains('id', $amenity_clicked->id)) {
             $this->selected_amenities = $this->selected_amenities->reject(function ($amenity) use ($amenity_clicked) {
                 return $amenity->id == $amenity_clicked->id;
-                $this->sub_total -= $amenity_clicked->price;
             });
+            $this->sub_total -= $amenity_clicked->price;
         } else {
             $this->selected_amenities->push($amenity_clicked);
             $this->sub_total += $amenity_clicked->price;
         } 
+
         $this->vat = ($this->vat_percent * $this->sub_total);
         $this->net_total = $this->sub_total + $this->vat;
     }
@@ -235,47 +254,51 @@ class ReservationForm extends Component
 
     public function submit($previous = false)
     {
-        // Validate input for each step
-        // 1: Reservation Details
-        // 2: Guest Details
-        // 3: Payment
-        switch ($this->step) {
-            case 1:
-                $this->validate([
-                    'date_in' => $this->rules()['date_in'],
-                    'date_out' => $this->rules()['date_out'],
-                    'adult_count' => $this->rules()['adult_count'],
-                    'children_count' => $this->rules()['children_count'],
-                    'selected_rooms' => $this->rules()['selected_rooms'],
-                ]);
-                break;
-            case 2:
-                $this->validate([
-                    'first_name' => $this->rules()['first_name'],
-                    'last_name' => $this->rules()['last_name'],
-                    'email' => $this->rules()['email'],
-                    'phone' => $this->rules()['phone'],
-                    'address' => $this->rules()['address'],
-                ]);
-                break;
-            case 3:
-                $this->validate([
-                    'proof_image_path' => $this->rules()['proof_image_path']
-                ]);
-
-                // Store the reservation
-                $this->store();
-                break;
-            default:
-                break;
-        }
-
-        // Proceed to next step
-        // Dispatch an event that will be received by Alpine
-        // Check: reservation-form
-        $this->step++;
-        if ($this->step != 3) {
-            $this->dispatch('next-step', $this->step);
+        if ($previous) {
+            $this->step -= 1;
+        } else {
+            // Validate input for each step
+            // 1: Reservation Details
+            // 2: Guest Details
+            // 3: Payment
+            switch ($this->step) {
+                case 1:
+                    $this->validate([
+                        'date_in' => $this->rules()['date_in'],
+                        'date_out' => $this->rules()['date_out'],
+                        'adult_count' => $this->rules()['adult_count'],
+                        'children_count' => $this->rules()['children_count'],
+                        'selected_rooms' => $this->rules()['selected_rooms'],
+                    ]);
+                    break;
+                case 2:
+                    $this->validate([
+                        'first_name' => $this->rules()['first_name'],
+                        'last_name' => $this->rules()['last_name'],
+                        'email' => $this->rules()['email'],
+                        'phone' => $this->rules()['phone'],
+                        'address' => $this->rules()['address'],
+                    ]);
+                    break;
+                case 3:
+                    $this->validate([
+                        'proof_image_path' => $this->rules()['proof_image_path']
+                    ]);
+    
+                    // Store the reservation
+                    $this->store();
+                    break;
+                default:
+                    break;
+            }
+    
+            // Proceed to next step
+            // Dispatch an event that will be received by Alpine
+            // Check: reservation-form
+            $this->step++;
+            if ($this->step != 3) {
+                $this->dispatch('next-step', $this->step);
+            }
         }
     }
 
@@ -312,10 +335,7 @@ class ReservationForm extends Component
         if (!empty($this->selected_rooms)) {
             // Store rooms
             foreach ($this->selected_rooms as $room) {
-                RoomReservation::create([
-                    'reservation_id' => $reservation->id,
-                    'room_id' => $room->id,
-                ]);
+                $room->reservations()->attach($reservation->id);
             }
         }
 
@@ -331,7 +351,13 @@ class ReservationForm extends Component
         }
 
         // Create Invoice
-        
+        $invoice = Invoice::create([
+            'reservation_id' => $reservation->id,
+            'balance' => $this->net_total,
+            'issue_date' => Carbon::now(),
+            'due_date' => Carbon::parse($this->date_out)->addWeeks(2),
+            'status' => Invoice::STATUS_PENDING,
+        ]); 
 
         // Send Email
     }
