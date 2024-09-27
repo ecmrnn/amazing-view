@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('amenities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->smallInteger('quantity');
+            $table->smallInteger('quantity')->nullable();
             $table->decimal('price');
-            $table->boolean('is_reservable');
+            $table->binary('is_reservable')->default(0);
+            $table->binary('is_addons')->default(0);
             $table->timestamps();
         });
     }

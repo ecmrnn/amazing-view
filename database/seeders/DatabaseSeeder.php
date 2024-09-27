@@ -123,30 +123,26 @@ class DatabaseSeeder extends Seeder
 
         DB::table('amenities')->insert([
             'name' => 'Corkage',
-            'quantity' => 0,
             'price' => 250,
-            'is_reservable' => 1,
+            'is_addons' => 1,
         ]);
 
         DB::table('amenities')->insert([
             'name' => 'Pet',
-            'quantity' => 0,
             'price' => 250,
-            'is_reservable' => 1,
+            'is_addons' => 1,
         ]);
 
         DB::table('amenities')->insert([
             'name' => 'Breakfast',
-            'quantity' => 0,
             'price' => 500,
-            'is_reservable' => 1,
+            'is_addons' => 1,
         ]);
 
         DB::table('amenities')->insert([
             'name' => 'Dinner',
-            'quantity' => 0,
             'price' => 500,
-            'is_reservable' => 1,
+            'is_addons' => 1,
         ]);
 
         DB::table('users')->insert([

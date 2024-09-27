@@ -69,7 +69,7 @@ class ReservationForm extends Component
     public $show_available_rooms = false;
 
     public function mount() {
-        $this->reservable_amenities = Amenity::where('is_reservable', 1)->get();
+        $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
 

@@ -5,9 +5,7 @@
         <div class="max-w-screen-xl py-3 mx-auto">
             {{-- Desktop --}}
             <div class="items-center justify-between hidden md:flex">
-                <a href="/" class="block overflow-hidden border border-transparent rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" wire:navigate>
-                    <img src="https://placehold.co/40x40" alt="Alternative Logo">
-                </a>
+                <x-application-logo />
     
                 <div class="flex items-center gap-5">
                     <x-nav-link :active="Request::is('/')" href="{{ route('guest.home') }}">Home</x-nav-link>
