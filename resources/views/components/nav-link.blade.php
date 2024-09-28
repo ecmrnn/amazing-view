@@ -1,7 +1,7 @@
 @props(['active'])
 
 @php
-$classes = 'border-b-2 border-transparent py-2 transition duration-150 ease-in-out focus:outline-none';
+$classes = 'border-b-2 font-bold border-transparent py-2 transition duration-150 ease-in-out focus:outline-none';
 
 ($active ?? false)
             ? $classes .= ' text-blue-600'

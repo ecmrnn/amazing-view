@@ -21,15 +21,15 @@
         <div class="flex flex-col min-h-screen bg-slate-100 sm:flex-row">
             @include('layouts.navigation')
 
-            <div class="w-full">
+            <div class="w-full p-3 space-y-3 sm:p-10 sm:space-y-5">
                 <!-- Page Heading -->
                 @isset($header)
-                    <header class="p-5">
+                    <header>
                         {{ $header }}
                     </header>
                 @endisset
                 <!-- Page Content -->
-                <main>
+                <main class="space-y-3 sm:space-y-5">
                     {{ $slot }}
                 </main>
             </div>

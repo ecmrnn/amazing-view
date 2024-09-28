@@ -26,14 +26,6 @@
         
         <x-footer />
 
-        <script>
-            document.addEventListener('alpine:init', () => {
-                Alpine.store('step', {
-                    count: @json($step),
-                });
-            });
-        </script>
-        
         @filepondScripts
         @livewireScripts
         @livewireStyles
