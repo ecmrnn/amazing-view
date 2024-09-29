@@ -81,5 +81,8 @@
             <h2 class="text-lg font-semibold">Pending and Confirmed Reservations</h2>
             <p class="max-w-sm text-xs">The table below are the lists of your pending and confirmed reservations.</p>
         </div>
+
+        {{-- Reservation Table --}}
+        @livewire('dashboard-reservation-table') 
     </div>
 </x-app-layout>

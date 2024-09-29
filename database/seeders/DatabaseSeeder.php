@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // I don't know how to use factory yet T_T
         DB::table('buildings')->insert([
             'name' => 'Lepanto',
             'floor_count' => 2
