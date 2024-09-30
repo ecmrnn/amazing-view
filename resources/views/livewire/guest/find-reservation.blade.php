@@ -1,6 +1,6 @@
 <div>
     <form wire:submit="submit" class="relative flex gap-1 mb-5">
-        <x-form.input-text wire:model="reservation_id" label="Reservation ID" id="reservation_id" />
+        <div><x-form.input-search wire:model="reservation_id" label="Reservation ID" id="reservation_id" /></div>
         <x-primary-button type="submit">Find my Reservation</x-primary-button>
         <div class="absolute -bottom-5">
             <x-form.input-error field="reservation_id" />

@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
+use PowerComponents\LivewirePowerGrid\Facades\Filter;
 // use PowerComponents\LivewirePowerGrid\Exportable;
-// use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
+use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
@@ -20,17 +21,18 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 final class DashboardReservationTable extends PowerGridComponent
 {
     use WithExport;
+    public bool $showFilters = true;
+    public function boot(): void
+    {
+        config(['livewire-powergrid.filter' => 'outside']);
+    }
 
     public function setUp(): array
     {
         return [
-            // Exportable::make('export')
-            //     ->striped()
-            //     ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
-
-            // Header::make()
-            //     ->showToggleColumns()
-            //     ->showSearchInput(),
+            Header
+                ::make()
+                ->showToggleColumns(),
 
             Footer::make()
                 ->showPerPage(10)
@@ -72,7 +74,7 @@ final class DashboardReservationTable extends PowerGridComponent
             Column::make('Reservation Id', 'rid', 'rid')
                 ->sortable()
                 ->searchable(),
-            
+
             Column::make('Check in', 'date_in_formatted', 'date_in'),
 
             Column::make('Check out', 'date_out_formatted', 'date_out'),
@@ -86,13 +88,14 @@ final class DashboardReservationTable extends PowerGridComponent
     public function filters(): array
     {
         return [
+            Filter::inputText('rid')->placeholder('Reservation ID'),
         ];
     }
 
     #[\Livewire\Attributes\On('edit')]
     public function edit($rowId): void
     {
-        $this->js('alert('.$rowId.')');
+        $this->js('alert(' . $rowId . ')');
     }
 
     // public function actions(Reservation $row): array

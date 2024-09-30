@@ -76,7 +76,7 @@
     </div>
 
     {{-- Recent Reservations (Pending and Confirmed) --}}
-    <div class="p-3 bg-white rounded-lg sm:p-5">
+    <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
         <div>
             <h2 class="text-lg font-semibold">Pending and Confirmed Reservations</h2>
             <p class="max-w-sm text-xs">The table below are the lists of your pending and confirmed reservations.</p>
