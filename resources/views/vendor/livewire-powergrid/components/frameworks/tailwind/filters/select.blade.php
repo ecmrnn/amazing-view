@@ -36,7 +36,7 @@
         style="{{ data_get($theme, 'baseStyle') }}"
     >
         @if (!$inline)
-            <label class="block text-sm font-semibold text-pg-primary-700 dark:text-pg-primary-300">
+            <label class="block text-xs font-semibold text-pg-primary-700 dark:text-pg-primary-300">
                 {{ $title }}
             </label>
         @endif
@@ -57,6 +57,7 @@
 
                 @foreach ($dataSource as $key => $item)
                     <option
+                        class="text-xs"
                         wire:key="select-{{ $tableName }}-{{ $key }}"
                         value="{{ $item[data_get($filter, 'optionValue')] }}"
                     >
@@ -64,10 +65,6 @@
                     </option>
                 @endforeach
             </select>
-            <div
-                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-pg-primary-700 dark:text-pg-primary-300">
-                <x-livewire-powergrid::icons.down class="w-4 h-4 dark:text-gray-300" />
-            </div>
         </div>
     </div>
 @endif

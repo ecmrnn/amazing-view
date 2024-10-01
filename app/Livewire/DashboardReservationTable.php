@@ -3,12 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Reservation;
-use App\Models\Room;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
+use PowerComponents\LivewirePowerGrid\Detail;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 // use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Footer;
@@ -21,7 +21,9 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 final class DashboardReservationTable extends PowerGridComponent
 {
     use WithExport;
+    
     public bool $showFilters = true;
+
     public function boot(): void
     {
         config(['livewire-powergrid.filter' => 'outside']);
@@ -35,14 +37,19 @@ final class DashboardReservationTable extends PowerGridComponent
                 ->showToggleColumns(),
 
             Footer::make()
-                ->showPerPage(10)
+                ->showPerPage(10),
         ];
     }
 
     public function datasource(): Builder
     {
-        return Reservation::query()->where('status', Reservation::STATUS_PENDING)
-            ->orWhere('status', Reservation::STATUS_CONFIRMED);
+        $query = Reservation::query();
+
+        if (isset($this->filters['status'])) {
+            $query->where('status', $this->filters['status']);
+        }
+
+        return $query;
     }
 
     public function relationSearch(): array
@@ -88,7 +95,16 @@ final class DashboardReservationTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('rid')->placeholder('Reservation ID'),
+            Filter::inputText('rid')
+                ->placeholder('Reservation ID'),
+
+            Filter::select('status', 'status')
+                ->dataSource([
+                    ['status' => 0, 'name' => 'Confirmed'],
+                    ['status' => 1, 'name' => 'Pending'],
+                ])
+                ->optionLabel('name')
+                ->optionValue('status'),
         ];
     }
 

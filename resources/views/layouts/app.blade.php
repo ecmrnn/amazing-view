@@ -36,6 +36,7 @@
         </div>
 
         @filepondScripts
+        @livewireChartsScripts
         @livewireScripts
         @livewireStyles
     </body>

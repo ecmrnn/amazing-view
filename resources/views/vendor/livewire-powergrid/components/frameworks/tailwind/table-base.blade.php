@@ -4,13 +4,13 @@
 >
     <div
         id="power-grid-table-container"
-        class="{{ data_get($theme, 'table.containerClass', '-my-2 overflow-x-auto sm:-mx-3 lg:-mx-8') }}"
-        style="{{ data_get($theme, 'table.containerStyle') }}"
+        class="{{ data_get($theme, 'table.containerClass') }}"
+        {{-- style="{{ data_get($theme, 'table.containerStyle') }}" --}}
     >
         <div
             id="power-grid-table-base"
-            class="{{ data_get($theme, 'table.baseClass', 'p-3 align-middle inline-block min-w-full w-full sm:px-6 lg:px-8') }}"
-            style="{{ data_get($theme, 'table.baseStyle') }}"
+            class="{{ data_get($theme, 'table.baseClass') }}"
+            {{-- style="{{ data_get($theme, 'table.baseStyle') }}" --}}
         >
 
             @include(data_get($theme, 'layout.header'), [
@@ -40,7 +40,7 @@
                     'overflow-hidden' => !$readyToLoad,
                     data_get($theme, 'table.divClass'),
                 ])
-                style="{{ data_get($theme, 'table.divStyle') }}"
+                {{-- style="{{ data_get($theme, 'table.divStyle') }}" --}}
             >
                 @include($table)
             </div>

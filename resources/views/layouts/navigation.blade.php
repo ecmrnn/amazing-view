@@ -17,7 +17,7 @@
             </div>
 
             {{-- Expand & Collapse Button --}}
-            <div class="hidden p-1 border rounded-lg sm:block">
+            <div class="hidden p-1 border rounded-lg sm:block w-min">
                 {{-- Expand --}}
                 <template x-if="!expanded">
                     <x-tooltip text="Expand" dir="right">

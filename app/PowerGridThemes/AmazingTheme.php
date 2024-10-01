@@ -28,19 +28,19 @@ class AmazingTheme extends Tailwind
         return Theme::table('min-w-full')
             ->container('overflow-x-auto')
             ->base('')
-            ->div('rounded-lg relative border-x border-t')
+            ->div('relative border-x border-t rounded-t-lg')
             ->thead('border-b bg-slate-50')
             ->thAction('!font-bold')
             ->tdAction('')
             ->tr('')
             ->trFilters('')
-            ->th('font-bold px-2 pr-4 py-3 text-left text-xs text-pg-primary-700 whitespace-nowrap dark:text-pg-primary-300')
+            ->th('font-bold px-2 pr-4 py-3 text-left text-xs')
             ->tbody('text-sm')
             ->trBody('border-b mb-5 hover:bg-slate-50 border-pg-primary-100 dark:border-pg-primary-600 hover:bg-pg-primary-50 dark:bg-pg-primary-800 dark:hover:bg-pg-primary-700')
-            ->tdBody('p-2 whitespace-nowrap dark:text-pg-primary-200')
-            ->tdBodyEmpty('p-2  whitespace-nowrap dark:text-pg-primary-200')
+            ->tdBody('p-2')
+            ->tdBodyEmpty('p-2 ')
             ->trBodyClassTotalColumns('')
-            ->tdBodyTotalColumns('p-2 whitespace-nowrap dark:text-pg-primary-200 text-sm text-pg-primary-600 text-right space-y-2');
+            ->tdBodyTotalColumns('p-2 text-sm text-pg-primary-600 text-right space-y-2');
     }
 
     public function footer(): Footer
@@ -124,7 +124,7 @@ class AmazingTheme extends Tailwind
         return Theme::filterSelect()
             ->view($this->root() . '.filters.select')
             ->base('min-w-[9.5rem]')
-            ->select('appearance-none !bg-none focus:ring-primary-600 focus-within:focus:ring-primary-600 focus-within:ring-primary-600 dark:focus-within:ring-primary-600 flex rounded-md ring-1 transition focus-within:ring-2 dark:ring-pg-primary-600 dark:text-pg-primary-300 text-gray-600 ring-gray-300 dark:bg-pg-primary-800 bg-white dark:placeholder-pg-primary-400 rounded-md border-0 bg-transparent py-1.5 px-2 ring-0 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6 w-full');
+            ->select('w-full py-2 text-sm transition duration-150 ease-in-out border rounded-lg border-slate-200 focus:outline-none focus:ring-0 focus:border-blue-600 disabled:opacity-25');
     }
 
     public function filterInputText(): FilterInputText

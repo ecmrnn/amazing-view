@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,9 +25,7 @@ Route::name('guest.')->group(function () {
 // Authenticated Routes
 Route::middleware(['auth', 'verified'])->group(function () {
     // Global Auth routes
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Frontdesk
     Route::middleware('frontdesk')->name('frontdesk.')->group(function () {

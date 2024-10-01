@@ -1,4 +1,3 @@
-
 @switch(Auth::user()->role)
     @case(0)
         @include('guest.dashboard')
