@@ -24,7 +24,7 @@
         </x-tooltip>
 
         <x-tooltip text="Rooms" dir="right">
-            <x-app-nav-link x-ref="content" :active="Request::is('rooms')" href="{{ route('dashboard') }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-2 p-2">
+            <x-app-nav-link x-ref="content" :active="Request::is('frontdesk/rooms*')" href="{{ route('frontdesk.rooms.index') }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-2 p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-closed"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><path d="M14 12v.01"/></svg>                            
                 <span x-show="expanded" class="text-xs font-bold">Rooms</span>
             </x-app-nav-link>
@@ -59,6 +59,6 @@
     <x-nav-link :active="Request::is('dashboard')" href="{{ route('dashboard') }}">Dashboard</x-nav-link>
     <x-nav-link :active="Request::is('guests')" href="{{ route('guest.rooms') }}">Guests</x-nav-link>
     <x-nav-link :active="Request::is('reservations')" href="{{ route('guest.about') }}">Reservations</x-nav-link>
-    <x-nav-link :active="Request::is('rooms')" href="{{ route('guest.contact') }}">Rooms</x-nav-link>
+    <x-nav-link :active="Request::is('frontdesk/rooms*')" href="{{ route('frontdesk.rooms.index') }}">Rooms</x-nav-link>
     <x-nav-link :active="Request::is('rooms')" href="{{ route('guest.contact') }}">Profile</x-nav-link>
 @endif

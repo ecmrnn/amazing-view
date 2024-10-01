@@ -4,12 +4,12 @@
 >
     <div
         id="power-grid-table-container"
-        class="{{ data_get($theme, 'table.containerClass') }}"
+        {{-- class="{{ data_get($theme, 'table.containerClass') }}" --}}
         {{-- style="{{ data_get($theme, 'table.containerStyle') }}" --}}
     >
         <div
             id="power-grid-table-base"
-            class="{{ data_get($theme, 'table.baseClass') }}"
+            class="rounded-t-lg"
             {{-- style="{{ data_get($theme, 'table.baseStyle') }}" --}}
         >
 

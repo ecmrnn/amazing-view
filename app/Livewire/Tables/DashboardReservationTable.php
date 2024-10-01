@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Tables;
 
 use App\Models\Reservation;
 use Illuminate\Support\Carbon;
@@ -43,13 +43,7 @@ final class DashboardReservationTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        $query = Reservation::query();
-
-        if (isset($this->filters['status'])) {
-            $query->where('status', $this->filters['status']);
-        }
-
-        return $query;
+        return Reservation::query();
     }
 
     public function relationSearch(): array
@@ -71,7 +65,7 @@ final class DashboardReservationTable extends PowerGridComponent
             })
             ->add('status')
             ->add('status_formatted', function ($reservation) {
-                return Blade::render('<x-status.reservation :status="' . $reservation->status . '" />');
+                return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
             });
     }
 

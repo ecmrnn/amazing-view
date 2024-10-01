@@ -27,12 +27,9 @@
         style="{{ data_get($theme, 'checkbox.tdStyle') }}"
     >
         <div class="{{ data_get($theme, 'checkbox.divClass') }}">
-            <label class="{{ data_get($theme, 'checkbox.labelClass') }}">
-                <input
-                    {{ $inputAttributes }}
-                    disabled
-                    type="checkbox"
-                >
+            <label class="{{ data_get($theme, 'labelClass') }}">
+                <input {{ $inputAttributes }}
+                disabled id="remember_me" type="checkbox" class="text-blue-600 border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:border-blue-600">
             </label>
         </div>
     </td>
@@ -45,6 +42,7 @@
             <label class="{{ data_get($theme, 'checkbox.labelClass') }}">
                 <input
                     x-data="{}"
+                    class="text-blue-600 border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:border-blue-600"
                     type="checkbox"
                     {{ $inputAttributes }}
                     x-on:click="window.Alpine.store('pgBulkActions').add($event.target.value, '{{ $tableName }}')"

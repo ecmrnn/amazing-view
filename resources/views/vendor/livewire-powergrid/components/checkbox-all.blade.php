@@ -16,12 +16,10 @@
     >
         <div class="{{ data_get($theme, 'divClass') }}">
             <label class="{{ data_get($theme, 'labelClass') }}">
-                <input
-                    class="{{ data_get($theme, 'inputClass') }}"
-                    type="checkbox"
+                <input 
                     wire:click="selectCheckboxAll"
                     wire:model="checkboxAll"
-                >
+                    id="remember_me" type="checkbox" class="text-blue-600 border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:border-blue-600" name="remember">
             </label>
         </div>
     </th>

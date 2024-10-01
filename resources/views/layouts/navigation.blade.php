@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="sticky top-0 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-100">
+<nav x-data="{ open: false }" class="sticky top-0 z-50 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-100">
     <!-- Primary Navigation Menu -->
     <div class="h-full p-3">
         <div x-data="{ expanded: false }" class="justify-between hidden h-full sm:flex sm:flex-col">
@@ -121,16 +121,16 @@
                     </div>
 
                     {{-- Navigation Links --}}
-                    <div class="flex flex-col items-start px-5">
+                    <div class="flex flex-col items-start px-5 border-b border-slate-200">
                         @includeWhen(Auth::user()->role == 1, 'components.navigations.frontdesk', ['screen' => 'mobile'])
                     </div>
 
                     {{-- Settings --}}
-                    <div class="p-5 border-t border-slate-200">
-                        <div class="flex justify-between gap-3 p-3 border rounded-lg">
+                    <div class="m-5">
+                        <div class="flex justify-between gap-3 p-3 text-white border rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
                             <div>
                                 <p class="font-bold capitalize">{{ Auth::user()->first_name . " " . Auth::user()->last_name }}</p>
-                                <p class="text-xs text-zinc-800/50">{{ Auth::user()->email }}</p>
+                                <p class="text-xs text-white/50">{{ Auth::user()->email }}</p>
                             </div>
 
                             {{-- Logout --}}
@@ -139,7 +139,7 @@
     
                                 <button
                                     type="submit"
-                                    class="grid p-2 text-red-500 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none hover:text-red-600 hover:bg-red-50 hover:border-red-200 focus:text-red-600 focus:border-red-500">
+                                    class="grid p-2 text-white transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none hover:bg-white/25 hover:border-white/50 focus:text-white/50 focus:border-white/25">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
                                 </button>
                             </form>

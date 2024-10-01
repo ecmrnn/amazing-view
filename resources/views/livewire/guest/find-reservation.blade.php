@@ -19,7 +19,7 @@
         
                         <div class="space-x-3">
                             <strong class="text-xs">Status: </strong>
-                            <x-status.reservation :status="$reservation->status" />
+                            <x-status type="reservation" :status="$reservation->status" />
                         </div>
                     </hgroup>
         

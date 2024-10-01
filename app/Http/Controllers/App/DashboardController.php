@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\App;
 
+use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
@@ -16,6 +17,7 @@ class DashboardController extends Controller
     //
     public function index() {
         $data = [];
+        $view = '';
 
         $status_labels = [
             0 => 'Available',
@@ -46,19 +48,19 @@ class DashboardController extends Controller
                 ->addPoint('Jun', 28)
                 ->addPoint('Jul', 20)
                 ->addPoint('Aug', 25)
-                ->addPoint('Sep', 30)
+                ->addPoint('Sep', 28)
                 ->addPoint('Oct', 20)
                 ->addPoint('Nov', 15)
                 ->addPoint('Dec', 10);
 
-            $column_data = Room::select('status', Room::raw('count(*) as count'))
+            $room_statuses = Room::select('status', Room::raw('count(*) as count'))
                 ->groupBy('status')
                 ->get();
 
             $column_chart = (new ColumnChartModel())
                 ->withoutLegend();
 
-            foreach ($column_data as $room) {
+            foreach ($room_statuses as $room) {
                 $label = $status_labels[$room->status]; 
                 $color = $status_colors[$room->status];
 
@@ -71,8 +73,10 @@ class DashboardController extends Controller
                 'available_rooms' => $available_rooms,
                 'pending_reservations' => $pending_reservations,
             ];
+
+            $view = 'frontdesk.dashboard';
         }
 
-        return view('dashboard', $data);
+        return view($view, $data);
     }
 }

@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "power-components/livewire-powergrid": "^5.10",
+        "spatie/laravel-permission": "^6.9",
         "spatie/livewire-filepond": "^1.2"
     },
     "require-dev": {

@@ -1,16 +1,19 @@
 <x-app-layout>
-    <x-slot name="header">
+    <x-slot:header>
         <div class="flex items-center justify-between p-5 py-3 bg-white rounded-lg">
-            <h1 class="text-xl font-bold leading-tight text-gray-800">
-                {{ __('Dashboard') }}
-            </h1>
+            <hgroup>
+                <h1 class="text-xl font-bold leading-tight text-gray-800">
+                    {{ __('Dashboard') }}
+                </h1>
+                <p class="text-xs">Keep track of your records</p>
+            </hgroup>
 
             <div class="hidden text-right sm:block">
                 <p class="text-sm font-bold capitalize">{{ Auth::user()->first_name . " " . Auth::user()->last_name }}</p>
                 <p class="text-xs">{{ Auth::user()->email }}</p>
             </div>
         </div>
-    </x-slot>
+    </x-slot:header>
 
     {{-- Cards --}}
     <div class="grid grid-cols-2 gap-3 lg:gap-5 lg:grid-cols-4">
@@ -35,7 +38,7 @@
         <x-app.card
             data="{{ $available_rooms }}"
             label="Availabe Rooms"
-            href="dashboard"
+            href="frontdesk.rooms.index"
             >
             <x-slot:icon>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-open"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg>
@@ -93,6 +96,6 @@
         </div>
 
         {{-- Reservation Table --}}
-        <livewire:dashboard-reservation-table />
+        <livewire:tables.dashboard-reservation-table />
     </div>
 </x-app-layout>
