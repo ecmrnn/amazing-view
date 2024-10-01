@@ -17,6 +17,21 @@ class DashboardController extends Controller
     public function index() {
         $data = [];
 
+        $status_labels = [
+            0 => 'Available',
+            1 => 'Unavailable',
+            2 => 'Occupied',
+            3 => 'Reserved'
+        ];
+
+        $status_colors = [
+            0 => '#2563EB', /* Blue */
+            1 => '#EF4444', /* Red */
+            2 => '#F59E0B', /* Amber */
+            3 => '#22C55E', /* Green */
+        ];
+
+        // Dashboard content for frontdesks
         if (Auth::user()->role == User::ROLE_FRONTDESK) {
             $available_rooms = Room::where('status', Room::STATUS_AVAILABLE)->count();
             $pending_reservations = Reservation::where('status', Reservation::STATUS_PENDING)->count();
@@ -36,12 +51,19 @@ class DashboardController extends Controller
                 ->addPoint('Nov', 15)
                 ->addPoint('Dec', 10);
 
+            $column_data = Room::select('status', Room::raw('count(*) as count'))
+                ->groupBy('status')
+                ->get();
+
             $column_chart = (new ColumnChartModel())
-                ->withoutLegend()
-                ->addColumn('Occupied', 25, '#2563EB')
-                ->addColumn('Available', 50, '#16A34A')
-                ->addColumn('Reserved', 15, '#F59E0B')
-                ->addColumn('Unvailable', 10, '#E11D48');
+                ->withoutLegend();
+
+            foreach ($column_data as $room) {
+                $label = $status_labels[$room->status]; 
+                $color = $status_colors[$room->status];
+
+                 $column_chart->addColumn($label, $room->count, $color);
+            }
 
             $data = [
                 'area_chart' => $area_chart,

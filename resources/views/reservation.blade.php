@@ -5,7 +5,6 @@
     </div>
 
     <div 
-        x-data="{ step: $store.step.count }"
         id="form" class="min-h-screen px-5 pb-20">
         <section x-ref="form">
             <livewire:guest.reservation-form />

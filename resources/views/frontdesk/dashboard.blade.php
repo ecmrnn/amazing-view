@@ -24,21 +24,21 @@
             </x-slot:icon>
         </x-app.card>
         <x-app.card
-            data="{{ $available_rooms }}"
-            label="Availabe Rooms"
-            href="dashboard"
-            >
-            <x-slot:icon>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-open"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg>
-            </x-slot:icon>
-        </x-app.card>
-        <x-app.card
             data="{{ $pending_reservations }}"
             label="Pending Reservations"
             href="dashboard"
             >
             <x-slot:icon>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+            </x-slot:icon>
+        </x-app.card>
+        <x-app.card
+            data="{{ $available_rooms }}"
+            label="Availabe Rooms"
+            href="dashboard"
+            >
+            <x-slot:icon>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-open"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg>
             </x-slot:icon>
         </x-app.card>
         <x-app.card
@@ -72,7 +72,7 @@
         <div class="p-3 sm:p-5 h-[320px] bg-white rounded-lg flex flex-col gap-3 sm:gap-5">
             <div>
                 <h2 class="text-lg font-semibold">Room Occupancy Rate</h2>
-                <p class="max-w-sm text-xs">Analyze which room type is the most popular and most reserved by the guests.</p>
+                <p class="max-w-sm text-xs">Monitor your room's statuses using the graph below.</p>
             </div>
 
             {{-- Pie chart goes here... --}}

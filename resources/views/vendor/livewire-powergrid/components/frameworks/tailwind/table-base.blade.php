@@ -40,7 +40,7 @@
                     'overflow-hidden' => !$readyToLoad,
                     data_get($theme, 'table.divClass'),
                 ])
-                {{-- style="{{ data_get($theme, 'table.divStyle') }}" --}}
+                style="{{ data_get($theme, 'table.divStyle') }}"
             >
                 @include($table)
             </div>

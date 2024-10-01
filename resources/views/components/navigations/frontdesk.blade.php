@@ -29,6 +29,13 @@
                 <span x-show="expanded" class="text-xs font-bold">Rooms</span>
             </x-app-nav-link>
         </x-tooltip>
+
+        <x-tooltip text="Billings" dir="right">
+            <x-app-nav-link x-ref="content" :active="Request::is('rooms')" href="{{ route('dashboard') }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-2 p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>
+                <span x-show="expanded" class="text-xs font-bold">Billings</span>
+            </x-app-nav-link>
+        </x-tooltip>
     </div>
 
     <div class="h-[1px] w-1/2 mx-auto bg-zinc-800/50"></div>

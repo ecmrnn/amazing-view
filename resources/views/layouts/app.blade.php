@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,0" />
 
         <!-- Scripts -->
+        @filepondScripts
+        @livewireChartsScripts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="antialiased font-inter text-zinc-800">
@@ -35,8 +37,6 @@
             </div>
         </div>
 
-        @filepondScripts
-        @livewireChartsScripts
         @livewireScripts
         @livewireStyles
     </body>

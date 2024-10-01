@@ -149,13 +149,4 @@
             />
         @endif
     </article>
-
-    {{-- Global step counter --}}
-    @script
-        <script>
-            $wire.on('next-step', step => {
-                Alpine.store('step').count = step[0];
-            });
-        </script>
-    @endscript
 </div>
