@@ -139,32 +139,5 @@ class DatabaseSeeder extends Seeder
             'price' => 500,
             'is_addons' => 1,
         ]);
-
-        DB::table('users')->insert([
-            'first_name' => 'ec',
-            'last_name' => 'maranan',
-            'role' => 1,
-            'status' => 0,
-            'email' => 'frontdesk@test.com',
-            'password' => bcrypt('frontdesk123'),
-        ]);
-
-        DB::table('users')->insert([
-            'first_name' => 'marnie',
-            'last_name' => 'maranan',
-            'role' => 2,
-            'status' => 0,
-            'email' => 'admin@test.com',
-            'password' => bcrypt('admin123'),
-        ]);
-
-        DB::table('users')->insert([
-            'first_name' => 'juan',
-            'last_name' => 'dela cruz',
-            'role' => 0,
-            'status' => 0,
-            'email' => 'guest@test.com',
-            'password' => bcrypt('guest123'),
-        ]);
     }
 }
