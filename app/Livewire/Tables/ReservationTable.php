@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Livewire\Tables;
+namespace App\Livewire\tables;
 
-use App\Models\Room;
-use Livewire\Component;
-use App\Models\RoomType;
+use App\Models\Reservation;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\View;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -21,12 +17,11 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
-final class RoomTable extends PowerGridComponent
+final class ReservationTable extends PowerGridComponent
 {
     use WithExport;
 
     public bool $showFilters = true;
-    public $room_type_id;
 
     public function boot(): void
     {
@@ -35,10 +30,14 @@ final class RoomTable extends PowerGridComponent
 
     public function setUp(): array
     {
+        $this->showCheckBox();
+
         return [
+            // Exportable::make('export')
+            //     ->striped()
+            //     ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()
                 ->showToggleColumns(),
-
             Footer::make()
                 ->showPerPage(),
         ];
@@ -46,7 +45,7 @@ final class RoomTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Room::where('room_type_id', $this->room_type_id);
+        return Reservation::query();
     }
 
     public function relationSearch(): array
@@ -57,66 +56,55 @@ final class RoomTable extends PowerGridComponent
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
-            ->add('id')
-            ->add('image_1_path', function ($room) {
-                return '<img class="rounded-lg" style="max-width: 50px;" src="' . $room->image_1_path . '" />';
+            ->add('rid')
+            ->add('date_in')
+            ->add('date_out')
+            ->add('date_in_formatted', function ($reservation) {
+                return Carbon::parse($reservation->date_in)->format('F j, Y'); //20/01/2024 10:05
             })
-
-            ->add('room_number')
-            ->add('room_type_id')
-            ->add('room_type_id_formatted', function ($room) {
-                return $room->roomType->name;
+            ->add('date_out_formatted', function ($reservation) {
+                return Carbon::parse($reservation->date_out)->format('F j, Y'); //20/01/2024 10:05
             })
-
-            ->add('max_capacity')
-            ->add('rate')
-
             ->add('status')
-            ->add('status_formatted', function ($room) {
-                return Blade::render('<x-status type="room" :status="' . $room->status . '" />');
+            ->add('status_formatted', function ($reservation) {
+                return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
             });
     }
 
     public function columns(): array
     {
         return [
-            Column::make('Thumbnail', 'image_1_path'),
-
-            Column::make('Room Type', 'room_type_id_formatted', 'room_type_id')
+            Column::make('Reservation Id', 'rid', 'rid')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Room Number', 'room_number')
-                ->sortable()
-                ->searchable(),
+            Column::make('Check in', 'date_in_formatted', 'date_in'),
 
-            Column::make('Max. Capacity', 'max_capacity'),
-
-            Column::make('Rate', 'rate')
-                ->sortable(),
+            Column::make('Check out', 'date_out_formatted', 'date_out'),
 
             Column::make('Status', 'status_formatted', 'status'),
 
-            Column::action('')
+            Column::action('Action')
         ];
     }
 
     public function filters(): array
     {
         return [
+            Filter::inputText('rid')
+                ->placeholder('Reservation ID'),
+
             Filter::select('status', 'status')
                 ->dataSource([
-                    ['status' => 0, 'name' => 'Available'],
-                    ['status' => 1, 'name' => 'Unavailable'],
-                    ['status' => 2, 'name' => 'Occupied'],
-                    ['status' => 3, 'name' => 'Reserved'],
+                    ['status' => 0, 'name' => 'Confirmed'],
+                    ['status' => 1, 'name' => 'Pending'],
+                    ['status' => 2, 'name' => 'Expired'],
+                    ['status' => 3, 'name' => 'Checked in'],
+                    ['status' => 4, 'name' => 'Checked out'],
+                    ['status' => 5, 'name' => 'Completed'],
                 ])
                 ->optionLabel('name')
                 ->optionValue('status'),
-
-            Filter::number('rate', 'rate')
-                ->thousands('.')
-                ->placeholder('Min. Rate', 'Max. Rate')
         ];
     }
 
@@ -128,9 +116,21 @@ final class RoomTable extends PowerGridComponent
 
     public function actionsFromView($row)
     {
-        return view('components.table-actions.room', [
+        return view('components.table-actions.reservation', [
             'row' => $row,
-            'edit_link' => 'app.room.edit',
+            'edit_link' => 'app.reservations.edit',
         ]);
     }
+
+    /*
+    public function actionRules($row): array
+    {
+       return [
+            // Hide button edit for ID 1
+            Rule::button('edit')
+                ->when(fn($row) => $row->id === 1)
+                ->hide(),
+        ];
+    }
+    */
 }

@@ -1,25 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\App;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Room;
-use App\Models\RoomType;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class RoomController extends Controller
+class ReservationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(RoomType $type)
+    public function index()
     {
-        return view('app.rooms.index', [
-            'room' => $type
-        ]);
+        return view('app.reservations.index');
     }
 
     /**
@@ -41,23 +34,23 @@ class RoomController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $reservation)
     {
-        //
+        // 
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $type, string $room)
+    public function edit(string $reservation)
     {
-        $room = Room::findOrFail($room);
+        $reservation_data = Reservation::where('rid', $reservation)->first();
 
-        if (!empty($room)) {
-            return view('app.rooms.edit', [
-                'room' => $room,
-            ]);
-        }
+        // dd($reservation_data);
+        
+        return view('app.reservations.edit', [
+            'reservation' => $reservation_data
+        ]);
     }
 
     /**

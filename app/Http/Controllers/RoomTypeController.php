@@ -1,24 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\App;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Room;
 use App\Models\RoomType;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class RoomController extends Controller
+class RoomTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(RoomType $type)
+    public function index()
     {
-        return view('app.rooms.index', [
-            'room' => $type
+        $rooms = RoomType::all();
+
+        return view('app.roomType.index', [
+            'rooms' => $rooms
         ]);
     }
 
@@ -49,15 +46,11 @@ class RoomController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $type, string $room)
+    public function edit(RoomType $roomType)
     {
-        $room = Room::findOrFail($room);
-
-        if (!empty($room)) {
-            return view('app.rooms.edit', [
-                'room' => $room,
-            ]);
-        }
+        return view('app.rooms.edit', [
+            'room' => $roomType
+        ]);
     }
 
     /**

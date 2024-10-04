@@ -74,7 +74,7 @@ class DashboardController extends Controller
                 'pending_reservations' => $pending_reservations,
             ];
 
-            $view = 'frontdesk.dashboard';
+            $view = 'app.dashboard.frontdesk';
         }
 
         return view($view, $data);

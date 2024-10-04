@@ -15,25 +15,25 @@
     ];
 @endphp
 <div x-data="pgToggleable(@js($params))">
-    <div class="flex flex-row justify-center">
+    <div class="flex flex-row">
         @if ($showToggleable === true)
             <div
                 :class="{
-                    'relative rounded-full w-8 h-4 transition duration-200 ease-linear': true,
-                    'bg-pg-secondary-600 dark:pg-secondary-500': toggle,
-                    'bg-pg-primary-200': !toggle
+                    'relative rounded-full w-12 h-6 p-1 transition duration-200 ease-linear': true,
+                    'bg-slate-200 ': toggle,
+                    'bg-blue-500': !toggle
                 }">
                 <label
                     :class="{
-                        'absolute left-0 bg-white border-2 mb-2 w-4 h-4 rounded-full transition transform duration-100 ease-linear cursor-pointer': true,
-                        'translate-x-full border-pg-secondary-600': toggle,
+                        'absolute left-2 bg-white border-2  w-4 h-4 rounded-full transition transform duration-100 ease-linear cursor-pointer': true,
+                        'translate-x-full border-pg-primary-600': toggle,
                         'translate-x-0 border-pg-primary-200': !toggle
                     }"
                     x-on:click="save"
                 ></label>
                 <input
                     type="checkbox"
-                    class="appearance-none opacity-0 w-full h-full active:outline-none focus:outline-none"
+                    class="w-full h-full opacity-0 appearance-none active:outline-none focus:outline-none"
                     x-on:click="save"
                 >
             </div>

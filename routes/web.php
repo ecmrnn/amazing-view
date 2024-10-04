@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\App\RoomController;
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\BillingController;
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\RoomTypeController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -29,8 +33,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Frontdesk
-    Route::middleware('frontdesk')->prefix('frontdesk')->name('frontdesk.')->group(function () {
-        Route::resource('/rooms', RoomController::class);
+    Route::middleware('role:frontdesk|admin')->prefix('app')->name('app.')->group(function () {
+        // Guests type route
+        Route::resource('/guests', GuestController::class);
+
+        // Reservation type route
+        Route::resource('/reservations', ReservationController::class);
+
+        // Room type route
+        Route::resource('/rooms', RoomTypeController::class);
+
+        // Specific rooms for a room type route
+        Route::resource('/rooms/{type}/room', RoomController::class);
+
+        // Room type route
+        Route::resource('/billings', BillingController::class);
+
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
