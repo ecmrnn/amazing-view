@@ -1,12 +1,3 @@
-{{-- @props([
-    'roomTypes',
-    'availableRooms' => [],
-    'selectedRooms' => [],
-    'suggestedRooms' => [],
-    'reservableAmenities' => [],
-    'roomTypeName' => '',
-]) --}}
-
 {{-- Reservation Date & Guest Count --}}
 <x-form.form-section class="grid lg:grid-cols-2">
     <x-form.form-header step="1" title="Reservation Date &amp; Guest Count" class="lg:col-span-2" />
@@ -110,7 +101,7 @@
             <div class="p-5 m-5 space-y-5 bg-white border rounded-lg border-slate-200">
 
                 <h3 class="text-lg font-semibold">Our Rooms</h3>
-                <div class="grid gap-2 sm:grid-cols-2 md:grid-cols-1">
+                <div class="grid gap-2 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
                     @forelse ($room_types as $room)
                         <x-web.reservation.step-1.room-category :key="$room->id" :room="$room" />
                     @empty

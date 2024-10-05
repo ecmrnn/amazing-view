@@ -8,7 +8,7 @@
     @can('update room')
         <x-tooltip text="Edit" dir="top">
             <a x-ref="content" href="{{ route($edit_link, ['room' => $row->id, 'type' => $row->room_type_id]) }}" wire:navigate
-                class="p-2 transition-all duration-200 ease-in-out bg-white border rounded-lg cursor-pointer hover:bg-blue-600 hover:text-white hover:border-blue-600">
+                class="p-2 transition-all duration-200 ease-in-out bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-600 hover:text-white hover:border-blue-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round" class="lucide lucide-pencil">
@@ -23,7 +23,7 @@
     @can('delete room')
         <x-tooltip text="Delete" dir="top">
             <button x-ref="content"
-                class="p-2 transition-all duration-200 ease-in-out bg-white border rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600">
+                class="p-2 transition-all duration-200 ease-in-out bg-white border border-gray-300 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round" class="lucide lucide-trash-2">
@@ -39,7 +39,7 @@
 
     <x-tooltip text="View" dir="top">
         <button x-ref="content"
-            class="p-2 transition-all duration-200 ease-in-out bg-white border rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600">
+            class="p-2 transition-all duration-200 ease-in-out bg-white border border-gray-300 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600">
             <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round" class="lucide lucide-eye">

@@ -125,6 +125,7 @@
                         'address' => $address,
                         'sub_total' => $sub_total,
                         'vat' => $vat,
+                        'vatable_sales' => $vatable_sales,
                         'net_total' => $net_total,
                         'night_count' => $night_count,
                     ])

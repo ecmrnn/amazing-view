@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
@@ -35,8 +36,10 @@ class DashboardController extends Controller
 
         // Dashboard content for frontdesks
         if (Auth::user()->role == User::ROLE_FRONTDESK) {
+            $guest_in = Reservation::where('status', Reservation::STATUS_CHECKED_IN)->count();
             $available_rooms = Room::where('status', Room::STATUS_AVAILABLE)->count();
             $pending_reservations = Reservation::where('status', Reservation::STATUS_PENDING)->count();
+            $due_invoices = Invoice::where('status', Invoice::STATUS_DUE)->count();
 
             $area_chart = (new areaChartModel())
                 ->setColor('#2563EB')
@@ -70,8 +73,10 @@ class DashboardController extends Controller
             $data = [
                 'area_chart' => $area_chart,
                 'column_chart' => $column_chart,
+                'guest_in' => $guest_in,
                 'available_rooms' => $available_rooms,
                 'pending_reservations' => $pending_reservations,
+                'due_invoices' => $due_invoices,
             ];
 
             $view = 'app.dashboard.frontdesk';

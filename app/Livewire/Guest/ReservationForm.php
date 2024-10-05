@@ -61,9 +61,9 @@ class ReservationForm extends Component
     public $can_select_address = false;
     public $room_types;
     public $sub_total = 0;
-    public $vat = 0;
     public $net_total = 0;
-    private $vat_percent = .12; /* Should be in Global */
+    public $vat = 0;
+    public $vatable_sales = 0;
     public $reservation_rid;
     public $night_count;
     public $show_available_rooms = false;
@@ -127,8 +127,8 @@ class ReservationForm extends Component
 
             $this->capacity += $room->max_capacity;
             $this->sub_total += ($room->rate * $this->night_count);
-            $this->vat = ($this->vat_percent * $this->sub_total);
-            $this->net_total = $this->sub_total + $this->vat;
+
+            $this->computeBreakdown();
         }
     }
 
@@ -136,11 +136,16 @@ class ReservationForm extends Component
         $this->capacity -= $room_to_delete->max_capacity;
 
         $this->sub_total -= ($room_to_delete->rate * $this->night_count);
-        $this->vat = ($this->vat_percent * $this->sub_total);
-        $this->net_total = $this->sub_total + $this->vat;
+        
         $this->selected_rooms = $this->selected_rooms->reject(function ($room) use ($room_to_delete) {
             return $room->id == $room_to_delete->id;
         });
+    }
+
+    public function computeBreakdown() {
+        $this->vatable_sales = $this->sub_total / 1.12;
+        $this->vat = ($this->sub_total) - $this->vatable_sales;
+        $this->net_total = $this->vatable_sales + $this->vat;
     }
 
     // Will be called when customer finished filling out the following properties
@@ -218,8 +223,7 @@ class ReservationForm extends Component
             $this->sub_total += $amenity_clicked->price;
         } 
 
-        $this->vat = ($this->vat_percent * $this->sub_total);
-        $this->net_total = $this->sub_total + $this->vat;
+        $this->computeBreakdown();
     }
 
     // Address Get Methods

@@ -46,10 +46,10 @@ class RoomTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(RoomType $roomType)
+    public function edit(RoomType $room)
     {
-        return view('app.rooms.edit', [
-            'room' => $roomType
+        return view('app.roomType.edit', [
+            'room' => $room
         ]);
     }
 

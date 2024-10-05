@@ -36,25 +36,29 @@
         <div>
             <div class="grid gap-5 lg:grid-cols-4 sm:grid-cols-2">
                 @forelse ($rooms as $room)
-                    <div key="{{ $room->id }}" class="space-y-1">
-                        <div class="relative group">
+                    <div key="{{ $room->id }}" class="space-y-1 group">
+                        <div class="relative">
                             <x-img-lg src="{{ $room->image_1_path }}" />
 
-                            @can('update room type')
                                 <div class="absolute hidden gap-1 top-3 right-3 group-hover:flex">
-                                    <x-tooltip text="Edit" dir="bottom">
-                                        <x-icon-button x-ref="content">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                                        </x-icon-button>
-                                    </x-tooltip>
+                                    @can('update room type')
+                                        <x-tooltip text="Edit" dir="bottom">
+                                            <a href="{{ route('app.rooms.edit', ['room' => $room->id]) }}" wire:navigate>
+                                                <x-icon-button x-ref="content">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                                                </x-icon-button>
+                                            </a>
+                                        </x-tooltip>
+                                    @endcan
 
-                                    <x-tooltip text="Delete" dir="bottom">
-                                        <x-icon-button x-ref="content">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                        </x-icon-button>
-                                    </x-tooltip>
+                                    @can('delete room type')
+                                        <x-tooltip text="Delete" dir="bottom">
+                                            <x-icon-button x-ref="content">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                            </x-icon-button>
+                                        </x-tooltip>
+                                    @endcan
                                 </div>
-                            @endcan
                         </div>
 
                         <div class="p-3 border rounded-lg">

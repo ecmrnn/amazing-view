@@ -5,11 +5,14 @@ namespace App\Livewire\Tables;
 use App\Models\Room;
 use Livewire\Component;
 use App\Models\RoomType;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -25,7 +28,6 @@ final class RoomTable extends PowerGridComponent
 {
     use WithExport;
 
-    public bool $showFilters = true;
     public $room_type_id;
 
     public function boot(): void
@@ -37,7 +39,8 @@ final class RoomTable extends PowerGridComponent
     {
         return [
             Header::make()
-                ->showToggleColumns(),
+                ->showToggleColumns()
+                ->showSearchInput(),
 
             Footer::make()
                 ->showPerPage(),
@@ -56,6 +59,8 @@ final class RoomTable extends PowerGridComponent
 
     public function fields(): PowerGridFields
     {
+        $room_statuses = ['Available', 'Unavailable', 'Occupied', 'Reserved'];
+
         return PowerGrid::fields()
             ->add('id')
             ->add('image_1_path', function ($room) {
@@ -71,7 +76,12 @@ final class RoomTable extends PowerGridComponent
             ->add('max_capacity')
             ->add('rate')
 
-            ->add('status')
+            ->add('status_update', function ($room) {
+                return Blade::render('<x-form.select />');
+            })
+            ->add('status_update', function ($room) use ($room_statuses) {
+                return Blade::render('<x-form.select type="occurrence" :options=$options  :selected=$selected wire:change="statusChanged($event.target.value, {{ $room->id }})"  />', ['room' => $room, 'options' => $room_statuses, 'selected' => intval($room->status)]);
+            })
             ->add('status_formatted', function ($room) {
                 return Blade::render('<x-status type="room" :status="' . $room->status . '" />');
             });
@@ -96,6 +106,8 @@ final class RoomTable extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Status', 'status_formatted', 'status'),
+
+            Column::make('Update Status', 'status_update'),
 
             Column::action('')
         ];
@@ -132,5 +144,15 @@ final class RoomTable extends PowerGridComponent
             'row' => $row,
             'edit_link' => 'app.room.edit',
         ]);
+    }
+
+    #[On('statusChanged')]
+    public function statusChanged($status, $id) {
+        $room = Room::findOrFail($id);
+
+        if (Auth::user()->role == User::ROLE_FRONTDESK || Auth::user()->role == User::ROLE_ADMIN) {
+            $room->status = $status;
+            $room->save();
+        }
     }
 }

@@ -17,12 +17,16 @@ use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
+use Illuminate\View\View; 
 
 final class DashboardReservationTable extends PowerGridComponent
 {
     use WithExport;
-    
-    public bool $showFilters = true;
+
+    public function noDataLabel(): string|View
+    { 
+        return view('components.table-no-data.reservations');
+    }
 
     public function boot(): void
     {
@@ -32,9 +36,9 @@ final class DashboardReservationTable extends PowerGridComponent
     public function setUp(): array
     {
         return [
-            Header
-                ::make()
-                ->showToggleColumns(),
+            Header::make()
+                ->showToggleColumns()
+                ->showSearchInput(),
 
             Footer::make()
                 ->showPerPage(10),

@@ -139,5 +139,10 @@ class DatabaseSeeder extends Seeder
             'price' => 500,
             'is_addons' => 1,
         ]);
+
+        $this->call([
+            RolePermissionSeeder::class,
+            UserSeeder::class,
+        ]);
     }
 }

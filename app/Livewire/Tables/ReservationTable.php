@@ -16,12 +16,16 @@ use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
+use Illuminate\View\View; 
 
 final class ReservationTable extends PowerGridComponent
 {
     use WithExport;
 
-    public bool $showFilters = true;
+    public function noDataLabel(): string|View
+    { 
+        return view('components.table-no-data.reservations');
+    }
 
     public function boot(): void
     {
@@ -37,7 +41,8 @@ final class ReservationTable extends PowerGridComponent
             //     ->striped()
             //     ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()
-                ->showToggleColumns(),
+                ->showToggleColumns()
+                ->showSearchInput(),
             Footer::make()
                 ->showPerPage(),
         ];

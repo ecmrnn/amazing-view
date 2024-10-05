@@ -16,6 +16,7 @@ class FindReservation extends Component
     public $selected_rooms;
     public $selected_amenities = [];
     public $vat = 0;
+    public $vatable_sales = 0;
     public $net_total = 0;
     public $sub_total = 0;
     public $night_count;
@@ -56,8 +57,9 @@ class FindReservation extends Component
                 $this->sub_total += $amenity->price;
             }
 
-            $this->vat = $this->sub_total * .12;
-            $this->net_total = $this->sub_total + $this->vat;
+            $this->vatable_sales = $this->sub_total / 1.12;
+            $this->vat = ($this->sub_total) - $this->vatable_sales;
+            $this->net_total = $this->vatable_sales + $this->vat;
         }
     }
 

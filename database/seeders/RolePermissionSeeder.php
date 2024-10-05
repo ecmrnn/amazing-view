@@ -49,15 +49,11 @@ class RolePermissionSeeder extends Seeder
 
             'create reservation',
             'read reservations',
-            'update reservation',
 
             'read rooms',
-            'update room',
             'read rooms type',
-            'update room type',
 
             'read billings',
-            'update billing',
         ];
 
         $admin_permission = [

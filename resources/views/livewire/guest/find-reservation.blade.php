@@ -131,7 +131,7 @@
                             <p class="font-semibold text-blue-500">Net Total</p>
                         </div>
                         <div class="text-sm text-right">
-                            <p class="font-semibold">{{ number_format($sub_total, 2) }}</p>
+                            <p class="font-semibold">{{ number_format($vatable_sales, 2) }}</p>
                             <p class="">{{ number_format($vat, 2) }}</p>
                             <p class="font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p>
                         </div>
