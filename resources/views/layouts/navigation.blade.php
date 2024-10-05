@@ -93,11 +93,11 @@
 
                     {{-- Settings --}}
                     <div class="m-5">
-                        <div class="flex justify-between gap-3 p-3 text-white border rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
-                            <div>
+                        <div class="flex justify-between gap-3 p-3 text-white border border-blue-600 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
+                            <a href="{{ route('dashboard') }}" class="inline-block" wire:navigate>
                                 <p class="font-bold capitalize">{{ Auth::user()->first_name . " " . Auth::user()->last_name }}</p>
                                 <p class="text-xs text-white/50">{{ Auth::user()->email }}</p>
-                            </div>
+                            </a>
 
                             {{-- Logout --}}
                             <form method="POST" action="{{ route('logout') }}">

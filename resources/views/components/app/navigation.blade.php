@@ -69,5 +69,7 @@
     <x-nav-link :active="Request::is('app/guests*')" href="{{ route('app.guests.index') }}">Guests</x-nav-link>
     <x-nav-link :active="Request::is('app/reservations*')" href="{{ route('app.reservations.index') }}">Reservations</x-nav-link>
     <x-nav-link :active="Request::is('app/rooms*')" href="{{ route('app.rooms.index') }}">Rooms</x-nav-link>
+    <x-nav-link :active="Request::is('app/billings*')" href="{{ route('app.billings.index') }}">Billing</x-nav-link>
     <x-nav-link :active="Request::is('profile')" href="{{ route('profile.edit') }}">Profile</x-nav-link>
+    <x-nav-link :active="Request::is('profile')" href="{{ route('profile.edit') }}">Settings</x-nav-link>
 @endif

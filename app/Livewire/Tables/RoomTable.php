@@ -3,19 +3,13 @@
 namespace App\Livewire\Tables;
 
 use App\Models\Room;
-use Livewire\Component;
-use App\Models\RoomType;
 use App\Models\User;
-use Illuminate\Support\Carbon;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\View;
 use Livewire\Attributes\On;
-use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
@@ -29,6 +23,11 @@ final class RoomTable extends PowerGridComponent
     use WithExport;
 
     public $room_type_id;
+
+    public function noDataLabel(): string|View
+    { 
+        return view('components.table-no-data.rooms', ['room_type_id' => $this->room_type_id]);
+    }
 
     public function boot(): void
     {
