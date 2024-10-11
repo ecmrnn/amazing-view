@@ -15,11 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Building
-        // Room Type
-        // Rooms
-        // Amenities
-
         $this->call([
             BuildingSeeder::class,
             RoomTypeSeeder::class,

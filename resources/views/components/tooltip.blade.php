@@ -6,9 +6,9 @@
 <div 
     x-data="{
         tooltipVisible: false,
-        tooltipText: '{{ $text }}',
+        tooltipText: @js($text),
         tooltipArrow: true,
-        tooltipPosition: '{{ $dir }}',
+        tooltipPosition: @js($dir),
     }"
 
     x-init="$refs.content.addEventListener('mouseenter', () => { tooltipVisible = true; }); $refs.content.addEventListener('mouseleave', () => { tooltipVisible = false; });"
@@ -19,7 +19,7 @@
         : tooltipPosition == 'left', 'bottom-0 left-1/2 -translate-x-1/2 -mb-0.5 translate-y-full'
         : tooltipPosition == 'bottom', 'top-1/2 -translate-y-1/2 -mr-0.5 right-0 translate-x-full'
         : tooltipPosition == 'right' }"
-        class="absolute w-auto text-sm" x-cloak>
+        class="absolute z-10 w-auto text-sm" x-cloak>
 
         <div x-show="tooltipVisible" x-transition class="relative px-2 py-1 text-white rounded bg-zinc-800 bg-opacity-90">
             <p x-text="tooltipText" class="flex-shrink-0 block text-xs whitespace-nowrap"></p>

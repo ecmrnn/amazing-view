@@ -15,7 +15,18 @@ class BuildingSeeder extends Seeder
     {
         Building::create([
             'name' => 'Lepanto',
-            'floor_count' => 2
+            'prefix' => 'LP',
+            'floor_count' => 3,
+            'room_row_count' => 2,
+            'room_col_count' => 5,
+        ]);
+        
+        Building::create([
+            'name' => 'Domingo',
+            'prefix' => 'DO',
+            'floor_count' => 2,
+            'room_row_count' => 2,
+            'room_col_count' => 5,
         ]);
     }
 }

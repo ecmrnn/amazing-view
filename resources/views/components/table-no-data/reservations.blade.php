@@ -3,9 +3,11 @@
 
     <p class="text-sm">No reservations found!</p>
 
-    <a class="inline-block text-xs" href="{{ route('app.reservations.create') }}" wire:navigate>
-        <x-primary-button>
-            Click here to create one
-        </x-primary-button>
-    </a>
+    @can('create reservation')
+        <a class="inline-block text-xs" href="{{ route('app.reservations.create') }}" wire:navigate>
+            <x-primary-button>
+                Click here to create one
+            </x-primary-button>
+        </a>
+    @endcan
 </div>

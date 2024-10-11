@@ -32,10 +32,7 @@
             
             <!-- Remember Me -->
             <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center select-none">
-                    <input id="remember_me" type="checkbox" class="text-blue-600 border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:border-blue-600" name="remember">
-                    <span class="text-sm text-gray-600 ms-2">{{ __('Remember me') }}</span>
-                </label>
+                <x-form.input-checkbox id="remember_me" label="Remember me" />
             </div>
             
             <x-primary-button class="block w-full mt-4">

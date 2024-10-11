@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(Invoice::class)->constrained();
             $table->decimal('amount');
             $table->date('payment_date');
-            $table->string('proof_image_path');
+            $table->string('proof_image_path')->nullable();
             $table->timestamps();
         });
     }

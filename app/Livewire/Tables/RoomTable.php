@@ -75,9 +75,6 @@ final class RoomTable extends PowerGridComponent
             ->add('max_capacity')
             ->add('rate')
 
-            ->add('status_update', function ($room) {
-                return Blade::render('<x-form.select />');
-            })
             ->add('status_update', function ($room) use ($room_statuses) {
                 return Blade::render('<x-form.select type="occurrence" :options=$options  :selected=$selected wire:change="statusChanged($event.target.value, {{ $room->id }})"  />', ['room' => $room, 'options' => $room_statuses, 'selected' => intval($room->status)]);
             })

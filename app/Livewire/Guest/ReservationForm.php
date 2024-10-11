@@ -70,6 +70,9 @@ class ReservationForm extends Component
 
     public function mount() {
         $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
+        $this->room_types = RoomType::withCount(['rooms' => function ($query) {
+            $query->where('status', Room::STATUS_AVAILABLE);
+        }])->get();
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
 
@@ -379,10 +382,6 @@ class ReservationForm extends Component
                                         ->where('status', Room::STATUS_AVAILABLE)
                                         ->paginate(10);
         }
-
-        $this->room_types = RoomType::withCount(['rooms' => function ($query) {
-            $query->where('status', Room::STATUS_AVAILABLE);
-        }])->get();
 
         return view('livewire.guest.reservation-form', [
             'available_rooms' => $available_rooms

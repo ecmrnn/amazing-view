@@ -1,7 +1,8 @@
 @props([
     'number' => 0,
     'min' => 0,
-    'id' => ''
+    'max' => 999999,
+    'id' => '',
 ])
 
 @php
@@ -13,11 +14,11 @@
     @if (is_null($model))
         x-data="{ number: 0 }"
     @endif>
-    
+
     {{-- Number input --}}
     <input x-bind:value="{{ is_null($model) ? 'number' : $number }}"
         {{ $attributes->merge(['class' => 'peer w-full text-sm border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 invalid:bg-red-50 invalid:border-red-500 focus:invalid:border-red-500']) }}
-        type="number" min="{{ $min }}" />
+        type="number" min="{{ $min }}" max="{{ $max }}" />
 
     {{-- Less Button --}}
     <button x-on:click="{{ is_null($model) ? 'number' : $number }} - 1 >= {{ $min }} ? {{ is_null($model) ? 'number' : $number }}-- : 0; $wire.set('{{ $model }}', {{ $model }})"

@@ -3,8 +3,10 @@
 namespace App\Livewire\tables;
 
 use App\Models\Reservation;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
@@ -16,7 +18,8 @@ use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
-use Illuminate\View\View; 
+use Illuminate\View\View;
+use Livewire\Attributes\On;
 
 final class ReservationTable extends PowerGridComponent
 {
@@ -60,6 +63,8 @@ final class ReservationTable extends PowerGridComponent
 
     public function fields(): PowerGridFields
     {
+        $reservation_statuses = ['Confirmed', 'Pending', 'Expired', 'Checked in', 'Checked out', 'Completed'];
+
         return PowerGrid::fields()
             ->add('rid')
             ->add('date_in')
@@ -71,6 +76,9 @@ final class ReservationTable extends PowerGridComponent
                 return Carbon::parse($reservation->date_out)->format('F j, Y'); //20/01/2024 10:05
             })
             ->add('status')
+            ->add('status_update', function ($reservation) use ($reservation_statuses) {
+                return Blade::render('<x-form.select type="occurrence" :options=$options  :selected=$selected wire:change="statusChanged($event.target.value, {{ $room->id }})"  />', ['room' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]);
+            })
             ->add('status_formatted', function ($reservation) {
                 return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
             });
@@ -88,6 +96,8 @@ final class ReservationTable extends PowerGridComponent
             Column::make('Check out', 'date_out_formatted', 'date_out'),
 
             Column::make('Status', 'status_formatted', 'status'),
+
+            Column::make('Update status', 'status_update'),
 
             Column::action('Action')
         ];
@@ -127,15 +137,13 @@ final class ReservationTable extends PowerGridComponent
         ]);
     }
 
-    /*
-    public function actionRules($row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
+    #[On('statusChanged')]
+    public function statusChanged($status, $id) {
+        $reservation = Reservation::findOrFail($id);
+
+        if (Auth::user()->role == User::ROLE_FRONTDESK || Auth::user()->role == User::ROLE_ADMIN) {
+            $reservation->status = $status;
+            $reservation->save();
+        }
     }
-    */
 }

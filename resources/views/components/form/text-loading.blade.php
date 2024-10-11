@@ -1,0 +1,1 @@
+<p {{ $attributes->merge(['class' => 'rounded-lg bg-slate-200 h-[.875rem] mb-[0.375rem] ']) }}></p>

@@ -92,21 +92,9 @@
                         </div>
                     </div>
                 @empty
-                    @can('create room type')
-                        <div class="py-10 space-y-3 text-center border rounded-lg sm:col-span-2 lg:col-span-4">
-                            <p class="text-sm font-bold">No rooms yet!</p>
-                            <a href="{{ route('app.rooms.create') }}" class="inline-block" wire:navigate>
-                                <x-primary-button>Add Room Type</x-primary-button>
-                            </a>
-                        </div>
-                    @endcan
-
-                    @cannot('create room type')
-                        <div class="py-10 space-y-1 text-center border rounded-lg sm:col-span-2 lg:col-span-4">
-                            <p class="font-bold">No rooms yet</p>
-                            <p class="max-w-xs mx-auto text-xs font-bold text-zinc-800/50">Ask the administrator to add a room type first to proceed</p>
-                        </div>
-                    @endcannot
+                    <div class="sm:col-span-2 lg:col-span-4">
+                        @include('components.table-no-data.rooms')
+                    </div>
                 @endforelse
             </div>
         </div>

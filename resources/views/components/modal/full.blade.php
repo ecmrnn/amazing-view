@@ -33,14 +33,14 @@ $maxWidth = [
         prevFocusableIndex() { return Math.max(0, this.focusables().indexOf(document.activeElement)) -1 },
     }"
     {{-- Hides the scrollbar --}}
-    {{-- x-init="$watch('show', value => {
+    x-init="$watch('show', value => {
         if (value) {
             document.body.classList.add('overflow-y-hidden');
             {{ $attributes->has('focusable') ? 'setTimeout(() => firstFocusable().focus(), 100)' : '' }}
         } else {
             document.body.classList.remove('overflow-y-hidden');
         }
-    })" --}}
+    })"
     x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"
     x-on:close-modal.window="$event.detail == '{{ $name }}' ? show = false : null"
     x-on:close.stop="show = false"
@@ -62,12 +62,12 @@ $maxWidth = [
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-        <div class="absolute inset-0 bg-zinc-800/50"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-zinc-800/50 to-zinc-800/80"></div>
     </div>
 
     <div
         x-show="show"
-        class="w-full p-5 mt-5 overflow-hidden transition-all transform bg-white rounded-lg shadow-md sm:w-full sm:max-w-screen-lg sm:mx-auto"
+        class="w-full mt-5 overflow-hidden transition-all transform bg-white rounded-lg shadow-md sm:w-full {{ $maxWidth }} sm:mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
@@ -75,6 +75,6 @@ $maxWidth = [
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-        <div class="">{{ $slot }}</div>
+        <div>{{ $slot }}</div>
     </div>
 </div>

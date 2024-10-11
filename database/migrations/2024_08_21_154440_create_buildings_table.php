@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('buildings', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('prefix');
             $table->smallInteger('floor_count');
+            $table->smallInteger('room_row_count')->nullable();
+            $table->smallInteger('room_col_count')->nullable();
             $table->timestamps();
         });
     }

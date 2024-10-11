@@ -126,9 +126,9 @@
     
                     <div class="flex justify-end gap-5 px-6">
                         <div class="text-sm text-right">
-                            <p class="font-semibold">Sub-Total</p>
-                            <p class="">12% VAT</p>
-                            <p class="font-semibold text-blue-500">Net Total</p>
+                            <p class="font-semibold">Vatable Sales</p>
+                            <p class="">VAT Amount</p>
+                            <p class="font-semibold text-blue-500">Total Amount Due</p>
                         </div>
                         <div class="text-sm text-right">
                             <p class="font-semibold">{{ number_format($vatable_sales, 2) }}</p>
