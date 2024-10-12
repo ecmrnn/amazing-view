@@ -7,22 +7,20 @@
                     payment_method: $wire.entangle('payment_method'),
                     cash_payment: $wire.entangle('cash_payment'),
                 }" class="p-5 space-y-3">
-                <div class="border rounded-lg">
-                    <div class="p-3 space-y-3">
-                        <hgroup>
-                            <h3 class="text-sm font-semibold">Payment Methods</h3>
-                            <p class="text-xs text-zinc-800">Select how customer wants to pay</p>
-                        </hgroup>
+                <div class="p-3 space-y-3 bg-white border rounded-lg">
+                    <hgroup>
+                        <h3 class="text-sm font-semibold">Payment Methods</h3>
+                        <p class="text-xs text-zinc-800">Select how the customer wants to pay</p>
+                    </hgroup>
 
-                        {{-- Payment methods --}}
-                        <div class="grid gap-1">
-                            <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" x-bind:checked="payment_method == online" value="online" name="payment_methods" id="online" label="Online  (GCash, Online Banking)" />
-                            <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" value="cash" name="payment_methods" id="cash" label="Cash" />
-                        </div>
-
-                        <x-form.input-error x-show="payment_method == 'online'" field="proof_image_path" />
-                        <x-form.input-error x-show="payment_method == 'cash'" field="cash_payment" />
+                    {{-- Payment methods --}}
+                    <div class="grid gap-1">
+                        <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" x-bind:checked="payment_method == online" value="online" name="payment_methods" id="online" label="Online  (GCash, Online Banking)" />
+                        <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" value="cash" name="payment_methods" id="cash" label="Cash" />
                     </div>
+
+                    <x-form.input-error x-show="payment_method == 'online'" field="proof_image_path" />
+                    <x-form.input-error x-show="payment_method == 'cash'" field="cash_payment" />
                 </div>
 
                 {{-- Online Payment --}}

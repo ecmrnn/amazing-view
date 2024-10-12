@@ -310,26 +310,12 @@
                                         All Room Selected
                                     </x-secondary-button>    
                                 @else
-                                    <x-primary-button class="text-xs" wire:click="addRoom({{ json_encode($rooms->pluck('id')) }})">
+                                    <x-primary-button type="button" class="text-xs" wire:click="addRoom({{ json_encode($rooms->pluck('id')) }})">
                                         Add Room
                                     </x-primary-button>    
                                 @endif
                             </div>
                         </div>
-                        {{-- <div key="{{ $room }}" class="grid grid-cols-2 gap-3 p-3 bg-white border rounded-md ">
-                            <div class="row-span-2 space-y-3">
-                                <h3 class="text-sm font-semibold">Room for {{ $room->max_capacity }}</h3>
-                            </div>
-
-                            <x-img-lg class="w-full" />
-
-                            <div class="grid gap-1">
-                                <x-form.input-number max="{{ $room->max_capacity }}" />
-                                <x-primary-button type="button" class="text-xs">
-                                    Book this Room
-                                </x-primary-button>
-                            </div>
-                        </div> --}}
                     @empty
                         <x-table-no-data.rooms />
                     @endforelse

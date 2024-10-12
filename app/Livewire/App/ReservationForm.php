@@ -5,6 +5,9 @@ namespace App\Livewire\App;
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
 use App\Models\Building;
+use App\Models\Invoice;
+use App\Models\Reservation;
+use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Database\Eloquent\Collection;
@@ -49,10 +52,10 @@ class ReservationForm extends Component
     public $baranggays = [];
 
     // Operations
-    public $is_map_view = false; /* Must be set to true */
-    public $can_select_room = true; /* Must be set to false */
+    public $is_map_view = true; /* Must be set to true */
+    public $can_select_room = false; /* Must be set to false */
     public $can_submit_payment = false; /* Must be set to false */
-    public $selected_type; /* Must be set to false */
+    public $selected_type; 
     public $selected_building;
     public $available_room_types;
     public $available_rooms;
@@ -307,6 +310,54 @@ class ReservationForm extends Component
             'proof_image_path' => $this->rules()['proof_image_path'],
             'cash_payment' => $this->rules()['cash_payment'],
         ]);
+
+        // Open success modal
+        $this->dispatch('open-modal', 'show-reservation-confirmation');
+    }
+
+    public function store() {
+        $reservation = Reservation::create([
+            'date_in' => $this->date_in,
+            'date_out' => $this->date_out,
+            'adult_count' => $this->adult_count,
+            'children_count' => $this->children_count,
+            'status' => Reservation::STATUS_PENDING,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'phone' => $this->phone,
+            'address' => trim(implode($this->address), ', '),
+            'email' => $this->email,
+        ]);
+
+        if (!empty($this->selected_rooms)) {
+            // Store rooms
+            foreach ($this->selected_rooms as $room) {
+                $room->reservations()->attach($reservation->id);
+            }
+        }
+
+        if (!empty($this->selected_amenities)) {
+            // Store amenities
+            foreach ($this->selected_amenities as $amenity) {
+                ReservationAmenity::create([
+                    'reservation_id' => $reservation->id,
+                    'amenity_id' => $amenity->id,
+                    'quantity' => 0,
+                ]);
+            }
+        }
+
+        // Create Invoice
+        $invoice = Invoice::create([
+            'reservation_id' => $reservation->id,
+            'balance' => $this->net_total,
+            'issue_date' => Carbon::now(),
+            'due_date' => Carbon::parse($this->date_out)->addWeeks(2),
+            'status' => Invoice::STATUS_PENDING,
+        ]); 
+
+        // Reset all properties
+        $this->reset();
     }
 
     public function render()

@@ -76,4 +76,32 @@
             ])
         </section>
     </div>
+    
+    {{-- Modal for confirming reservation --}}
+    <x-modal.full name="show-reservation-confirmation" maxWidth="lg">
+        <div x-data="{ checked: false }">
+            <header class="flex items-center gap-3 p-5 border-b">
+                <x-tooltip text="Back" dir="bottom">
+                    <x-icon-button x-ref="content" x-on:click="show = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    </x-icon-button>
+                </x-tooltip>
+                <hgroup>
+                    <h2 class="text-sm font-semibold capitalize">Reservation Confirmation</h2>
+                    <p class="max-w-sm text-xs text-zinc-800/50">Confirm that the reservation details entered are correct.</p>
+                </hgroup>
+            </header>
+            
+            <section class="p-5 bg-slate-100/50">
+                <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
+            </section>
+
+            <footer x-show="checked" class="p-5 bg-white border-t">
+                <x-primary-button x-on:click="$wire.store(); show = false;">
+                    Submit Reservation
+                </x-primary-button>
+            </footer>
+        </div>
+    </x-modal.full>
 </form>
+
