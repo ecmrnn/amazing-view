@@ -3,6 +3,7 @@
 namespace App\Livewire\tables;
 
 use App\Models\Reservation;
+use App\Models\Room;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -143,7 +144,20 @@ final class ReservationTable extends PowerGridComponent
 
         if (Auth::user()->role == User::ROLE_FRONTDESK || Auth::user()->role == User::ROLE_ADMIN) {
             $reservation->status = $status;
+            
             $reservation->save();
+
+            if ($reservation->status == Reservation::STATUS_CHECKED_IN) {
+                foreach ($reservation->rooms as $room) {
+                    $room->status = Room::STATUS_OCCUPIED;
+                    $room->save();
+                }
+            } else {
+                foreach ($reservation->rooms as $room) {
+                    $room->status = Room::STATUS_AVAILABLE;
+                    $room->save();
+                }
+            }
         }
     }
 }

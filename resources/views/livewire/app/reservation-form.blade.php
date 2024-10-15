@@ -5,7 +5,7 @@
         date_out: $persist($wire.entangle('date_out')).using(sessionStorage),
         adult_count: $persist($wire.entangle('adult_count')).using(sessionStorage),
         children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
-        capacity: $persist($wire.entangle('capacity')).using(sessionStorage),
+        capacity: $wire.entangle('capacity'),
 
         {{-- Guest Details --}}
         first_name: $persist($wire.entangle('first_name')).using(sessionStorage),
@@ -69,7 +69,7 @@
             @include('components.app.reservation.payment')
         </section>
 
-        <section class="sticky self-start w-full p-5 overflow-auto rounded-lg top-5 bg-slate-50/50">
+        <section class="sticky self-start w-full overflow-auto border rounded-lg top-5">
             @include('components.app.reservation.summary', [
                 'selected_amenities' => $selected_amenities,
                 'selected_rooms' => $selected_rooms,
@@ -97,11 +97,11 @@
             </section>
 
             <footer x-show="checked" class="p-5 bg-white border-t">
-                <x-primary-button x-on:click="$wire.store(); show = false;">
+                <x-primary-button x-on:click="$wire.store(); show = false; toast('Success', { type: 'success', description: 'Yay, Reservation Created!' })">
                     Submit Reservation
                 </x-primary-button>
             </footer>
         </div>
-    </x-modal.full>
+    </x-modal.full> 
 </form>
 

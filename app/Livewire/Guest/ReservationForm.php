@@ -4,7 +4,6 @@ namespace App\Livewire\Guest;
 
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
-use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
@@ -59,22 +58,23 @@ class ReservationForm extends Component
     public $can_select_a_room = false;
     public $can_submit_payment = false;
     public $can_select_address = false;
+    public $show_available_rooms = false;
+    public $available_room_types;
     public $room_types;
+    public $selected_type;
     public $sub_total = 0;
     public $net_total = 0;
     public $vat = 0;
     public $vatable_sales = 0;
     public $reservation_rid;
     public $night_count;
-    public $show_available_rooms = false;
 
     public function mount() {
         $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
-        $this->room_types = RoomType::withCount(['rooms' => function ($query) {
-            $query->where('status', Room::STATUS_AVAILABLE);
-        }])->get();
+        $this->room_types = RoomType::all();
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
+        $this->available_room_types = new Collection;
 
         $this->regions = AddressController::getRegions();
         $this->districts = AddressController::getDistricts();
@@ -124,14 +124,52 @@ class ReservationForm extends Component
         ];
     }
 
-    public function addRoom(Room $room) {
+    public function toggleRoom(Room $room)
+    {
         if ($room && !$this->selected_rooms->contains('id', $room->id)) {
             $this->selected_rooms->push($room);
 
             $this->capacity += $room->max_capacity;
             $this->sub_total += ($room->rate * $this->night_count);
+        } else {
+            $this->capacity -= $room->max_capacity;
 
-            $this->computeBreakdown();
+            $this->sub_total -= ($room->rate * $this->night_count);
+
+            $this->selected_rooms = $this->selected_rooms->reject(function ($room_loc) use ($room) {
+                return $room_loc->id == $room->id;
+            });
+        }
+
+        $this->computeBreakdown();
+    }
+
+    public function viewRooms(RoomType $roomType) {
+        $this->selected_type = $roomType;
+        
+        $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
+        
+        $room_by_capacity = Room::whereNotIn('id', $reserved_rooms)
+            ->where('room_type_id', $roomType->id)
+            ->orderBy('max_capacity')
+            ->get()
+            ->toBase();
+
+        $this->available_room_types = $room_by_capacity->groupBy('max_capacity');
+        // dd($this->available_room_types);
+    }
+
+    public function addRoom($room_ids) {
+        // Loops through all the room ids
+        foreach ($room_ids as $room_id) {
+            // Check if the room is not yet selected
+            if (!$this->selected_rooms->contains('id', $room_id)) {
+                $room = Room::find($room_id);
+                $this->toggleRoom($room);
+
+                $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Room added!']));
+                break;
+            }
         }
     }
 
@@ -143,6 +181,8 @@ class ReservationForm extends Component
         $this->selected_rooms = $this->selected_rooms->reject(function ($room) use ($room_to_delete) {
             return $room->id == $room_to_delete->id;
         });
+
+        $this->dispatch('toast', json_encode(['message' => 'For Your Info.', 'type' => 'info', 'description' => 'Room removed']));
     }
 
     public function computeBreakdown() {
@@ -194,9 +234,10 @@ class ReservationForm extends Component
         $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
 
         $this->suggested_rooms = Room::whereNotIn('id', $reserved_rooms)
-                                    ->limit(3)
                                     ->where('status', Room::STATUS_AVAILABLE)
-                                    ->orderBy('rate')
+                                    ->where('max_capacity', '>=', $this->capacity)
+                                    ->orderByDesc('rate')
+                                    ->limit(3)
                                     ->get();
     }
 
@@ -277,6 +318,9 @@ class ReservationForm extends Component
                         'children_count' => $this->rules()['children_count'],
                         'selected_rooms' => $this->rules()['selected_rooms'],
                     ]);
+
+                    $this->step++;
+                    $this->dispatch('toast', json_encode(['message' => 'Success!.', 'type' => 'success', 'description' => 'Next, Guest Details']));
                     break;
                 case 2:
                     $this->validate([
@@ -286,25 +330,19 @@ class ReservationForm extends Component
                         'phone' => $this->rules()['phone'],
                         'address' => $this->rules()['address'],
                     ]);
+
+                    $this->step++;
+                    $this->dispatch('toast', json_encode(['message' => 'Success!.', 'type' => 'success', 'description' => 'Next, Payment']));
                     break;
                 case 3:
                     $this->validate([
                         'proof_image_path' => $this->rules()['proof_image_path']
                     ]);
     
-                    // Store the reservation
-                    $this->store();
+                    $this->dispatch('open-modal', 'show-reservation-confirmation');
                     break;
                 default:
                     break;
-            }
-    
-            // Proceed to next step
-            // Dispatch an event that will be received by Alpine
-            // Check: reservation-form
-            $this->step++;
-            if ($this->step != 3) {
-                $this->dispatch('next-step', $this->step);
             }
         }
     }
@@ -357,17 +395,10 @@ class ReservationForm extends Component
             }
         }
 
-        // Create Invoice
-        $invoice = Invoice::create([
-            'reservation_id' => $reservation->id,
-            'balance' => $this->net_total,
-            'issue_date' => Carbon::now(),
-            'due_date' => Carbon::parse($this->date_out)->addWeeks(2),
-            'status' => Invoice::STATUS_PENDING,
-        ]); 
-
         // Dispatch event
         $this->dispatch('reservation-created');
+        $this->dispatch('toast', json_encode(['message' => 'Success!.', 'type' => 'success', 'description' => 'Reservation sent!']));
+        $this->step++;
     }
 
     public function render()

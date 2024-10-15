@@ -53,6 +53,7 @@ class RolePermissionSeeder extends Seeder
             'read rooms',
             'read rooms type',
 
+            'create billing',
             'read billings',
         ];
 

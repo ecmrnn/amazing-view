@@ -124,11 +124,13 @@
     <div x-show="can_submit_payment" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body>
             <div class="p-5 space-y-3">
-                <p class="max-w-sm text-sm">Upload your proof of payment here.</p>
+                <div class="px-3 py-2 border border-blue-500 rounded-md bg-blue-500/25">
+                    <p class="max-w-sm text-xs"><strong>Note:</strong> A minimum of <x-currency />500.00 must be paid to process your reservation. Kindly send an image of your receipt using the following payment methods below.</p>
+                </div>
 
                 {{-- Payment Methods --}}
                 <div class="grid gap-3 md:grid-cols-2">
-                    <div class="flex items-center gap-3 p-3 border rounded-lg">
+                    <div class="flex items-center gap-3 p-3 bg-white border rounded-lg">
                         <div class="max-w-[80px] aspect-square w-full rounded-lg"
                             style="background-image: url('https://placehold.co/80');
                                 background-size: cover;">
@@ -140,7 +142,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3 p-3 border rounded-lg">
+                    <div class="flex items-center gap-3 p-3 bg-white border rounded-lg">
                         <div class="max-w-[80px] aspect-square w-full rounded-lg"
                             style="background-image: url('https://placehold.co/80');
                                 background-size: cover;">

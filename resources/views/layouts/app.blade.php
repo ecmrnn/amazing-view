@@ -19,7 +19,27 @@
         @livewireChartsScripts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased font-inter text-zinc-800">
+    <body class="antialiased font-inter text-zinc-800"
+        x-init="
+        window.toast = function(message, options = {}){
+            let description = '';
+            let type = 'default';
+            let position = 'top-center';
+            let html = '';
+            if(typeof options.description != 'undefined') description = options.description;
+            if(typeof options.type != 'undefined') type = options.type;
+            if(typeof options.position != 'undefined') position = options.position;
+            if(typeof options.html != 'undefined') html = options.html;
+            
+            window.dispatchEvent(new CustomEvent('toast-show', { detail : { type: type, message: message, description: description, position : position, html: html }}));
+        }"
+        x-on:toast="toast_details = JSON.parse($event.detail);
+            toast(toast_details.message, {
+                type: toast_details.type,
+                description: toast_details.description,
+                position: 'top-right',
+            })"
+        >
         <div class="flex flex-col min-h-screen bg-slate-100 sm:flex-row">
             @include('layouts.navigation')
 
@@ -36,6 +56,9 @@
                 </main>
             </div>
         </div>
+    
+        {{-- Toast --}}
+        <x-toast />
 
         @livewireScripts
         @livewireStyles

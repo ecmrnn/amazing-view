@@ -37,7 +37,7 @@
         </x-app.card>
         <x-app.card
             :data="$available_rooms"
-            label="Availabe Rooms"
+            label="Available Rooms"
             href="app.rooms.index"
             >
             <x-slot:icon>

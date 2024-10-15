@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Reservation;
+use App\Models\Discount;
+use App\Models\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,13 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('discount_invoice', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Reservation::class)->constrained();
-            $table->decimal('balance');
-            $table->date('issue_date');
-            $table->date('due_date');
-            $table->smallInteger('status')->default(0);
+            $table->foreignIdFor(Invoice::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Discount::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('discount_invoice');
     }
 };

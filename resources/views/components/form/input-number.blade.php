@@ -7,17 +7,15 @@
 
 @php
     $model = $attributes['x-model'];
-    is_null($attributes['x-model']) ? $number = 0 : $number = $model;
+    is_null($attributes['x-model']) ?: $number = $model;
 @endphp
 
 <div class="flex bg-white rounded-lg" 
-    @if (is_null($model))
-        x-data="{ number: 0 }"
-    @endif>
+    x-data="{ number: @js($number) }">
 
     {{-- Number input --}}
     <input x-bind:value="{{ is_null($model) ? 'number' : $number }}"
-        {{ $attributes->merge(['class' => 'peer w-full text-sm border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 invalid:bg-red-50 invalid:border-red-500 focus:invalid:border-red-500']) }}
+        {{ $attributes->merge(['class' => 'peer w-full text-sm border-x-transparent border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 invalid:bg-red-50 invalid:border-red-500 focus:invalid:border-red-500']) }}
         type="number" min="{{ $min }}" max="{{ $max }}" />
 
     {{-- Less Button --}}

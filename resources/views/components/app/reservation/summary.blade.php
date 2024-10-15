@@ -3,7 +3,7 @@
     'selected_rooms' => []
 ])
 
-<div class="p-10 space-y-5 bg-white rounded-md shadow-lg min-w-[800px]">
+<div class="p-10 space-y-5 bg-white min-w-[800px]">
     <header class="flex items-center justify-between">
         <div class="flex items-center gap-5">
             <x-application-logo class="rounded-full" />

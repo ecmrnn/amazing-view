@@ -19,7 +19,7 @@ class BillingController extends Controller
      */
     public function create()
     {
-        //
+        return view('app.billings.create');
     }
 
     /**

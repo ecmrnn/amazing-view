@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             AmenitySeeder::class,
             RolePermissionSeeder::class,
             UserSeeder::class,
+            DiscountSeeder::class,
+            ReservationSeeder::class,
         ]);
     }
 }

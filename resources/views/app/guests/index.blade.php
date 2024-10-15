@@ -21,10 +21,11 @@
 
     <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
         <hgroup>
-            {{-- <h2 class="text-lg font-semibold">{{ $room->name }} Rooms</h2>
-            <p class="max-w-sm text-xs">Manage all your <strong>{{ $room->name }}</strong> rooms using the table below.</p> --}}
+            <h2 class="text-lg font-semibold">Guests</h2>
+            <p class="max-w-sm text-xs">Manage all your guests using the table below.</p>
         </hgroup>
     
-        {{-- Room Table --}}
+        {{-- Guest Table --}}
+        <livewire:tables.guest-table />
     </div>
 </x-app-layout>

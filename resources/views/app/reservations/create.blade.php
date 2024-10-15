@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot:header>
+    {{-- <x-slot:header>
         <div class="flex items-center justify-between gap-3 p-5 py-3 bg-white rounded-lg">
             <hgroup>
                 <h1 class="text-xl font-bold leading-tight text-gray-800">
@@ -17,7 +17,7 @@
                 </x-primary-button>
             @endcan
         </div>
-    </x-slot:header>
+    </x-slot:header> --}}
 
     <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
         <div class="flex items-center gap-3 sm:gap-5">

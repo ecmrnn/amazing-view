@@ -8,6 +8,6 @@ $classes = 'border-b-2 font-bold border-transparent py-2 transition duration-150
             : $classes .= ' text-zinc-800/50 hover:text-zinc-800 hover:border-blue-500 focus:text-zinc-800 focus:border-blue-500';
 @endphp
 
-<a {{ $attributes->merge(['class' => $classes]) }} wire:navigate>
+<a {{ $attributes->merge(['class' => $classes]) }} wire:navigate.hover>
     {{ $slot }}
 </a>

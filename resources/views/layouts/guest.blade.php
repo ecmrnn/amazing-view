@@ -17,15 +17,38 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body x-data="{ open : false }" class="antialiased font-inter text-zinc-800">
+    <body x-data="{ open : false, toast_details: {} }" class="antialiased font-inter text-zinc-800"
+        x-init="
+        window.toast = function(message, options = {}){
+            let description = '';
+            let type = 'default';
+            let position = 'top-center';
+            let html = '';
+            if(typeof options.description != 'undefined') description = options.description;
+            if(typeof options.type != 'undefined') type = options.type;
+            if(typeof options.position != 'undefined') position = options.position;
+            if(typeof options.html != 'undefined') html = options.html;
+            
+            window.dispatchEvent(new CustomEvent('toast-show', { detail : { type: type, message: message, description: description, position : position, html: html }}));
+        }"
+        x-on:toast="toast_details = JSON.parse($event.detail);
+            toast(toast_details.message, {
+                type: toast_details.type,
+                description: toast_details.description,
+                position: 'top-right',
+            })"
+        >
         <x-navigations.guest />
         
         <main class="min-h-screen">
             {{ $slot }}
         </main>
-        
-        <x-footer />
 
+        <x-footer />
+        
+        {{-- Toast --}}
+        <x-toast />
+        
         @filepondScripts
         @livewireScripts
         @livewireStyles

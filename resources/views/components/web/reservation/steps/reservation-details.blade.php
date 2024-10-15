@@ -84,11 +84,10 @@
             <div wire:loading.delay wire:target="suggestRooms" class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-lg">Amazing rooms incoming!</div>
 
             @if (!empty($suggested_rooms))
-            <div class="p-5 m-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="p-3 m-5 mb-0 space-y-5 bg-white border rounded-lg border-slate-200">
                 <h3 class="text-lg font-semibold">Suggested Rooms</h3>
                 <div class="grid-cols-3 gap-2 space-y-3 lg:space-y-0 lg:grid">
                     @forelse ($suggested_rooms as $room)
-                        {{-- <p>{{ $room->room_number }}</p> --}}
                         <x-web.reservation.step-1.suggested-room :key="$room->id" :selectedRooms="$selected_rooms" :room="$room" />
                     @empty
                         <div class="col-span-3 text-center text-zinc-800/50">No available rooms at the moment...</div>
@@ -98,14 +97,29 @@
             @endif
             
             {{-- Room Categories --}}
-            <div class="p-5 m-5 space-y-5 bg-white border rounded-lg border-slate-200">
-
+            <div class="p-5 space-y-3">
                 <h3 class="text-lg font-semibold">Our Rooms</h3>
-                <div class="grid gap-2 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+                <div class="space-y-1">
                     @forelse ($room_types as $room)
-                        <x-web.reservation.step-1.room-category :key="$room->id" :room="$room" />
+                        <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 bg-white border rounded-lg">
+                            <div class="flex items-start w-full gap-5">
+                                <div class="w-full max-w-[150px]">
+                                    <x-img-lg src="{{ $room->image_1_path }}" />
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold">{{ $room->name }}</h3>
+                                    <p class="max-w-xs text-xs">{{ $room->description }}</p>
+                                </div>
+                            </div>
+
+                            <x-secondary-button class="flex-shrink-0 text-xs" x-on:click="$dispatch('open-modal', 'show-typed-rooms')" wire:click="viewRooms({{ $room->id }})">
+                                View Rooms
+                            </x-secondary-button>
+                        </div>
                     @empty
-                        <div class="p-5 text-center text-zinc-800/50">Oof! No rooms found in the system yet.</div>
+                        <div class="border rounded-lg">
+                            <x-table-no-data.rooms />
+                        </div>
                     @endforelse
                 </div>
             </div>
@@ -138,7 +152,7 @@
                                 id="amenity{{ $amenity->id }}"
                                 name="amenity"
                                 wire:click="toggleAmenity({{ $amenity->id }})">
-                                <div class="select-none">
+                                <div class="px-3 py-2 select-none">
                                     <div class="w-full font-semibold capitalize text-md">{{ $amenity->name }}</div>
                                     <div class="w-full text-xs">Standard Fee: &#8369;{{ $amenity->price }}</div>
                                 </div>
@@ -159,32 +173,84 @@
     x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }"
     type="submit">Guest Details</x-primary-button>
 
-{{-- Available Rooms Modal --}}
-<x-modal.full name="show-available-rooms">
-    <div class="space-y-3">
-        <div class="flex items-start justify-between gap-3">
-            <div wire:loading.delay wire:target="getAvailableRooms" class="self-center text-sm font-semibold">We are loading your amazing rooms...</div>
+{{-- Modal for viewing rooms --}}
+<x-modal.full name="show-typed-rooms" maxWidth="lg">
+    @if (!empty($selected_type))
+        <div>
+            <header class="flex items-center gap-3 p-5 border-b">
+                <x-tooltip text="Back" dir="bottom">
+                    <x-icon-button x-ref="content" x-on:click="show = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    </x-icon-button>
+                </x-tooltip>
+                <hgroup>
+                    <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
+                    <p class="text-xs text-zinc-800/50">Click a room to select</p>
+                </hgroup>
+            </header>
             
-            <hgroup wire:loading.remove wire:target="getAvailableRooms">
-                <h2 class="text-lg font-semibold capitalize">{{ $room_type_name }}</h2>
-                @if (count($available_rooms) > 0)
-                    <p class="text-sm">Here are the available <span class="font-semibold text-blue-500 capitalize">{{ $room_type_name }}</span> rooms.</p>
-                @endif
-            </hgroup>
+            {{-- Room List --}}
+            <section class="grid gap-1 p-5 bg-slate-100/50">
 
-            <x-close-button x-on:click="show = false" />
+                <div wire:loading.delay wire:target='selectBuilding' class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
+                    Amazing rooms incoming!
+                </div>
+
+                <div class="space-y-1">
+                    @forelse ($available_room_types as $capacity => $rooms)
+                        @php
+                            $rate_sum = 0;
+                            $thumbnail = '';
+                            $selected_room_count = 0;
+                            foreach ($rooms as $room) {
+                                $rate_sum += $room->rate;
+                                $thumbnail = $room->image_1_path;
+
+                                if ($selected_rooms->contains('id', $room->id)) {
+                                    $selected_room_count++;
+                                }
+                            }
+                            $average_rate = $rate_sum / intval($rooms->count());
+                        @endphp
+                        <div x-data="{ show_rooms: false }" class="flex items-start justify-between gap-3 p-3 bg-white border rounded-md">
+                            <div class="flex w-full gap-3">
+                                <div class="max-w-[150px] w-full relative">
+                                    <x-img-lg src="{{ $thumbnail }}" class="w-full" />
+                                    @if ($selected_room_count > 0)
+                                        <p class="absolute px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-md top-1 left-1 w-max">{{ $selected_room_count }} Selected</p>
+                                    @endif
+                                </div>
+
+                                <hgroup>
+                                    <h3 class="font-semibold">For {{ $capacity }} Guests</h3>
+                                    <p class="text-xs text-zinc-800/50">
+                                        @if ($rooms->count() > 1)
+                                            <span>Available Rooms: {{ $rooms->count() }}</span>
+                                        @else
+                                            <span>Available Room: {{ $rooms->count() }}</span>
+                                        @endif
+                                    </p>
+                                    <p class="text-xs text-zinc-800/50">Average Rate: <x-currency />{{ number_format($average_rate, 2) }}</p>
+                                </hgroup>
+                            </div>
+                            
+                            <div class="min-w-max">
+                                @if ($selected_room_count == $rooms->count())
+                                    <x-secondary-button disabled class="text-xs">
+                                        All Room Selected
+                                    </x-secondary-button>    
+                                @else
+                                    <x-primary-button type="button" class="text-xs" wire:click="addRoom({{ json_encode($rooms->pluck('id')) }})">
+                                        Add Room
+                                    </x-primary-button>    
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <x-table-no-data.rooms />
+                    @endforelse
+                </div>
+            </section>
         </div>
-
-        <div class="border divide-y rounded-lg divide-dashed *:p-3" wire:loading.remove wire:target="getAvailableRooms">
-            @forelse ($available_rooms as $room)
-                <x-web.reservation.step-1.available-room :key="$room->id" :selectedRooms="$selected_rooms" :room="$room" />
-            @empty
-                <div class="text-sm font-semibold text-center text-zinc-800/50">No available rooms for this category.</div>  
-            @endforelse
-
-            @if (count($available_rooms) > 0)
-                {{ $available_rooms->links() }}
-            @endif
-        </div>
-    </div>
+    @endif
 </x-modal.full>

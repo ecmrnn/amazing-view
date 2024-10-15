@@ -37,7 +37,8 @@ class DashboardController extends Controller
         // Dashboard content for frontdesks
         if (Auth::user()->role == User::ROLE_FRONTDESK) {
             $guest_in = Reservation::where('status', Reservation::STATUS_CHECKED_IN)->count();
-            $available_rooms = Room::where('status', Room::STATUS_AVAILABLE)->count();
+            $available_rooms = Room::where('status', Room::STATUS_AVAILABLE)
+                ->count();
             $pending_reservations = Reservation::where('status', Reservation::STATUS_PENDING)->count();
             $due_invoices = Invoice::where('status', Invoice::STATUS_DUE)->count();
 

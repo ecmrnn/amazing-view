@@ -6,6 +6,7 @@
 
 @php
 $maxWidth = [
+    'xs' => 'max-w-xs',
     'sm' => 'sm:max-w-sm',
     'md' => 'sm:max-w-md',
     'lg' => 'sm:max-w-lg',
@@ -67,7 +68,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="w-full mt-5 overflow-hidden transition-all transform bg-white rounded-lg shadow-md sm:w-full {{ $maxWidth }} sm:mx-auto"
+        class="w-full mt-10 sm:mt-5 overflow-hidden transition-all transform bg-white rounded-lg shadow-md sm:w-full {{ $maxWidth }} mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"

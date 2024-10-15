@@ -347,15 +347,6 @@ class ReservationForm extends Component
             }
         }
 
-        // Create Invoice
-        $invoice = Invoice::create([
-            'reservation_id' => $reservation->id,
-            'balance' => $this->net_total,
-            'issue_date' => Carbon::now(),
-            'due_date' => Carbon::parse($this->date_out)->addWeeks(2),
-            'status' => Invoice::STATUS_PENDING,
-        ]); 
-
         // Reset all properties
         $this->reset();
     }
