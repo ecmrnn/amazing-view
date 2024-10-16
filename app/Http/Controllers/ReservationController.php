@@ -36,7 +36,11 @@ class ReservationController extends Controller
      */
     public function show(string $reservation)
     {
-        // 
+        $reservation = Reservation::where('rid', $reservation)->first();
+
+        return view('app.reservations.show', [
+            'reservation' => $reservation
+        ]);
     }
 
     /**

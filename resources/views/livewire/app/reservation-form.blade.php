@@ -22,6 +22,7 @@
 
         {{-- Operations --}}
         is_map_view: $wire.entangle('is_map_view'),
+        can_enter_guest_details: $wire.entangle('can_enter_guest_details'),
         can_select_room: $wire.entangle('can_select_room'),
         can_submit_payment: $wire.entangle('can_submit_payment'),
 
@@ -42,9 +43,8 @@
             @include('components.app.reservation.guest_details')
 
             <x-line-vertical />
-            <x-primary-button type="button" x-show="!can_select_room" x-on:click="$wire.selectRoom()">Select a Room</x-primary-button>
-            <x-secondary-button type="button" x-show="can_select_room" x-on:click="can_select_room = !can_select_room">Edit Reservation &amp; Guest Details</x-secondary-button>
-            <x-line-vertical />
+            {{-- <x-secondary-button type="button" x-show="can_select_room" x-on:click="can_select_room = !can_select_room">Edit Reservation &amp; Guest Details</x-secondary-button>
+            <x-line-vertical /> --}}
 
             {{-- Step 3: Room & Additional Details --}}
             @include('components.app.reservation.room_add_details', [
@@ -59,13 +59,8 @@
                 'rooms' => $rooms,
             ])
             <x-line-vertical />
-
-            {{-- Toggle payment section --}}
-            <x-primary-button x-bind:disabled="!can_select_room" x-show="!can_submit_payment" type="button" x-on:click="$wire.sendPayment()">Send Payment</x-primary-button>
-            <x-secondary-button x-show="can_submit_payment" x-on:click="can_submit_payment = false">Edit Rooms</x-secondary-button>
-
+            
             {{-- Step 4: Payment --}}
-            <x-line-vertical />
             @include('components.app.reservation.payment')
         </section>
 
@@ -78,29 +73,23 @@
     </div>
     
     {{-- Modal for confirming reservation --}}
-    <x-modal.full name="show-reservation-confirmation" maxWidth="lg">
+    <x-modal.full name="show-reservation-confirmation" maxWidth="sm">
         <div x-data="{ checked: false }">
-            <header class="flex items-center gap-3 p-5 border-b">
-                <x-tooltip text="Back" dir="bottom">
-                    <x-icon-button x-ref="content" x-on:click="show = false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                    </x-icon-button>
-                </x-tooltip>
+            <section class="p-5 space-y-5 bg-white">
                 <hgroup>
-                    <h2 class="text-sm font-semibold capitalize">Reservation Confirmation</h2>
-                    <p class="max-w-sm text-xs text-zinc-800/50">Confirm that the reservation details entered are correct.</p>
+                    <h2 class="text-sm font-semibold text-center capitalize">Reservation Confirmation</h2>
+                    <p class="max-w-sm text-xs text-center text-zinc-800/50">Confirm that the reservation details entered are correct.</p>
                 </hgroup>
-            </header>
-            
-            <section class="p-5 bg-slate-100/50">
-                <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
-            </section>
 
-            <footer x-show="checked" class="p-5 bg-white border-t">
-                <x-primary-button x-on:click="$wire.store(); show = false; toast('Success', { type: 'success', description: 'Yay, Reservation Created!' })">
-                    Submit Reservation
-                </x-primary-button>
-            </footer>
+                <div class="px-3 py-2 border rounded-md">
+                    <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
+                </div>
+                
+                <div class="flex items-center justify-center gap-1">
+                    <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+                    <x-primary-button x-bind:disabled="!checked" x-on:click="$wire.store(); show = false; toast('Success', { type: 'success', description: 'Yay, Reservation Created!' })">Submit Reservation</x-primary-button>
+                </div>
+            </section>
         </div>
     </x-modal.full> 
 </form>

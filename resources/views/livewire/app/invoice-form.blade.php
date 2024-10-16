@@ -59,35 +59,25 @@
     </section>
     
     {{-- Modal for confirming invoice --}}
-    <x-modal.full name="show-invoice-confirmation" maxWidth="lg">
+    <x-modal.full name="show-invoice-confirmation" maxWidth="sm">
         <div x-data="{ checked: false }">
-            <header class="flex items-center gap-3 p-5 border-b">
-                <x-tooltip text="Back" dir="bottom">
-                    <x-icon-button x-ref="content" x-on:click="show = false; checked = false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                    </x-icon-button>
-                </x-tooltip>
+            <section class="p-5 space-y-5 bg-white">
                 <hgroup>
-                    <h2 class="text-sm font-semibold capitalize">Invoice Confirmation</h2>
-                    <p class="max-w-sm text-xs text-zinc-800/50">Confirm that the invoice details entered are correct.</p>
+                    <h2 class="text-sm font-semibold text-center capitalize">Invoice Confirmation</h2>
+                    <p class="max-w-sm text-xs text-center text-zinc-800/50">Confirm that the invoice details entered are correct.</p>
                 </hgroup>
-            </header>
-            
-            <section class="p-5 bg-slate-100/50">
-                <x-form.input-checkbox x-model="checked" id="checked" label="The reservation, guest, and invoice details entered are correct." />
-            </section>
-    
-            <footer x-show="checked" class="flex gap-1 p-5 bg-white border-t">
-                @if ($reservation->count() > 0)
-                    <x-secondary-button class="text-xs">
-                        Send to {{ $reservation->email }}
-                    </x-secondary-button>
-                @endif
+
+                <div class="px-3 py-2 border rounded-md">
+                    <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
+                </div>
                 
-                <x-primary-button class="text-xs" x-on:click="$wire.store(); show = false;">
-                    Submit Invoice
-                </x-primary-button>
-            </footer>
+                <div class="flex items-center justify-center gap-1">
+                    <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+                    <x-primary-button x-bind:disabled="!checked" class="text-xs" x-on:click="$wire.store(); show = false;">
+                        Submit Invoice
+                    </x-primary-button>
+                </div>
+            </section>
         </div>
     </x-modal.full> 
 </form>

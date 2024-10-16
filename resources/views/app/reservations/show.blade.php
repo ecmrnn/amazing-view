@@ -30,8 +30,8 @@
             </x-tooltip>
             
             <div>
-                <h2 class="text-lg font-semibold">Create Reservation</h2>
-                <p class="max-w-sm text-xs">Create reservation for guests here.</p>
+                <h2 class="text-lg font-semibold">{{ $reservation->rid }}</h2>
+                <p class="max-w-sm text-xs">Update this reservation here.</p>
             </div>
         </div>
 

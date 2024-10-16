@@ -37,11 +37,11 @@
                     <x-form.input-label for="cash_payment">Enter the amount paid</x-form.input-label>
                     <x-form.input-currency x-model="cash_payment" wire:model.live='cash_payment' min="500" id="cash_payment" />
                 </div>
-                
-                {{-- Submit --}}
-                <x-primary-button>
-                    Submit Reservation
-                </x-primary-button>
+
+                <div class="flex items-center gap-1">
+                    <x-secondary-button type="button" x-on:click="can_submit_payment = false">Edit Rooms</x-secondary-button>
+                    <x-primary-button>Submit Reservation</x-primary-button>
+                </div>
             </div>
         </x-form.form-body>
     </div>

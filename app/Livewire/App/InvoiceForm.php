@@ -129,6 +129,7 @@ class InvoiceForm extends Component
                     $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Reservation found!']));
                 }
             } else {
+                $this->reservation = collect();
                 $this->dispatch('toast', json_encode(['message' => 'Failed', 'type' => 'danger', 'description' => 'Reservation not found!']));
             }
         }

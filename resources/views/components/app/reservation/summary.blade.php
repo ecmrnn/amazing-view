@@ -1,4 +1,5 @@
 @props([
+    'reservation' => [],
     'selected_amenities' => [],
     'selected_rooms' => []
 ])
@@ -16,7 +17,11 @@
         </div>
 
         <hgroup class="text-right">
-            <h2 class="text-lg font-semibold">R0101202400001</h2>
+            @if (!empty($reservation))
+                <h2 class="text-lg font-semibold">{{ $reservation->rid }}</h2>
+            @else
+                <h2 class="text-lg font-semibold">RMMDDYYYY0000X</h2>
+            @endif
             <p class="text-xs">Reservation ID</p>
         </hgroup>
     </header>
@@ -67,7 +72,7 @@
         <div>
             <p x-show="address != '' && address != null" class="text-sm font-semibold">
                 <template x-for="item in address">
-                    <span x-text="item"></span>
+                    <span x-text="item" class="capitalize"></span>
                 </template>
             </p>
             <x-form.text-loading x-show="address == '' || address == null" class="w-1/2" />

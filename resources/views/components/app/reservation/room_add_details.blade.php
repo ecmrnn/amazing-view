@@ -19,7 +19,7 @@
             <div class="p-5 space-y-3">
                 <div>
                     {{-- header --}}
-                    <div class="flex items-start justify-between gap-5">
+                    <div class="flex flex-col items-start justify-between gap-5 sm:flex-row">
                         <hgroup>
                             <h2 class="text-sm font-semibold">Available Rooms</h2>
                             <p class="max-w-xs text-xs">Below are the list of available rooms between
@@ -30,7 +30,7 @@
                         <div class="flex border divide-x rounded-lg">
                             <x-tooltip text="List View" dir="bottom">
                                 <x-icon-button x-on:click="is_map_view = !is_map_view" x-ref="content"
-                                    x-bind:disabled="!is_map_view" class="m-1 border-transparent">
+                                    x-bind:disabled="!is_map_view" class="flex gap-2 m-1 border-transparent">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -41,11 +41,12 @@
                                         <path d="M10 12h11" />
                                         <path d="M10 18h11" />
                                     </svg>
+                                    <p class="text-xs font-semibold sm:hidden">List View</p>
                                 </x-icon-button>
                             </x-tooltip>
                             <x-tooltip text="Map View" dir="bottom">
                                 <x-icon-button x-on:click="is_map_view = !is_map_view" x-ref="content"
-                                    x-bind:disabled="is_map_view" class="m-1 border-transparent">
+                                    x-bind:disabled="is_map_view" class="flex gap-2 m-1 border-transparent">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -55,6 +56,7 @@
                                         <path d="M15 5.764v15" />
                                         <path d="M9 3.236v15" />
                                     </svg>
+                                    <p class="text-xs font-semibold sm:hidden">Map View</p>
                                 </x-icon-button>
                             </x-tooltip>
                         </div>
@@ -146,6 +148,12 @@
                                 No add ons yet...</div>
                         @endforelse
                     </div>
+                </div>
+
+                <div class="flex items-center gap-1">
+                    <x-secondary-button type="button" x-on:click="can_enter_guest_details = true; can_select_room = false">Edit Guest Details</x-secondary-button>
+                    <x-primary-button type="button" x-on:click="$wire.sendPayment()">Payment</x-primary-button>
+                    <p class="max-w-xs text-xs font-semibold" wire:loading.delay wire:target="sendPayment()">Please wait while we load the next form.</p>
                 </div>
             </div>
         </x-form.form-body>

@@ -5,12 +5,12 @@
             <div class="space-y-5">
                 <!-- Logo -->
                 <div class="flex self-center flex-shrink">
-                    <x-application-logo class="mx-auto" />
+                    <x-application-logo x-bind:class="expanded ? '' : 'mx-auto'" />
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-y-2 sm:block">
-                    <p class="text-xs font-bold text-center text-zinc-800/50">Menu</p>
+                    <p class="text-xs font-semibold" x-bind:class="expanded ? '' : 'text-center'">Menu</p>
 
                     @include('components.app.navigation')
                 </div>
@@ -22,7 +22,7 @@
                 <template x-if="!expanded">
                     <x-tooltip text="Expand" dir="right">
                         <button x-ref="content" x-on:click="expanded = !expanded"
-                            class="grid p-2 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none text-zinc-800/50 hover:text-zinc-800 hover:bg-slate-50 hover:border-slate-200 focus:text-zinc-800 focus:border-blue-500">
+                            class="grid p-3 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none text-zinc-600 hover:text-zinc-800 hover:bg-slate-50 hover:border-slate-200 focus:text-zinc-800 focus:border-blue-500">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="lucide lucide-arrow-right-from-line">
@@ -38,7 +38,7 @@
                 <template x-if="expanded">
                     <x-tooltip text="Collapse" dir="right">
                         <button x-ref="content" x-on:click="expanded = !expanded"
-                            class="grid p-2 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none text-zinc-800/50 hover:text-zinc-800 hover:bg-slate-50 hover:border-slate-200 focus:text-zinc-800 focus:border-blue-500">
+                            class="grid p-3 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none text-zinc-800/50 hover:text-zinc-800 hover:bg-slate-50 hover:border-slate-200 focus:text-zinc-800 focus:border-blue-500">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="lucide lucide-arrow-left-to-line">

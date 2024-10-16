@@ -2,7 +2,7 @@
     {{-- Guest Details --}}
     <x-form.form-header step="2" title="Guest Details" />
 
-    <div x-show="!can_select_room" x-collapse.duration.1000ms>
+    <div x-show="can_enter_guest_details && !can_select_room" x-collapse.duration.1000ms>
         <x-form.form-body>
             <div class="p-5 space-y-3">
                 <hgroup>
@@ -101,7 +101,7 @@
                             </div>
                             {{-- Street --}}
                             <x-form.input-text wire:model.live="street" x-model="street"
-                                x-on:keyup="$wire.setAddress()" label="Street (Optional)" id="street" />
+                                x-on:keyup="$wire.setAddress()" label="Street (Optional)" id="street" class="capitalize" />
                             <x-form.input-error field="address" />
                             {{-- Loaders --}}
                             <div wire:loading wire:target="getProvinces" class="text-xs font-semibold">Loading
@@ -118,6 +118,12 @@
                                 Loading Baranggay...</div>
                         </div>
                     </div>
+                </div>
+
+                <div class="flex items-center gap-1">
+                    <x-secondary-button type="button" x-on:click="can_enter_guest_details = false">Edit Reservation Details</x-secondary-button>
+                    <x-primary-button type="button" x-on:click="$wire.selectRoom()">Select a Room</x-primary-button>
+                    <p class="max-w-xs text-xs font-semibold" wire:loading.delay wire:target="selectRoom()">Please wait while we load the next form.</p>
                 </div>
             </div>
         </x-form.form-body>

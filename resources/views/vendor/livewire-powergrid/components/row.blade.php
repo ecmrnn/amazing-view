@@ -68,7 +68,7 @@
         style="{{ $column->hidden === true ? 'display:none' : '' }}; {{ data_get($theme, 'table.tdBodyStyle'). ' ' . $column->bodyStyle ?? '' }}"
         wire:key="row-{{ $column->field }}-{{ $childIndex }}"
     >
-        <div class="pg-actions">
+        <div>
             @if(empty(data_get($row, 'actions')) && $column->isAction)
                 @if (method_exists($this, 'actionsFromView') && $actionsFromView = $this->actionsFromView($row))
                     <div wire:key="actions-view-{{ data_get($row, $this->realPrimaryKey) }}">

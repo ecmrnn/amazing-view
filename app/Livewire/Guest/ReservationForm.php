@@ -83,45 +83,18 @@ class ReservationForm extends Component
     // Custome Validation Messages
     public function messages() 
     {
-        return [
-            'selected_rooms.required' => 'Atleast 1 :attribute is required.',
-            'proof_image_path.required' => 'Upload your proof of payment here.',
-            'proof_image_path.mimes' => 'File must be a valid image format (JPG, JPEG, PNG).',
-            'proof_image_path.max' => 'Maximum file size is 1MB (1024KB).',
-        ];
+        return Reservation::messages(['cash_payment']);
     }
 
     // Validation Methods
     public function rules()
     {
-        return [
-            'date_in' => 'required|date|after_or_equal:today',
-            'date_out' => 'required|date|after_or_equal:date_in',
-            'adult_count' => 'required|integer|min:1',
-            'children_count' => 'integer|min:0',
-            'selected_rooms' => 'required',
-            'first_name' => 'required|min:2',
-            'last_name' => 'required|min:2',
-            'email' => 'required|email:rfc,dns',
-            'phone' => 'required|digits:11|starts_with:09',
-            'address' => 'required',
-            'proof_image_path' => 'required|mimes:jpg,jpeg,png|file|max:1000',
-        ];
+        return Reservation::rules(['cash_payment']);
     }
 
     public function validationAttributes()
     {
-        return [
-            'date_in' => 'check-in date',
-            'date_out' => 'check-out date',
-            'adult_count' => 'adult',
-            'children_count' => 'children',
-            'selected_rooms' => 'room',
-            'first_name' => 'first name',
-            'last_name' => 'last name',
-            'phone' => 'contact number',
-            'proof_image_path' => 'proof of payment',
-        ];
+        return Reservation::validationAttributes(['cash_payment']);
     }
 
     public function toggleRoom(Room $room)

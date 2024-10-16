@@ -54,6 +54,7 @@ class ReservationForm extends Component
     // Operations
     public $is_map_view = true; /* Must be set to true */
     public $can_select_room = false; /* Must be set to false */
+    public $can_enter_guest_details = false; /* Must be set to false */
     public $can_submit_payment = false; /* Must be set to false */
     public $selected_type; 
     public $selected_building;
@@ -83,29 +84,22 @@ class ReservationForm extends Component
         $this->selected_amenities = new Collection;
 
         $this->buildings = Building::all();
-        $this->addons = Amenity::where('is_addons', 1)->get();
         $this->rooms = RoomType::all();
-
-        $this->regions = AddressController::getRegions();
-        $this->districts = AddressController::getDistricts();
     }
 
     public function rules()
     {
-        return [
-            'date_in' => 'required|date|after_or_equal:today',
-            'date_out' => 'required|date|after_or_equal:date_in',
-            'adult_count' => 'required|integer|min:1',
-            'children_count' => 'integer|min:0',
-            'selected_rooms' => 'required',
-            'first_name' => 'required|min:2',
-            'last_name' => 'required|min:2',
-            'email' => 'required|email:rfc,dns',
-            'phone' => 'required|digits:11|starts_with:09',
-            'address' => 'required',
-            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000|required_if:payment_method,online',
-            'cash_payment' => 'nullable|integer|min:500|required_if:payment_method,cash',
-        ];
+        return Reservation::rules();
+    }
+
+    public function messages() 
+    {
+        return Reservation::messages();
+    }
+ 
+    public function validationAttributes()
+    {
+        return Reservation::validationAttributes();
     }
 
     // Address Get Methods
@@ -233,6 +227,20 @@ class ReservationForm extends Component
         $this->computeBreakdown();
     }
 
+    public function guestDetails() {
+        $this->validate([
+            'date_in' => $this->rules()['date_in'],
+            'date_out' => $this->rules()['date_out'],
+            'adult_count' => $this->rules()['adult_count'],
+            'children_count' => $this->rules()['children_count'],
+        ]);
+
+        $this->can_enter_guest_details = true;
+
+        $this->regions = AddressController::getRegions();
+        $this->districts = AddressController::getDistricts();
+    }
+
     public function selectRoom()
     {
         $this->validate([
@@ -246,8 +254,11 @@ class ReservationForm extends Component
             'phone' => $this->rules()['phone'],
             'address' => $this->rules()['address'],
         ]);
-
+        
         $this->can_select_room = true;
+        $this->buildings = Building::all();
+        $this->rooms = RoomType::all();
+        $this->addons = Amenity::where('is_addons', 1)->get();
 
         // Get the number of nights between 'date_in' and 'date_out'
         $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));

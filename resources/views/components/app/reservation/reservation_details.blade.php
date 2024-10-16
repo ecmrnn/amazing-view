@@ -2,7 +2,7 @@
     {{-- Reservation Details --}}
     <x-form.form-header step="1" title="Reservation Details" />
 
-    <div x-show="!can_select_room" x-collapse.duration.1000ms>
+    <div x-show="!can_enter_guest_details" x-collapse.duration.1000ms>
         <x-form.form-body>
             <div class="p-5 space-y-3">
                 <div x-effect="date_in == '' ? date_out = '' : ''"
@@ -38,6 +38,11 @@
                             wire:model.live="children_count" />
                         <x-form.input-error field="children_count" />
                     </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <x-primary-button type="button" x-on:click="$wire.guestDetails()">Guest Details</x-primary-button>
+                    <p class="max-w-sm text-xs font-semibold" wire:loading wire:target="guestDetails()">Please wait while we load the next form.</p>
                 </div>
             </div>
         </x-form.form-body>
