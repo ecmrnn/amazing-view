@@ -78,7 +78,31 @@ final class ReservationTable extends PowerGridComponent
             })
             ->add('status')
             ->add('status_update', function ($reservation) use ($reservation_statuses) {
-                return Blade::render('<x-form.select type="occurrence" :options=$options  :selected=$selected wire:change="statusChanged($event.target.value, {{ $room->id }})"  />', ['room' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]);
+                return Blade::render('
+                <div x-data="{ selected_value: @js($selected), default_value: @js($selected) }">
+                    <x-form.select type="occurrence"
+                        :options=$options
+                        :selected=$selected
+                        x-model="selected_value"
+                        x-on:change="$dispatch(\'open-modal\', \'show-update-status-confirmation\'); selected_value = $event.target.value"
+                        />
+                    
+                    <x-modal.full :click_outside="false" name="show-update-status-confirmation" maxWidth="xs">
+                        <div>
+                            <section class="p-5 space-y-5 bg-white">
+                                <hgroup>
+                                    <h2 class="font-semibold text-center capitalize">Update Reservation</h2>
+                                    <p class="max-w-sm text-xs text-center text-zinc-800/50">You are about to update this reservation, proceed?</p>
+                                </hgroup>
+                
+                                <div class="flex items-center justify-center gap-1">
+                                    <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
+                                    <x-primary-button type="button" wire:click="statusChanged(selected_value, {{ $room->id }}); show = false; default_value = selected_value">Yes, update</x-primary-button>
+                                </div>
+                            </section>
+                        </div>
+                    </x-modal.full>
+                </div> ', ['room' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]);
             })
             ->add('status_formatted', function ($reservation) {
                 return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');

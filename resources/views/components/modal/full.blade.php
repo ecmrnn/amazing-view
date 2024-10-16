@@ -1,7 +1,8 @@
 @props([
     'name',
     'show' => false,
-    'maxWidth' => '2xl'
+    'maxWidth' => '2xl',
+    'click_outside' => true
 ])
 
 @php
@@ -55,7 +56,11 @@ $maxWidth = [
     <div
         x-show="show"
         class="fixed inset-0 transition-all transform"
-        x-on:click="show = false"
+
+        @if ($click_outside)
+            x-on:click="show = false"
+        @endif
+        
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"

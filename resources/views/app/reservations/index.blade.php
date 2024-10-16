@@ -27,10 +27,10 @@
     </x-slot:header>
 
     <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
-        <hgroup>
+        {{-- <hgroup>
             <h2 class="text-lg font-semibold">Reservations</h2>
             <p class="max-w-sm text-xs">Manage all your reservations rooms using the table below.</p>
-        </hgroup>
+        </hgroup> --}}
 
         {{-- Room  Table --}}
         <livewire:tables.reservation-table />
