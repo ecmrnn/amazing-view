@@ -12,7 +12,17 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        return view('app.reservations.index');
+        $pending_reservations = Reservation::where('status', Reservation::STATUS_PENDING)->count();
+        $confirmed_reservations = Reservation::where('status', Reservation::STATUS_CONFIRMED)->count();
+        $completed_reservations = Reservation::where('status', Reservation::STATUS_COMPLETED)->count();
+        $expired_reservations = Reservation::where('status', Reservation::STATUS_EXPIRED)->count();
+
+        return view('app.reservations.index', [
+            'pending_reservations' => $pending_reservations,
+            'confirmed_reservations' => $confirmed_reservations,
+            'completed_reservations' => $completed_reservations,
+            'expired_reservations' => $expired_reservations,
+        ]);
     }
 
     /**

@@ -1,5 +1,5 @@
 <x-form.form-section>
-    <x-form.form-header step="4" title="Payment" />
+    <x-form.form-header step="5" title="Payment" />
 
     <div x-show="can_submit_payment" x-collapse.duration.1000ms>
         <x-form.form-body>
@@ -23,6 +23,10 @@
                     <x-form.input-error x-show="payment_method == 'cash'" field="cash_payment" />
                 </div>
 
+                <x-note>
+                    Minimum of <x-currency />500.00 must be paid for the reservation to be processed and confirmed.
+                </x-note>
+
                 {{-- Online Payment --}}
                 <div x-show="payment_method == 'online'">
                     <x-filepond::upload
@@ -39,7 +43,7 @@
                 </div>
 
                 <div class="flex items-center gap-1">
-                    <x-secondary-button type="button" x-on:click="can_submit_payment = false">Edit Rooms</x-secondary-button>
+                    <x-secondary-button type="button" x-on:click="can_submit_payment = false; can_add_amenity = true">Edit Addons &amp; Amenities</x-secondary-button>
                     <x-primary-button>Submit Reservation</x-primary-button>
                 </div>
             </div>

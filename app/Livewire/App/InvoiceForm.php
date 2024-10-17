@@ -10,6 +10,7 @@ use App\Models\ReservationAmenity;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -50,6 +51,7 @@ class InvoiceForm extends Component
     public $selected_rooms;
     public $reservation;
     public $night_count = 1;
+    #[Url]
     public $rid;
 
     public function mount() {
@@ -60,6 +62,10 @@ class InvoiceForm extends Component
         $this->selected_rooms = collect();
         $this->reservation = collect();
         $this->date_today = Carbon::now()->format('Y-m-d');
+        
+        if (!empty($this->rid)) {
+            $this->getReservation($this->rid);
+        }
     }
 
     public function messages() 
@@ -287,9 +293,6 @@ class InvoiceForm extends Component
         foreach ($this->selected_discounts as $discount) {
             $invoice->discounts()->attach($discount->id);
         }
-
-        $this->reservation->status = Reservation::STATUS_CONFIRMED;
-        $this->reservation->save();
 
         // Display toast
         $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Invoice created!']));

@@ -84,21 +84,26 @@
 
     <div class="p-3 px-4 space-y-3 border rounded-lg">
         {{-- Header --}}
-        <div class="flex justify-between pb-3 text-sm font-semibold border-b border-dotted">
+        <div class="grid grid-cols-2 pb-3 text-sm font-semibold border-b border-dotted">
             <p>Description</p>
-            <p>Amount</p>
+            <div class="grid grid-cols-3 place-items-end">
+                <p>Quantity</p>
+                <p>Amount</p>
+                <p>Total</p>
+            </div>
         </div>
 
-        {{-- Body --}}
-        <div class="space-y-1">
+       {{-- Body --}}
+       <div class="space-y-1">
             @forelse ($selected_rooms as $room)
-                <div class="flex justify-between text-xs">
+                <div class="grid grid-cols-2 text-xs">
                     <p>{{ $room->building->prefix . ' ' . $room->room_number }}</p>
-                    <p>{{ $room->rate }}
-                        @if ($night_count > 1)
-                            <span>x {{ $night_count }}</span>
-                        @endif
-                    </p>
+
+                    <div class="grid grid-cols-3 place-items-end">
+                        <p>&lpar;night<span x-show="night_count > 1">s</span>&rpar; {{ $night_count }}</p>
+                        <p>{{ number_format($room->rate, 2) }}</p>
+                        <p>{{ number_format($room->rate * $night_count, 2) }}</p>
+                    </div>
                 </div>
             @empty
                 <div class="flex justify-between">
@@ -109,17 +114,31 @@
         </div>
 
         <div class="space-y-1">
-            @forelse ($selected_amenities as $amenity)
-                <div class="flex justify-between text-xs">
-                    <p class="uppercase">{{ $amenity->name }}</p>
-                    <p>{{ $amenity->price }}</p>
-                </div>
-            @empty
-                <div class="flex justify-between">
-                    <x-form.text-loading class="w-1/4" />
-                    <x-form.text-loading class="w-10" />
-                </div>
-            @endforelse
+            @if ($selected_amenities->count() > 0)
+                @foreach ($selected_amenities as $amenity)
+                    <div class="grid grid-cols-2 text-xs">
+                        <p class="uppercase">{{ $amenity->name }}</p>
+
+                        <div class="grid grid-cols-3 place-items-end">
+                            <p>
+                                @php
+                                    $quantity = 1;
+                                    foreach ($additional_amenity_quantities as $selected_amenity) {
+                                        if ($selected_amenity['amenity_id'] == $amenity->id) {
+                                            $quantity = $selected_amenity['quantity'];
+                                            break;
+                                        }
+                                    }
+                                @endphp
+                                
+                                <span>{{ $quantity }}</span>
+                            </p>
+                            <p>{{ number_format($amenity->price, 2) }}</p>
+                            <p>{{ number_format($amenity->price * $quantity, 2) }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
 

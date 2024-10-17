@@ -1,6 +1,6 @@
 @if (data_get($setUp, 'header.searchInput'))
     <div class="flex flex-row justify-start w-full mt-3 rounded-full md:mt-0 sm:justify-center md:justify-end">
-        <div class="relative float-right w-full rounded-full group md:w-full lg:w-1/2">
+        <div class="relative float-right w-full rounded-full sm:max-w-min group ">
             
             <x-form.input-search
                 id="email"

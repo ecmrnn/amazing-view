@@ -1,5 +1,5 @@
 <div
-    class="flex flex-col"
+    class="flex flex-col w-full"
     @if ($deferLoading) wire:init="fetchDatasource" @endif
 >
     <div

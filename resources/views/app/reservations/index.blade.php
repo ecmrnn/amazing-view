@@ -26,13 +26,11 @@
         </div>
     </x-slot:header>
 
-    <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
-        {{-- <hgroup>
-            <h2 class="text-lg font-semibold">Reservations</h2>
-            <p class="max-w-sm text-xs">Manage all your reservations rooms using the table below.</p>
-        </hgroup> --}}
+    {{-- Cards --}}
+    <livewire:app.cards.reservation-cards />
 
-        {{-- Room  Table --}}
+    {{-- Room  Table --}}
+    <div class="p-3 space-y-5 overflow-x-auto bg-white rounded-lg sm:p-5">
         <livewire:tables.reservation-table />
     </div>
 </x-app-layout>

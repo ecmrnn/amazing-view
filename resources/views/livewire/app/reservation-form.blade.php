@@ -23,8 +23,10 @@
         {{-- Operations --}}
         is_map_view: $wire.entangle('is_map_view'),
         can_enter_guest_details: $wire.entangle('can_enter_guest_details'),
+        can_add_amenity: $wire.entangle('can_add_amenity'),
         can_select_room: $wire.entangle('can_select_room'),
         can_submit_payment: $wire.entangle('can_submit_payment'),
+        additional_amenity_quantity: $wire.entangle('additional_amenity_quantity'),
 
         formatDate(date) {
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -43,8 +45,6 @@
             @include('components.app.reservation.guest_details')
 
             <x-line-vertical />
-            {{-- <x-secondary-button type="button" x-show="can_select_room" x-on:click="can_select_room = !can_select_room">Edit Reservation &amp; Guest Details</x-secondary-button>
-            <x-line-vertical /> --}}
 
             {{-- Step 3: Room & Additional Details --}}
             @include('components.app.reservation.room_add_details', [
@@ -58,9 +58,17 @@
                 'reserved_rooms' => $reserved_rooms,
                 'rooms' => $rooms,
             ])
+
             <x-line-vertical />
             
-            {{-- Step 4: Payment --}}
+            {{-- Step 4: Additional Details (Optional) --}}
+            @include('components.app.reservation.add_details', [
+                'addons' => $addons,
+            ])
+
+            <x-line-vertical />
+
+            {{-- Step 5: Payment --}}
             @include('components.app.reservation.payment')
         </section>
 
@@ -78,7 +86,7 @@
             <section class="p-5 space-y-5 bg-white">
                 <hgroup>
                     <h2 class="text-sm font-semibold text-center capitalize">Reservation Confirmation</h2>
-                    <p class="max-w-sm text-xs text-center text-zinc-800/50">Confirm that the reservation details entered are correct.</p>
+                    <p class="max-w-sm text-xs text-center">Confirm that the reservation details entered are correct.</p>
                 </hgroup>
 
                 <div class="px-3 py-2 border rounded-md">

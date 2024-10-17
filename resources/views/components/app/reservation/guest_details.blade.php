@@ -2,7 +2,7 @@
     {{-- Guest Details --}}
     <x-form.form-header step="2" title="Guest Details" />
 
-    <div x-show="can_enter_guest_details && !can_select_room" x-collapse.duration.1000ms>
+    <div x-show="can_enter_guest_details && !can_select_room && !can_add_amenity && !can_submit_payment" x-collapse.duration.1000ms>
         <x-form.form-body>
             <div class="p-5 space-y-3">
                 <hgroup>

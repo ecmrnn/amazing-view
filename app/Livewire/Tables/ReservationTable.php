@@ -21,6 +21,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
+use PowerComponents\LivewirePowerGrid\Responsive;
 
 final class ReservationTable extends PowerGridComponent
 {
@@ -64,7 +65,7 @@ final class ReservationTable extends PowerGridComponent
 
     public function fields(): PowerGridFields
     {
-        $reservation_statuses = ['Confirmed', 'Pending', 'Expired', 'Checked in', 'Checked out', 'Completed'];
+        $reservation_statuses = ['Confirmed', 'Pending', 'Expired', 'Checked-in', 'Checked-out', 'Completed'];
 
         return PowerGrid::fields()
             ->add('rid')
@@ -100,7 +101,13 @@ final class ReservationTable extends PowerGridComponent
                 
                                 <div class="flex items-center justify-center gap-1">
                                     <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
-                                    <x-primary-button type="button" wire:click="statusChanged(selected_value, {{ $reservation->id }}); show = false; default_value = selected_value">Yes, update</x-primary-button>
+                                    <x-primary-button type="button"
+                                        wire:click="statusChanged(selected_value, {{ $reservation->id }});
+                                        show = false;
+                                        default_value = selected_value"
+                                        >
+                                        Yes, update
+                                    </x-primary-button>
                                 </div>
                             </section>
                         </div>
@@ -142,8 +149,8 @@ final class ReservationTable extends PowerGridComponent
                     ['status' => 0, 'name' => 'Confirmed'],
                     ['status' => 1, 'name' => 'Pending'],
                     ['status' => 2, 'name' => 'Expired'],
-                    ['status' => 3, 'name' => 'Checked in'],
-                    ['status' => 4, 'name' => 'Checked out'],
+                    ['status' => 3, 'name' => 'Checked-in'],
+                    ['status' => 4, 'name' => 'Checked-out'],
                     ['status' => 5, 'name' => 'Completed'],
                 ])
                 ->optionLabel('name')
@@ -186,6 +193,8 @@ final class ReservationTable extends PowerGridComponent
                     $room->save();
                 }
             }
+
+            $this->dispatch('status-changed');
         }
     }
 }

@@ -25,7 +25,7 @@ class AmazingTheme extends Tailwind
 
     public function table(): Table
     {
-        return Theme::table('min-w-full')
+        return Theme::table('')
             ->container('overflow-x-auto')
             ->base('')
             ->div('relative border-x border-t rounded-t-lg')
@@ -34,11 +34,11 @@ class AmazingTheme extends Tailwind
             ->tdAction('')
             ->tr('')
             ->trFilters('')
-            ->th('font-bold px-2 pr-4 py-3 text-left text-xs')
+            ->th('font-semibold px-2 pr-4 py-3 text-left')
             ->tbody('text-sm')
             ->trBody('border-b mb-5 hover:bg-slate-50 border-pg-primary-100 dark:border-pg-primary-600 hover:bg-pg-primary-50 dark:bg-pg-primary-800 dark:hover:bg-pg-primary-700')
-            ->tdBody('p-2')
-            ->tdBodyEmpty('p-2 ')
+            ->tdBody('p-2 pr-4')
+            ->tdBodyEmpty('p-2')
             ->trBodyClassTotalColumns('')
             ->tdBodyTotalColumns('p-2 text-sm text-pg-primary-600 text-right space-y-2');
     }

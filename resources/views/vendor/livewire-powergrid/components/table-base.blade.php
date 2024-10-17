@@ -8,7 +8,7 @@
 <div @isset($this->setUp['responsive']) x-data="pgResponsive" @endisset>
     <table
         id="table_base_{{ $tableName }}"
-        class="table power-grid-table {{ data_get($theme, 'table.tableClass') }}"
+        class="table power-grid-table min-w-[1000px] sm:min-w-full {{ data_get($theme, 'table.tableClass') }}"
         style="{{  data_get($theme, 'tableStyle') }}"
     >
         <thead

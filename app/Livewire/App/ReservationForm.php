@@ -56,8 +56,15 @@ class ReservationForm extends Component
     public $can_select_room = false; /* Must be set to false */
     public $can_enter_guest_details = false; /* Must be set to false */
     public $can_submit_payment = false; /* Must be set to false */
+    public $can_add_amenity = false; /* Must be set to false */
     public $selected_type; 
     public $selected_building;
+    public $additional_amenity;
+    public $available_amenities;
+    public $additional_amenity_total;
+    public $additional_amenity_quantity = 1;
+    public $additional_amenity_quantities;
+    public $additional_amenity_id;
     public $available_room_types;
     public $available_rooms;
     public $reserved_rooms;
@@ -79,9 +86,9 @@ class ReservationForm extends Component
     public function mount()
     {
         $this->min_date = date_format(Carbon::now(), 'Y-m-d');
-        $this->selected_rooms = new Collection;
-        $this->selected_amenities = new Collection;
-        $this->selected_amenities = new Collection;
+        $this->selected_rooms = collect();
+        $this->selected_amenities = collect();
+        $this->additional_amenity_quantities = collect();
 
         $this->buildings = Building::all();
         $this->rooms = RoomType::all();
@@ -144,6 +151,78 @@ class ReservationForm extends Component
         $this->net_total = $this->vatable_sales + $this->vat;
     }
 
+    public function addAmenity() {
+        $this->validate([
+            'additional_amenity_quantity' => 'integer|min:1|required',
+            'additional_amenity' => 'required',
+        ]);
+
+        $amenity = $this->additional_amenity;
+
+        if ($this->additional_amenity_quantity <= $amenity->quantity) {
+            $this->additional_amenity_quantities->push([
+                'amenity_id' => $amenity->id,
+                'quantity' => $this->additional_amenity_quantity
+            ]);
+            
+            // Push to amenities selected on reservation
+            $this->selected_amenities->push($amenity);
+
+            // Recomputes Breakdown
+            $this->sub_total += ($amenity->price * $this->additional_amenity_quantity);
+            $this->computeBreakdown();
+
+            // Reset properties
+            $this->reset([
+                'additional_amenity_quantity',
+                'additional_amenity_total',
+                'additional_amenity_id',
+                'additional_amenity',
+            ]);
+        } else {
+            $this->dispatch('toast', json_encode(['message' => 'Oof, not enough item!', 'type' => 'warning', 'description' => 'Item quantity is not enough']));
+        }
+    }
+
+    public function removeAmenity(Amenity $amenity) {
+        if ($amenity) {
+            // Get the quantity for this amenity
+            $quantity = 1;
+            foreach ($this->additional_amenity_quantities as $selected_amenity) {
+                if ($selected_amenity['amenity_id'] == $amenity->id) {
+                    $quantity = $selected_amenity['quantity'];
+                    break;
+                }
+            }
+
+            // Remove this amenity on these properties
+            $this->selected_amenities = $this->selected_amenities->reject(function ($amenity_loc) use ($amenity) {
+                return $amenity_loc->id == $amenity->id;
+            });
+            $this->additional_amenity_quantities = $this->additional_amenity_quantities->reject(function ($amenity_loc) use ($amenity) {
+                return $amenity_loc['amenity_id'] == $amenity->id;
+            });
+
+            // Recompute breakdown
+            $this->sub_total -= ($amenity->price * $quantity);
+            $this->computeBreakdown();
+        }
+    }
+
+    public function selectAmenity($id) {
+        if (!empty($id)) {
+            $this->additional_amenity_id = $id;
+            $this->additional_amenity = Amenity::find($id);
+            $this->getTotal();
+        }
+    }
+
+    public function getTotal() {
+        if ($this->additional_amenity_id && $this->additional_amenity_quantity) {
+            $this->additional_amenity_total = $this->additional_amenity->price * $this->additional_amenity_quantity;
+        }
+    }
+
     public function selectBuilding(Building $id)
     {
         $this->floor_number = 1;
@@ -157,13 +236,14 @@ class ReservationForm extends Component
             ->get();
     }
 
-    public function sendPayment()
+    public function selectedRoom()
     {
         $this->validate([
             'selected_rooms' => $this->rules()['selected_rooms'],
         ]);
 
-        $this->can_submit_payment = true;
+        $this->can_select_room = false;
+        $this->can_add_amenity = true;
     }
 
     public function upFloor()
@@ -237,8 +317,10 @@ class ReservationForm extends Component
 
         $this->can_enter_guest_details = true;
 
-        $this->regions = AddressController::getRegions();
-        $this->districts = AddressController::getDistricts();
+        if (empty($this->regions) || empty($this->districts)) {
+            $this->regions = AddressController::getRegions();
+            $this->districts = AddressController::getDistricts();
+        }
     }
 
     public function selectRoom()
@@ -256,9 +338,13 @@ class ReservationForm extends Component
         ]);
         
         $this->can_select_room = true;
-        $this->buildings = Building::all();
-        $this->rooms = RoomType::all();
+        if ($this->buildings->count() > 0 || $this->rooms->count() > 0) {
+            $this->buildings = Building::all();
+            $this->rooms = RoomType::all();
+        }
+
         $this->addons = Amenity::where('is_addons', 1)->get();
+        $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
 
         // Get the number of nights between 'date_in' and 'date_out'
         $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));
@@ -295,7 +381,6 @@ class ReservationForm extends Component
             ->toBase();
 
         $this->available_room_types = $room_by_capacity->groupBy('max_capacity');
-        // dd($this->available_room_types);
     }
 
     public function addRoom($room_ids) {
@@ -350,16 +435,28 @@ class ReservationForm extends Component
         if (!empty($this->selected_amenities)) {
             // Store amenities
             foreach ($this->selected_amenities as $amenity) {
-                ReservationAmenity::create([
-                    'reservation_id' => $reservation->id,
-                    'amenity_id' => $amenity->id,
-                    'quantity' => 0,
-                ]);
+                $quantity = 0;
+
+                foreach ($this->additional_amenity_quantities as $selected_amenity) {
+                    if ($selected_amenity['amenity_id'] == $amenity->id) {
+                        $amenity->quantity -= $selected_amenity['quantity'];
+                        $quantity = $selected_amenity['quantity'];
+                        $amenity->save();
+                        break;
+                    }
+                }
+                
+                $reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
             }
         }
 
         // Reset all properties
         $this->reset();
+
+        $this->min_date = date_format(Carbon::now(), 'Y-m-d');
+        $this->selected_rooms = collect();
+        $this->selected_amenities = collect();
+        $this->additional_amenity_quantities = collect();
     }
 
     public function render()

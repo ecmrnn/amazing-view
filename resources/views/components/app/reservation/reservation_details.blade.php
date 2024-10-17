@@ -42,7 +42,7 @@
 
                 <div class="flex items-center gap-3">
                     <x-primary-button type="button" x-on:click="$wire.guestDetails()">Guest Details</x-primary-button>
-                    <p class="max-w-sm text-xs font-semibold" wire:loading wire:target="guestDetails()">Please wait while we load the next form.</p>
+                    <p class="max-w-sm text-xs font-semibold" wire:loading.delay wire:target="guestDetails()">Please wait while we load the next form.</p>
                 </div>
             </div>
         </x-form.form-body>
