@@ -315,6 +315,6 @@ class CreateInvoice extends Component
 
     public function render()
     {
-        return view('livewire.app.invoice-form');
+        return view('livewire.app.invoice.create-invoice');
     }
 }

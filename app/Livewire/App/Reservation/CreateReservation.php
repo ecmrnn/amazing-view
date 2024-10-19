@@ -464,7 +464,7 @@ class CreateReservation extends Component
     public function render()
     {
 
-        return view('livewire.app.reservation-form', [
+        return view('livewire.app.reservation.create-reservation', [
             'buildings' => $this->buildings,
             'addons' => $this->addons,
             'rooms' => $this->rooms,
