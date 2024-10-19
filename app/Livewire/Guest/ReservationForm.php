@@ -19,7 +19,7 @@ class ReservationForm extends Component
 {
     use WithFilePond, WithPagination;
 
-    public $step = 1;
+    public $step = 3;
     public $capacity = 0;
 
     // Reservation Details
@@ -70,14 +70,14 @@ class ReservationForm extends Component
     public $night_count;
 
     public function mount() {
-        $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
-        $this->room_types = RoomType::all();
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
         $this->available_room_types = new Collection;
+        
+        $this->room_types = RoomType::all();
+        $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
 
-        $this->regions = AddressController::getRegions();
-        $this->districts = AddressController::getDistricts();
+
     }
 
     // Custome Validation Messages
@@ -293,7 +293,16 @@ class ReservationForm extends Component
                     ]);
 
                     $this->step++;
-                    $this->dispatch('toast', json_encode(['message' => 'Success!.', 'type' => 'success', 'description' => 'Next, Guest Details']));
+
+                    // Fetch regions and districts
+                    try {
+                        $this->regions = AddressController::getRegions();
+                        $this->districts = AddressController::getDistricts();
+                    } catch (\Throwable $th) {
+                        $this->dispatch('toast', json_encode(['message' => 'Oh no', 'type' => 'warning', 'description' => 'Failed getting data from server']));
+                    }
+
+                    $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Next, Guest Details']));
                     break;
                 case 2:
                     $this->validate([
@@ -309,7 +318,7 @@ class ReservationForm extends Component
                     break;
                 case 3:
                     $this->validate([
-                        'proof_image_path' => $this->rules()['proof_image_path']
+                        'proof_image_path' => 'mimes:jpg,jpeg,png|image|max:1000|required'
                     ]);
     
                     $this->dispatch('open-modal', 'show-reservation-confirmation');

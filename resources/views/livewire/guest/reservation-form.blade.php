@@ -6,6 +6,7 @@
         adult_count: $persist($wire.entangle('adult_count')).using(sessionStorage),
         children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
         capacity: $wire.entangle('capacity'),
+        address: $persist($wire.entangle('address')).using(sessionStorage),
 
         {{-- Guest Details --}}
         first_name: $persist($wire.entangle('first_name')).using(sessionStorage),

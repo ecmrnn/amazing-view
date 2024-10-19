@@ -17,7 +17,7 @@
     <div class="flex items-center gap-5">
         <div 
             @if ($step < $currentStep)
-                class="w-[45px] shrink-0 aspect-square grid place-items-center rounded-md border border-emerald-600 bg-gradient-to-r from-emerald-500 to-emerald-600 *:text-white"
+                class="w-[45px] shrink-0 aspect-square grid place-items-center rounded-md border border-emerald-600 bg-gradient-to-r from-emerald-500/80 to-emerald-500 *:text-white"
             @elseif ($step == $currentStep)
                 class="w-[45px] shrink-0 aspect-square grid place-items-center rounded-md border bg-gradient-to-r from-blue-500 to-blue-600 border-blue-600 *:text-white"
             @else

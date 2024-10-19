@@ -51,7 +51,7 @@
                             <div>
                                 <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->roomType->name }}</p>
                                 <p class="text-sm">
-                                    <span class="uppercase">{{ $room->roomType->name[0] . $room->roomType->name[1] }}</span>
+                                    <span class="uppercase">{{ $room->building->prefix }}</span>
                                     {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
                                 <p class="text-xs text-zinc-800/50">Good for {{ $room->max_capacity }} guests.</p>
                             </div>

@@ -240,23 +240,10 @@
                                 <p class="text-sm font-semibold text-blue-500">{{ number_format($net_total - $discount_amount, 2) }}</p>
                             @endif --}}
                         </div>
-                    </div>
-                    
+                    </div>    
                 </div>
                 
                 {{-- Note --}}
-                {{-- <form action="{{ route('app.reservation.update-note', $reservation) }}" class="space-y-1" method="POST">
-                    @csrf
-                    @method('PATCH')
-
-                    <x-form.input-label for="note">Reservation Note</x-form.input-label>
-                    <x-form.textarea name="note" rows="3" class="w-full" id="note">
-                        @if ($reservation->note)
-                            {{ $reservation->note }}
-                        @endif
-                    </x-form.textarea>
-                    <x-primary-button>Save Note</x-primary-button>
-                </form> --}}
                 <livewire:app.reservation.update-note :reservation="$reservation" />
             </article>
 

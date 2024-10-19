@@ -28,6 +28,7 @@
                     </x-form.input-group>
                 </div>
             </div>
+            
             <div class="p-5">
                 <div class="grid grid-cols-2 gap-2">
                     <x-form.input-group>
@@ -49,19 +50,14 @@
                     </x-form.input-group>
                 </div>
             </div>
+
+            <div class="flex items-center gap-5 p-5 border-t lg:col-span-2">
+                <x-primary-button type="button" class="block" wire:click="selectRoom()">Select a Room</x-primary-button>
+                <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
+            </div>
         </x-form.form-body>
     </div>
 </x-form.form-section>
-
-<x-line-vertical />
-
-{{-- Buttons prior to selecting a room --}}
-<div x-show="!can_select_a_room" class="flex items-center gap-5">
-    <x-secondary-button class="block" wire:click="selectRoom()">Select a Room</x-secondary-button>
-    <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
-</div>
-
-<x-secondary-button x-show="can_select_a_room" class="block capitalize" x-on:click="can_select_a_room = false">Edit reservation date &amp; guest count</x-secondary-button>
 
 <x-line-vertical />
 
@@ -71,8 +67,6 @@
 
     <div x-show="can_select_a_room" x-collapse.duration.1000ms>
         <x-form.form-body>
-            <x-form.input-error field="selected_rooms" class="p-5 pb-0"/>
-
             <div class="flex flex-col items-start justify-between gap-3 p-5 pb-0 lg:flex-row">
                 <p class="max-w-sm text-sm">Browse our list of available rooms below or click the
                     &quot;<span class="font-semibold text-blue-500">Find me a Room</span>&quot;
@@ -84,8 +78,8 @@
             <div wire:loading.delay wire:target="suggestRooms" class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-lg">Amazing rooms incoming!</div>
 
             @if (!empty($suggested_rooms))
-            <div class="p-3 m-5 mb-0 space-y-5 bg-white border rounded-lg border-slate-200">
-                <h3 class="text-lg font-semibold">Suggested Rooms</h3>
+            <div class="p-3 m-5 mb-0 space-y-3 bg-white border rounded-lg border-slate-200">
+                <h3 class="font-semibold">Suggested Rooms</h3>
                 <div class="grid-cols-3 gap-2 space-y-3 lg:space-y-0 lg:grid">
                     @forelse ($suggested_rooms as $room)
                         <x-web.reservation.step-1.suggested-room :key="$room->id" :selectedRooms="$selected_rooms" :room="$room" />
@@ -99,6 +93,8 @@
             {{-- Room Categories --}}
             <div class="p-5 space-y-3">
                 <h3 class="text-lg font-semibold">Our Rooms</h3>
+                <x-form.input-error field="selected_rooms" />
+
                 <div class="space-y-1">
                     @forelse ($room_types as $room)
                         <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 bg-white border rounded-lg">
@@ -122,6 +118,12 @@
                         </div>
                     @endforelse
                 </div>
+            </div>
+
+            <div class="px-5 pb-5">
+                <x-secondary-button x-on:click="can_select_a_room = false">
+                    Edit Reservation Date
+                </x-secondary-button>
             </div>
         </x-form.form-body>
     </div>
