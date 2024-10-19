@@ -36,6 +36,6 @@
         </div>
 
         {{-- Reservation Form --}}
-        <livewire:app.reservation-form />
+        <livewire:app.reservation.create-reservation />
     </div>
 </x-app-layout>  

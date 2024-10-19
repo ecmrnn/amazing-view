@@ -24,116 +24,171 @@
                     </hgroup>
         
                     {{-- Summary --}}
-                    <div class="grid border rounded-lg md:grid-cols-2">
+                    <section class="grid border rounded-lg md:grid-cols-2">
                         {{-- Guest Details --}}
                         <div class="px-3 py-2 space-y-2 border-b border-dashed md:border-b-0 md:border-r">
-                            <h4 class="text-lg font-semibold">Guest Details</h4>
+                            <h4 class="font-semibold">Guest Details</h4>
                             <div class="space-y-1 text-sm">
                                 <p class="flex items-center gap-3 capitalize">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smile"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
                                     <span>{{ $reservation->first_name . " " . $reservation->last_name }}</span></p>
                                 <p class="flex items-center gap-3 capitalize">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
                                     <span>{{ $reservation->address }}</span></p>
                                 <p class="flex items-center gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone-call"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/><path d="M14.05 2a9 9 0 0 1 8 7.94"/><path d="M14.05 6A5 5 0 0 1 18 10"/></svg>
                                     <span>{{ $reservation->phone }}</span></p>
                                 <p class="flex items-center gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                                     <span>{{ $reservation->email }}</span></p>
                             </div>
                         </div>
-
+    
                         {{-- Reservation Details --}}
                         <div class="px-3 py-2 space-y-2">
-                            <h4 class="text-lg font-semibold">Reservation Details</h4>
+                            <h4 class="font-semibold">Reservation Details</h4>
+                            
                             <div class="space-y-1 text-sm">
                                 <p class="flex items-center gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bed"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-                                    <span>Overnight</span></p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bed-single"><path d="M3 20v-8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8"/><path d="M5 10V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4"/><path d="M3 18h18"/></svg>
+                                    <span>
+                                        @if ($reservation->date_in == $reservation->date_out)
+                                            {{ __('Day Tour') }}    
+                                        @else
+                                            {{ __('Overnight') }}    
+                                        @endif
+                                    </span></p>
                                 <p class="flex items-center gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alarm-clock"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                     <span>2:00 PM - 12:00 PM</span></p>
+                                <p class="flex items-center gap-3"
+                                        x-data="{ 
+                                            adult_count: @js($reservation->adult_count), 
+                                            children_count: @js($reservation->children_count), 
+                                        }"
+                                    >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg>
+                                    <span>
+                                        <span x-text="adult_count"></span> <span>Adult<span x-show="adult_count > 1">s</span></span>
+                                        <span x-show="children_count > 0">&amp; <span x-text="children_count"></span> <span>Child<span x-show="children_count > 1">ren</span></span></span>
+                                    </span>
+                                </p>
                                 <p class="flex items-center gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-baby"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/></svg>
-                                    <span>{{ $reservation->adult_count }} Adults, {{ $reservation->children_count }} Children</span></p>
-                                <p class="flex items-center gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-closed"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><path d="M14 12v.01"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-closed"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><path d="M14 12v.01"/></svg>
                                     <span class="space-x-1">
                                         @foreach ($selected_rooms as $room)
                                             <span key="{{ $room->id }}" class="inline-block px-2 py-1 font-semibold capitalize rounded-md bg-slate-200">
-                                                {{ $room->roomType->name . " " . $room->room_number }}
+                                                {{ $room->building->prefix . " " . $room->room_number }}
                                             </span>
                                         @endforeach
                                     </span>
                                 </p>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
                     {{-- Reservation Breakdown --}}
-                    <div class="px-3 my-5 space-y-3">
-                        <div class="flex items-center gap-5">
-                            <h3 class="text-lg font-semibold">Reservation Breakdown</h3>
-                            <x-line class="bg-zinc-800/50" />
-                        </div>
-
-                        <div class="gap-5 text-sm md:flex">
-                            <p class="flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-up"><path d="m14 18 4-4 4 4"/><path d="M16 2v4"/><path d="M18 22v-8"/><path d="M21 11.343V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
-                                <span><strong>Check in: </strong>{{ date_format(date_create($reservation->date_in),"F j, Y") }}</span></p>
-                            <p class="flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
-                                <span><strong>Check out: </strong>{{ date_format(date_create($reservation->date_out),"F j, Y") }}</span></p>
-                        </div>
+                    <div class="gap-5 text-sm md:flex">
+                        <p class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-up"><path d="m14 18 4-4 4 4"/><path d="M16 2v4"/><path d="M18 22v-8"/><path d="M21 11.343V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
+                            <span><strong>Check in: </strong>{{ date_format(date_create($reservation->date_in),"F j, Y") }}</span></p>
+                        <p class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
+                            <span><strong>Check out: </strong>{{ date_format(date_create($reservation->date_out),"F j, Y") }}</span></p>
                     </div>
 
-                    <div class="px-3 py-2 space-y-3 border rounded-lg">
-                        <div class="flex justify-between">
-                            <p class="font-semibold">Description</p>
-                            <p class="font-semibold">Amount</p>
-                        </div>
-    
-                        {{-- Bills to Pay --}}
-                        <div class="pt-3 border-t border-dashed">
-                            @foreach ($selected_rooms as $room)
-                                <div key="{{ $room->id }}" class="flex justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out rounded-lg hover:bg-slate-100">
-                                    <p class="capitalize">{{ $room->roomType->name . " " . $room->room_number }}</p>
-                                    <p>{{ $room->rate }}
-                                        @if ($night_count > 1)
-                                            {{ " x " . $night_count }}
-                                        @endif
-                                    </p>
-                                </div>
-                            @endforeach
-    
-                            <div class="flex items-center px-3 py-1">
-                                <x-line class="bg-zinc-800/50" />
+                    {{-- Breakdown --}}
+                    <section class="p-3 space-y-3 border rounded-lg sm:p-5">
+                        {{-- Header --}}
+                        <div class="grid grid-cols-2 pb-3 text-sm font-semibold border-b border-dotted">
+                            <p>Description</p>
+                            <div class="grid grid-cols-3 place-items-end">
+                                <p>Quantity</p>
+                                <p>Amount</p>
+                                <p>Total</p>
                             </div>
-    
-                            @forelse ($selected_amenities as $amenity)
-                                <div key="{{ $amenity->id }}" class="flex justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out rounded-lg hover:bg-slate-100">
-                                    <p class="capitalize">{{ $amenity->name }}</p>
-                                    <p>{{ $amenity->price }}</p>
+                        </div>
+                
+                        {{-- Body --}}
+                        <div class="space-y-1">
+                            @forelse ($reservation->rooms as $room)
+                                <div class="grid grid-cols-2 text-sm">
+                                    <p>{{ $room->building->prefix . ' ' . $room->room_number }}</p>
+                
+                                    <div class="grid grid-cols-3 place-items-end">
+                                        <p>&lpar;night<span x-show="night_count > 1">s</span>&rpar; {{ $night_count }}</p>
+                                        <p>{{ number_format($room->rate, 2) }}</p>
+                                        <p>{{ number_format($room->rate * $night_count, 2) }}</p>
+                                    </div>
                                 </div>
                             @empty
-                                <div class="px-3 py-1 text-sm text-zinc-800/50">
-                                    <p>No selected amenities</p>
+                                <div class="flex justify-between">
+                                    <x-form.text-loading class="w-1/3" />
+                                    <x-form.text-loading class="w-20" />
                                 </div>
                             @endforelse
                         </div>
-                    </div>
-    
-                    <div class="flex justify-end gap-5 px-6">
-                        <div class="text-sm text-right">
-                            <p class="font-semibold">Vatable Sales</p>
-                            <p class="">VAT Amount</p>
-                            <p class="font-semibold text-blue-500">Total Amount Due</p>
+                
+                        <div class="space-y-1">
+                            @foreach ($reservation->amenities as $amenity)
+                            @php
+                                $quantity = $amenity->pivot->quantity;
+
+                                // If quantity is 0, change it to 1
+                                $quantity != 0 ?: $quantity = 1;
+                            @endphp
+
+                            <div class="grid grid-cols-2">
+                                <p class="uppercase">{{ $amenity->name }}</p>
+                                
+                                <div class="grid grid-cols-3 place-items-end">
+                                        <p>{{ $quantity }}</p>
+                                        <p>{{ number_format($amenity->price, 2) }}</p>
+                                        <p>{{ number_format($amenity->price * $quantity, 2) }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                        <div class="text-sm text-right">
-                            <p class="font-semibold">{{ number_format($vatable_sales, 2) }}</p>
-                            <p class="">{{ number_format($vat, 2) }}</p>
-                            <p class="font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p>
+                    </section>
+
+                    {{-- Bills --}}
+                    <div class="flex justify-end gap-5 px-5">
+                        <div class="text-right">
+                            <p class="text-sm">Vatable Sales</p>
+                            <p class="text-sm">VAT Amount</p>
+                            <p class="text-sm font-semibold text-blue-500">Total Amount Due</p>
+                            @if (!empty($reservation->invoice))
+                                <p class="py-1 text-sm"></p>
+                                
+                                @foreach ($reservation->invoice->discounts as $index => $discount)
+                                    <p class="text-sm">
+                                        @if ($index == 0)
+                                            {{ __('Less') }} 
+                                        @endif
+                                        
+                                        {{ ucwords(strtolower($discount->name)) }}</p>
+                                @endforeach
+                
+                                <p class="text-sm font-semibold text-blue-500">Net Payable Amount</p>
+                            @endif
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm">{{ number_format($vatable_sales, 2) }}</p>
+                            <p class="text-sm">{{ number_format($vat, 2) }}</p>
+                            <p class="text-sm font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p>
+                            @if (!empty($reservation->invoice))
+                                <p class="py-1 text-sm"></p>
+                
+                                @foreach ($reservation->invoice->discounts as $discount)
+                                    @if (!empty($reservation->invoice))
+                                        <p class="text-sm">{{ number_format(($discount->percentage / 100) * $net_total, 2) }}</p>
+                                    @else
+                                        <p class="text-sm">{{ number_format($discount->amount, 2) }}</p>
+                                    @endif
+                                @endforeach
+                
+                                <p class="text-sm font-semibold text-blue-500">{{ number_format($net_total - $discount_amount, 2) }}</p>
+                            @endif
                         </div>
                     </div>
                 </div>

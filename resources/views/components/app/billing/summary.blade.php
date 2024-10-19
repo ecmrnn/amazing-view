@@ -96,6 +96,7 @@
         </section>
     </div>
 
+    {{-- Breakdown --}}
     <div class="p-5 space-y-3 border rounded-lg">
         {{-- Header --}}
         <div class="grid grid-cols-2 pb-3 text-sm font-semibold border-b border-dotted">
@@ -129,14 +130,18 @@
 
         <div class="space-y-1">
             @if ($selected_amenities->count() > 0)
-                @foreach ($selected_amenities as $amenity)
+                @foreach ($reservation->amenities as $amenity)
                     <div class="grid grid-cols-2 text-xs">
                         <p class="uppercase">{{ $amenity->name }}</p>
 
                         <div class="grid grid-cols-3 place-items-end">
                             <p>
                                 @php
-                                    $quantity = 1;
+                                    $quantity = $amenity->pivot->quantity;
+
+                                    // If quantity is 0, change it to 1
+                                    $quantity != 0 ?: $quantity = 1;
+                                    
                                     foreach ($additional_amenity_quantities as $selected_amenity) {
                                         if ($selected_amenity['amenity_id'] == $amenity->id) {
                                             $quantity = $selected_amenity['quantity'];
@@ -197,8 +202,8 @@
         </div>
     </div>
 
+    {{-- Payment methods --}}
     <div class="grid grid-cols-2 border-t border-dotted">
-        {{-- Payment methods --}}
         <div class="pt-5 space-y-3 border-r border-dotted">
             <h3 class="text-sm font-semibold">Payment Methods</h3>
             <div class="flex gap-5">

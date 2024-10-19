@@ -36,6 +36,7 @@ class Reservation extends Model
             'address' => 'required',
             'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000|required_if:payment_method,online',
             'cash_payment' => 'nullable|integer|min:500|required_if:payment_method,cash',
+            'note' => 'nullable|max:200',
         ];
 
         if (!empty($excepts)) {
@@ -116,6 +117,34 @@ class Reservation extends Model
         return $attributes;
     }
 
+    public static function computeBreakdown(Reservation $reservation) {
+        $sub_total = 0;
+
+        foreach ($reservation->rooms as $room) {
+            $sub_total += $room->rate;
+        }
+
+        foreach ($reservation->amenities as $amenity) {
+            $quantity = $amenity->pivot->quantity;
+                        
+            // If quantity is 0, change it to 1
+            $quantity != 0 ?: $quantity = 1;
+
+            $sub_total += ($amenity->price * $quantity);
+        }
+        
+        // dd($reservation->amenities);
+        $vatable_sales = $sub_total / 1.12;
+        $vat = ($sub_total) - $vatable_sales;
+        $net_total = $vatable_sales + $vat;
+
+        return [
+            'vatable_sales' => $vatable_sales,
+            'vat' => $vat,
+            'net_total' => $net_total,
+        ];
+    }
+
     public function rooms(): BelongsToMany {
         return $this->BelongsToMany(Room::class, 'room_reservations');
     }
@@ -125,7 +154,7 @@ class Reservation extends Model
     }
 
     public function amenities(): BelongsToMany {
-        return $this->belongsToMany(Amenity::class, 'reservation_amenities');
+        return $this->belongsToMany(Amenity::class, 'reservation_amenities')->withPivot('quantity');
     }
 
     public function invoice(): HasOne {
@@ -141,7 +170,7 @@ class Reservation extends Model
                 'table' => 'reservations',
                 'field' => 'rid',
                 'length' => 12,
-                'prefix' => date('Rmdy'),
+                'prefix' => date('Rymd'),
                 'reset_on_prefix_change' => true
             ]);
         });

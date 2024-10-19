@@ -27,8 +27,13 @@ class ReservationSeeder extends Seeder
             'phone' => '09262355376',
             'address' => '410 Manila East Rd., Hulo, Pililla, Rizal',
             'email' => 'marananemanuelle@test.com',
+            'note' => 'This is a seeded reservation 🎉'
         ]);
 
-        $reservation->rooms()->attach(1);
+        $rooms = array(1, 2, 3);
+        
+        foreach ($rooms as $room) {
+            $reservation->rooms()->attach($room);
+        }
     }
 }

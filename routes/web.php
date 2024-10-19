@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Reservation type route
         Route::resource('/reservations', ReservationController::class);
+        Route::patch('/reservation/update-note/{reservation}', [ReservationController::class, 'updateNote'])->name('reservation.update-note');
 
         // Room type route
         Route::resource('/rooms', RoomTypeController::class);

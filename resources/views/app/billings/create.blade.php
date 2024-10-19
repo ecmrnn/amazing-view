@@ -16,6 +16,6 @@
         </div>
 
         {{-- Invoice Form --}}
-        <livewire:app.invoice-form />
+        <livewire:app.invoice.create-invoice />
     </div>
 </x-app-layout>  

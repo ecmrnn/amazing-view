@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\App;
+namespace App\Livewire\App\Invoice;
 
 use App\Models\Amenity;
 use App\Models\Discount;
@@ -14,7 +14,7 @@ use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class InvoiceForm extends Component
+class CreateInvoice extends Component
 {
     // Reservation Details
     #[Validate] public $date_in;
@@ -112,7 +112,12 @@ class InvoiceForm extends Component
                     }
     
                     foreach ($this->selected_amenities as $amenity) {
-                        $this->sub_total += $amenity->price;
+                        $quantity = $amenity->pivot->quantity;
+                        
+                        // If quantity is 0, change it to 1
+                        $quantity != 0 ?: $quantity = 1;
+
+                        $this->sub_total += ($amenity->price * $quantity);
                     }
     
                     $this->computeBreakdown();

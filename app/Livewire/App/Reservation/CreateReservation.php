@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\App;
+namespace App\Livewire\App\Reservation;
 
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
@@ -18,7 +18,7 @@ use Livewire\Component;
 use phpDocumentor\Reflection\Types\This;
 use Spatie\LivewireFilepond\WithFilePond;
 
-class ReservationForm extends Component
+class CreateReservation extends Component
 {
     use WithFilePond;
 
@@ -36,6 +36,7 @@ class ReservationForm extends Component
     #[Validate] public $phone;
     #[Validate] public $address = [];
     // Payment
+    #[Validate] public $note;
     #[Validate] public $proof_image_path;
     #[Validate] public $cash_payment = 500;
     // Address
@@ -423,6 +424,7 @@ class ReservationForm extends Component
             'phone' => $this->phone,
             'address' => trim(implode($this->address), ', '),
             'email' => $this->email,
+            'note' => $this->note,
         ]);
 
         if (!empty($this->selected_rooms)) {

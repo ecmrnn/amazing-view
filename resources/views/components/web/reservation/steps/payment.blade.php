@@ -36,7 +36,7 @@
                                 <span class="space-x-1">
                                     @foreach ($selected_rooms as $room)
                                         <span key="{{ $room->id }}" class="inline-block px-2 py-1 font-semibold capitalize rounded-md bg-slate-200">
-                                            {{ $room->roomType->name . " " . $room->room_number }}
+                                            {{ $room->building->prefix . " " . $room->room_number }}
                                         </span>
                                     @endforeach
                                 </span>

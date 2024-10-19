@@ -88,7 +88,7 @@ final class DashboardReservationTable extends PowerGridComponent
 
             Column::make('Status', 'status_formatted', 'status'),
 
-            Column::action('Action')
+            Column::action('')
         ];
     }
 
@@ -114,11 +114,14 @@ final class DashboardReservationTable extends PowerGridComponent
         $this->js('alert(' . $rowId . ')');
     }
 
-    // public function actions(Reservation $row): array
-    // {
-    //     return [
-    //     ];
-    // }
+    public function actionsFromView($row)
+    {
+        return view('components.table-actions.reservation', [
+            'row' => $row,
+            'edit_link' => 'app.reservations.edit',
+            'view_link' => 'app.reservations.show',
+        ]);
+    }
 
     /*
     public function actionRules($row): array

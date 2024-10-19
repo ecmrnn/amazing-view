@@ -11,7 +11,7 @@
 
     <x-form.input-label for="message">Message</x-form.input-label>
     <x-form.input-error :messages="$errors->get('message')" class="mt-2" />
-    <x-form.textarea x-on:keyup="count = max - $el.value.length" x-bind:maxlength="max" name="message" id="message"></x-form.textarea>
+    <x-form.textarea x-on:keyup="count = max - $el.value.length" x-bind:maxlength="max" name="message" id="message" class="max-h-[200px]"></x-form.textarea>
 
     <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
 

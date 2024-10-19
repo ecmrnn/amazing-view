@@ -12,8 +12,8 @@
         style="{{  data_get($theme, 'tableStyle') }}"
     >
         <thead
-            class="{{ data_get($theme, 'table.theadClass') }}"
-            style="{{ data_get($theme, 'table.theadStyle') }}"
+            class="border-b bg-slate-50"
+            {{-- style="{{ data_get($theme, 'table.theadStyle') }}" --}}
         >
             {{ $header }}
         </thead>

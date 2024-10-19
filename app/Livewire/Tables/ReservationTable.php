@@ -9,9 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
-use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
@@ -21,7 +19,6 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
-use PowerComponents\LivewirePowerGrid\Responsive;
 
 final class ReservationTable extends PowerGridComponent
 {
@@ -69,14 +66,17 @@ final class ReservationTable extends PowerGridComponent
 
         return PowerGrid::fields()
             ->add('rid')
+
             ->add('date_in')
-            ->add('date_out')
             ->add('date_in_formatted', function ($reservation) {
                 return Carbon::parse($reservation->date_in)->format('F j, Y'); //20/01/2024 10:05
             })
+
+            ->add('date_out')
             ->add('date_out_formatted', function ($reservation) {
                 return Carbon::parse($reservation->date_out)->format('F j, Y'); //20/01/2024 10:05
             })
+
             ->add('status')
             ->add('status_update', function ($reservation) use ($reservation_statuses) {
                 return Blade::render('
@@ -96,7 +96,7 @@ final class ReservationTable extends PowerGridComponent
                             <section class="p-5 space-y-5 bg-white">
                                 <hgroup>
                                     <h2 class="font-semibold text-center capitalize">Update Status</h2>
-                                    <p class="max-w-sm text-xs text-center">You are about to update this reservation (<strong class="text-blue-500">{{ $reservation->rid }}</strong>), proceed?</p>
+                                    <p class="max-w-sm text-xs text-center">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
                                 </hgroup>
                 
                                 <div class="flex items-center justify-center gap-1">
@@ -116,6 +116,15 @@ final class ReservationTable extends PowerGridComponent
             })
             ->add('status_formatted', function ($reservation) {
                 return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
+            })
+
+            ->add('note')
+            ->add('note_formatted', function ($reservation) {
+                return Blade::render(
+                    '<x-tooltip text="' . $reservation->note . '" dir="top">
+                        <div x-ref="content" class="max-w-[250px] line-clamp-1">' . $reservation->note . '</div>
+                    </x-tooltip>'
+                );
             });
     }
 
@@ -129,6 +138,8 @@ final class ReservationTable extends PowerGridComponent
             Column::make('Check in', 'date_in_formatted', 'date_in'),
 
             Column::make('Check out', 'date_out_formatted', 'date_out'),
+
+            Column::make('Note', 'note_formatted', 'note'),
 
             Column::make('Status', 'status_formatted', 'status'),
 
