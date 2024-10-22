@@ -72,7 +72,7 @@
         <div>
             <p x-show="address != '' && address != null" class="text-sm font-semibold">
                 <template x-for="item in address">
-                    <span x-text="item" class="capitalize"></span>
+                    <span x-text="item"></span>
                 </template>
             </p>
             <x-form.text-loading x-show="address == '' || address == null" class="w-1/2" />
@@ -121,12 +121,16 @@
 
                         <div class="grid grid-cols-3 place-items-end">
                             <p>
-                                @php
+                                @php    
                                     $quantity = 1;
-                                    foreach ($additional_amenity_quantities as $selected_amenity) {
-                                        if ($selected_amenity['amenity_id'] == $amenity->id) {
-                                            $quantity = $selected_amenity['quantity'];
-                                            break;
+                                    $quantity != 0 ?: $quantity = 1;
+                                    
+                                    if ($additional_amenity_quantities->count() > 0) {
+                                        foreach ($additional_amenity_quantities as $selected_amenity) {
+                                            if ($selected_amenity['amenity_id'] == $amenity->id) {
+                                                $quantity = $selected_amenity['quantity'];
+                                                break;
+                                            }
                                         }
                                     }
                                 @endphp

@@ -121,7 +121,7 @@ final class ReservationTable extends PowerGridComponent
             ->add('note')
             ->add('note_formatted', function ($reservation) {
                 return Blade::render(
-                    '<x-tooltip text="' . $reservation->note . '" dir="top">
+                    '<x-tooltip :textWrap="false" text="' . $reservation->note . '" dir="top">
                         <div x-ref="content" class="max-w-[250px] line-clamp-1">' . $reservation->note . '</div>
                     </x-tooltip>'
                 );

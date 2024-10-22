@@ -16,24 +16,28 @@ class AmenitySeeder extends Seeder
         Amenity::create([
             'name' => 'Corkage',
             'price' => 250,
+            'quantity' => 1,
             'is_addons' => 1,
         ]);
 
         Amenity::create([
             'name' => 'Pet',
             'price' => 250,
+            'quantity' => 1,
             'is_addons' => 1,
         ]);
 
         Amenity::create([
             'name' => 'Breakfast',
             'price' => 500,
+            'quantity' => 1,
             'is_addons' => 1,
         ]);
 
         Amenity::create([
             'name' => 'Dinner',
             'price' => 500,
+            'quantity' => 1,
             'is_addons' => 1,
         ]);
 

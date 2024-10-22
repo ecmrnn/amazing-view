@@ -7,7 +7,7 @@
 
 <div class="flex gap-1">
     <x-tooltip text="Edit" dir="top">
-        <a x-ref="content" href="{{ route($edit_link, ['reservation' => $row->rid]) }}" wire:navigate
+        <a x-ref="content" href="{{ route($edit_link, ['reservation' => $row->rid]) }}" wire:navigate.hover
             class="block p-2 transition-all duration-200 ease-in-out bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-600 hover:text-white hover:border-blue-600">
             <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -37,7 +37,7 @@
     @endcan
 
     <x-tooltip text="View" dir="top">
-        <a x-ref="content" href="{{ route($view_link, ['reservation' => $row->rid]) }}" wire:navigate
+        <a x-ref="content" href="{{ route($view_link, ['reservation' => $row->rid]) }}" wire:navigate.hover
             class="block p-2 transition-all duration-200 ease-in-out bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-600 hover:text-white hover:border-blue-600">
             <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

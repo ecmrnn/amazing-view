@@ -6,6 +6,7 @@ use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
 use App\Models\Building;
 use App\Models\Reservation;
+use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Support\Carbon;
@@ -13,7 +14,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
 
-class CreateReservation extends Component
+class EditReservation extends Component
 {
     use WithFilePond;
 
@@ -29,7 +30,7 @@ class CreateReservation extends Component
     #[Validate] public $last_name;
     #[Validate] public $email;
     #[Validate] public $phone;
-    #[Validate] public $address = [];
+    #[Validate] public $address;
     // Payment
     #[Validate] public $note;
     #[Validate] public $proof_image_path;
@@ -49,14 +50,11 @@ class CreateReservation extends Component
 
     // Operations
     public $is_map_view = true; /* Must be set to true */
-    public $can_select_room = false; /* Must be set to false */
-    public $can_enter_guest_details = false; /* Must be set to false */
-    public $can_submit_payment = false; /* Must be set to false */
-    public $can_add_amenity = false; /* Must be set to false */
     public $selected_type; 
     public $selected_building;
     public $additional_amenity;
     public $available_amenities;
+    public $additional_amenities;
     public $additional_amenity_total;
     public $additional_amenity_quantity = 1;
     public $additional_amenity_quantities;
@@ -78,13 +76,20 @@ class CreateReservation extends Component
     public $vat = 0;
     public $vatable_sales = 0;
     public $payment_method = 'online';
+    public $reservation;
 
-    public function mount()
+    public function mount(Reservation $reservation = null)
     {
+        $this->reservation = $reservation;
         $this->min_date = date_format(Carbon::now(), 'Y-m-d');
-        $this->selected_rooms = collect();
-        $this->selected_amenities = collect();
+        
+        $this->selected_rooms = $reservation->rooms;
+        $this->selected_amenities = $reservation->amenities;
+        $this->additional_amenities = collect();
         $this->additional_amenity_quantities = collect();
+        $this->available_rooms = collect();
+
+        $this->setProperties();
 
         $this->buildings = Building::all();
         $this->rooms = RoomType::all();
@@ -105,39 +110,45 @@ class CreateReservation extends Component
         return Reservation::validationAttributes();
     }
 
-    // Address Get Methods
-    public function getProvinces($region)
-    {
-        $this->provinces = AddressController::getProvinces($region);
-        $this->setAddress();
-    }
+    public function setProperties() {
+        // Reservation Details
+        $this->date_in = $this->reservation->date_in;
+        $this->date_out = $this->reservation->date_out;
+        $this->adult_count = $this->reservation->adult_count;
+        $this->children_count = $this->reservation->children_count;
+        // Guest Details
+        $this->first_name = $this->reservation->first_name;
+        $this->last_name = $this->reservation->last_name;
+        $this->phone = $this->reservation->phone;
+        $this->email = $this->reservation->email;
+        $this->address = $this->reservation->address;
+        // Payment
+        $this->vat = 0;
+        $this->net_total = 0;
+        $this->sub_total = 0;
 
-    public function getCities($province)
-    {
-        $this->cities = AddressController::getCities($province);
-        $this->setAddress();
-    }
+        foreach ($this->selected_rooms as $room) {
+            $this->sub_total += ($room->rate * $this->night_count);
+        }
 
-    public function getBaranggays($city)
-    {
-        $this->baranggays = AddressController::getBaranggays($city);
-        $this->setAddress();
-    }
+        foreach ($this->selected_amenities as $amenity) {
+            $quantity = $amenity->pivot->quantity;
+            
+            // If quantity is 0, change it to 1
+            $quantity != 0 ?: $quantity = 1;
 
-    public function getDistrictBaranggays($district)
-    {
-        $this->baranggays = AddressController::getDistrictBaranggays($district);
-        $this->setAddress();
-    }
+            $this->sub_total += ($amenity->price * $quantity);
+        }
 
-    // Concatenates the address altogether
-    public function setAddress()
-    {
-        empty($this->street) ? $this->address[0] = null : $this->address[0] = trim($this->street) . ', ';
-        empty($this->baranggay) ? $this->address[1] = null : $this->address[1] = trim($this->baranggay) . ', ';
-        empty($this->district) ? $this->address[2] = null : $this->address[2] = trim($this->district) . ', ';
-        empty($this->city) ? $this->address[3] = null : $this->address[3] = trim($this->city) . ', ';
-        empty($this->province) ? $this->address[4] = null : $this->address[4] = trim($this->province);
+        $this->computeBreakdown();
+        // Attach selected amenities to additional_amenities
+        foreach ($this->selected_amenities as $amenity) {
+            $this->additional_amenities->push($amenity);
+            $this->additional_amenity_quantities->push([
+                'amenity_id' => $amenity->id,
+                'quantity' => $amenity->pivot->quantity
+            ]);
+        }
     }
 
     public function computeBreakdown()
@@ -145,6 +156,14 @@ class CreateReservation extends Component
         $this->vatable_sales = $this->sub_total / 1.12;
         $this->vat = ($this->sub_total) - $this->vatable_sales;
         $this->net_total = $this->vatable_sales + $this->vat;
+    }
+
+    public function selectAmenity($id) {
+        if (!empty($id)) {
+            $this->additional_amenity_id = $id;
+            $this->additional_amenity = Amenity::find($id);
+            $this->getTotal();
+        }
     }
 
     public function addAmenity() {
@@ -156,11 +175,13 @@ class CreateReservation extends Component
         $amenity = $this->additional_amenity;
 
         if ($this->additional_amenity_quantity <= $amenity->quantity) {
+            $this->additional_amenities->push($amenity);
+    
             $this->additional_amenity_quantities->push([
                 'amenity_id' => $amenity->id,
                 'quantity' => $this->additional_amenity_quantity
             ]);
-            
+
             // Push to amenities selected on reservation
             $this->selected_amenities->push($amenity);
 
@@ -192,6 +213,9 @@ class CreateReservation extends Component
             }
 
             // Remove this amenity on these properties
+            $this->additional_amenities = $this->additional_amenities->reject(function ($amenity_loc) use ($amenity) {
+                return $amenity_loc->id == $amenity->id;
+            });
             $this->selected_amenities = $this->selected_amenities->reject(function ($amenity_loc) use ($amenity) {
                 return $amenity_loc->id == $amenity->id;
             });
@@ -202,14 +226,6 @@ class CreateReservation extends Component
             // Recompute breakdown
             $this->sub_total -= ($amenity->price * $quantity);
             $this->computeBreakdown();
-        }
-    }
-
-    public function selectAmenity($id) {
-        if (!empty($id)) {
-            $this->additional_amenity_id = $id;
-            $this->additional_amenity = Amenity::find($id);
-            $this->getTotal();
         }
     }
 
@@ -226,20 +242,12 @@ class CreateReservation extends Component
         $this->floor_count = $this->selected_building->floor_count;
         $this->column_count = $this->selected_building->room_col_count;
 
+        $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
+
         // Get the rooms in the building
         $this->available_rooms = Room::where('building_id', $this->selected_building->id)
             ->where('floor_number', $this->floor_number)
             ->get();
-    }
-
-    public function selectedRoom()
-    {
-        $this->validate([
-            'selected_rooms' => $this->rules()['selected_rooms'],
-        ]);
-
-        $this->can_select_room = false;
-        $this->can_add_amenity = true;
     }
 
     public function upFloor()
@@ -303,68 +311,6 @@ class CreateReservation extends Component
         $this->computeBreakdown();
     }
 
-    public function guestDetails() {
-        $this->validate([
-            'date_in' => $this->rules()['date_in'],
-            'date_out' => $this->rules()['date_out'],
-            'adult_count' => $this->rules()['adult_count'],
-            'children_count' => $this->rules()['children_count'],
-        ]);
-
-        $this->can_enter_guest_details = true;
-
-        if (empty($this->regions) || empty($this->districts)) {
-            $this->regions = AddressController::getRegions();
-            $this->districts = AddressController::getDistricts();
-        }
-    }
-
-    public function selectRoom()
-    {
-        $this->validate([
-            'date_in' => $this->rules()['date_in'],
-            'date_out' => $this->rules()['date_out'],
-            'adult_count' => $this->rules()['adult_count'],
-            'children_count' => $this->rules()['children_count'],
-            'first_name' => $this->rules()['first_name'],
-            'last_name' => $this->rules()['last_name'],
-            'email' => $this->rules()['email'],
-            'phone' => $this->rules()['phone'],
-            'address' => $this->rules()['address'],
-        ]);
-        
-        $this->can_select_room = true;
-        if ($this->buildings->count() > 0 || $this->rooms->count() > 0) {
-            $this->buildings = Building::all();
-            $this->rooms = RoomType::all();
-        }
-
-        $this->addons = Amenity::where('is_addons', 1)->get();
-        $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
-
-        // Get the number of nights between 'date_in' and 'date_out'
-        $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));
-
-        // If 'date_in' == 'date_out', 'night_count' = 1
-        $this->night_count != 0 ?: $this->night_count = 1;
-
-        // Get all the reserved rooms
-        $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
-
-        // Recomputes the total amount due
-        $this->vatable_sales = 0;
-        $this->sub_total = 0;
-        $this->vat = 0;
-        $this->net_total = 0;
-        foreach ($this->selected_rooms as $room) {
-            $this->sub_total += ($room->rate * $this->night_count);
-        }
-        foreach ($this->selected_amenities as $amenity) {
-            $this->sub_total += $amenity->price;
-        }
-        $this->computeBreakdown();
-    }
-
     public function viewRooms(RoomType $roomType) {
         $this->selected_type = $roomType;
         
@@ -396,70 +342,74 @@ class CreateReservation extends Component
         $this->toggleRoom($room);
     }
 
-    public function submit()
-    {
+    public function update() {
+        
         $this->validate([
-            'proof_image_path' => $this->rules()['proof_image_path'],
-            'cash_payment' => $this->rules()['cash_payment'],
+            // 'date_in' => 'required|date|after_or_equal:date_in',
+            'date_out' => Reservation::rules()['date_out'],
+            'adult_count' => Reservation::rules()['adult_count'],
+            'children_count' => Reservation::rules()['children_count'],
+            'selected_rooms' => Reservation::rules()['selected_rooms'],
+            'first_name' => Reservation::rules()['first_name'],
+            'last_name' => Reservation::rules()['last_name'],
+            'email' => Reservation::rules()['email'],
+            'phone' => Reservation::rules()['phone'],
+            'address' => Reservation::rules()['address'],
+            'note' => Reservation::rules()['note'],
         ]);
 
-        // Open success modal
-        $this->dispatch('open-modal', 'show-reservation-confirmation');
-    }
-
-    public function store() {
-        $reservation = Reservation::create([
-            'date_in' => $this->date_in,
-            'date_out' => $this->date_out,
-            'adult_count' => $this->adult_count,
-            'children_count' => $this->children_count,
-            'status' => Reservation::STATUS_PENDING,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'phone' => $this->phone,
-            'address' => trim(implode($this->address), ', '),
-            'email' => $this->email,
-            'note' => $this->note,
-        ]);
-
+        
+        
         if (!empty($this->selected_rooms)) {
-            // Store rooms
+            // Removes old and non existing amenity
+            foreach ($this->reservation->rooms as $room) {
+                if (!$this->selected_rooms->contains('id', $room->id)) {
+                    $this->reservation->rooms()->detach($room->id);
+                }
+            }
             foreach ($this->selected_rooms as $room) {
-                $room->reservations()->attach($reservation->id);
+                if (!$this->reservation->rooms->contains('id', $room->id)) {
+                    $this->reservation->rooms()->attach($room->id);
+                }
             }
         }
 
         if (!empty($this->selected_amenities)) {
-            // Store amenities
+            // Removes old and non existing amenity
+            foreach ($this->reservation->amenities as $amenity) {
+                if (!$this->selected_amenities->contains('id', $amenity->id)) {
+                    $this->reservation->amenities()->detach($amenity->id);
+                }
+            }
             foreach ($this->selected_amenities as $amenity) {
-                $quantity = 1;
-
+                // If the newly selected amenities exists in the already selected amenities
+                // - updates the record
+                $quantity = 0;    
+                
                 foreach ($this->additional_amenity_quantities as $selected_amenity) {
                     if ($selected_amenity['amenity_id'] == $amenity->id) {
-                        $amenity->quantity -= $selected_amenity['quantity'];
                         $quantity = $selected_amenity['quantity'];
-                        $amenity->save();
                         break;
                     }
                 }
-                
-                $reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
+
+                if ($this->reservation->amenities->contains('id', $amenity->id)) {
+                    $this->reservation->amenities()->updateExistingPivot($amenity->id, ['quantity' => $quantity]);
+                } else {
+                    $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
+                }
             }
         }
 
-        // Reset all properties
-        $this->reset();
-
-        $this->min_date = date_format(Carbon::now(), 'Y-m-d');
-        $this->selected_rooms = collect();
-        $this->selected_amenities = collect();
-        $this->additional_amenity_quantities = collect();
+        $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Yay, Reservation Updated!']));
     }
 
     public function render()
     {
+        $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
+        $this->addons = Amenity::where('is_addons', 1)->get();
 
-        return view('livewire.app.reservation.create-reservation', [
+        return view('livewire.app.reservation.edit-reservation', [
             'buildings' => $this->buildings,
             'addons' => $this->addons,
             'rooms' => $this->rooms,

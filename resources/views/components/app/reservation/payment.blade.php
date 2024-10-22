@@ -24,7 +24,7 @@
                 </div>
 
                 <x-note>
-                    Minimum of <x-currency />500.00 must be paid for the reservation to be processed and confirmed.
+                    <p class="max-w-sm">Minimum of <x-currency />500.00 must be paid for the reservation to be processed and confirmed.</p>
                 </x-note>
 
                 {{-- Online Payment --}}

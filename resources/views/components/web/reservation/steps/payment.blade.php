@@ -119,10 +119,7 @@
                     <div class="space-y-1">
                         @foreach ($selected_amenities as $amenity)
                             @php
-                                $quantity = $amenity->pivot->quantity;
-
-                                // If quantity is 0, change it to 1
-                                $quantity != 0 ?: $quantity = 1;
+                                $quantity = 1;
                             @endphp
 
                             <div class="grid grid-cols-2">
@@ -169,7 +166,9 @@
     <div x-show="can_submit_payment" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body>
             <div class="p-5 space-y-3">
-                <x-note class="max-w-sm"></strong> A minimum of <x-currency />500.00 must be paid to process your reservation. Kindly send an image of your receipt using the following payment methods below.</x-note>
+                <x-note>
+                    <p class="max-w-sm"></strong> A minimum of <x-currency />500.00 must be paid to process your reservation. Kindly send an image of your receipt using the following payment methods below.</p>
+                </x-note>
 
                 {{-- Payment Methods --}}
                 <div class="grid gap-3 md:grid-cols-2">

@@ -23,7 +23,7 @@
         <div class="flex items-center justify-between gap-3 sm:items-start">
             <div class="flex items-center gap-3 sm:gap-5">
                 <x-tooltip text="Back" dir="bottom">
-                    <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>
+                    <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate.hover>
                         <x-icon-button>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
                         </x-icon-button>
@@ -156,9 +156,9 @@
                                 <p>{{ $room->building->prefix . ' ' . $room->room_number }}</p>
             
                                 <div class="grid grid-cols-3 place-items-end">
-                                    <p>&lpar;night<span x-show="night_count > 1">s</span>&rpar; {{ $night_count }}</p>
-                                    <p>{{ number_format($room->rate, 2) }}</p>
-                                    <p>{{ number_format($room->rate * $night_count, 2) }}</p>
+                                    <p class="text-sm">&lpar;night<span x-show="night_count > 1">s</span>&rpar; {{ $night_count }}</p>
+                                    <p class="text-sm">{{ number_format($room->rate, 2) }}</p>
+                                    <p class="text-sm">{{ number_format($room->rate * $night_count, 2) }}</p>
                                 </div>
                             </div>
                         @empty
@@ -179,12 +179,12 @@
                         @endphp
 
                         <div class="grid grid-cols-2">
-                            <p class="uppercase">{{ $amenity->name }}</p>
+                            <p class="text-sm uppercase">{{ $amenity->name }}</p>
                             
                             <div class="grid grid-cols-3 place-items-end">
-                                    <p>{{ $quantity }}</p>
-                                    <p>{{ number_format($amenity->price, 2) }}</p>
-                                    <p>{{ number_format($amenity->price * $quantity, 2) }}</p>
+                                    <p class="text-sm">{{ $quantity }}</p>
+                                    <p class="text-sm">{{ number_format($amenity->price, 2) }}</p>
+                                    <p class="text-sm">{{ number_format($amenity->price * $quantity, 2) }}</p>
                                 </div>
                             </div>
                         @endforeach

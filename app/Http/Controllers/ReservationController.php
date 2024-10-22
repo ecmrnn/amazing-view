@@ -78,12 +78,10 @@ class ReservationController extends Controller
      */
     public function edit(string $reservation)
     {
-        $reservation_data = Reservation::where('rid', $reservation)->first();
+        $reservation = Reservation::where('rid', $reservation)->first();
 
-        // dd($reservation_data);
-        
         return view('app.reservations.edit', [
-            'reservation' => $reservation_data
+            'reservation' => $reservation,
         ]);
     }
 

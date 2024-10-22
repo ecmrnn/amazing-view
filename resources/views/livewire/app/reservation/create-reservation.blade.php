@@ -39,6 +39,7 @@
     <section class="w-full">
         {{-- Step 1: Reservation Details --}}
         @include('components.app.reservation.reservation_details')
+
         <x-line-vertical />
 
         {{-- Step 2: Guest Details --}}

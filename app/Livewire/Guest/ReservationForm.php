@@ -19,7 +19,7 @@ class ReservationForm extends Component
 {
     use WithFilePond, WithPagination;
 
-    public $step = 3;
+    public $step = 1;
     public $capacity = 0;
 
     // Reservation Details

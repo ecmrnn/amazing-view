@@ -11,6 +11,6 @@ $classes = 'border-b-2 font-semibold border-transparent py-2 transition duration
 <a {{ $attributes->merge(['class' => $classes]) }} wire:navigate.hover>
     {{ $slot }}
 
-    <div x-data="{ active: @js($active) }" x-bind:class="active ? 'w-1/2' : 'w-0'" class="absolute bottom-0 h-[2px] transition-all duration-200 ease-in-out -translate-x-1/2 bg-blue-500 rounded-full left-1/2 group-hover:w-1/2">
+    <div x-data="{ active: @js($active) }" x-bind:class="active ? 'w-[5px]' : 'w-0'" class="absolute bottom-0 aspect-square transition-all duration-200 ease-in-out -translate-x-1/2 bg-blue-500 rounded-full left-1/2 group-hover:w-[5px]">
     </div>
 </a>

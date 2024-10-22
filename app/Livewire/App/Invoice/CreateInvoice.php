@@ -257,60 +257,55 @@ class CreateInvoice extends Component
         $this->net_total = $this->vatable_sales + $this->vat;
     }
 
-    // #[On('reset-form')]
-    // public function resetForm() {
-    //     $this->reset();
-    // }
-
-    public function store() {
+    public function update() {
         // Validate all required properties
-        $this->validate([
-            'reservation' => 'required',
-            'net_total' => 'required|integer',
-            'issue_date' => 'required|date|after_or_equal:today',
-            'due_date' => 'required|date|after:issue_date',
-        ]);
+        // $this->validate([
+        //     'reservation' => 'required',
+        //     'net_total' => 'required|integer',
+        //     'issue_date' => 'required|date|after_or_equal:today',
+        //     'due_date' => 'required|date|after:issue_date',
+        // ]);
 
-        if ($this->additional_amenities->count() > 0) {
-            foreach ($this->additional_amenities as $amenity) {
-                foreach ($this->additional_amenity_quantities as $selected_amenity) {
-                    if ($selected_amenity['amenity_id'] == $amenity->id) {
-                        $amenity->quantity -= $selected_amenity['quantity'];
-                        $quantity = $selected_amenity['quantity'];
-                        $amenity->save();
-                        break;
-                    }
-                }
+        // if ($this->additional_amenities->count() > 0) {
+        //     foreach ($this->additional_amenities as $amenity) {
+        //         foreach ($this->additional_amenity_quantities as $selected_amenity) {
+        //             if ($selected_amenity['amenity_id'] == $amenity->id) {
+        //                 $amenity->quantity -= $selected_amenity['quantity'];
+        //                 $quantity = $selected_amenity['quantity'];
+        //                 $amenity->save();
+        //                 break;
+        //             }
+        //         }
                 
-                $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
-            }
-        }
+        //         $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
+        //     }
+        // }
 
-        // Store data to database
-        $invoice = Invoice::create([
-            'reservation_id' => $this->reservation->id,
-            'balance' => $this->net_total,
-            'issue_date' => $this->issue_date,
-            'due_date' => $this->due_date,
-        ]);
+        // // Store data to database
+        // $invoice = Invoice::create([
+        //     'reservation_id' => $this->reservation->id,
+        //     'balance' => $this->net_total,
+        //     'issue_date' => $this->issue_date,
+        //     'due_date' => $this->due_date,
+        // ]);
 
-        // Create Discount
-        foreach ($this->selected_discounts as $discount) {
-            $invoice->discounts()->attach($discount->id);
-        }
+        // // Create Discount
+        // foreach ($this->selected_discounts as $discount) {
+        //     $invoice->discounts()->attach($discount->id);
+        // }
 
-        // Display toast
-        $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Invoice created!']));
+        // // Display toast
+        // $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Invoice created!']));
 
-        // Reset all properties
-        $this->reset();
+        // // Reset all properties
+        // $this->reset();
 
-        $this->selected_amenities = collect();
-        $this->additional_amenities = collect();
-        $this->additional_amenity_quantities = collect();
-        $this->selected_discounts = collect();
-        $this->selected_rooms = collect();
-        $this->reservation = collect();
+        // $this->selected_amenities = collect();
+        // $this->additional_amenities = collect();
+        // $this->additional_amenity_quantities = collect();
+        // $this->selected_discounts = collect();
+        // $this->selected_rooms = collect();
+        // $this->reservation = collect();
     }
 
     public function render()

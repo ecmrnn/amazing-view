@@ -1,9 +1,12 @@
-<div {{ $attributes->merge(['class' => 'flex items-center justify-between bg-slate-100/50 overflow-visible']) }}>
+<div {{ $attributes->merge(['class' => 'flex items-center justify-between overflow-visible']) }}>
     <div class="flex items-center">
-        <div class="m-2 rounded-md w-[30px] aspect-square grid place-items-center bg-gradient-to-r border border-blue-600 from-blue-500 to-blue-600">
+        {{-- <div class="m-2 rounded-md w-[30px] aspect-square grid place-items-center bg-gradient-to-r border border-blue-600 from-blue-500 to-blue-600">
             <span class="text-xs font-semibold text-white">{{ $step }}</span>
+        </div> --}}
+        <div class="m-2 w-[30px] aspect-square grid place-items-center">
+            <span class="text-sm font-semibold text-zinc-800/50">{{ $step }}</span>
         </div>
-        <h2 class="font-semibold text-md">{{ html_entity_decode($title) }}</h2>
+        <h2 class="text-sm font-semibold">{{ html_entity_decode($title) }}</h2>
     </div>
 
     <template x-if="expanded">
