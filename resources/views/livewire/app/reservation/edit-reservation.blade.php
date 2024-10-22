@@ -404,6 +404,18 @@
 
         {{-- Save Changes button --}}
         <x-primary-button type="button" wire:click='update()'>Save Changes</x-primary-button>
+
+        {{-- Cancel reservation --}}
+        <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
+            <hgroup>
+                <h3 class="font-semibold text-red-500">Cancel Reservation</h3>
+                <p class="max-w-sm text-xs">rarara</p>
+            </hgroup>
+
+            <div>
+                <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'show-cancel-reservation')">Cancel Reservation</x-danger-button>
+            </div>
+        </section>
     </section>
 
     <section class="sticky self-start w-full overflow-auto border rounded-lg top-5">
@@ -644,5 +656,12 @@
         </div>
     @endif
 </x-modal.full>
+
+{{-- Modal for confirming reservation --}}
+<x-modal.full name="show-cancel-reservation" maxWidth="sm">
+    <div x-data="{ reason: 'guest' }">
+        <livewire:app.reservation.cancel-reservation :reservation="$reservation" />
+    </div>
+</x-modal.full> 
 </form>
 

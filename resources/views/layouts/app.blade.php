@@ -24,7 +24,7 @@
         window.toast = function(message, options = {}){
             let description = '';
             let type = 'default';
-            let position = 'top-center';
+            let position = 'top-right';
             let html = '';
             if(typeof options.description != 'undefined') description = options.description;
             if(typeof options.type != 'undefined') type = options.type;
@@ -37,7 +37,6 @@
             toast(toast_details.message, {
                 type: toast_details.type,
                 description: toast_details.description,
-                position: 'top-right',
             })"
         >
         <div class="flex flex-col min-h-screen bg-slate-100 sm:flex-row">

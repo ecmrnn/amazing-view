@@ -81,7 +81,7 @@ class EditReservation extends Component
     public function mount(Reservation $reservation = null)
     {
         $this->reservation = $reservation;
-        $this->min_date = date_format(Carbon::now(), 'Y-m-d');
+        $this->min_date = Carbon::now()->format('Y-m-d');
         
         $this->selected_rooms = $reservation->rooms;
         $this->selected_amenities = $reservation->amenities;

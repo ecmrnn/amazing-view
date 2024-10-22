@@ -21,6 +21,8 @@ final class GuestTable extends PowerGridComponent
 {
     use WithExport;
 
+    public string $tableName = 'GuestTable';
+
     public function noDataLabel(): string|View
     { 
         return view('components.table-no-data.guest');
