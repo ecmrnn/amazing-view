@@ -64,6 +64,10 @@
             $label = 'Completed';
             $class = 'text-white border-emerald-500 bg-emerald-500/75';
             break;
+        case 6:
+            $label = 'Canceled';
+            $class = 'text-white border-stone-500 bg-stone-500/75';
+            break;
         default:
             # code...
             break;

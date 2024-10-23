@@ -34,7 +34,7 @@ class CheckInGuest extends Component
             $this->dispatch('toast', json_encode(['message' => 'Already in', 'type' => 'info', 'description' => 'Guest already checked-in']));
         } elseif (empty($this->reservation)) {
             $this->dispatch('toast', json_encode(['message' => 'Oof, not found!', 'type' => 'warning', 'description' => 'Reservation not found']));
-        }else {
+        } else {
             // Initialize properties
             $this->date_in = Carbon::parse($this->reservation->date_in)->format('F j, Y');
             $this->date_out = Carbon::parse($this->reservation->date_out)->format('F j, Y');
@@ -57,6 +57,11 @@ class CheckInGuest extends Component
                 foreach ($this->reservation->rooms as $room) {
                     $room->status = Room::STATUS_OCCUPIED;
                     $room->save();
+                }
+
+                foreach ($this->reservation->amenities as $amenity) {
+                    $amenity->quantity -= $amenity->pivot->quantity;
+                    $amenity->save();
                 }
                 
                 $this->dispatch('pg:eventRefresh-GuestTable');

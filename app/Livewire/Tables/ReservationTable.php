@@ -62,7 +62,7 @@ final class ReservationTable extends PowerGridComponent
 
     public function fields(): PowerGridFields
     {
-        $reservation_statuses = ['Confirmed', 'Pending', 'Expired', 'Checked-in', 'Checked-out', 'Completed'];
+        $reservation_statuses = ['Confirmed', 'Pending', 'Expired', 'Checked-in', 'Checked-out', 'Completed', 'Canceled'];
 
         return PowerGrid::fields()
             ->add('rid')
@@ -163,6 +163,7 @@ final class ReservationTable extends PowerGridComponent
                     ['status' => 3, 'name' => 'Checked-in'],
                     ['status' => 4, 'name' => 'Checked-out'],
                     ['status' => 5, 'name' => 'Completed'],
+                    ['status' => 6, 'name' => 'Canceled'],
                 ])
                 ->optionLabel('name')
                 ->optionValue('status'),

@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Blade;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -49,7 +50,7 @@ final class GuestTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return Reservation::query() 
-                        ->where('status', Reservation::STATUS_CHECKED_IN);
+                        ->whereStatus(Reservation::STATUS_CHECKED_IN);
     }
 
     public function relationSearch(): array
@@ -80,6 +81,27 @@ final class GuestTable extends PowerGridComponent
                 return Carbon::parse($reservation->date_out)->format('F j, Y'); //20/01/2024 10:05
             })
 
+            ->add('rooms', function ($reservation) {
+                return Blade::render('
+                    <div class="max-w-[200px] flex gap-1 flex-wrap">
+                        @foreach ($reservation->rooms as $room)
+                            <div key="{{ $room->id }}" class="px-2 py-1 font-semibold capitalize rounded-md min-w-max bg-slate-100">
+                                {{ $room->building->prefix . " " . $room->room_number }}
+                            </div>
+                        @endforeach
+                    </div>
+                ', ['reservation' =>$reservation]);
+            })
+
+            ->add('note')
+            ->add('note_formatted', function ($reservation) {
+                return Blade::render(
+                    '<x-tooltip :textWrap="false" text="' . $reservation->note . '" dir="top">
+                        <div x-ref="content" class="max-w-[250px] line-clamp-1">' . $reservation->note . '</div>
+                    </x-tooltip>'
+                );
+            })
+
             ->add('created_at')
             ;
     }
@@ -95,11 +117,15 @@ final class GuestTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
+            Column::make('Rooms', 'rooms'),
+
             Column::make('Check in', 'date_in_formatted', 'date_in'),
 
             Column::make('Check out', 'date_out_formatted', 'date_out'),
 
-            Column::action('Action')
+            Column::make('Note', 'note_formatted', 'note'),
+
+            Column::action('')
         ];
     }
 
@@ -120,15 +146,13 @@ final class GuestTable extends PowerGridComponent
         $this->js('alert('.$rowId.')');
     }
 
-    public function actions(Reservation $row): array
+    public function actionsFromView($row)
     {
-        return [
-            Button::add('edit')
-                ->slot('Edit: '.$row->id)
-                ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
-        ];
+        return view('components.table-actions.guest', [
+            'row' => $row,
+            'edit_link' => 'app.guests.edit',
+            'view_link' => 'app.guests.show',
+        ]);
     }
 
     /*
