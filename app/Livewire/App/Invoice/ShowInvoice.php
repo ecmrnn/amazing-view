@@ -20,8 +20,16 @@ class ShowInvoice extends Component
     public $night_count;
     public $reservation;
     public $selected_amenities = null;
-    public $additional_amenity_quantities;
     public $selected_rooms = null;
+    // 
+    public $additional_amenity;
+    public $additional_amenity_id;
+    public $additional_amenity_quantities;
+    public $additional_amenity_quantity = 0;
+    public $additional_amenity_total = 0;
+    public $additional_amenities;
+    public $available_amenities;
+    public $discounts;
     // Guest Details
     public $first_name;
     public $last_name;
@@ -50,6 +58,7 @@ class ShowInvoice extends Component
         $this->vat = $breakdown['vat'];
         $this->net_total = $breakdown['net_total'];
         $this->additional_amenity_quantities = collect();
+        $this->additional_amenities = collect();
 
         $this->setReservationDetails($reservation);
     }
@@ -75,6 +84,14 @@ class ShowInvoice extends Component
         $this->night_count = Carbon::parse($this->reservation['date_in'])->diffInDays(Carbon::parse($this->reservation['date_out']));
         // If 'date_in' == 'date_out', 'night_count' = 1
         $this->night_count != 0 ?: $this->night_count = 1;
+
+        foreach ($this->selected_amenities as $amenity) {
+            $this->additional_amenities->push($amenity);
+            $this->additional_amenity_quantities->push([
+                'amenity_id' => $amenity->id,
+                'quantity' => $amenity->pivot->quantity
+            ]);
+        }
     }
 
     public function render()

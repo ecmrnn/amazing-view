@@ -5,6 +5,7 @@ namespace App\Livewire\App\Reservation;
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
 use App\Models\Building;
+use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
@@ -400,6 +401,11 @@ class EditReservation extends Component
                 }
             }
         }
+
+        $invoice = Invoice::whereIid($this->reservation->invoice->iid)->first();
+        // dd($invoice);
+        $invoice->balance = $this->net_total - $invoice->downpayment;
+        $invoice->save();
 
         $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Yay, Reservation Updated!']));
     }

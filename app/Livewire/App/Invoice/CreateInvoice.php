@@ -133,6 +133,14 @@ class CreateInvoice extends Component
                 // Get all available amenities
                 $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
 
+                foreach ($this->selected_amenities as $amenity) {
+                    $this->additional_amenities->push($amenity);
+                    $this->additional_amenity_quantities->push([
+                        'amenity_id' => $amenity->id,
+                        'quantity' => $amenity->pivot->quantity
+                    ]);
+                }
+
                 $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Reservation found!']));
             } else {
                 $this->reservation = collect();
@@ -261,17 +269,27 @@ class CreateInvoice extends Component
             'due_date' => 'required|date|after:issue_date',
         ]);
 
-        if ($this->additional_amenities->count() > 0) {
-            foreach ($this->additional_amenities as $amenity) {
-                foreach ($this->additional_amenity_quantities as $selected_amenity) {
-                    if ($selected_amenity['amenity_id'] == $amenity->id) {
-                        $amenity->quantity -= $selected_amenity['quantity'];
-                        $quantity = $selected_amenity['quantity'];
-                        $amenity->save();
-                        break;
-                    }
+        // Removes old and non existing amenity
+        foreach ($this->reservation->amenities as $amenity) {
+            if (!$this->selected_amenities->contains('id', $amenity->id)) {
+                $this->reservation->amenities()->detach($amenity->id);
+            }
+        }
+        foreach ($this->selected_amenities as $amenity) {
+            // If the newly selected amenities exists in the already selected amenities
+            // - updates the record
+            $quantity = 0;
+            
+            foreach ($this->additional_amenity_quantities as $selected_amenity) {
+                if ($selected_amenity['amenity_id'] == $amenity->id) {
+                    $quantity = $selected_amenity['quantity'];
+                    break;
                 }
-                
+            }
+
+            if ($this->reservation->amenities->contains('id', $amenity->id)) {
+                $this->reservation->amenities()->updateExistingPivot($amenity->id, ['quantity' => $quantity]);
+            } else {
                 $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
             }
         }

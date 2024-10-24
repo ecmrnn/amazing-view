@@ -150,7 +150,7 @@
             </div>
         </div>
     @else
-        <div class="pt-2 font-semibold text-center">
+        <div class="font-semibold text-center">
             No amenities yet.
         </div>
     @endif

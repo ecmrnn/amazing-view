@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\App\Billings;
+namespace App\Livewire\App\Invoice;
 
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
@@ -51,8 +51,6 @@ class CreatePayment extends Component
             // Image
         ]);
 
-        
-        // dd($this->invoice->id);
         $invoice = Invoice::whereId($this->invoice->id)->first();
         $invoice->balance -= $this->amount;
 

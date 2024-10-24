@@ -134,14 +134,15 @@
 
         <div class="space-y-1">
             @if ($selected_amenities->count() > 0)
-                @foreach ($reservation->amenities as $amenity)
+                {{-- Old Selected Amenities --}}
+                @foreach ($additional_amenities as $amenity)
                     <div class="grid grid-cols-2 text-xs">
                         <p class="uppercase">{{ $amenity->name }}</p>
 
                         <div class="grid grid-cols-3 place-items-end">
                             <p>
                                 @php
-                                    $quantity = $amenity->pivot->quantity;
+                                    $quantity = 1;
 
                                     // If quantity is 0, change it to 1
                                     $quantity != 0 ?: $quantity = 1;

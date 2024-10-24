@@ -7,17 +7,6 @@
                 </h1>
                 <p class="text-xs">Manage your billings here</p>
             </hgroup>
-
-            @can('create billing')
-                @if ($invoice->balance > 0)
-                    <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'show-add-payment')">
-                        <div class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                            <span>Add Payment</span>
-                        </div>
-                    </x-primary-button>
-                @endif
-            @endcan
         </div>
     </x-slot:header>
 
@@ -34,7 +23,7 @@
             
                 <div>
                     <h2 class="text-lg font-semibold">{{ $invoice->iid }}</h2>
-                    <p class="max-w-sm text-xs">Confirm and view invoice.</p>
+                    <p class="max-w-sm text-xs">Modify and update this invoice.</p>
                 </div>
             </div>
             {{-- Actions --}}
@@ -61,13 +50,6 @@
             </div>
         </div>
         
-        <livewire:app.invoice.show-invoice :invoice="$invoice" />
-
-        {{-- Modal for confirming reservation --}}
-        <x-modal.full name="show-add-payment" maxWidth="sm">
-            <div>
-                <livewire:app.invoice.create-payment :invoice="$invoice" />
-            </div>
-        </x-modal.full> 
+        <livewire:app.invoice.edit-invoice :invoice="$invoice" />
     </div>
 </x-app-layout>  

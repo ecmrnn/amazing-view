@@ -48,9 +48,13 @@ class BillingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $billing)
     {
-        //
+        $invoice = Invoice::whereIid($billing)->first();
+        
+        return view('app.billings.edit', [
+            'invoice' => $invoice
+        ]);
     }
 
     /**
