@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
+use App\Livewire\tables\ReservationTable;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
 use Asantibanez\LivewireCharts\Models\AreaChartModel;
 use Asantibanez\LivewireCharts\Models\ColumnChartModel;
-use Asantibanez\LivewireCharts\Models\PieChartModel;
-use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -41,7 +43,6 @@ class DashboardController extends Controller
                 ->count();
             $pending_reservations = Reservation::where('status', Reservation::STATUS_PENDING)->count();
             $due_invoices = Invoice::where('status', Invoice::STATUS_DUE)->count();
-
             $area_chart = (new areaChartModel())
                 ->setColor('#2563EB')
                 ->addPoint('Jan', 10)
@@ -81,6 +82,61 @@ class DashboardController extends Controller
             ];
 
             $view = 'app.dashboard.frontdesk';
+        } elseif (Auth::user()->role == User::ROLE_ADMIN) {
+            $view = 'app.dashboard.admin';            
+            $months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+
+            // Monthly Revenue
+            $monthly_revenue = InvoicePayment::select(DB::raw('sum(amount) as revenue'))
+                ->whereMonth('payment_date', Carbon::now()->format('m'))
+                ->first();
+            
+            // Outstanding Balances
+            $outstanding_balance = Invoice::select(DB::raw('sum(balance) as balance'))
+                ->first();
+
+            $monthly_reservations = Reservation::select(DB::raw('count(*) as reservation_count'))
+                ->whereMonth('date_in', Carbon::now()->format('m'))
+                ->first();
+
+            // Monthly Reservations (Chart)
+            $monthly_reservations_chart = Reservation::select(DB::raw('MONTH(date_in) as month, count(*) as reservation_count'))
+                ->groupByRaw('MONTH(date_in)')
+                ->get();
+
+            // Monthly New Guests
+            $monthly_new_guests = Reservation::select(DB::raw('count(email) as new_guests'))
+                ->whereMonth('date_in', Carbon::now()->format('m'))
+                ->distinct()
+                ->first();
+
+            $area_chart_reservation = (new areaChartModel())
+                ->setColor('#2563EB');
+            foreach ($monthly_reservations_chart as $reservation) {
+                $area_chart_reservation->addPoint($months[$reservation->month - 1], $reservation->reservation_count);
+            };
+
+            // Monthly Sales
+            $monthly_sales = InvoicePayment::select(DB::raw('MONTH(payment_date) as month, sum(amount) as total_sales'))
+                ->groupByRaw('MONTH(payment_date)')
+                ->get();
+
+            $area_chart_sales = (new areaChartModel())
+                ->setColor('#2563EB');
+            foreach ($monthly_sales as $sale) {
+                $area_chart_sales->addPoint($months[$sale->month - 1], $sale->total_sales);
+            };
+
+            // dd($monthly_sales);
+
+            $data = [
+                'area_chart_reservation' => $area_chart_reservation,
+                'area_chart_sales' => $area_chart_sales,
+                'monthly_revenue' => $monthly_revenue,
+                'outstanding_balance' => $outstanding_balance,
+                'monthly_new_guests' => $monthly_new_guests,
+                'monthly_reservations' => $monthly_reservations,
+            ];
         }
 
         return view($view, $data);

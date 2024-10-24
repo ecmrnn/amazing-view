@@ -57,7 +57,7 @@ class RolePermissionSeeder extends Seeder
             'read billings',
         ];
 
-        $admin_permission = [
+        $admin_permissions = [
             'create guest',
             'read guests',
             'update guest',
@@ -90,5 +90,6 @@ class RolePermissionSeeder extends Seeder
 
         // Sync Permissions with Roles
         $frontdesk->syncPermissions($frontdesk_permissions);
+        $admin->syncPermissions($admin_permissions);
     }
 }

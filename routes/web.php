@@ -32,14 +32,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Global Auth routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Frontdesk
+    // Frontdesk & Dashboard
     Route::middleware('role:frontdesk|admin')->prefix('app')->name('app.')->group(function () {
         // Guests type route
         Route::resource('/guests', GuestController::class);
 
         // Reservation type route
         Route::resource('/reservations', ReservationController::class);
-        Route::patch('/reservation/update-note/{reservation}', [ReservationController::class, 'updateNote'])->name('reservation.update-note');
 
         // Room type route
         Route::resource('/rooms', RoomTypeController::class);
@@ -49,7 +48,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Room type route
         Route::resource('/billings', BillingController::class);
-
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

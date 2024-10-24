@@ -7,7 +7,7 @@
 
 <div class="overflow-hidden bg-white rounded-lg">
     <div class="flex gap-3 p-3 sm:p-5">
-        <div class="p-3 text-white grid place-items-center *:mx-auto w-full max-w-[50px] rounded-lg aspect-square bg-gradient-to-r from-blue-500 to-blue-600">
+        <div class="p-3 text-white grid place-items-center *:mx-auto w-full max-w-[50px] rounded-full aspect-square bg-gradient-to-r from-blue-500 to-blue-600">
             {{ $icon }}
         </div>
         

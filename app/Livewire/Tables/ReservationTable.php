@@ -121,7 +121,7 @@ final class ReservationTable extends PowerGridComponent
             ->add('note')
             ->add('note_formatted', function ($reservation) {
                 return Blade::render(
-                    '<x-tooltip :textWrap="false" text="' . $reservation->note . '" dir="top">
+                    '<x-tooltip :textWrap="false" text="' . htmlspecialchars($reservation->note, ENT_QUOTES, 'UTF-8') . '" dir="top">
                         <div x-ref="content" class="max-w-[250px] line-clamp-1">' . $reservation->note . '</div>
                     </x-tooltip>'
                 );
@@ -135,9 +135,13 @@ final class ReservationTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Check in', 'date_in_formatted', 'date_in'),
+            Column::make('Check in', 'date_in_formatted', 'date_in')
+                ->sortable()
+                ->searchable(),
 
-            Column::make('Check out', 'date_out_formatted', 'date_out'),
+            Column::make('Check out', 'date_out_formatted', 'date_out')
+                ->sortable()
+                ->searchable(),
 
             Column::make('Note', 'note_formatted', 'note'),
 
