@@ -20,6 +20,7 @@ class ShowInvoice extends Component
     public $night_count;
     public $reservation;
     public $selected_amenities = null;
+    public $additional_amenity_quantities;
     public $selected_rooms = null;
     // Guest Details
     public $first_name;
@@ -32,7 +33,6 @@ class ShowInvoice extends Component
     public $vat;
     public $net_total;
     public $discount_amount;
-
     // Invoice
     public $invoice;
     public $issue_date;
@@ -49,6 +49,7 @@ class ShowInvoice extends Component
         $this->vatable_sales = $breakdown['vatable_sales'];
         $this->vat = $breakdown['vat'];
         $this->net_total = $breakdown['net_total'];
+        $this->additional_amenity_quantities = collect();
 
         $this->setReservationDetails($reservation);
     }

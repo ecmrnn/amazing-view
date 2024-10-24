@@ -51,8 +51,15 @@ class CreatePayment extends Component
             // Image
         ]);
 
-        $invoice = Invoice::find($this->invoice->id)->first();
+        
+        // dd($this->invoice->id);
+        $invoice = Invoice::whereId($this->invoice->id)->first();
         $invoice->balance -= $this->amount;
+
+        if ($invoice->balance == 0) {
+            $invoice->status = Invoice::STATUS_PAID;
+        }
+
         $invoice->save();
 
         $this->reset('payment_method', 'proof_image_path', 'transaction_id', 'amount');
