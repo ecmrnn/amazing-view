@@ -1,7 +1,7 @@
 <x-form.form-section>
     <x-form.form-header step="2" title="Invoice Details" />
 
-    <div x-show="rid != null" x-collapse.duration.1000ms>
+    <div x-show="rid != null && rid != ''" x-collapse.duration.1000ms>
         <x-form.form-body>
             <div class="p-5 space-y-3">
                 <div class="flex flex-col gap-1 sm:flex-row">

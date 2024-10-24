@@ -405,17 +405,19 @@
         {{-- Save Changes button --}}
         <x-primary-button type="button" wire:click='update()'>Save Changes</x-primary-button>
 
-        {{-- Cancel reservation --}}
-        <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
-            <hgroup>
-                <h3 class="font-semibold text-red-500">Cancel Reservation</h3>
-                <p class="max-w-sm text-xs">rarara</p>
-            </hgroup>
+        @if ($reservation->status == App\Models\Reservation::STATUS_PENDING || $reservation->status == App\Models\Reservation::STATUS_CONFIRMED)
+            {{-- Cancel reservation --}}
+            <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
+                <hgroup>
+                    <h3 class="font-semibold text-red-500">Cancel Reservation</h3>
+                    <p class="max-w-sm text-xs">If you need to cancel the reservation, click the button below.</p>
+                </hgroup>
 
-            <div>
-                <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'show-cancel-reservation')">Cancel Reservation</x-danger-button>
-            </div>
-        </section>
+                <div>
+                    <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'show-cancel-reservation')">Cancel Reservation</x-danger-button>
+                </div>
+            </section>
+        @endif
     </section>
 
     <section class="sticky self-start w-full overflow-auto border rounded-lg top-5">
@@ -442,7 +444,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">{{ $selected_building->name }} Building</h2>
-                    <p class="text-xs text-zinc-800/50">Click a room to select</p>
+                    <p class="text-xs text-zinc-800">Click a room to select</p>
                 </hgroup>
             </header>
             
@@ -531,7 +533,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
-                    <p class="text-xs text-zinc-800/50">Click a room to select</p>
+                    <p class="text-xs text-zinc-800">Click a room to select</p>
                 </hgroup>
             </header>
             

@@ -30,7 +30,7 @@
     <livewire:app.cards.reservation-cards />
 
     {{-- Room  Table --}}
-    <div class="p-3 space-y-5 overflow-x-auto bg-white rounded-lg sm:p-5">
+    <div class="p-5 bg-white rounded-lg">
         <livewire:tables.reservation-table />
     </div>
 </x-app-layout>

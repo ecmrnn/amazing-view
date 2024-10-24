@@ -35,8 +35,9 @@ class Reservation extends Model
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'required',
-            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000|required_if:payment_method,online',
-            'cash_payment' => 'nullable|integer|min:500|required_if:payment_method,cash',
+            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000|required_unless:payment_method,cash',
+            'downpayment' => 'integer|min:500|required',
+            'transaction_id' => 'nullable|string|required_unless:payment_method,cash',
             'note' => 'nullable|max:200',
         ];
 
@@ -76,12 +77,13 @@ class Reservation extends Model
             'email.required' => 'Enter an :attribute',
             'email.email' => 'Enter a valid :attribute',
 
-            'proof_image_path.mimes' => ':attribute enter a valid image file (JPG, JPEG, JPG)',
+            'proof_image_path.mimes' => 'Image format must be either of the following: JPG, JPEG, PNG',
             'proof_image_path.max' => 'File size must be less than 1000KB',
-            'proof_image_path.required_if' => 'Upload your :attribute',
+            'proof_image_path.required_unless' => 'Upload your payment slip',
 
-            'cash_payment.required_if' => 'Enter the amount of cash paid',
-            'cash_payment.min' => 'Minimum cash amount is 500.',
+            'downpayment.required_unless' => 'Enter the amount of cash paid',
+            'downpayment.min' => 'Minimum cash amount is 500.',
+            'transaction_id.required_unless' => 'Transaction ID is required when payment method is online',
         ];
 
         if (!empty($excepts)) {
@@ -106,7 +108,7 @@ class Reservation extends Model
             'phone' => 'Contact Number',
             'email' => 'Email',
             'proof_image_path' => 'Proof of Payment',
-            'cash_payment' => 'Cash',
+            'downpayment' => 'Cash',
         ];
 
         if (!empty($excepts)) {
@@ -174,6 +176,16 @@ class Reservation extends Model
                 'prefix' => date('Rymd'),
                 'reset_on_prefix_change' => true
             ]);
+        });
+
+        Reservation::creating(function ($reservation) {
+            $reservation->first_name = trim(strtolower($reservation->first_name));
+            $reservation->last_name = trim(strtolower($reservation->last_name));
+        });
+
+        Reservation::updating(function ($reservation) {
+            $reservation->first_name = trim(strtolower($reservation->first_name));
+            $reservation->last_name = trim(strtolower($reservation->last_name));
         });
     }
 }

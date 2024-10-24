@@ -9,7 +9,7 @@
     is_null($attributes['x-model']) ? $number = 0 : $number = $model;
 @endphp
 
-<div class="flex bg-white rounded-lg" 
+<div
     @if (is_null($model))
         x-data="{ number: 0 }"
     @endif>
@@ -21,7 +21,7 @@
 
         {{-- Number input --}}
         <input
-            {{ $attributes->merge(['class' => 'pl-8 peer w-full text-sm rounded-lg border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 invalid:bg-red-50 invalid:border-red-500 focus:invalid:border-red-500']) }}
+            {{ $attributes->merge(['class' => 'pl-8 bg-white rounded-lg peer w-full text-sm rounded-lg border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 invalid:bg-red-50 invalid:border-red-500 focus:invalid:border-red-500']) }}
             type="number" min="{{ $min }}" />
     </div>
 </div>

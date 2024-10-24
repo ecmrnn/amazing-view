@@ -15,7 +15,11 @@
         </div>
 
         <hgroup class="text-right">
-            <h2 class="text-lg font-semibold">INV1013240000X</h2>
+            @if (!empty($reservation->invoice))
+                <h2 class="text-lg font-semibold">{{ $reservation->invoice->iid }}</h2>
+            @else    
+                <h2 class="text-lg font-semibold">IYYMMDD0000X</h2>
+            @endif
             <p class="text-xs">Invoice ID</p>
         </hgroup>
     </header>
@@ -44,26 +48,26 @@
                 <div class="col-span-2">
                     <p x-show="rid != '' && rid != null" class="text-sm font-semibold" x-text="rid"></p>
                     <x-form.text-loading x-show="rid == '' || rid == null" class="w-1/3" />
-                    <p class="text-xs text-zinc-800/50">Reservation ID</p>
+                    <p class="text-xs text-zinc-800">Reservation ID</p>
                 </div>
 
                 <div>
                     <p x-show="date_in != '' && date_in != null" class="text-sm font-semibold" x-text="formatDate(date_in)"></p>
                     <x-form.text-loading x-show="date_in == '' || date_in == null" class="w-1/2" />
-                    <p class="text-xs text-zinc-800/50">Check-in Date</p>
+                    <p class="text-xs text-zinc-800">Check-in Date</p>
                 </div>
         
                 <div>
                     <p x-show="date_out != '' && date_out != null" class="text-sm font-semibold" x-text="formatDate(date_out)"></p>
                     <x-form.text-loading x-show="date_out == '' || date_out == null" class="w-1/2" />
-                    <p class="text-xs text-zinc-800/50">Check-out Date</p>
+                    <p class="text-xs text-zinc-800">Check-out Date</p>
                 </div>
         
                 <div>
                     <p x-show="adult_count != '' && adult_count != 0" class="text-sm font-semibold">
                         <span x-text="adult_count"></span> Adult<span x-show="adult_count > 1">s</span><span x-show="children_count > 0">, <span x-text="children_count"></span> Child<span x-show="children_count > 1">ren</span></span></p>
                     <x-form.text-loading x-show="adult_count == '' || adult_count == 0" class="w-1/2" />
-                    <p class="text-xs text-zinc-800/50">Number of Guests</p>
+                    <p class="text-xs text-zinc-800">Number of Guests</p>
                 </div>
             </div>
         </section>
@@ -76,12 +80,12 @@
                     <p x-show="(first_name != '' && first_name != null) || (last_name != '' && last_name != null)"class="text-sm font-semibold">
                         <span class="capitalize" x-text="first_name"></span> <span class="capitalize" x-text="last_name"></span> <span x-show="email != '' && email != null">&lpar;<span x-text="email"></span>&rpar;</span></p>
                     <x-form.text-loading x-show="(first_name == '' || first_name == null) && (last_name == '' || last_name == null)" class="w-1/2" />
-                    <p class="text-xs text-zinc-800/50">Name &lpar;Email&rpar;</p>
+                    <p class="text-xs text-zinc-800">Name &lpar;Email&rpar;</p>
                 </div>
                 <div>
                     <p x-show="phone != '' &&  phone != null" class="text-sm font-semibold" x-text="phone"></p>
                     <x-form.text-loading x-show="phone == '' || phone == null" class="w-1/2" />
-                    <p class="text-xs text-zinc-800/50">Contact Number</p>
+                    <p class="text-xs text-zinc-800">Contact Number</p>
                 </div>
                 <div>
                     <p x-show="address != '' && address != null" class="text-sm font-semibold">
@@ -90,7 +94,7 @@
                         </template>
                     </p>
                     <x-form.text-loading x-show="address == '' || address == null" class="w-1/2" />
-                    <p class="text-xs text-zinc-800/50">Address</p>
+                    <p class="text-xs text-zinc-800">Address</p>
                 </div>
             </div>
         </section>

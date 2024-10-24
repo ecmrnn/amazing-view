@@ -52,7 +52,7 @@ final class ReservationTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Reservation::query();
+        return Reservation::query()->whereNot('status', Reservation::STATUS_CANCELED);
     }
 
     public function relationSearch(): array

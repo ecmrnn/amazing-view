@@ -33,15 +33,7 @@
                     <p class="max-w-sm text-sm">Enter the <strong class="text-blue-500">Reservation ID</strong> of the guest you want to check-in.</p>
                 </hgroup>
 
-                {{-- <div class="px-3 py-2 border rounded-md">
-                    <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
-                </div> --}}
-
                 <livewire:app.guest.check-in-guest />
-                
-                {{-- <div class="flex gap-1">
-                    <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
-                </div> --}}
             </section>
         </div>
     </x-modal.full> 

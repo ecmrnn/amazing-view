@@ -10,6 +10,7 @@ use Livewire\Component;
 class CheckInGuest extends Component
 {
     public $reservation;
+    public $reservation_rid;
     public $date_in;
     public $date_out;
     public $first_name;
@@ -24,30 +25,31 @@ class CheckInGuest extends Component
 
     public function getReservation() {
         $this->validate([
-            'reservation' => 'required'
+            'reservation_rid' => 'required'
         ]);
 
-        $this->reservation = Reservation::where('rid', $this->reservation)->first();
-
-        if ($this->reservation->status == Reservation::STATUS_CHECKED_IN) {
-            $this->reservation = null;
-            $this->dispatch('toast', json_encode(['message' => 'Already in', 'type' => 'info', 'description' => 'Guest already checked-in']));
-        } elseif (empty($this->reservation)) {
-            $this->dispatch('toast', json_encode(['message' => 'Oof, not found!', 'type' => 'warning', 'description' => 'Reservation not found']));
+        $this->reservation = Reservation::where('rid', $this->reservation_rid)->first();
+        
+        if (!empty($this->reservation)) {
+            if ($this->reservation->status == Reservation::STATUS_CHECKED_IN) {
+                $this->reservation = null;
+                $this->dispatch('toast', json_encode(['message' => 'Already in', 'type' => 'info', 'description' => 'Guest already checked-in']));
+            } else {
+                // Initialize properties
+                $this->date_in = Carbon::parse($this->reservation->date_in)->format('F j, Y');
+                $this->date_out = Carbon::parse($this->reservation->date_out)->format('F j, Y');
+                $this->first_name = $this->reservation->first_name;
+                $this->last_name = $this->reservation->last_name;
+                $this->status = $this->reservation->status;
+            }    
         } else {
-            // Initialize properties
-            $this->date_in = Carbon::parse($this->reservation->date_in)->format('F j, Y');
-            $this->date_out = Carbon::parse($this->reservation->date_out)->format('F j, Y');
-            $this->first_name = $this->reservation->first_name;
-            $this->last_name = $this->reservation->last_name;
-            $this->status = $this->reservation->status;
-        } 
+            $this->dispatch('toast', json_encode(['message' => 'Oof, not found!', 'type' => 'warning', 'description' => 'Reservation not found']));
+        }
     }
 
     public function checkIn() {
         // If a reservation was found
         if (!empty($this->reservation)) {
-            // If the reservation is already checked-in
             if ($this->reservation->status == Reservation::STATUS_CHECKED_IN) {
                 $this->dispatch('toast', json_encode(['message' => 'Already in', 'type' => 'info', 'description' => 'Guest already checked-in']));
             } else {
@@ -68,6 +70,7 @@ class CheckInGuest extends Component
                 $this->dispatch('guest-checked-in');
                 $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Yay, guest checked-in!']));
             }
+            // If the reservation is already checked-in
         } else {
             $this->dispatch('toast', json_encode(['message' => 'Oof, not found!', 'type' => 'warning', 'description' => 'Reservation not found']));
         }
@@ -77,10 +80,10 @@ class CheckInGuest extends Component
     {
         return <<<'HTML'
             <div class="space-y-2">
-                <x-form.input-text label="Reservation ID" wire:model="reservation" id="reservation" class="w-full" />
+                <x-form.input-text label="Reservation ID" wire:model="reservation_rid" id="reservation" class="w-full" />
                 <x-form.input-error field="reservation" />
                 @if (!empty($reservation))
-                    <div class="space-y-5">
+                    <div class="p-3 space-y-5 border border-gray-300 rounded-md ">
                         <hgroup class="flex justify-between">
                             <a href="{{ route('app.reservations.show', ['reservation' => $reservation->rid]) }}" wire:navigate.hover>
                                 <h3 class="font-semibold">{{ $reservation->rid }}</h3>

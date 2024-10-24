@@ -33,7 +33,7 @@
         <x-form.form-section>
             <x-form.form-header step="1" title="Reservation Details" />
 
-            <div x-show="rid == null" x-collapse.duration.1000ms>
+            <div x-show="rid == null || rid == ''" x-collapse.duration.1000ms>
                 <x-form.form-body>
                     <div class="p-5 space-y-3">
                         <hgroup>
@@ -64,16 +64,16 @@
             <section class="p-5 space-y-5 bg-white">
                 <hgroup>
                     <h2 class="text-sm font-semibold text-center capitalize">Invoice Confirmation</h2>
-                    <p class="max-w-sm text-xs text-center text-zinc-800/50">Confirm that the invoice details entered are correct.</p>
+                    <p class="max-w-sm text-xs text-center text-zinc-800">Confirm that the invoice details entered are correct.</p>
                 </hgroup>
 
-                <div class="px-3 py-2 border rounded-md">
+                <div class="px-3 py-2 border border-gray-300 rounded-md">
                     <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
                 </div>
                 
                 <div class="flex items-center justify-center gap-1">
-                    <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button x-bind:disabled="!checked" class="text-xs" x-on:click="$wire.store(); show = false;">
+                    <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                    <x-primary-button type="button" x-bind:disabled="!checked" class="text-xs" x-on:click="$wire.store(); show = false;">
                         Submit Invoice
                     </x-primary-button>
                 </div>

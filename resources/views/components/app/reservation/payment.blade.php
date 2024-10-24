@@ -5,8 +5,11 @@
         <x-form.form-body>
             <div x-data="{ 
                     payment_method: $wire.entangle('payment_method'),
-                    cash_payment: $wire.entangle('cash_payment'),
                 }" class="p-5 space-y-3">
+                <x-note>
+                    <p class="max-w-sm">Minimum of <x-currency />500.00 must be paid for the reservation to be processed and confirmed.</p>
+                </x-note>
+                
                 <div class="p-3 space-y-3 bg-white border rounded-lg">
                     <hgroup>
                         <h3 class="text-sm font-semibold">Payment Methods</h3>
@@ -14,21 +17,23 @@
                     </hgroup>
 
                     {{-- Payment methods --}}
-                    <div class="grid gap-1">
-                        <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" x-bind:checked="payment_method == online" value="online" name="payment_methods" id="online" label="Online  (GCash, Online Banking)" />
-                        <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" value="cash" name="payment_methods" id="cash" label="Cash" />
+                    <div class="grid space-y-2">
+                        <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" name="payment_method" value="cash" id="cash" label="Cash" />
+                        <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" name="payment_method" value="gcash" id="gcash" label="GCash" />
+                        <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" name="payment_method" value="bank" id="bank" label="Bank Transfer" />
                     </div>
 
-                    <x-form.input-error x-show="payment_method == 'online'" field="proof_image_path" />
-                    <x-form.input-error x-show="payment_method == 'cash'" field="cash_payment" />
+                    <div x-show="payment_method != 'cash'">
+                        <x-form.input-text wire:model='transaction_id' label="Transaction ID" id="transaction_id" />
+                    </div>
+
+                    <x-form.input-error x-show="payment_method != 'cash'" field="transaction_id" />
+                    <x-form.input-error x-show="payment_method != 'cash'" field="proof_image_path" />
+                    <x-form.input-error field="downpayment" />
                 </div>
 
-                <x-note>
-                    <p class="max-w-sm">Minimum of <x-currency />500.00 must be paid for the reservation to be processed and confirmed.</p>
-                </x-note>
-
                 {{-- Online Payment --}}
-                <div x-show="payment_method == 'online'">
+                <div x-show="payment_method != 'cash'">
                     <x-filepond::upload
                     wire:model.live="proof_image_path"
                     placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
@@ -37,9 +42,9 @@
                 </div>
 
                 {{-- Cash --}}
-                <div x-show="payment_method == 'cash'" class="space-y-3">
-                    <x-form.input-label for="cash_payment">Enter the amount paid</x-form.input-label>
-                    <x-form.input-currency x-model="cash_payment" wire:model.live='cash_payment' min="500" id="cash_payment" />
+                <div class="space-y-3">
+                    <x-form.input-label for="downpayment">Enter the amount paid</x-form.input-label>
+                    <x-form.input-currency x-model="downpayment" wire:model.live='downpayment' min="500" id="downpayment" class="w-min" />
                 </div>
 
                 <div class="flex items-center gap-1">

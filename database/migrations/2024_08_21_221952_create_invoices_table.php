@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Invoice;
 use App\Models\Reservation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,11 +15,16 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->string('iid')->nullable();
             $table->foreignIdFor(Reservation::class)->constrained();
-            $table->decimal('balance');
-            $table->date('issue_date');
-            $table->date('due_date');
-            $table->smallInteger('status')->default(0);
+            
+            $table->decimal('total_amount')->default(0); /* added */
+            $table->decimal('downpayment')->default(0); /* added */
+            $table->decimal('balance')->default(0);
+
+            $table->date('issue_date')->nullable();
+            $table->date('due_date')->nullable();
+            $table->smallInteger('status')->default(Invoice::STATUS_PARTIAL);
             $table->timestamps();
         });
     }

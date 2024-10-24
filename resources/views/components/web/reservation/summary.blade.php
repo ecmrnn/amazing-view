@@ -12,16 +12,16 @@
         <h3 class="font-semibold">Date and Time</h3>
         <div class="grid grid-cols-2 gap-2 mt-3 md:grid-cols-1 lg:grid-cols-2">
             <div class="px-3 py-2 border rounded-lg">
-                <p class="text-xs text-zinc-800/50">Check-in</p>
+                <p class="text-xs text-zinc-800">Check-in</p>
                 <p x-text="date_in === null || date_in === '' ? 'Select a Date' : formatDate(date_in)"
                     class="font-semibold line-clamp-1"></p>
-                <p class="text-xs text-zinc-800/50">From: 2:00 PM</p>
+                <p class="text-xs text-zinc-800">From: 2:00 PM</p>
             </div>
             <div class="px-3 py-2 border rounded-lg">
-                <p class="text-xs text-zinc-800/50">Check-out</p>
+                <p class="text-xs text-zinc-800">Check-out</p>
                 <p x-text="date_out === null || date_in === '' ? 'Select a Date' : formatDate(date_out)"
                     class="font-semibold line-clamp-1"></p>
-                <p class="text-xs text-zinc-800/50">From: 12:00 PM</p>
+                <p class="text-xs text-zinc-800">From: 12:00 PM</p>
             </div>
         </div>
 
@@ -53,7 +53,7 @@
                                 <p class="text-sm">
                                     <span class="uppercase">{{ $room->building->prefix }}</span>
                                     {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
-                                <p class="text-xs text-zinc-800/50">Good for {{ $room->max_capacity }} guests.</p>
+                                <p class="text-xs text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
                             </div>
 
                             {{-- Remove Room button --}}

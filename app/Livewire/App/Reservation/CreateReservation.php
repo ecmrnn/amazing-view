@@ -5,6 +5,8 @@ namespace App\Livewire\App\Reservation;
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
 use App\Models\Building;
+use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -33,7 +35,10 @@ class CreateReservation extends Component
     // Payment
     #[Validate] public $note;
     #[Validate] public $proof_image_path;
-    #[Validate] public $cash_payment = 500;
+    // Invoice
+    #[Validate] public $transaction_id;
+    #[Validate] public $downpayment = 500;
+    public $payment_method = 'cash';
     // Address
     public $region;
     public $province;
@@ -77,7 +82,7 @@ class CreateReservation extends Component
     public $net_total = 0;
     public $vat = 0;
     public $vatable_sales = 0;
-    public $payment_method = 'online';
+    public $payment_online = false;
 
     public function mount()
     {
@@ -400,7 +405,8 @@ class CreateReservation extends Component
     {
         $this->validate([
             'proof_image_path' => $this->rules()['proof_image_path'],
-            'cash_payment' => $this->rules()['cash_payment'],
+            'transaction_id' => $this->rules()['transaction_id'],
+            'downpayment' => $this->rules()['downpayment'],
         ]);
 
         // Open success modal
@@ -446,6 +452,23 @@ class CreateReservation extends Component
                 $reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
             }
         }
+
+        // Create invoice to store downpayment
+        $invoice = Invoice::create([
+            'reservation_id' => $reservation->id,
+            'total_amount' => $this->net_total,
+            'balance' => $this->net_total - $this->downpayment,
+            'downpayment' => $this->downpayment
+        ]);
+
+        InvoicePayment::create([
+            'invoice_id' => $invoice->id,
+            'transaction_id' => $this->transaction_id,
+            'amount' => $this->downpayment,
+            'payment_date' => Carbon::now(),
+            'payment_method' => $this->payment_method,
+            // Proof of image dapat meron dito
+        ]);
 
         // Reset all properties
         $this->reset();

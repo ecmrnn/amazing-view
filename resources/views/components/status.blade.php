@@ -18,6 +18,10 @@
                     $label = 'Available';
                     $class = 'text-white border-blue-500 bg-blue-500/75';
                     break;
+                case 'invoice':
+                    $label = 'Partial';
+                    $class = 'text-white border-yellow-500 bg-yellow-500/75';
+                    break;
             }
             break;
         case 1:
@@ -29,6 +33,10 @@
                 case 'room':
                     $label = 'Unavailable';
                     $class = 'text-white border-red-500 bg-red-500/75';
+                    break;
+                case 'invoice':
+                    $label = 'Paid';
+                    $class = 'text-white border-green-500 bg-green-500/75';
                     break;
             }
             break;
@@ -42,6 +50,10 @@
                     $label = 'Occupied';
                     $class = 'text-white border-orange-500 bg-orange-500/75';
                     break;
+                case 'invoice':
+                    $label = 'Pending';
+                    $class = 'text-white border-blue-500 bg-blue-500/75';
+                    break;
             }
             break;
         case 3:
@@ -53,6 +65,10 @@
                 case 'room':
                     $label = 'Reserved';
                     $class = 'text-white border-green-500 bg-green-500/75';
+                    break;
+                case 'invoice':
+                    $label = 'Due';
+                    $class = 'text-white border-red-500 bg-red-500/75';
                     break;
             }
             break;

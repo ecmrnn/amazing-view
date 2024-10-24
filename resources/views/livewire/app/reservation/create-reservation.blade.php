@@ -19,6 +19,9 @@
     district: $wire.entangle('district'),
     baranggay: $wire.entangle('baranggay'),
     street: $persist($wire.entangle('street')).using(sessionStorage),
+    
+    {{-- Payment --}}
+    downpayment: $persist($wire.entangle('downpayment')).using(sessionStorage),
 
     {{-- Operations --}}
     is_map_view: $wire.entangle('is_map_view'),
@@ -90,7 +93,7 @@
                 <p class="max-w-sm text-xs text-center">Confirm that the reservation details entered are correct.</p>
             </hgroup>
 
-            <div class="px-3 py-2 border rounded-md">
+            <div class="px-3 py-2 border border-gray-300 rounded-md">
                 <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
             </div>
 
@@ -101,8 +104,8 @@
             </div>
             
             <div class="flex items-center justify-center gap-1">
-                <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button x-bind:disabled="!checked" x-on:click="$wire.store(); show = false; toast('Success', { type: 'success', description: 'Yay, Reservation Created!' })">Submit Reservation</x-primary-button>
+                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                <x-primary-button type="button" x-bind:disabled="!checked" x-on:click="$wire.store(); show = false; toast('Success', { type: 'success', description: 'Yay, Reservation Created!' })">Submit Reservation</x-primary-button>
             </div>
         </section>
     </div>

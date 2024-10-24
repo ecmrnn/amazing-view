@@ -6,10 +6,7 @@ use App\Models\Amenity;
 use App\Models\Discount;
 use App\Models\Invoice;
 use App\Models\Reservation;
-use App\Models\ReservationAmenity;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -35,6 +32,8 @@ class CreateInvoice extends Component
     // Invoice
     #[Validate] public $issue_date;
     #[Validate] public $due_date;
+    public $discount_amount = 0;
+    public $downpayment;
 
     public $date_today;
     public $selected_amenities;
@@ -46,7 +45,7 @@ class CreateInvoice extends Component
     public $additional_amenities;
     public $available_amenities;
     public $discounts;
-    public $discount_amount = 0;
+    
     public $selected_discounts;
     public $selected_rooms;
     public $reservation;
@@ -88,57 +87,53 @@ class CreateInvoice extends Component
             $this->reservation = Reservation::where('rid', $reservation_id)->first();
 
             if (!empty($this->reservation)) {
-                if (!empty($this->reservation->invoice)) {
-                    $this->dispatch('toast', json_encode(['message' => 'For Your Info.', 'type' => 'info', 'description' => 'Existing invoice found for this reservation!']));
-                } else {
-                    // Initialize properties
-                    $this->issue_date = Carbon::now()->format('Y-m-d');
-                    $this->due_date = Carbon::now()->addWeek()->format('Y-m-d');
-                    $this->discounts = Discount::where('status', Discount::STATUS_ACTIVE)->get();
-                    $this->selected_rooms = Reservation::find($this->reservation->id)->rooms;
-                    $this->selected_amenities = Reservation::find($this->reservation->id)->amenities;
-    
-                    // Get the number of nights between 'date_in' and 'date_out'
-                    $this->night_count = Carbon::parse($this->reservation['date_in'])->diffInDays(Carbon::parse($this->reservation['date_out']));
-                    // If 'date_in' == 'date_out', 'night_count' = 1
-                    $this->night_count != 0 ?: $this->night_count = 1;
-    
-                    $this->vat = 0;
-                    $this->net_total = 0;
-                    $this->sub_total = 0;
-    
-                    foreach ($this->selected_rooms as $room) {
-                        $this->sub_total += ($room->rate * $this->night_count);
-                    }
-    
-                    foreach ($this->selected_amenities as $amenity) {
-                        $quantity = $amenity->pivot->quantity;
-                        
-                        // If quantity is 0, change it to 1
-                        $quantity != 0 ?: $quantity = 1;
+                // Initialize properties
+                $this->issue_date = Carbon::now()->format('Y-m-d');
+                $this->due_date = Carbon::now()->addWeek()->format('Y-m-d');
+                $this->discounts = Discount::where('status', Discount::STATUS_ACTIVE)->get();
+                $this->selected_rooms = Reservation::find($this->reservation->id)->rooms;
+                $this->selected_amenities = Reservation::find($this->reservation->id)->amenities;
 
-                        $this->sub_total += ($amenity->price * $quantity);
-                    }
-    
-                    $this->computeBreakdown();
-    
-                    $this->rid = $this->reservation->rid;
-                    $this->date_in = $this->reservation->date_in;
-                    $this->date_out = $this->reservation->date_out;
-                    $this->adult_count = $this->reservation->adult_count;
-                    $this->children_count = $this->reservation->children_count;
-    
-                    $this->first_name = $this->reservation->first_name;
-                    $this->last_name = $this->reservation->last_name;
-                    $this->email = $this->reservation->email;
-                    $this->phone = $this->reservation->phone;
-                    $this->address = $this->reservation->address;
-    
-                    // Get all available amenities
-                    $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
-    
-                    $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Reservation found!']));
+                // Get the number of nights between 'date_in' and 'date_out'
+                $this->night_count = Carbon::parse($this->reservation['date_in'])->diffInDays(Carbon::parse($this->reservation['date_out']));
+                // If 'date_in' == 'date_out', 'night_count' = 1
+                $this->night_count != 0 ?: $this->night_count = 1;
+
+                $this->vat = 0;
+                $this->net_total = 0;
+                $this->sub_total = 0;
+
+                foreach ($this->selected_rooms as $room) {
+                    $this->sub_total += ($room->rate * $this->night_count);
                 }
+
+                foreach ($this->selected_amenities as $amenity) {
+                    $quantity = $amenity->pivot->quantity;
+                    
+                    // If quantity is 0, change it to 1
+                    $quantity != 0 ?: $quantity = 1;
+
+                    $this->sub_total += ($amenity->price * $quantity);
+                }
+
+                $this->computeBreakdown();
+
+                $this->rid = $this->reservation->rid;
+                $this->date_in = $this->reservation->date_in;
+                $this->date_out = $this->reservation->date_out;
+                $this->adult_count = $this->reservation->adult_count;
+                $this->children_count = $this->reservation->children_count;
+
+                $this->first_name = $this->reservation->first_name;
+                $this->last_name = $this->reservation->last_name;
+                $this->email = $this->reservation->email;
+                $this->phone = $this->reservation->phone;
+                $this->address = $this->reservation->address;
+
+                // Get all available amenities
+                $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
+
+                $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Reservation found!']));
             } else {
                 $this->reservation = collect();
                 $this->dispatch('toast', json_encode(['message' => 'Failed', 'type' => 'danger', 'description' => 'Reservation not found!']));
@@ -257,55 +252,56 @@ class CreateInvoice extends Component
         $this->net_total = $this->vatable_sales + $this->vat;
     }
 
-    public function update() {
+    public function store() {
         // Validate all required properties
-        // $this->validate([
-        //     'reservation' => 'required',
-        //     'net_total' => 'required|integer',
-        //     'issue_date' => 'required|date|after_or_equal:today',
-        //     'due_date' => 'required|date|after:issue_date',
-        // ]);
+        $this->validate([
+            'reservation' => 'required',
+            'net_total' => 'required|integer',
+            'issue_date' => 'required|date|after_or_equal:today',
+            'due_date' => 'required|date|after:issue_date',
+        ]);
 
-        // if ($this->additional_amenities->count() > 0) {
-        //     foreach ($this->additional_amenities as $amenity) {
-        //         foreach ($this->additional_amenity_quantities as $selected_amenity) {
-        //             if ($selected_amenity['amenity_id'] == $amenity->id) {
-        //                 $amenity->quantity -= $selected_amenity['quantity'];
-        //                 $quantity = $selected_amenity['quantity'];
-        //                 $amenity->save();
-        //                 break;
-        //             }
-        //         }
+        if ($this->additional_amenities->count() > 0) {
+            foreach ($this->additional_amenities as $amenity) {
+                foreach ($this->additional_amenity_quantities as $selected_amenity) {
+                    if ($selected_amenity['amenity_id'] == $amenity->id) {
+                        $amenity->quantity -= $selected_amenity['quantity'];
+                        $quantity = $selected_amenity['quantity'];
+                        $amenity->save();
+                        break;
+                    }
+                }
                 
-        //         $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
-        //     }
-        // }
+                $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
+            }
+        }
 
-        // // Store data to database
-        // $invoice = Invoice::create([
-        //     'reservation_id' => $this->reservation->id,
-        //     'balance' => $this->net_total,
-        //     'issue_date' => $this->issue_date,
-        //     'due_date' => $this->due_date,
-        // ]);
+        // Save new invoice data
+        $invoice = $this->reservation->invoice;
+        $invoice->issue_date = $this->issue_date;
+        $invoice->due_date = $this->due_date;
+        $invoice->total_amount = $this->net_total;
+        $invoice->balance = $this->net_total - $invoice->downpayment;
+        $invoice->save();
 
-        // // Create Discount
-        // foreach ($this->selected_discounts as $discount) {
-        //     $invoice->discounts()->attach($discount->id);
-        // }
+        // Create Discount
+        foreach ($this->selected_discounts as $discount) {
+            $invoice->discounts()->attach($discount->id);
+        }
 
-        // // Display toast
-        // $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Invoice created!']));
+        // Display toast
+        $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Invoice created!']));
 
-        // // Reset all properties
-        // $this->reset();
+        // Reset all properties
+        $this->reset();
 
-        // $this->selected_amenities = collect();
-        // $this->additional_amenities = collect();
-        // $this->additional_amenity_quantities = collect();
-        // $this->selected_discounts = collect();
-        // $this->selected_rooms = collect();
-        // $this->reservation = collect();
+        $this->rid = null;
+        $this->selected_amenities = collect();
+        $this->additional_amenities = collect();
+        $this->additional_amenity_quantities = collect();
+        $this->selected_discounts = collect();
+        $this->selected_rooms = collect();
+        $this->reservation = collect();
     }
 
     public function render()

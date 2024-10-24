@@ -83,18 +83,18 @@ class ReservationForm extends Component
     // Custome Validation Messages
     public function messages() 
     {
-        return Reservation::messages(['cash_payment', 'note']);
+        return Reservation::messages(['downpayment', 'note']);
     }
 
     // Validation Methods
     public function rules()
     {
-        return Reservation::rules(['cash_payment', 'note']);
+        return Reservation::rules(['downpayment', 'note']);
     }
 
     public function validationAttributes()
     {
-        return Reservation::validationAttributes(['cash_payment', 'note']);
+        return Reservation::validationAttributes(['downpayment', 'note']);
     }
 
     public function toggleRoom(Room $room)

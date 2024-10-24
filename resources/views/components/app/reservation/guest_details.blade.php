@@ -31,7 +31,7 @@
                     </hgroup>
                     <div class="grid gap-3 sm:grid-cols-2">
                         <div class="space-y-1">
-                            <x-form.input-text wire:model.live='phone' id="phone" label="Contact Number" />
+                            <x-form.input-text wire:model.live='phone' maxlength="11" id="phone" label="Contact Number" />
                             <x-form.input-error field="phone" />
                         </div>
                         <div class="space-y-1">

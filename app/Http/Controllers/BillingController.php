@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class BillingController extends Controller
 {
@@ -35,7 +38,11 @@ class BillingController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $invoice = Invoice::whereIid($id)->first();
+        
+        return view('app.billings.show', [
+            'invoice' => $invoice
+        ]);
     }
 
     /**

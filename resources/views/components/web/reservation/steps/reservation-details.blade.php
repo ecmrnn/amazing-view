@@ -187,7 +187,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
-                    <p class="text-xs text-zinc-800/50">Click a room to select</p>
+                    <p class="text-xs text-zinc-800">Click a room to select</p>
                 </hgroup>
             </header>
             

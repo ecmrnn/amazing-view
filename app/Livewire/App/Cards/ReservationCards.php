@@ -24,9 +24,4 @@ class ReservationCards extends Component
             'expired_reservations' => $expired_reservations,
         ]);
     }
-
-    // #[On('status-changed')]
-    // public function statusChanged() {
-        
-    // }
 }

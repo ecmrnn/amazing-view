@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,5 +30,20 @@ class Invoice extends Model
 
     public function discounts(): BelongsToMany {
         return $this->belongsToMany(Discount::class);
+    }
+    
+    public static function boot()
+    {
+        // Generate custom ID: https://laravelarticle.com/laravel-custom-id-generator
+        parent::boot();
+        self::creating(function ($model) {
+            $model->iid = IdGenerator::generate([
+                'table' => 'invoices',
+                'field' => 'iid',
+                'length' => 12,
+                'prefix' => 'I' . date('ymd'),
+                'reset_on_prefix_change' => true
+            ]);
+        });
     }
 }

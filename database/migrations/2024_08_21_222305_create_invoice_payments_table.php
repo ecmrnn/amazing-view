@@ -15,9 +15,12 @@ return new class extends Migration
         Schema::create('invoice_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Invoice::class)->constrained();
+            $table->string('orid')->nullable(); /* newly added */
+            $table->string('transaction_id')->nullable(); /* newly added */
             $table->decimal('amount');
-            $table->date('payment_date');
+            $table->string('payment_method'); /* newly added */
             $table->string('proof_image_path')->nullable();
+            $table->date('payment_date');
             $table->timestamps();
         });
     }

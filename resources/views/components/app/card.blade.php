@@ -12,7 +12,7 @@
         </div>
         
         <div>
-            <p class="text-xl font-bold">{{ $data }}</p>
+            <p class="text-xl font-semibold">{{ $data }}</p>
             <p class="text-xs line-clamp-1">{{ $label }}</p>
         </div>
     </div>

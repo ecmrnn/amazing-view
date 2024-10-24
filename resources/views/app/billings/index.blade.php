@@ -22,9 +22,7 @@
     </x-slot:header>
 
     <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
-        <hgroup>
-            {{-- <h2 class="text-lg font-semibold">{{ $room->name }} Rooms</h2>
-            <p class="max-w-sm text-xs">Manage all your <strong>{{ $room->name }}</strong> rooms using the table below.</p> --}}
-        </hgroup>
+        {{-- Invoice table --}}
+        <livewire:tables.invoice-table />
     </div>
 </x-app-layout>

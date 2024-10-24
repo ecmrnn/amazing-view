@@ -20,7 +20,7 @@
             @if (!empty($reservation))
                 <h2 class="text-lg font-semibold">{{ $reservation->rid }}</h2>
             @else
-                <h2 class="text-lg font-semibold">RMMDDYYYY0000X</h2>
+                <h2 class="text-lg font-semibold">RYYYYMMDD0000X</h2>
             @endif
             <p class="text-xs">Reservation ID</p>
         </hgroup>
@@ -30,43 +30,43 @@
 
     <h3 class="text-sm font-semibold">Reservation Details</h3>
 
-    <div class="p-5 space-y-3 rounded-lg bg-slate-100/50">
+    <div class="p-5 space-y-3 rounded-lg bg-slate-100">
         <div class="grid grid-cols-2 gap-3">
             <div>
                 <p x-show="date_in != '' && date_in != null" class="text-sm font-semibold" x-text="formatDate(date_in)"></p>
                 <x-form.text-loading x-show="date_in == '' || date_in == null" class="w-1/2" />
-                <p class="text-xs text-zinc-800/50">Check-in Date</p>
+                <p class="text-xs text-zinc-800">Check-in Date</p>
             </div>
 
             <div>
                 <p x-show="date_out != '' && date_out != null" class="text-sm font-semibold" x-text="formatDate(date_out)"></p>
                 <x-form.text-loading x-show="date_out == '' || date_out == null" class="w-1/2" />
-                <p class="text-xs text-zinc-800/50">Check-out Date</p>
+                <p class="text-xs text-zinc-800">Check-out Date</p>
             </div>
             
             <div>
                 <p x-show="adult_count != '' && adult_count != 0" class="text-sm font-semibold">
                     <span x-text="adult_count"></span> Adult<span x-show="adult_count > 1">s</span><span x-show="children_count > 0">, <span x-text="children_count"></span> Child<span x-show="children_count > 1">ren</span></span></p>
                 <x-form.text-loading x-show="adult_count == '' || adult_count == 0" class="w-1/2" />
-                <p class="text-xs text-zinc-800/50">Number of Guests</p>
+                <p class="text-xs text-zinc-800">Number of Guests</p>
             </div>
         </div>
     </div>
 
     <h3 class="text-sm font-semibold">Guest Details</h3>
 
-    <div class="grid grid-cols-2 gap-3 p-5 rounded-lg bg-slate-100/50">
+    <div class="grid grid-cols-2 gap-3 p-5 rounded-lg bg-slate-100">
         <div>
             <p x-show="(first_name != '' && first_name != null) || (last_name != '' && last_name != null)"class="text-sm font-semibold">
                 <span class="capitalize" x-text="first_name"></span> <span class="capitalize" x-text="last_name"></span> <span x-show="email != '' && email != null">&lpar;<span x-text="email"></span>&rpar;</span></p>
             <x-form.text-loading x-show="(first_name == '' || first_name == null) && (last_name == '' || last_name == null)" class="w-1/2" />
-            <p class="text-xs text-zinc-800/50">Name &lpar;Email&rpar;</p>
+            <p class="text-xs text-zinc-800">Name &lpar;Email&rpar;</p>
         </div>
 
         <div>
             <p x-show="phone != '' &&  phone != null" class="text-sm font-semibold" x-text="phone"></p>
             <x-form.text-loading x-show="phone == '' || phone == null" class="w-1/2" />
-            <p class="text-xs text-zinc-800/50">Contact Number</p>
+            <p class="text-xs text-zinc-800">Contact Number</p>
         </div>
 
         <div>
@@ -76,7 +76,7 @@
                 </template>
             </p>
             <x-form.text-loading x-show="address == '' || address == null" class="w-1/2" />
-            <p class="text-xs text-zinc-800/50">Address</p>
+            <p class="text-xs text-zinc-800">Address</p>
         </div>
     </div>
 
