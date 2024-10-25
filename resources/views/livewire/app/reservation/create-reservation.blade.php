@@ -89,8 +89,8 @@
     <div x-data="{ checked: false }">
         <section class="p-5 space-y-5 bg-white">
             <hgroup>
-                <h2 class="text-sm font-semibold text-center capitalize">Reservation Confirmation</h2>
-                <p class="max-w-sm text-xs text-center">Confirm that the reservation details entered are correct.</p>
+                <h2 class="font-semibold text-center capitalize">Reservation Confirmation</h2>
+                <p class="max-w-sm text-sm text-center">Confirm that the reservation details entered are correct.</p>
             </hgroup>
 
             <div class="px-3 py-2 border border-gray-300 rounded-md">

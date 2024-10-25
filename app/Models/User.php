@@ -16,6 +16,8 @@ class User extends Authenticatable
     public const ROLE_GUEST = 0;
     public const ROLE_FRONTDESK = 1;
     public const ROLE_ADMIN = 2;
+    public const STATUS_ACTIVE = 0;
+    public const STATUS_INACTIVE = 1;
     
     protected $guarded = [];
 
