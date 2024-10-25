@@ -88,7 +88,7 @@
 
                     {{-- Navigation Links --}}
                     <div class="flex flex-col items-start px-5 border-b border-slate-200">
-                        @include('components.navigations.frontdesk', ['screen' => 'mobile'])
+                        @include('components.app.navigation', ['screen' => 'mobile'])
                     </div>
 
                     {{-- Settings --}}
