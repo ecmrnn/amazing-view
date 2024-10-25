@@ -27,7 +27,7 @@
     </x-slot:header>
 
     {{-- Cards --}}
-    {{-- <livewire:app.cards.reservation-cards /> --}}
+    <livewire:app.cards.user-cards />
 
     {{-- Room  Table --}}
     <div class="p-5 bg-white rounded-lg">

@@ -150,6 +150,7 @@ final class UserTable extends PowerGridComponent
                 $this->fillData();
                 $this->toast('User Deactivated', 'success', 'User successfully deactivated!');
                 $this->dispatch('pg:eventRefresh-UserTable');
+                $this->dispatch('user-deactivated');
                 // reset
                 $this->reset('password');
             }
