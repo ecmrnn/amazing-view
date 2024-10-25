@@ -3,10 +3,13 @@
 use App\Http\Controllers\App\RoomController;
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\ContentController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoomTypeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -32,7 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Global Auth routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Frontdesk & Dashboard
+    // Frontdesk & Admin
     Route::middleware('role:frontdesk|admin')->prefix('app')->name('app.')->group(function () {
         // Guests type route
         Route::resource('/guests', GuestController::class);
@@ -48,7 +51,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Room type route
         Route::resource('/billings', BillingController::class);
+
+        // Admin specific routes
+        Route::middleware('role:admin')->group(function () {
+            // User route
+            Route::resource('/users', UserController::class);
+
+            // Report route
+            Route::resource('/reports', ReportController::class);
+
+            // Content route
+            Route::resource('/contents', ContentController::class);
+        });
     });
+
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
