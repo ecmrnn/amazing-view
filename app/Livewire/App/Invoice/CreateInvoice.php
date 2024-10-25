@@ -6,6 +6,7 @@ use App\Models\Amenity;
 use App\Models\Discount;
 use App\Models\Invoice;
 use App\Models\Reservation;
+use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
@@ -13,6 +14,8 @@ use Livewire\Component;
 
 class CreateInvoice extends Component
 {
+    use DispatchesToast;
+
     // Reservation Details
     #[Validate] public $date_in;
     #[Validate] public $date_out;
@@ -141,10 +144,10 @@ class CreateInvoice extends Component
                     ]);
                 }
 
-                $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Reservation found!']));
+                $this->toast('Success!', 'success', 'Reservation found!');
             } else {
                 $this->reservation = collect();
-                $this->dispatch('toast', json_encode(['message' => 'Failed', 'type' => 'danger', 'description' => 'Reservation not found!']));
+                $this->toast('Failed', 'danger', 'Reservation not found!');
             }
         }
     }
@@ -188,7 +191,7 @@ class CreateInvoice extends Component
                 'additional_amenity',
             ]);
         } else {
-            $this->dispatch('toast', json_encode(['message' => 'Oof, not enough item!', 'type' => 'warning', 'description' => 'Item quantity is not enough']));
+            $this->toast('Oof, not enough item!', 'warning', 'Item quantity is not enough');
         }
     }
 
@@ -307,9 +310,8 @@ class CreateInvoice extends Component
             $invoice->discounts()->attach($discount->id);
         }
 
-        // Display toast
-        $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Invoice created!']));
-
+        $this->toast('Success!', 'success', 'Invoice created!');
+        
         // Reset all properties
         $this->reset();
 

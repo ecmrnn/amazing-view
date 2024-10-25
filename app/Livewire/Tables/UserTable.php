@@ -3,6 +3,7 @@
 namespace App\Livewire\Tables;
 
 use App\Models\User;
+use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +24,7 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class UserTable extends PowerGridComponent
 {
-    use WithExport;
+    use WithExport, DispatchesToast;
 
     public $user;
     public $key;
@@ -147,7 +148,7 @@ final class UserTable extends PowerGridComponent
 
             if ($user) {
                 $this->fillData();
-                $this->dispatch('toast', json_encode(['message' => 'User Deactivated', 'type' => 'success', 'description' => 'User successfully deactivated']));
+                $this->toast('User Deactivated', 'success', 'User successfully deactivated!');
                 $this->dispatch('pg:eventRefresh-UserTable');
                 // reset
                 $this->reset('password');

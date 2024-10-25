@@ -8,6 +8,7 @@ use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Validate;
@@ -17,7 +18,7 @@ use Spatie\LivewireFilepond\WithFilePond;
 
 class ReservationForm extends Component
 {
-    use WithFilePond, WithPagination;
+    use WithFilePond, WithPagination, DispatchesToast;
 
     public $step = 1;
     public $capacity = 0;
@@ -140,7 +141,7 @@ class ReservationForm extends Component
                 $room = Room::find($room_id);
                 $this->toggleRoom($room);
 
-                $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Room added!']));
+                $this->toast('Success!', 'success', 'Room added!');
                 break;
             }
         }
@@ -155,7 +156,7 @@ class ReservationForm extends Component
             return $room->id == $room_to_delete->id;
         });
 
-        $this->dispatch('toast', json_encode(['message' => 'For Your Info.', 'type' => 'info', 'description' => 'Room removed']));
+        $this->toast('For Your Info.', 'info', 'Room removed');
     }
 
     public function computeBreakdown() {
@@ -299,10 +300,10 @@ class ReservationForm extends Component
                         $this->regions = AddressController::getRegions();
                         $this->districts = AddressController::getDistricts();
                     } catch (\Throwable $th) {
-                        $this->dispatch('toast', json_encode(['message' => 'Oh no', 'type' => 'warning', 'description' => 'Failed getting data from server']));
+                        $this->toast('Oh no', 'warning', 'Failed getting data from server');
                     }
 
-                    $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Next, Guest Details']));
+                    $this->toast('Success!', 'success', 'Next, Guest Details');
                     break;
                 case 2:
                     $this->validate([
@@ -314,7 +315,7 @@ class ReservationForm extends Component
                     ]);
 
                     $this->step++;
-                    $this->dispatch('toast', json_encode(['message' => 'Success!.', 'type' => 'success', 'description' => 'Next, Payment']));
+                    $this->toast('Success!', 'success', 'Next, Payment');
                     break;
                 case 3:
                     $this->validate([
@@ -379,7 +380,7 @@ class ReservationForm extends Component
 
         // Dispatch event
         $this->dispatch('reservation-created');
-        $this->dispatch('toast', json_encode(['message' => 'Success!.', 'type' => 'success', 'description' => 'Reservation sent!']));
+        $this->toast('Success!', 'success', 'Reservation sent!');
         $this->step++;
     }
 

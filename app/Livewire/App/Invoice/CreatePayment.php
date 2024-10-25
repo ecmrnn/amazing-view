@@ -4,6 +4,7 @@ namespace App\Livewire\App\Invoice;
 
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
+use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -11,7 +12,7 @@ use Spatie\LivewireFilepond\WithFilePond;
 
 class CreatePayment extends Component
 {
-    use WithFilePond;
+    use WithFilePond, DispatchesToast;
     
     public $invoice;
     #[Validate] public $proof_image_path;
@@ -64,7 +65,7 @@ class CreatePayment extends Component
 
         $this->dispatch('payment-added');
         $this->dispatch('pg:eventRefresh-InvoicePaymentTable');
-        $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Yay, payment added!']));
+        $this->toast('Success', 'success', 'Yay, payment added!');
     }
 
     public function render()

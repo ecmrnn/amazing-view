@@ -6,11 +6,14 @@ use App\Models\Amenity;
 use App\Models\Discount;
 use App\Models\Invoice;
 use App\Models\Reservation;
+use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class EditInvoice extends Component
 {
+    use DispatchesToast;
+
     protected $listeners = ['payment-added' => '$refresh'];
     
     // Reservation Details
@@ -154,7 +157,7 @@ class EditInvoice extends Component
                 'additional_amenity',
             ]);
         } else {
-            $this->dispatch('toast', json_encode(['message' => 'Oof, not enough item!', 'type' => 'warning', 'description' => 'Item quantity is not enough']));
+            $this->toast('Oof, not enough item!', 'warning', 'Item quantity is not enough');
         }
     }
 

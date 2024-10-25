@@ -181,11 +181,13 @@ class Reservation extends Model
         Reservation::creating(function ($reservation) {
             $reservation->first_name = trim(strtolower($reservation->first_name));
             $reservation->last_name = trim(strtolower($reservation->last_name));
+            $reservation->note = htmlentities(str_replace('"', "'", $reservation->note));
         });
 
         Reservation::updating(function ($reservation) {
             $reservation->first_name = trim(strtolower($reservation->first_name));
             $reservation->last_name = trim(strtolower($reservation->last_name));
+            $reservation->note = htmlentities(str_replace('"', "'", $reservation->note));
         });
     }
 }

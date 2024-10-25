@@ -3,11 +3,14 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Models\Reservation;
+use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class CancelReservation extends Component
 {
+    use DispatchesToast;
+
     public $reasons;
     public $reservation;
 
@@ -20,7 +23,7 @@ class CancelReservation extends Component
         $this->reservation->cancel_date = Carbon::now()->format('Y-m-d');   
         $this->reservation->status = Reservation::STATUS_CANCELED;
         $this->reservation->save();
-        $this->dispatch('toast', json_encode(['message' => 'Cancellation successful', 'type' => 'success', 'description' => 'Reservation cancelled!']));
+        $this->toast('Reservation Cancelled', 'success', 'Successfully cancelled the reservation');
     }
 
     public function render()
