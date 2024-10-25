@@ -26,6 +26,70 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public static function rules(array $excepts = []) {
+        $rules = [
+            'first_name' => 'required|min:2',
+            'last_name' => 'required|min:2',
+            'email' => 'required|unique:users,email|email:rfc,dns',
+            'phone' => 'required|digits:11|starts_with:09',
+            'address' => 'nullable',
+            'role' => 'required',
+            'password' => 'required|string|min:8|confirmed',
+        ];
+
+        if (!empty($excepts)) {
+            foreach ($excepts as $field) {
+                unset($rules[$field]);
+            }
+        } 
+
+        return $rules ;
+    }
+
+    public static function messages(array $excepts = []) {
+        $messages = [
+            'first_name.required' => 'Enter a :attribute',
+            'first_name.min' => 'Minimum length of :attribute is 2',
+
+            'last_name.required' => 'Enter a :attribute',
+            'last_name.min' => 'Minimum length of :attribute is 2',
+
+            'phone.required' => 'Enter a :attribute',
+            'phone.min' => 'The length of :attribute must be 11',
+            'phone.starts_with' => ':attribute must start with "09"',
+            
+            'email.required' => 'Enter an :attribute',
+            'email.email' => 'Enter a valid :attribute',
+        ];
+
+        if (!empty($excepts)) {
+            foreach ($excepts as $field) {
+                unset($messages[$field]);
+            }
+        } 
+
+        return $messages;
+
+    }
+
+    public static function validationAttributes(array $excepts = []) {
+        $attributes = [
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'phone' => 'Contact Number',
+            'address' => 'Address',
+            'email' => 'Email',
+        ];
+
+        if (!empty($excepts)) {
+            foreach ($excepts as $field) {
+                unset($attributes[$field]);
+            }
+        } 
+
+        return $attributes;
+    }
+
     public function reservations(): HasMany {
         return $this->hasMany(Reservation::class);
     }

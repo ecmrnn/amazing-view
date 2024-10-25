@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot:header>
-        <div class="flex items-center justify-between gap-3 p-5 py-3 bg-white rounded-lg">
+        <div class="flex items-center justify-between gap-3">
             <hgroup>
                 <h1 class="text-xl font-bold leading-tight text-gray-800">
                     {{ __('Reservations') }}

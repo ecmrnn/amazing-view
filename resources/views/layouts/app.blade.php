@@ -45,7 +45,7 @@
             <div class="w-full p-3 space-y-3 sm:p-10 sm:space-y-5">
                 <!-- Page Heading -->
                 @isset($header)
-                    <header>
+                    <header class="py-3 pl-5 rounded-lg bg-gradient-to-r from-white to-white/0">
                         {{ $header }}
                     </header>
                 @endisset

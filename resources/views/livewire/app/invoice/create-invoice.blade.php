@@ -72,7 +72,7 @@
                 </div>
                 
                 <div class="flex items-center justify-center gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                    <x-secondary-button type="button" class="text-xs" x-on:click="show = false">Cancel</x-secondary-button>
                     <x-primary-button type="button" x-bind:disabled="!checked" class="text-xs" x-on:click="$wire.store(); show = false;">
                         Submit Invoice
                     </x-primary-button>

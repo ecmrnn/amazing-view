@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot:header>
-        <div class="flex items-center justify-between p-5 py-3 bg-white rounded-lg">
+        <div class="flex items-center justify-between">
             <hgroup>
                 <h1 class="text-xl font-bold leading-tight text-gray-800">
                     {{ __('Dashboard') }}
@@ -95,11 +95,11 @@
         </div>
     </div>
 
-    {{-- Recent Reservations (Pending and Confirmed) --}}
+    {{-- Recent Reservations (Pending) --}}
     <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
         <div>
-            <h2 class="text-lg font-semibold">Pending and Confirmed Reservations</h2>
-            <p class="max-w-sm text-xs">The table below are the lists of your pending and confirmed reservations.</p>
+            <h2 class="text-lg font-semibold">Pending Reservations</h2>
+            <p class="max-w-sm text-xs">The table below are the lists of your pending reservations.</p>
         </div>
 
         {{-- Reservation Table --}}
