@@ -16,7 +16,7 @@ class UpdateNote extends Component
     public $reservation;
 
     public function mount(Reservation $reservation) {
-        $this->note = html_entity_decode($reservation->note);
+        $this->note = html_entity_decode($reservation->note, ENT_QUOTES, 'UTF-8');
         $this->reservation = $reservation;
     }
 

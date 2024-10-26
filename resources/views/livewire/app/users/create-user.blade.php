@@ -112,7 +112,8 @@
 
     </section>
 
-    <section></section>
+    <section>
+    </section>
     
     {{-- Modal for confirming invoice --}}
     <x-modal.full name="show-user-confirmation" maxWidth="sm">

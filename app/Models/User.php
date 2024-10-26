@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -92,6 +94,46 @@ class User extends Authenticatable
 
     public function reservations(): HasMany {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function name() {
+        return ucwords($this->first_name) . ' ' . ucwords($this->last_name);
+    }
+
+    public function role() {
+        switch ($this->role) {
+            case 0:
+                return 'Guest';
+            case 1:
+                return 'Receptionist';
+            case 2:
+                return 'Admin';
+        }
+    }
+
+    public static function boot()
+    {
+        // Generate custom ID: https://laravelarticle.com/laravel-custom-id-generator
+        parent::boot();
+        self::creating(function ($model) {
+            $model->uid = IdGenerator::generate([
+                'table' => 'users',
+                'field' => 'uid',
+                'length' => 12,
+                'prefix' => 'U' . date('ymd'),
+                'reset_on_prefix_change' => true
+            ]);
+        });
+
+        User::creating(function ($user) {
+            $user->first_name = trim(strtolower($user->first_name));
+            $user->last_name = trim(strtolower($user->last_name));
+        });
+
+        User::updating(function ($user) {
+            $user->first_name = trim(strtolower($user->first_name));
+            $user->last_name = trim(strtolower($user->last_name));
+        });
     }
 
     /**

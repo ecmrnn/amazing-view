@@ -1,4 +1,4 @@
-<div {{ $attributes->merge(['class' => 'flex items-center justify-between overflow-visible']) }}>
+<div {{ $attributes->merge(['class' => 'flex items-center justify-between bg-white overflow-visible']) }}>
     <div class="flex items-center">
         {{-- <div class="m-2 rounded-md w-[30px] aspect-square grid place-items-center bg-gradient-to-r border border-blue-600 from-blue-500 to-blue-600">
             <span class="text-xs font-semibold text-white">{{ $step }}</span>

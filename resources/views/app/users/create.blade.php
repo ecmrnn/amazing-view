@@ -11,7 +11,7 @@
     </x-slot:header>
 
     {{-- Room  Table --}}
-    <div class="p-5 space-y-5 bg-white rounded-lg">
+    <div class="p-5 space-y-5 rounded-lg bg-gradient-to-r from-white to-white/0">
         <div class="flex items-center gap-3 sm:gap-5">
             <x-tooltip text="Back" dir="bottom">
                 <a x-ref="content" href="{{ route('app.users.index')}}" wire:navigate>

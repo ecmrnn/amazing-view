@@ -3,7 +3,7 @@
     'height' => '16',
 ])
 
-<div class="flex gap-1">
+<div class="flex justify-end gap-1">
     <x-tooltip text="View" dir="top">
         <x-icon-button x-ref="content">
             <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"

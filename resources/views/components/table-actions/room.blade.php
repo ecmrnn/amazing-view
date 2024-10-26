@@ -4,7 +4,7 @@
     'edit_link' => '',
 ])
 
-<div class="flex gap-1">
+<div class="flex justify-end gap-1">
     @can('update room')
         <x-tooltip text="Edit" dir="top">
             <a x-ref="content" href="{{ route($edit_link, ['room' => $row->id, 'type' => $row->room_type_id]) }}" wire:navigate>

@@ -5,7 +5,7 @@
     'view_link' => '',
 ])
 
-<div class="flex gap-1">
+<div class="flex justify-end gap-1">
     <x-tooltip text="Edit" dir="top">
         <a x-ref="content" href="{{ route($edit_link, ['guest' => $row->rid]) }}" wire:navigate.hover>
             <x-icon-button>
