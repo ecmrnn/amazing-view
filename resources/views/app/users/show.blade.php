@@ -29,12 +29,6 @@
 
         <div class="grid grid-cols-1 gap-5 xl:grid-cols-3">
             <div class="space-y-1">
-                @if ($user->status == App\Models\User::STATUS_INACTIVE)
-                    <x-note>
-                        <p class="max-w-xs">This user is deactivated and does not have access to any resources of the system.</p>
-                    </x-note>
-                @endif
-                
                 <section class="p-3 space-y-5 border border-gray-300 rounded-lg sm:p-5">
                 
                     <article class="space-y-3 sm:space-y-5">
@@ -109,6 +103,12 @@
                         </div>
                     </article>
                 </section>
+
+                @if ($user->status == App\Models\User::STATUS_INACTIVE)
+                    <x-note>
+                        <p class="max-w-xs">This user is deactivated and does not have access to any resources of the system.</p>
+                    </x-note>
+                @endif
             </div>
 
             <div class="space-y-5 xl:col-span-2 xl:row-span-2">

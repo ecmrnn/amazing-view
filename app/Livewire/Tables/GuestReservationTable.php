@@ -71,6 +71,10 @@ final class GuestReservationTable extends PowerGridComponent
                 return Carbon::parse($reservation->date_out)->format('F j, Y');
             })
 
+            ->add('status_formatted', function ($reservation) {
+                return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
+            })
+
             ->add('note')
             ->add('note_formatted', function ($reservation) {
                 return Blade::render(
@@ -93,6 +97,8 @@ final class GuestReservationTable extends PowerGridComponent
             Column::make('Check-in Date', 'date_in_formatted', 'date_in'),
             Column::make('Check-out Date', 'date_out_formatted', 'date_out'),
             Column::make('Note', 'note_formatted', 'note'),
+
+            Column::make('Status', 'status_formatted', 'status'),
 
             Column::action('')
         ];

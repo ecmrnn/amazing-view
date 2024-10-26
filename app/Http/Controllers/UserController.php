@@ -36,8 +36,8 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::findOrFail($id);
-        // dd($user);
+        $user = User::whereUid($id)->first();
+
         return view('app.users.show', [
             'user' => $user,
         ]);
@@ -48,7 +48,11 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = User::whereUid($id)->first();
+        
+        return view('app.users.edit', [
+            'user' => $user,
+        ]);
     }
 
     /**
