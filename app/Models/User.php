@@ -92,6 +92,10 @@ class User extends Authenticatable
         return $attributes;
     }
 
+    public function reports(): HasMany {
+        return $this->hasMany(Report::class);
+    }
+
     public function reservations(): HasMany {
         return $this->hasMany(Reservation::class);
     }

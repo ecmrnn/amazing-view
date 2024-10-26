@@ -5,6 +5,7 @@ namespace App\Livewire\tables;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
+use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;

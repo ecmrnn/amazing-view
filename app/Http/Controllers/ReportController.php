@@ -11,7 +11,7 @@ class ReportController extends Controller
      */
     public function index()
     {
-        return 'hello reports';
+        return view('app.reports.index');
     }
 
     /**
