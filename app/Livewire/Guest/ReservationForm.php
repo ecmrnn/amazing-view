@@ -54,6 +54,7 @@ class ReservationForm extends Component
     public $districts = [];
     // Payment
     #[Validate] public $proof_image_path;
+    #[Validate] public $transaction_id;
 
     // Operational Variables
     public $can_select_a_room = false;

@@ -11,7 +11,7 @@ class ContentController extends Controller
      */
     public function index()
     {
-        return 'hello contents';
+        return view('app.content.index');
     }
 
     /**

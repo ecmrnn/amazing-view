@@ -5,6 +5,7 @@ use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
@@ -14,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::name('guest.')->group(function () {
-    Route::view('/', 'index')->name('home');
-    Route::view('/rooms', 'rooms')->name('rooms');
-    Route::view('/about', 'about')->name('about');
+    Route::get('/', [PageController::class, 'home'])->name('home');
+    Route::get('/rooms', [PageController::class, 'rooms'])->name('rooms');
+    Route::get('/about', [PageController::class, 'about'])->name('about');
     Route::view('/contact', 'contact')->name('contact');
     Route::view('/reservation', 'reservation')->name('reservation');
     Route::view('/search', 'search')->name('search');

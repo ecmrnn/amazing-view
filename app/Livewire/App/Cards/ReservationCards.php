@@ -3,6 +3,7 @@
 namespace App\Livewire\App\Cards;
 
 use App\Models\Reservation;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -12,16 +13,15 @@ class ReservationCards extends Component
 
     public function render()
     {
-        $pending_reservations = Reservation::whereStatus(Reservation::STATUS_PENDING)->count();
-        $confirmed_reservations = Reservation::whereStatus(Reservation::STATUS_CONFIRMED)->count();
-        $completed_reservations = Reservation::whereStatus(Reservation::STATUS_COMPLETED)->count();
-        $expired_reservations = Reservation::whereStatus(Reservation::STATUS_EXPIRED)->count();
+        $reservation_count = Reservation::select(DB::raw('count(*) as count, status'))
+            ->groupBy('status')
+            ->get();
 
         return view('livewire.app.cards.reservation-cards', [
-            'pending_reservations' => $pending_reservations,
-            'confirmed_reservations' => $confirmed_reservations,
-            'completed_reservations' => $completed_reservations,
-            'expired_reservations' => $expired_reservations,
+            'pending_reservations' => $reservation_count[Reservation::STATUS_PENDING]->count,
+            'confirmed_reservations' => $reservation_count[Reservation::STATUS_CONFIRMED]->count,
+            'completed_reservations' => $reservation_count[Reservation::STATUS_COMPLETED]->count,
+            'expired_reservations' => $reservation_count[Reservation::STATUS_EXPIRED]->count,
         ]);
     }
 }
