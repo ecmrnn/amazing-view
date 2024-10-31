@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContactDetails;
 use App\Models\Content;
 use App\Models\FeaturedService;
 use App\Models\Milestone;
@@ -54,6 +55,18 @@ class PageController extends Controller
             'heading' => html_entity_decode($heading),
             'subheading' => html_entity_decode($subheading),
             'available_rooms' => $available_rooms
+        ]);
+    }
+
+    public function contact() {
+        $heading = Content::whereName('contact_heading')->pluck('value')->first();
+        $subheading = Content::whereName('contact_subheading')->pluck('value')->first();
+        $contact_details = ContactDetails::pluck('value');
+        
+        return view('contact', [
+            'heading' => html_entity_decode($heading),
+            'subheading' => html_entity_decode($subheading),
+            'contact_details' => $contact_details,
         ]);
     }
 }

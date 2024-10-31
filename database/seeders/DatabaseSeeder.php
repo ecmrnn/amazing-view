@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use Database\Seeders\content\AboutSeeder;
+use Database\Seeders\content\ContactSeeder;
 use Database\Seeders\content\HomeSeeder;
 use Database\Seeders\content\MilestoneSeeder;
 use Database\Seeders\content\RoomSeeder;
@@ -33,7 +34,8 @@ class DatabaseSeeder extends Seeder
             AboutSeeder::class,
             HomeSeeder::class,
             MilestoneSeeder::class,
-            RoomSeeder::class
+            RoomSeeder::class,
+            ContactSeeder::class
         ]);
     }
 }
