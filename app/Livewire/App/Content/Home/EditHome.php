@@ -4,6 +4,7 @@ namespace App\Livewire\App\Content\Home;
 
 use App\Models\Content;
 use App\Models\FeaturedService;
+use App\Models\Page;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -68,7 +69,10 @@ class EditHome extends Component
     {
         $this->featured_services = FeaturedService::whereStatus(FeaturedService::STATUS_ACTIVE)->get();
         $this->feature_count = $this->featured_services->count();
+        $page = Page::whereTitle('Home')->first();
         
-        return view('livewire.app.content.home.edit-home');
+        return view('livewire.app.content.home.edit-home', [
+            'page' => $page,
+        ]);
     }
 }

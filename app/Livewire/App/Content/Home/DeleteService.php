@@ -63,7 +63,7 @@ class DeleteService extends Component
 
                 <div class="space-y-2">
                     <p class="text-xs">Enter your password to delete this service.</p>
-                    <x-form.input-text wire:model.live="password" type="password" label="Password" id="password" />
+                    <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $service->id }}-password" />
                     <x-form.input-error field="password" />
                 </div>
                 

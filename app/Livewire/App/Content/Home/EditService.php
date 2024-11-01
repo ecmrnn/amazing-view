@@ -63,13 +63,13 @@ class EditService extends Component
 
                 <div class="space-y-2">
                     <div>
-                        <x-form.input-label for="image">Image</x-form.input-label>
+                        <x-form.input-label for="edit-{{ $service->id }}-image">Image</x-form.input-label>
                         <p class="text-xs">Upload a new image here</p>
                     </div>
 
                     <x-filepond::upload
                         wire:model.live="image"
-                        id="image"
+                        id="edit-{{ $service->id }}-image"
                         placeholder="<span class='text-xs'>Drag & drop your new image or <span class='filepond--label-action'> Browse </span></span>"
                     />
 
@@ -78,14 +78,15 @@ class EditService extends Component
 
                 <div class="space-y-2">
                     <div>
-                        <x-form.input-label for="title">Title &amp; Description</x-form.input-label>
+                        <x-form.input-label for="edit-{{ $service->id }}-title">Title &amp; Description</x-form.input-label>
                         <p class="text-xs">Enter the title and short description of your service</p>
                     </div>
                     
-                    <x-form.input-text id="title" name="title" label="Title" wire:model.live="title" />
+                    <x-form.input-text id="edit-{{ $service->id }}-title" name="title" label="Title" wire:model.live="title" />
                     <x-form.input-error field="title" />
 
-                    <x-form.textarea id="desription" name="description" wire:model.live="description" class="w-full" rows="5" x-on:keyup="count = max - $el.value.length" />
+                    <x-form.textarea id="edit-{{ $service->id }}-desription" name="description" wire:model.live="description" class="w-full" rows="5" x-on:keyup="count = max - $el.value.length" />
+                    
                     <div class="flex justify-between">
                         <span><x-form.input-error field="description" /></span>
                         <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>

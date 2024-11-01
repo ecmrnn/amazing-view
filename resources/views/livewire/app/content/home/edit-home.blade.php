@@ -1,131 +1,131 @@
 <form class="grid grid-cols-1 gap-5 space-y-3 bg-white xl:grid-cols-2" wire:submit="submit">
     @csrf
     
-    <div class="space-y-5">
-        <section class="space-y-3">
-            <div>
-                <!-- Heading and Subheading -->
-                <x-form.form-section>
-                    <x-form.form-header step="1" title="Hero Section" />
-                    <x-form.form-body>
-                        <div class="p-3 space-y-3 sm:p-5">
-                            <x-form.input-label for="heading">Heading &amp; Subheading</x-form.input-label>
+    <section>
+        <div>
+            <!-- Heading and Subheading -->
+            <x-form.form-section>
+                <x-form.form-header step="1" title="Hero Section" />
+                <x-form.form-body>
+                    <div class="p-3 space-y-3 sm:p-5">
+                        <x-form.input-label for="heading">Heading &amp; Subheading</x-form.input-label>
 
-                            <div class="space-y-1">
-                                <x-form.input-text id="heading" name="heading" label="Heading" wire:model.live="heading" />
-                                <x-form.input-error field="heading" />
-                            </div>
-
-                            <div class="space-y-1">
-                                <x-form.input-text id="subheading" name="subheading" label="Subheading" wire:model.live="subheading" />
-                                <x-form.input-error field="subheading" />
-                            </div>
-
-                            <!-- Image -->
+                        <div class="space-y-1">
+                            <x-form.input-text id="heading" name="heading" label="Heading" wire:model.live="heading" />
+                            <x-form.input-error field="heading" />
                         </div>
-                    </x-form.form-body>
-                </x-form.form-section>
 
-                <x-line-vertical />
+                        <div class="space-y-1">
+                            <x-form.input-text id="subheading" name="subheading" label="Subheading" wire:model.live="subheading" />
+                            <x-form.input-error field="subheading" />
+                        </div>
 
-                <!-- Featured Services -->
-                <x-form.form-section>
-                    <x-form.form-header step="2" title="Featured Services" />
-                    <x-form.form-body>
-                        <div class="p-3 space-y-3 sm:p-5">
-                            <div class="flex items-start justify-between">
-                                <hgroup>
-                                    <h3 class="font-semibold">Featured Services</h3>
-                                    <p class="text-xs">Manage your featured services</p>
-                                </hgroup>
+                        <!-- Image -->
+                    </div>
+                </x-form.form-body>
+            </x-form.form-section>
 
-                                <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'add-service-modal')">Add Service</x-primary-button>
-                            </div>
+            <x-line-vertical />
 
-                            <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
-                                @foreach ($featured_services as $featured_service)
-                                    <div key="{{ $featured_service->id }}" class="relative p-3 border border-gray-300 rounded-md">
-                                        <div class="flex flex-col gap-3 sm:flex-row">
-                                            @if (!empty($featured_service->image))
-                                                <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full sm:max-w-[150px]" />
-                                            @else
-                                                <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/200/300?grayscale" class="w-full sm:max-w-[150px]" />
-                                            @endif
+            <!-- Featured Services -->
+            <x-form.form-section>
+                <x-form.form-header step="2" title="Featured Services" />
+                <x-form.form-body>
+                    <div class="p-3 space-y-3 sm:p-5">
+                        <div class="flex items-start justify-between">
+                            <hgroup>
+                                <h3 class="font-semibold">Featured Services</h3>
+                                <p class="text-xs">Manage your featured services</p>
+                            </hgroup>
 
-                                            <div>
-                                                <h4 class="text-sm font-semibold">{{ $featured_service->title }}</h4>
-                                                <p class="max-w-sm text-xs">{{ $featured_service->description }}</p>
-                                            </div>
+                            <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'add-service-modal')">Add Service</x-primary-button>
+                        </div>
+
+                        <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
+                            @foreach ($featured_services as $featured_service)
+                                <div key="{{ $featured_service->id }}" class="relative p-3 border border-gray-300 rounded-md">
+                                    <div class="flex flex-col gap-3 sm:flex-row">
+                                        @if (!empty($featured_service->image))
+                                            <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full sm:max-w-[150px]" />
+                                        @else
+                                            <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/200/300?grayscale" class="w-full sm:max-w-[150px]" />
+                                        @endif
+
+                                        <div>
+                                            <h4 class="text-sm font-semibold">{{ $featured_service->title }}</h4>
+                                            <p class="max-w-sm text-xs">{{ $featured_service->description }}</p>
                                         </div>
-
-                                        <div class="absolute flex gap-1 top-5 right-5 sm:top-3 sm:right-3">
-                                            <x-tooltip text="Edit" dir="bottom">
-                                                <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-service-modal-{{ $featured_service->id }}')">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                                                </x-icon-button>
-                                            </x-tooltip>
-
-                                            <x-tooltip text="Deactivate" dir="bottom">
-                                                <x-icon-button x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'deactivate-service-modal-{{ $featured_service->id }}')">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
-                                                </x-icon-button>
-                                            </x-tooltip>
-                                            
-                                            <x-tooltip text="Delete" dir="bottom">
-                                                <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-service-modal-{{ $featured_service->id }}')">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                                </x-icon-button>
-                                            </x-tooltip>
-                                        </div>
-
-                                        <x-modal.full name="edit-service-modal-{{ $featured_service->id }}" maxWidth="sm">
-                                            <livewire:app.content.home.edit-service wire:key="edit-{{ $featured_service->id }}" :service="$featured_service" />
-                                        </x-modal.full>
-                                        <x-modal.full name="deactivate-service-modal-{{ $featured_service->id }}" maxWidth="sm">
-                                            <livewire:app.content.home.deactivate-service wire:key="deactivate-{{ $featured_service->id }}" :service="$featured_service" />
-                                        </x-modal.full>
-                                        <x-modal.full name="delete-service-modal-{{ $featured_service->id }}" maxWidth="sm">
-                                            <livewire:app.content.home.delete-service wire:key="delete-{{ $featured_service->id }}" :service="$featured_service" />
-                                        </x-modal.full>
                                     </div>
-                                @endforeach
-                            </div>
-                            <x-note>
-                                <p class="pr-2">Minimum of three (3) services must be featured</p>
-                            </x-note>
+
+                                    <div class="absolute flex gap-1 top-5 right-5 sm:top-3 sm:right-3">
+                                        <x-tooltip text="Edit" dir="bottom">
+                                            <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-service-modal-{{ $featured_service->id }}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                                            </x-icon-button>
+                                        </x-tooltip>
+
+                                        <x-tooltip text="Deactivate" dir="bottom">
+                                            <x-icon-button x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'deactivate-service-modal-{{ $featured_service->id }}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                            </x-icon-button>
+                                        </x-tooltip>
+                                        
+                                        <x-tooltip text="Delete" dir="bottom">
+                                            <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-service-modal-{{ $featured_service->id }}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                            </x-icon-button>
+                                        </x-tooltip>
+                                    </div>
+
+                                    <x-modal.full name="edit-service-modal-{{ $featured_service->id }}" maxWidth="sm">
+                                        <livewire:app.content.home.edit-service wire:key="edit-{{ $featured_service->id }}" :service="$featured_service" />
+                                    </x-modal.full>
+                                    <x-modal.full name="deactivate-service-modal-{{ $featured_service->id }}" maxWidth="sm">
+                                        <livewire:app.content.home.deactivate-service wire:key="deactivate-{{ $featured_service->id }}" :service="$featured_service" />
+                                    </x-modal.full>
+                                    <x-modal.full name="delete-service-modal-{{ $featured_service->id }}" maxWidth="sm">
+                                        <livewire:app.content.home.delete-service wire:key="delete-{{ $featured_service->id }}" :service="$featured_service" />
+                                    </x-modal.full>
+                                </div>
+                            @endforeach
                         </div>
-                    </x-form.form-body>
-                </x-form.form-section>
+                        <x-note>
+                            <p class="pr-2">Minimum of three (3) services must be featured</p>
+                        </x-note>
+                    </div>
+                </x-form.form-body>
+            </x-form.form-section>
 
-                <x-line-vertical />
-                
-                <!-- History -->
-                <x-form.form-section>
-                    <x-form.form-header step="3" title="Brief History" />
-                    <x-form.form-body>
-                        <div class="p-3 space-y-3 sm:p-5">
-                            <x-form.input-label for="history">Brief History</x-form.input-label>
+            <x-line-vertical />
+            
+            <!-- History -->
+            <x-form.form-section>
+                <x-form.form-header step="3" title="Brief History" />
+                <x-form.form-body>
+                    <div class="p-3 space-y-3 sm:p-5">
+                        <x-form.input-label for="history">Brief History</x-form.input-label>
 
-                            <div class="space-y-1">
-                                <x-form.textarea id="history" name="history" label="History" class="w-full" wire:model.live="history" />
-                                <x-form.input-error field="history" />
-                            </div>
-
-                            <x-filepond::upload
-                                wire:model.live="history_image"
-                                placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
-                            />
+                        <div class="space-y-1">
+                            <x-form.textarea id="history" name="history" label="History" class="w-full" wire:model.live="history" />
+                            <x-form.input-error field="history" />
                         </div>
-                    </x-form.form-body>
-                </x-form.form-section>
-                <!-- Submit -->
-                <x-line-vertical />
-                <x-primary-button>
-                    Save Changes
-                </x-primary-button>
-            </div>
-        </section>
 
+                        <x-filepond::upload
+                            wire:model.live="history_image"
+                            placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
+                        />
+                    </div>
+                </x-form.form-body>
+            </x-form.form-section>
+            <!-- Submit -->
+            <x-line-vertical />
+            <x-primary-button>
+                Save Changes
+            </x-primary-button>
+        </div>
+    </section>
+    
+    {{-- <div>
         <!-- Status Change -->
         <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
             <hgroup>
@@ -134,10 +134,10 @@
             </hgroup>
 
             <div>
-                <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'show-cancel-reservation')">Hide this Page</x-danger-button>
+                <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'disable-page-modal')">Hide this Page</x-danger-button>
             </div>
         </section>
-    </div>
+    </div> --}}
 
     <!-- Visuals -->
     <div class="hidden space-y-5 xl:block">
@@ -258,4 +258,8 @@
     <x-modal.full name="add-service-modal" maxWidth="sm">
         <livewire:app.content.home.add-service />
     </x-modal.full> 
+
+    {{-- <x-modal.full name="disable-page-modal" maxWidth="sm">
+        <livewire:app.content.disable-page :page="$page" />
+    </x-modal.full>  --}}
 </form>
