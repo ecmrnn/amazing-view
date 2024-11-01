@@ -19,6 +19,7 @@ class EditHome extends Component
         'service-edited' => '$refresh',
         'service-hidden' => '$refresh',
         'service-deleted' => '$refresh',
+        'history-edited' => '$refresh',
     ];
 
     #[Validate] public $heading;
@@ -32,15 +33,12 @@ class EditHome extends Component
         return [
             'heading' => 'required',
             'subheading' => 'required',
-            'history' => 'required',
         ];
     }
 
     public function mount() {
         $this->heading = html_entity_decode(Content::whereName('home_heading')->pluck('value')->first());
         $this->subheading = html_entity_decode(Content::whereName('home_subheading')->pluck('value')->first());
-        $this->history_image = Content::whereName('about_history_image')->pluck('value')->first();
-        $this->history = Content::whereName('about_history')->pluck('long_value')->first();
     }
 
     public function submit() {
@@ -57,10 +55,6 @@ class EditHome extends Component
         $subheading = Content::whereName('home_subheading')->first();
         $subheading->value = $this->subheading;
         $subheading->save();
-
-        $history = Content::whereName('about_history')->first();
-        $history->long_value = $this->history;
-        $history->save();
         
         $this->toast('Success!', 'success', 'Changed made saved');
     }
@@ -69,6 +63,9 @@ class EditHome extends Component
     {
         $this->featured_services = FeaturedService::whereStatus(FeaturedService::STATUS_ACTIVE)->get();
         $this->feature_count = $this->featured_services->count();
+        $this->history_image = Content::whereName('about_history_image')->pluck('value')->first();
+        $this->history = Content::whereName('about_history')->pluck('long_value')->first();
+        
         $page = Page::whereTitle('Home')->first();
         
         return view('livewire.app.content.home.edit-home', [

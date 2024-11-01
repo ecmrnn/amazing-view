@@ -12,6 +12,23 @@ class Content extends Model
 
     protected $guarded = [];
 
+    public static function rules(array $excepts = []) {
+        $rules = [
+            'name' => 'required',
+            'type' => 'required',
+            'value' => 'nullable|max:255',
+            'long_value' => 'nullable|max:1000',
+        ];
+
+        if (!empty($excepts)) {
+            foreach ($excepts as $field) {
+                unset($rules[$field]);
+            }
+        } 
+
+        return $rules;
+    }
+
     public function pages(): BelongsToMany {
         return $this->belongsToMany(Page::class, 'content_pages');
     }

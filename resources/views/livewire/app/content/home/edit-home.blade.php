@@ -44,11 +44,11 @@
                         <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
                             @foreach ($featured_services as $featured_service)
                                 <div key="{{ $featured_service->id }}" class="relative p-3 border border-gray-300 rounded-md">
-                                    <div class="flex flex-col gap-3 sm:flex-row">
+                                    <div class="flex flex-col gap-3 md:flex-row">
                                         @if (!empty($featured_service->image))
-                                            <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full sm:max-w-[150px]" />
+                                            <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full md:max-w-[150px]" />
                                         @else
-                                            <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/200/300?grayscale" class="w-full sm:max-w-[150px]" />
+                                            <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/200/300?grayscale" class="w-full md:max-w-[150px]" />
                                         @endif
 
                                         <div>
@@ -57,7 +57,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="absolute flex gap-1 top-5 right-5 sm:top-3 sm:right-3">
+                                    <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
                                         <x-tooltip text="Edit" dir="bottom">
                                             <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-service-modal-{{ $featured_service->id }}')">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
@@ -100,28 +100,26 @@
             
             <!-- History -->
             <x-form.form-section>
-                <x-form.form-header step="3" title="Brief History" />
+                <x-form.form-header step="3" title="History" />
                 <x-form.form-body>
-                    <div class="p-3 space-y-3 sm:p-5">
-                        <x-form.input-label for="history">Brief History</x-form.input-label>
+                    <div class="p-3 space-y-3 sm:p-5 sm:space-y-5">
+                        <div class="flex items-start justify-between">
+                            <hgroup>
+                                <h3 class="font-semibold">Brief History</h3>
+                                <p class="text-xs">Update your history here</p>
+                            </hgroup>
 
-                        <div class="space-y-1">
-                            <x-form.textarea id="history" name="history" label="History" class="w-full" wire:model.live="history" />
-                            <x-form.input-error field="history" />
+                            <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'edit-history-modal')">Edit History</x-primary-button>
                         </div>
 
-                        <x-filepond::upload
-                            wire:model.live="history_image"
-                            placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
-                        />
+                        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
+                            <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
+
+                            <p class="text-sm line-clamp-5 overflow-clip h-min">{!! $history !!}</p>
+                        </div>
                     </div>
                 </x-form.form-body>
             </x-form.form-section>
-            <!-- Submit -->
-            <x-line-vertical />
-            <x-primary-button>
-                Save Changes
-            </x-primary-button>
         </div>
     </section>
     
@@ -140,10 +138,11 @@
     </div> --}}
 
     <!-- Visuals -->
-    <div class="hidden space-y-5 xl:block">
+    <section class="hidden space-y-5 xl:block">
         <x-note>
             <p class="max-w-sm">Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview below. <strong>Proceed with caution</strong>!</p>
         </x-note>
+
         <section class="overflow-y-scroll border border-gray-300 rounded-lg aspect-video">
             <div class="p-5 space-y-1 min-w-[780px]">
                 <header class="flex justify-between w-3/4 p-2 mx-auto rounded-md">
@@ -196,7 +195,7 @@
                         <p class="max-w-xs text-xs">Book your dream getaway!</p>
                     </hgroup>
                     <div class="grid grid-cols-2 gap-3">
-                        <x-img-lg src="{{ $history_image }}" />
+                        <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
                         <div class="space-y-3">
                             <h3 class="text-xs font-bold">Be amaze by our story!</h3>
                             <p class="text-xs text-justify sm:text-left sm:max-w-sm line-clamp-3">
@@ -252,11 +251,15 @@
                 </footer>
             </div>
         </section>
-    </div>
+    </section>
 
     <!-- Modals -->
     <x-modal.full name="add-service-modal" maxWidth="sm">
         <livewire:app.content.home.add-service />
+    </x-modal.full> 
+
+    <x-modal.full name="edit-history-modal" maxWidth="sm">
+        <livewire:app.content.about.edit-history />
     </x-modal.full> 
 
     {{-- <x-modal.full name="disable-page-modal" maxWidth="sm">

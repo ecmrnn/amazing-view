@@ -35,7 +35,7 @@ class AboutSeeder extends Seeder
         $history_image = Content::create([
             'name' => 'about_history_image',
             'type' => 'image',
-            'value' => 'https://placehold.co/400'
+            'value' => null
         ]);
 
         $page = Page::whereTitle('About')->first();
