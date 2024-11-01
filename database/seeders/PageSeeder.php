@@ -13,8 +13,6 @@ class PageSeeder extends Seeder
      */
     public function run(): void
     {
-        $pages = collect();
-
         Page::create([
             'title' => 'Home',
             'url' => '/home',
@@ -38,6 +36,11 @@ class PageSeeder extends Seeder
         Page::create([
             'title' => 'Reservation',
             'url' => '/reservation',
+        ]);
+
+        Page::create([
+            'title' => 'Global',
+            'url' => '/global',
         ]);
     }
 }

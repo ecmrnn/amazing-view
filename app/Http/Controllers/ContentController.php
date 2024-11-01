@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
 use Illuminate\Http\Request;
 
 class ContentController extends Controller
@@ -43,7 +44,11 @@ class ContentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $page = Page::findOrfail($id);
+
+        return view('app.content.edit', [
+            'page' => $page,
+        ]);
     }
 
     /**

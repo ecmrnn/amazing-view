@@ -20,6 +20,9 @@ export default {
                 inter: ['Inter', ...defaultTheme.fontFamily.sans],
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            fontSize: {
+                xxs: '0.5rem'
+            },
             colors: {
                 "pg-primary": colors.white, 
             },

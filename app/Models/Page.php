@@ -12,6 +12,12 @@ class Page extends Model
 
     public const STATUS_UP = 0;
     public const STATUS_DOWN = 0;
+    public const PAGE_HOME = 1;
+    public const PAGE_ROOMS = 2;
+    public const PAGE_ABOUT = 3;
+    public const PAGE_CONTACT = 4;
+    public const PAGE_RESERVATION = 5;
+    public const PAGE_GLOBAL = 6;
 
     protected $guarded = [];
 

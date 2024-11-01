@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('featured_services', function (Blueprint $table) {
             $table->id();
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('title');
             $table->string('description');
             $table->string('status')->default(FeaturedService::STATUS_ACTIVE);

@@ -4,6 +4,7 @@ namespace Database\Seeders\content;
 
 use App\Models\ContactDetails;
 use App\Models\Content;
+use App\Models\Page;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,13 +15,13 @@ class ContactSeeder extends Seeder
      */
     public function run(): void
     {
-        Content::create([
+        $heading = Content::create([
             'name' => 'contact_heading',
             'type' => 'text',
             'value' => 'Got any business idea? <br> Send an Email!'
         ]);
 
-        Content::create([
+        $subheading = Content::create([
             'name' => 'contact_subheading',
             'type' => 'text',
             'value' => 'You may reach us at the following phone numbers or you may opt to send an email using the given form.'
@@ -42,6 +43,12 @@ class ContactSeeder extends Seeder
             'name' => 'phone_number',
             'type' => 'phone',
             'value' => '09451320863'
+        ]);
+
+        $page = Page::whereTitle('Contact')->first();
+        $page->contents()->attach([
+            $heading->id,
+            $subheading->id,
         ]);
     }
 }

@@ -47,7 +47,7 @@ class Reservation extends Model
             }
         } 
 
-        return $rules ;
+        return $rules;
     }
 
     public static function messages(array $excepts = []) {

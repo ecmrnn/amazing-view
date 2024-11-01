@@ -1,6 +1,6 @@
 <nav x-data="{ open: false }" class="sticky top-0 z-50 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-100">
     <!-- Primary Navigation Menu -->
-    <div class="h-full p-3">
+    <div class="h-full p-5">
         <div x-data="{ expanded: $persist(false) }" class="justify-between hidden h-full sm:flex sm:flex-col">
             <div class="space-y-5">
                 <!-- Logo -->
