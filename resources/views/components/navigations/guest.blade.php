@@ -1,8 +1,8 @@
-<div class="fixed top-0 z-10 w-full">
+<div class="w-full">
     {{-- <x-banner /> --}}
     
-    <nav class="px-5 text-sm font-semibold border-b bg-white/75 before:backdrop-blur-xl before:backdrop-hack">
-        <div class="max-w-screen-xl py-3 mx-auto">
+    <nav class="py-5 text-sm font-semibold bg-white/90 before:backdrop-blur-xl before:backdrop-hack">
+        <div class="max-w-screen-xl mx-auto">
             {{-- Desktop --}}
             <div class="items-center justify-between hidden md:flex">
                 <x-application-logo />

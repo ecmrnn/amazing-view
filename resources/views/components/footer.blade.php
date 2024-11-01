@@ -1,4 +1,4 @@
-<footer class="px-5 py-10 text-white bg-blue-950">
+<footer class="relative z-10 px-5 py-10 text-white bg-blue-950">
     <div class="max-w-screen-xl gap-10 mx-auto space-y-10 md:space-y-0 md:grid md:grid-cols-3 lg:grid-cols-4">
         <div class="space-y-5 border-dashed md:col-span-3 lg:col-span-1 lg:border-r border-white/50">
             <h2 class="text-3xl font-semibold">

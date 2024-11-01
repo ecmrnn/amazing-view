@@ -23,6 +23,12 @@ export default {
             fontSize: {
                 xxs: '0.5rem'
             },
+            width: {
+                "float": 'calc(100% - 2.5rem)',
+            },
+            height: {
+                "float": 'calc(100% - 2.5rem)',
+            },
             colors: {
                 "pg-primary": colors.white, 
             },

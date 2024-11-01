@@ -38,9 +38,14 @@
                 position: 'top-right',
             })"
         >
-        <x-navigations.guest />
+        <div class="sticky top-0 flex flex-col h-screen px-5 pb-5">
+            <x-navigations.guest />
+            <section class="relative flex-grow">
+                {{ $hero }}
+            </section>
+        </div>
         
-        <main class="min-h-screen">
+        <main class="relative z-10 min-h-screen">
             {{ $slot }}
         </main>
 
