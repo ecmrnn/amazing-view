@@ -53,7 +53,7 @@
                     <div class="space-y-5">
                         <hgroup>
                             <h3 class="text-xl font-semibold">{{ $milestone->title }}</h3>
-                            <span class="inline-block text-sm">Achieved on {{ date_format(date_create($milestone->date_achieved), 'F, j, Y') }}</span>
+                            <span class="inline-block text-sm">Achieved on {{ date_format(date_create($milestone->date_achieved), 'F j, Y') }}</span>
                         </hgroup>
                 
                         <p>{!! $milestone->description !!}</p>

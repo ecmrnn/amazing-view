@@ -84,7 +84,7 @@
 
                                     <div>
                                         <h4 class="font-semibold">{{ $milestone->title }}</h4>
-                                        <p class="max-w-sm text-sm">{{ date_format(date_create($milestone->date_achieved), 'F j, Y') }}</p>
+                                        <p class="max-w-sm text-sm">Achieved on: {{ date_format(date_create($milestone->date_achieved), 'F j, Y') }}</p>
                                         <p class="max-w-sm text-xs">{{ $milestone->description }}</p>
                                     </div>
                                 </div>
@@ -97,7 +97,7 @@
                                     </x-tooltip>
                                     
                                     <x-tooltip text="Delete" dir="bottom">
-                                        <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-service-modal-{{ $milestone->id }}')">
+                                        <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-milestone-modal-{{ $milestone->id }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                         </x-icon-button>
                                     </x-tooltip>
@@ -107,9 +107,9 @@
                                     <livewire:app.content.about.edit-milestone wire:key="edit-{{ $milestone->id }}" :milestone="$milestone" />
                                 </x-modal.full>
 
-                                {{-- <x-modal.full name="delete-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
+                                <x-modal.full name="delete-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
                                     <livewire:app.content.about.delete-milestone wire:key="delete-{{ $milestone->id }}" :milestone="$milestone" />
-                                </x-modal.full>--}}
+                                </x-modal.full>
                             </div>
                         @endforeach
                     </div>
