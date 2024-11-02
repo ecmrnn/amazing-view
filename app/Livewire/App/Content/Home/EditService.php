@@ -43,7 +43,9 @@ class EditService extends Component
 
         if (!empty($this->image)) {
             // delete saved image
-            Storage::disk('public')->delete($this->service->image);
+            if (!empty($this->service->image)) {
+                Storage::disk('public')->delete($this->service->image);
+            }
             
             $this->service->image = $this->image->store('featured-services', 'public');
         }

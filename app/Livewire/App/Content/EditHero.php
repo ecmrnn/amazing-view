@@ -13,14 +13,14 @@ class EditHero extends Component
 {
     use DispatchesToast, WithFilePond;
 
-    #[Validate] public $home_hero_image;
+    #[Validate] public $hero_image;
     #[Validate] public $heading;
     #[Validate] public $subheading;
     public $page;
 
     public function rules() {
         return [
-            'home_hero_image' => 'nullable|mimes:jpg,jpeg,png|image',
+            'hero_image' => 'nullable|mimes:jpg,jpeg,png|image',
             'heading' => 'required',
             'subheading' => 'required',
         ];
@@ -35,19 +35,21 @@ class EditHero extends Component
     public function submit() {
         // Validate
         $this->validate([
-            'home_hero_image' => $this->rules()[$this->page . '_hero_image'],
+            'hero_image' => $this->rules()['hero_image'],
             'heading' => $this->rules()['heading'],
             'subheading' => $this->rules()['subheading'],
         ]);
 
         // If may inupload na image
-        if (!empty($this->home_hero_image)) {
+        if (!empty($this->hero_image)) {
             // delete saved image para di magdoble doble
-            $home_hero_image = Content::whereName($this->page . '_hero_image')->first();
-            Storage::disk('public')->delete($home_hero_image->value);
+            $hero_image = Content::whereName($this->page . '_hero_image')->first();
+            if (!empty($hero_image)) {
+                Storage::disk('public')->delete($hero_image->value);
+            }
             
-            $home_hero_image->value = $this->home_hero_image->store('hero', 'public');
-            $home_hero_image->save();
+            $hero_image->value = $this->hero_image->store('hero', 'public');
+            $hero_image->save();
         }
 
         // Store to database
@@ -75,17 +77,17 @@ class EditHero extends Component
 
                 <div class="space-y-2">
                     <div>
-                        <x-form.input-label for="home_hero_image">Image</x-form.input-label>
+                        <x-form.input-label for="hero_image">Image</x-form.input-label>
                         <p class="text-xs">Upload a new image here</p>
                     </div>
 
                     <x-filepond::upload
-                        wire:model.live="home_hero_image"
-                        id="home_hero_image"
+                        wire:model.live="hero_image"
+                        id="hero_image"
                         placeholder="<span class='text-xs'>Drag & drop your new image or <span class='filepond--label-action'> Browse </span></span>"
                     />
 
-                    <x-form.input-error field="home_hero_image" />
+                    <x-form.input-error field="hero_image" />
                 </div>
 
                 <div class="space-y-2">

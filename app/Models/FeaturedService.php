@@ -32,8 +32,8 @@ class FeaturedService extends Model
 
     public static function messages() {
         $rules = [
-            'image.max' => 'nullable|mimes:jpg,jpeg,png|image|max:1000',
-            'image.required' => 'nullable|mimes:jpg,jpeg,png|image|max:1000',
+            'image.max' => 'Masyadong malaki image moh',
+            // 'image.required' => 'nullable|mimes:jpg,jpeg,png|image|max:1000',
             'title.required' => 'Enter a title',
             'description.required' => 'Enter a description',
             'description.max' => 'Maximum of 200 characters',

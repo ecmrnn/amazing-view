@@ -16,7 +16,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                        <x-img-lg src="{{ asset('storage/' . $home_hero_image) }}" />
+                        <x-img-lg src="{{ asset('storage/' . $about_hero_image) }}" />
 
                         <div class="grid p-5 border border-gray-300 rounded-md place-items-center">
                             <div>
@@ -30,102 +30,10 @@
         </x-form.form-section>
 
         <x-line-vertical />
-
-        <!-- Featured Services -->
-        <x-form.form-section>
-            <x-form.form-header step="2" title="Featured Services" />
-            <x-form.form-body>
-                <div class="p-3 space-y-3 sm:p-5">
-                    <div class="flex items-start justify-between">
-                        <hgroup>
-                            <h3 class="font-semibold">Featured Services</h3>
-                            <p class="text-xs">Manage your featured services</p>
-                        </hgroup>
-
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'add-service-modal')">Add Service</x-primary-button>
-                    </div>
-
-                    <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
-                        @foreach ($featured_services as $featured_service)
-                            <div key="{{ $featured_service->id }}"
-                                {{-- class="" --}}
-                                @class(['relative p-3 border border-gray-300 rounded-md', 'bg-slate-100' => $featured_service->status == app\Models\FeaturedService::STATUS_INACTIVE])
-                                {{-- @if ()
-                                @endif --}}
-                                >
-                                <div class="flex flex-col gap-3 md:flex-row">
-                                    @if (!empty($featured_service->image))
-                                        <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full md:max-w-[150px]" />
-                                    @else
-                                        <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/200/300?grayscale" class="w-full md:max-w-[150px]" />
-                                    @endif
-
-                                    <div>
-                                        <h4 class="text-sm font-semibold">{{ $featured_service->title }}</h4>
-                                        <p class="max-w-sm text-xs">{{ $featured_service->description }}</p>
-                                    </div>
-                                </div>
-
-                                <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
-                                    <x-tooltip text="Edit" dir="bottom">
-                                        <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-service-modal-{{ $featured_service->id }}')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                                        </x-icon-button>
-                                    </x-tooltip>
-
-                                    @if ($featured_service->status == app\Models\FeaturedService::STATUS_ACTIVE)
-                                        <x-tooltip text="Deactivate" dir="bottom">
-                                            <x-icon-button x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'deactivate-service-modal-{{ $featured_service->id }}')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
-                                            </x-icon-button>
-                                        </x-tooltip>
-                                    @else
-                                        <x-tooltip text="Activate" dir="bottom">
-                                            <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'activate-service-modal-{{ $featured_service->id }}')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
-                                            </x-icon-button>
-                                        </x-tooltip>
-                                    @endif
-                                    
-                                    <x-tooltip text="Delete" dir="bottom">
-                                        <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-service-modal-{{ $featured_service->id }}')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                        </x-icon-button>
-                                    </x-tooltip>
-                                </div>
-
-                                <x-modal.full name="edit-service-modal-{{ $featured_service->id }}" maxWidth="sm">
-                                    <livewire:app.content.home.edit-service wire:key="edit-{{ $featured_service->id }}" :service="$featured_service" />
-                                </x-modal.full>
-
-                                <x-modal.full name="deactivate-service-modal-{{ $featured_service->id }}" maxWidth="sm">
-                                    <livewire:app.content.home.deactivate-service wire:key="deactivate-{{ $featured_service->id }}" :service="$featured_service" />
-                                </x-modal.full>
-
-                                <x-modal.full name="activate-service-modal-{{ $featured_service->id }}" maxWidth="sm">
-                                    <livewire:app.content.home.activate-service wire:key="activate-{{ $featured_service->id }}" :service="$featured_service" />
-                                </x-modal.full>
-
-                                <x-modal.full name="delete-service-modal-{{ $featured_service->id }}" maxWidth="sm">
-                                    <livewire:app.content.home.delete-service wire:key="delete-{{ $featured_service->id }}" :service="$featured_service" />
-                                </x-modal.full>
-                            </div>
-                        @endforeach
-                    </div>
-                    @if ($feature_count <= 3)
-                        <x-note>
-                            <p class="pr-2">Minimum of three (3) services must be featured</p>
-                        </x-note>
-                    @endif
-                </div>
-            </x-form.form-body>
-        </x-form.form-section>
-
-        <x-line-vertical />
         
         <!-- History -->
         <x-form.form-section>
-            <x-form.form-header step="3" title="History" />
+            <x-form.form-header step="2" title="History" />
             <x-form.form-body>
                 <div class="p-3 space-y-3 sm:p-5 sm:space-y-5">
                     <div class="flex items-start justify-between">
@@ -140,27 +48,90 @@
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
                         <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
 
-                        <p class="text-sm line-clamp-5 overflow-clip h-min">{!! $history !!}</p>
+                        <p class="text-sm text-justify indent-16">{!! $history !!}</p>
                     </div>
                 </div>
             </x-form.form-body>
         </x-form.form-section>
+
+        <x-line-vertical />
+
+        <!-- Milestones -->
+        <x-form.form-section>
+            <x-form.form-header step="3" title="Milestones" />
+            <x-form.form-body>
+                <div class="p-3 space-y-3 sm:p-5">
+                    <div class="flex items-start justify-between">
+                        <hgroup>
+                            <h3 class="font-semibold">Milestones</h3>
+                            <p class="text-xs">Manage your milestones</p>
+                        </hgroup>
+
+                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'add-service-modal')">Add Service</x-primary-button>
+                    </div>
+
+                    <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
+                        @foreach ($milestones as $milestone)
+                            <div key="{{ $milestone->id }}"
+                                class="relative p-3 border border-gray-300 rounded-md"
+                                >
+                                <div class="flex flex-col gap-3 md:flex-row">
+                                    @if (!empty($milestone->milestone_image))
+                                        <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" class="w-full md:max-w-[150px]" />
+                                    @else
+                                        <x-img-lg src="https://picsum.photos/id/{{ $milestone->id + 100 }}/200/300?grayscale" class="w-full md:max-w-[150px]" />
+                                    @endif
+
+                                    <div>
+                                        <h4 class="font-semibold">{{ $milestone->title }}</h4>
+                                        <p class="max-w-sm text-sm">{{ date_format(date_create($milestone->date_achieved), 'F j, Y') }}</p>
+                                        <p class="max-w-sm text-xs">{{ $milestone->description }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
+                                    <x-tooltip text="Edit" dir="bottom">
+                                        <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-milestone-modal-{{ $milestone->id }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                                        </x-icon-button>
+                                    </x-tooltip>
+                                    
+                                    <x-tooltip text="Delete" dir="bottom">
+                                        <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-service-modal-{{ $milestone->id }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        </x-icon-button>
+                                    </x-tooltip>
+                                </div>
+
+                                <x-modal.full name="edit-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
+                                    <livewire:app.content.about.edit-milestone wire:key="edit-{{ $milestone->id }}" :milestone="$milestone" />
+                                </x-modal.full>
+
+                                {{-- <x-modal.full name="delete-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
+                                    <livewire:app.content.about.delete-milestone wire:key="delete-{{ $milestone->id }}" :milestone="$milestone" />
+                                </x-modal.full>--}}
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </x-form.form-body>
+        </x-form.form-section>
+
+        <div class="mt-5">
+            <!-- Status Change -->
+            <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
+                <hgroup>
+                    <h3 class="font-semibold text-red-500">Change Page Visibility</h3>
+                    <p class="max-w-sm text-xs">If you need to prevent users from accessing this page, click the button below.</p>
+                </hgroup>
+    
+                <div>
+                    <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'disable-page-modal')">Hide this Page</x-danger-button>
+                </div>
+            </section>
+        </div>
     </section>
     
-    {{-- <div>
-        <!-- Status Change -->
-        <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
-            <hgroup>
-                <h3 class="font-semibold text-red-500">Change Page Visibility</h3>
-                <p class="max-w-sm text-xs">If you need to prevent users from accessing this page, click the button below.</p>
-            </hgroup>
-
-            <div>
-                <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'disable-page-modal')">Hide this Page</x-danger-button>
-            </div>
-        </section>
-    </div> --}}
-
     <!-- Visuals -->
     <section class="hidden space-y-5 xl:block">
         <section class="overflow-y-scroll border border-gray-300 rounded-lg aspect-video">
@@ -178,7 +149,7 @@
                 </header>
                 
                 <div class="relative w-full rounded-lg before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                    style="background-image: url({{ asset('storage/' . $home_hero_image) }});
+                    style="background-image: url({{ asset('storage/' . $about_hero_image) }});
                     background-size: cover;
                     background-position: center;">
                     <section class="relative z-10 w-3/4 py-20 mx-auto space-y-3 text-white rounded-md">
@@ -197,7 +168,7 @@
                         <p class="max-w-xs text-xs">Experience out featured services</p>
                     </hgroup>
                     <div class="grid grid-cols-3 gap-1">
-                        @foreach ($active_featured_services as $key => $featured_service)
+                        {{-- @foreach ($active_featured_services as $key => $featured_service)
                             <div class="space-y-1">
                                 @if (!empty($featured_service->image))
                                     <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" />
@@ -212,7 +183,7 @@
         
                                 <p class="text-xs text-justify line-clamp-3">{{ $featured_service->description }}</p>
                             </div>
-                        @endforeach
+                        @endforeach --}}
                     </div>
                 </section>
                 <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
@@ -293,10 +264,10 @@
     </x-modal.full> 
 
     <x-modal.full name="edit-hero-modal" maxWidth="sm">
-        <livewire:app.content.edit-hero page="home" />
+        <livewire:app.content.edit-hero page="about" />
     </x-modal.full> 
 
-    {{-- <x-modal.full name="disable-page-modal" maxWidth="sm">
+    <x-modal.full name="disable-page-modal" maxWidth="sm">
         <livewire:app.content.disable-page :page="$page" />
-    </x-modal.full>  --}}
+    </x-modal.full> 
 </form>

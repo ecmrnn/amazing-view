@@ -15,6 +15,11 @@ class AboutSeeder extends Seeder
     public function run(): void
     {
         $heading = Content::create([
+            'name' => 'about_hero_image',
+            'type' => 'image',
+        ]);
+
+        $heading = Content::create([
             'name' => 'about_heading',
             'type' => 'text',
             'value' => 'Choose Amazing View <br> Your Number One Resort!'

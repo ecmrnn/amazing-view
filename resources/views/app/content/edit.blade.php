@@ -29,11 +29,13 @@
         {{-- Contents --}}
         @switch($page->id)
             @case(1)
-                {{-- Home --}}
                 <livewire:app.content.home.edit-home />
                 @break
             @case(2)
                 
+                @break
+            @case(3)
+                 <livewire:app.content.about.edit-about />
                 @break
             @default
                 

@@ -37,13 +37,15 @@ class PageController extends Controller
         $subheading = Content::whereName('about_subheading')->pluck('value')->first();
         $history = Content::whereName('about_history')->pluck('long_value')->first();
         $history_image = Content::whereName('about_history_image')->pluck('value')->first();
+        $about_hero_image = Content::whereName('about_hero_image')->pluck('value')->first();
         $milestones = Milestone::all();
 
         return view('about', [
             'heading' => html_entity_decode($heading),
             'subheading' => html_entity_decode($subheading),
             'history' => html_entity_decode($history),
-            'history_image' => html_entity_decode($history_image),
+            'history_image' => $history_image,
+            'about_hero_image' => $about_hero_image,
             'milestones' => $milestones,
         ]);
     }

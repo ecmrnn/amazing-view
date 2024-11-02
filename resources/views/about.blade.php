@@ -1,23 +1,31 @@
 <x-guest-layout>
     {{-- Landing Page --}}
-    <div class="grid h-screen max-w-screen-xl mx-auto place-items-center">
-        <div class="space-y-5 text-center">
-            <x-h1>
-                {!! $heading !!}
-            </x-h1>
+    <x-slot:hero>
+        <div class="grid h-full max-w-screen-xl mx-auto rounded-lg place-items-center">
+            <div class="space-y-5 text-center text-white">
+                <x-h1>
+                    {!! $heading !!}
+                </x-h1>
         
-            <p class='max-w-sm mx-auto'>
-                {!! $subheading !!}
-            </p>
+                <p class='max-w-sm mx-auto'>
+                    {!! $subheading !!}
+                </p>
         
-            <a class="block" href="#story">
-                <x-primary-button>Read our Story</x-primary-button>
-            </a>
+                <a class="block" href="#story">
+                    <x-primary-button>Read our Story</x-primary-button>
+                </a>
+            </div>
+
+            <div class="absolute w-full h-full rounded-lg -z-10 before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
+                style="background-image: url({{ asset('storage/' . $about_hero_image) }});
+                background-size: cover;
+                background-position: center;">
+            </div>
         </div>
-    </div>
+    </x-slot:hero>
 
     {{-- History --}}
-    <x-section id="story">
+    <x-section id="story" class="bg-white">
         <x-slot:heading>Amazing View Mountain Resort</x-slot>
         <x-slot:subheading>A glimpse of our story</x-slot>
         
@@ -28,7 +36,7 @@
                 </p>
             </div>
             
-            <x-img-lg src="{{ $history_image }}" />
+            <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
         </div>
     </x-section>
 
