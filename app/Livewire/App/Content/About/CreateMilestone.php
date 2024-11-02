@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Livewire\App\Content\Home;
+namespace App\Livewire\App\Content\About;
 
-use App\Models\FeaturedService;
+use App\Models\Milestone;
 use App\Traits\DispatchesToast;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use phpDocumentor\Reflection\Types\This;
 use Spatie\LivewireFilepond\WithFilePond;
 
-class AddService extends Component
+class CreateMilestone extends Component
 {
     use WithFilePond, DispatchesToast;
 
     #[Validate] public $image;
     #[Validate] public $title;
     #[Validate] public $description = "Add a brief description of your service";
+    #[Validate] public $date_achieved;
     public $description_length;
 
     public function mount() {
@@ -25,55 +23,57 @@ class AddService extends Component
     }
 
     public function rules() {
-        return FeaturedService::rules();
+        return Milestone::rules();
     }
 
     public function messages() {
-        return FeaturedService::messages();
+        return Milestone::messages();
     }
 
     public function submit() {
-        $validated = $this->validate([
+        $this->validate([
             'image' => 'required|mimes:jpg,jpeg,png|image',
             'title' => $this->rules()['title'],
             'description' => $this->rules()['description'],
+            'date_achieved' => $this->rules()['date_achieved'],
         ]);
 
-        $image_filename = $this->image->store('featured-services', 'public');
+        $image_filename = $this->image->store('milestones', 'public');
 
-        FeaturedService::create([
-            'image' => $image_filename,
+        Milestone::create([
+            'milestone_image' => $image_filename,
             'title' => $this->title,
-            'description' => $this->description
+            'description' => $this->description,
+            'date_achieved' => $this->date_achieved
         ]);
 
-        $this->toast('Success!', 'success', 'Service added successfully!');
-        $this->dispatch('service-added');
+        $this->toast('Success!', 'success', 'Milestone added successfully!');
+        $this->dispatch('milestone-added');
         $this->dispatch('pond-reset');
         
         $this->image = null;
         $this->title = null;
-        $this->description = "Add a brief description of your service";
+        $this->description = "Add a brief description of your milestone";
     }
 
     public function render()
     {
 
         return <<<'HTML'
-            <div x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:service-added.window="show = false; count = 200" class="block p-5 space-y-5 bg-white" wire:submit="submit">
+            <div x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:milestone-added.window="show = false; count = 200" class="block p-5 space-y-5 bg-white" wire:submit="submit">
                 <hgroup>
-                    <h2 class="font-semibold text-center capitalize">Add Service</h2>
-                    <p class="max-w-sm text-sm text-center">Create a new service to feature here</p>
+                    <h2 class="font-semibold text-center capitalize">Add Milestone</h2>
+                    <p class="max-w-sm text-sm text-center">Create a new milestone to feature here</p>
                 </hgroup>
 
                 <x-note>
-                    Kindly fill up the form below to add a service, upload an image related to your service with a maximum size of 1024MB.
+                    Kindly fill up the form below to add a milestone and upload an image related to your milestone.
                 </x-note>
 
                 <div class="space-y-2">
                     <div>
                         <x-form.input-label for="image">Image</x-form.input-label>
-                        <p class="text-xs">Upload an image describing your service here</p>
+                        <p class="text-xs">Upload an image highlighting your milestone here</p>
                     </div>
 
                     <x-filepond::upload
@@ -98,6 +98,16 @@ class AddService extends Component
                         <span><x-form.input-error field="description" /></span>
                         <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
                     </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div>
+                        <x-form.input-label for="date_achieved">Date Achieved</x-form.input-label>
+                        <p class="text-xs">Enter the date you acheived this milestone</p>
+                    </div>
+
+                    <x-form.input-date id="date_achieved" name="date_achieved" wire:model.live="date_achieved" class="w-full" />
+                    <x-form.input-error field="date_achieved" />
                 </div>
                 
                 <div class="flex items-center justify-center gap-1">

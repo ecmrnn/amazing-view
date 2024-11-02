@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 gap-5 space-y-3 bg-white xl:grid-cols-2">
+<div class="grid grid-cols-1 gap-5 bg-white xl:grid-cols-2">
     <section>
         <!-- Heading and Subheading -->
         <x-form.form-section>
@@ -42,7 +42,7 @@
                             <p class="text-xs">Manage your featured services</p>
                         </hgroup>
 
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'add-service-modal')">Add Service</x-primary-button>
+                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-service-modal')">Add Service</x-primary-button>
                     </div>
 
                     <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
@@ -54,11 +54,7 @@
                                 @endif --}}
                                 >
                                 <div class="flex flex-col gap-3 md:flex-row">
-                                    @if (!empty($featured_service->image))
-                                        <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full md:max-w-[150px]" />
-                                    @else
-                                        <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/200/300?grayscale" class="w-full md:max-w-[150px]" />
-                                    @endif
+                                    <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full md:max-w-[150px]" />
 
                                     <div>
                                         <h4 class="text-sm font-semibold">{{ $featured_service->title }}</h4>
@@ -199,11 +195,7 @@
                     <div class="grid grid-cols-3 gap-1">
                         @foreach ($active_featured_services as $key => $featured_service)
                             <div class="space-y-1">
-                                @if (!empty($featured_service->image))
-                                    <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" />
-                                @else
-                                    <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/400/400?grayscale" class="w-full sm:max-w-[150px]" />
-                                @endif
+                                <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" />
                                 
                                 <hgroup>
                                     <span class="text-xxs">{{ sprintf("%02d", $key + 1) }}</span>
@@ -284,8 +276,8 @@
     </section>
 
     <!-- Modals -->
-    <x-modal.full name="add-service-modal" maxWidth="sm">
-        <livewire:app.content.home.add-service />
+    <x-modal.full name="create-service-modal" maxWidth="sm">
+        <livewire:app.content.home.create-service />
     </x-modal.full> 
 
     <x-modal.full name="edit-history-modal" maxWidth="sm">

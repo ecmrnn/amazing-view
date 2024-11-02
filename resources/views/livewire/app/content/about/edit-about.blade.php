@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 gap-5 space-y-3 bg-white xl:grid-cols-2">
+<div class="grid grid-cols-1 gap-5 bg-white xl:grid-cols-2">
     <section>
         <!-- Heading and Subheading -->
         <x-form.form-section>
@@ -67,7 +67,7 @@
                             <p class="text-xs">Manage your milestones</p>
                         </hgroup>
 
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'add-service-modal')">Add Service</x-primary-button>
+                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-milestone-modal')">Add Milestone</x-primary-button>
                     </div>
 
                     <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
@@ -255,8 +255,8 @@
     </section>
 
     <!-- Modals -->
-    <x-modal.full name="add-service-modal" maxWidth="sm">
-        <livewire:app.content.home.add-service />
+    <x-modal.full name="create-milestone-modal" maxWidth="sm">
+        <livewire:app.content.about.create-milestone />
     </x-modal.full> 
 
     <x-modal.full name="edit-history-modal" maxWidth="sm">
