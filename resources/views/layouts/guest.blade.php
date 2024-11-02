@@ -46,6 +46,10 @@
         </div>
         
         <main class="relative z-10 min-h-screen">
+            {{--  --}}
+            <div class="absolute w-5 bg-white left-2 -top-2 inv-rad inv-rad-t-r-2 aspect-square"></div>
+            <div class="absolute w-5 bg-white right-2 -top-2 inv-rad inv-rad-t-l-2 aspect-square"></div>
+            
             {{ $slot }}
         </main>
 

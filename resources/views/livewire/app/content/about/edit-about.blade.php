@@ -164,44 +164,38 @@
                 
                 <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
                     <hgroup>
-                        <p class="text-xs font-bold">Featured Services</p>
-                        <p class="max-w-xs text-xs">Experience out featured services</p>
+                        <p class="text-xs font-bold">Amazing View Mountain Resort</p>
+                        <p class="max-w-xs text-xs">A gilmpse of our story</p>
                     </hgroup>
-                    <div class="grid grid-cols-3 gap-1">
-                        {{-- @foreach ($active_featured_services as $key => $featured_service)
-                            <div class="space-y-1">
-                                @if (!empty($featured_service->image))
-                                    <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" />
-                                @else
-                                    <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/400/400?grayscale" class="w-full sm:max-w-[150px]" />
-                                @endif
-                                
-                                <hgroup>
-                                    <span class="text-xxs">{{ sprintf("%02d", $key + 1) }}</span>
-                                    <h3 class="text-sm font-semibold">{{ $featured_service->title }}</h3>
-                                </hgroup>
-        
-                                <p class="text-xs text-justify line-clamp-3">{{ $featured_service->description }}</p>
-                            </div>
-                        @endforeach --}}
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <p class="text-justify text-xxs indent-8">
+                            {!! $history !!}
+                        </p>
+
+                        <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
                     </div>
                 </section>
+
                 <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
                     <hgroup>
-                        <p class="text-xs font-bold">Amazing View Mountain Resort</p>
-                        <p class="max-w-xs text-xs">Book your dream getaway!</p>
+                        <h3 class="text-xs font-bold">Our Milestones</h3>
+                        <p class="max-w-xs text-xs">Rcent awardsd and achievements of our resort</p>
                     </hgroup>
-                    <div class="grid grid-cols-2 gap-3">
-                        <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
-                        <div class="space-y-3">
-                            <h3 class="text-xs font-bold">Be amaze by our story!</h3>
-                            <p class="text-xs text-justify sm:text-left sm:max-w-sm line-clamp-3">
-                                {!! $history !!}
-                            </p>
-                            <x-primary-button class="text-xs">...</x-primary-button>
-                        </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        @foreach ($milestones as $milestone)
+                            <div class="space-y-2">
+                                <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" />
+
+                                <h4 class="text-sm font-semibold">{{ $milestone->title }}</h4>
+                                <p class="text-xs">Achieved on: {{ date_format(date_create($milestone->date_achieved), 'F j, Y' ) }}</p>
+                                <p class="text-xs text-justify text-xxs">{{ $milestone->description }}</p>
+                            </div>
+                        @endforeach
                     </div>
                 </section>
+
                 <footer class="w-full py-10 mx-auto space-y-3 text-white rounded-md bg-blue-950">
                     <div class="w-3/4 gap-10 mx-auto space-y-10 md:space-y-0 md:grid md:grid-cols-3 lg:grid-cols-4">
                         <div class="pr-5 space-y-5 border-dashed md:col-span-3 lg:col-span-1 lg:border-r border-white/50">

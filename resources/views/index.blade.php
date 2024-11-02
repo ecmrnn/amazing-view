@@ -30,7 +30,7 @@
     </x-slot:hero>
 
     {{-- Featured Services --}}
-    <x-section class="min-h-screen bg-white" id="services">
+    <x-section class="bg-white" id="services">
         <x-slot:heading>Featured Services</x-slot:heading>
         <x-slot:subheading>Experience our featured services!</x-slot:subheading>
 

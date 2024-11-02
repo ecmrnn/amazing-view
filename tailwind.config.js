@@ -29,5 +29,8 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [
+        require('@butterfail/tailwindcss-inverted-radius'),
+        forms,
+    ],
 };
