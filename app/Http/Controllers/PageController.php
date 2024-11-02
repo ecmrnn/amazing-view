@@ -14,6 +14,7 @@ class PageController extends Controller
     public function home() {
 
         $heading = Content::whereName('home_heading')->pluck('value')->first();
+        $home_hero_image = Content::whereName('home_hero_image')->pluck('value')->first();
         $subheading = Content::whereName('home_subheading')->pluck('value')->first();
         $history_image = Content::whereName('about_history_image')->pluck('value')->first();
         $history = Content::whereName('about_history')->pluck('long_value')->first();
@@ -24,6 +25,7 @@ class PageController extends Controller
         return view('index', [
             'heading' => html_entity_decode($heading),
             'subheading' => html_entity_decode($subheading),
+            'home_hero_image' => $home_hero_image,
             'featured_services' => $featured_services,
             'history_image' => $history_image,
             'history' => $history,

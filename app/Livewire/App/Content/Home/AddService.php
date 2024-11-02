@@ -34,7 +34,7 @@ class AddService extends Component
 
     public function submit() {
         $validated = $this->validate([
-            'image' => 'required|mimes:jpg,jpeg,png|image|max:1000',
+            'image' => 'required|mimes:jpg,jpeg,png|image',
             'title' => $this->rules()['title'],
             'description' => $this->rules()['description'],
         ]);
@@ -49,6 +49,7 @@ class AddService extends Component
 
         $this->toast('Success!', 'success', 'Service added successfully!');
         $this->dispatch('service-added');
+        $this->dispatch('pond-reset');
         
         $this->image = null;
         $this->title = null;

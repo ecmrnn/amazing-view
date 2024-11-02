@@ -16,7 +16,7 @@ class FeaturedService extends Model
 
     public static function rules() {
         $rules = [
-            'image' => 'nullable|mimes:jpg,jpeg,png|image|max:1000',
+            'image' => 'nullable|mimes:jpg,jpeg,png|image',
             'title' => 'required',
             'description' => 'required|max:200'
         ];

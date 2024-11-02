@@ -1,4 +1,5 @@
 @props([
+    'id' => null,
     'multiple' => false,
     'required' => false,
     'disabled' => false,
@@ -89,6 +90,11 @@ $pondLocalizations = __('livewire-filepond::filepond');
       pond.on('addfile', (error, file) => {
           if (error) console.log(error);
       });
+
+      {{-- Reset all the uploaded files --}}
+      this.addEventListener('pond-reset', e => {
+            pond.removeFile()
+        })
     }"
 >
     <input type="file" x-ref="input">

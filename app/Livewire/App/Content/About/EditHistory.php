@@ -4,6 +4,7 @@ namespace App\Livewire\App\Content\About;
 
 use App\Models\Content;
 use App\Traits\DispatchesToast;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -43,7 +44,10 @@ class EditHistory extends Component
         ]);
 
         if (!empty($this->history_image)) {
+            // delete saved image para di magdoble doble
             $history_image = Content::whereName('about_history_image')->first();
+            Storage::disk('public')->delete($history_image->value);
+            
             $history_image->value = $this->history_image->store('about', 'public');
             $history_image->save();
         }
@@ -54,12 +58,13 @@ class EditHistory extends Component
 
         $this->toast('History Updated', 'success', 'History updated successfully!');
         $this->dispatch('history-edited');
+        $this->dispatch('pond-reset');
     }
 
     public function render()
     {
         return <<<'HTML'
-        <div x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="block p-5 space-y-5 bg-white" wire:submit="submit">
+            <div x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="block p-5 space-y-5 bg-white" wire:submit="submit">
                 <hgroup>
                     <h2 class="font-semibold text-center capitalize">Edit History</h2>
                     <p class="max-w-sm text-sm text-center">Update history details here</p>

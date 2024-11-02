@@ -4,6 +4,7 @@ namespace App\Livewire\App\Content\Home;
 
 use App\Models\FeaturedService;
 use App\Traits\DispatchesToast;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -41,6 +42,9 @@ class EditService extends Component
         ]);
 
         if (!empty($this->image)) {
+            // delete saved image
+            Storage::disk('public')->delete($this->service->image);
+            
             $this->service->image = $this->image->store('featured-services', 'public');
         }
         
@@ -50,12 +54,16 @@ class EditService extends Component
 
         $this->toast('Success!', 'success', 'Service edited successfully!');
         $this->dispatch('service-edited');
+        $this->dispatch('pond-reset');
     }
 
     public function render()
     {
         return <<<'HTML'
-            <div x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:service-edited.window="show = false; count = 0;" class="block p-5 space-y-5 bg-white" wire:submit="submit">
+            <div x-data="{ count : 200 - @js($description_length), max : 200 }"
+                x-on:service-edited.window="show = false; count = 0;"
+                x-init="let pond = FilePond.create()"
+                class="block p-5 space-y-5 bg-white" wire:submit="submit">
                 <hgroup>
                     <h2 class="font-semibold text-center capitalize">Edit Service</h2>
                     <p class="max-w-sm text-sm text-center">Update service details here</p>

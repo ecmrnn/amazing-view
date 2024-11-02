@@ -20,13 +20,16 @@ class EditHome extends Component
         'service-hidden' => '$refresh',
         'service-deleted' => '$refresh',
         'history-edited' => '$refresh',
+        'hero-edited' => '$refresh',
     ];
 
     #[Validate] public $heading;
     #[Validate] public $subheading;
-    #[Validate] public $history;
-    #[Validate] public $history_image;
-    #[Validate] public $featured_services;
+    public $history;
+    public $featured_services;
+    public $active_featured_services;
+    public $history_image;
+    public $home_hero_image;
     public $feature_count;
 
     public function rules() {
@@ -34,11 +37,6 @@ class EditHome extends Component
             'heading' => 'required',
             'subheading' => 'required',
         ];
-    }
-
-    public function mount() {
-        $this->heading = html_entity_decode(Content::whereName('home_heading')->pluck('value')->first());
-        $this->subheading = html_entity_decode(Content::whereName('home_subheading')->pluck('value')->first());
     }
 
     public function submit() {
@@ -61,10 +59,14 @@ class EditHome extends Component
 
     public function render()
     {
-        $this->featured_services = FeaturedService::whereStatus(FeaturedService::STATUS_ACTIVE)->get();
-        $this->feature_count = $this->featured_services->count();
+        $this->featured_services = FeaturedService::all();
+        $this->active_featured_services = FeaturedService::whereStatus(FeaturedService::STATUS_ACTIVE)->get();
+        $this->feature_count = FeaturedService::whereStatus(FeaturedService::STATUS_ACTIVE)->count();
+        $this->home_hero_image = Content::whereName('home_hero_image')->pluck('value')->first();
         $this->history_image = Content::whereName('about_history_image')->pluck('value')->first();
         $this->history = Content::whereName('about_history')->pluck('long_value')->first();
+        $this->heading = html_entity_decode(Content::whereName('home_heading')->pluck('value')->first());
+        $this->subheading = html_entity_decode(Content::whereName('home_subheading')->pluck('value')->first());
         
         $page = Page::whereTitle('Home')->first();
         

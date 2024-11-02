@@ -17,6 +17,11 @@ class HomeSeeder extends Seeder
     public function run(): void
     {
         $heading = Content::create([
+            'name' => 'home_hero_image',
+            'type' => 'image',
+        ]);
+
+        $heading = Content::create([
             'name' => 'home_heading',
             'type' => 'text',
             'value' => 'Amazing View <br> Mountain Resort'
