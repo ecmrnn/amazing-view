@@ -70,7 +70,7 @@
                         <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-milestone-modal')">Add Milestone</x-primary-button>
                     </div>
 
-                    <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
+                    <div class="space-y-1">
                         @foreach ($milestones as $milestone)
                             <div key="{{ $milestone->id }}"
                                 class="relative p-3 border border-gray-300 rounded-md"
@@ -97,7 +97,7 @@
                                     </x-tooltip>
                                     
                                     <x-tooltip text="Delete" dir="bottom">
-                                        <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-milestone-modal-{{ $milestone->id }}')">
+                                        <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-milestone-modal-{{ $milestone->id }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                         </x-icon-button>
                                     </x-tooltip>

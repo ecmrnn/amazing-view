@@ -2,7 +2,7 @@
     <div class="max-w-screen-xl mx-auto space-y-10">
         <hgroup>
             <h2 class="text-3xl font-semibold">{{ $heading }}</h2>
-            <p class="flex items-center gap-3"><x-line class="bg-zinc-800"></x-line>{{ $subheading  }}</p>
+            <p class="flex items-center gap-3"><x-line></x-line>{{ $subheading  }}</p>
         </hgroup>
         {{ $slot }}
     </div>

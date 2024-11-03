@@ -53,12 +53,14 @@ class PageController extends Controller
     public function rooms() {
         $heading = Content::whereName('rooms_heading')->pluck('value')->first();
         $subheading = Content::whereName('rooms_subheading')->pluck('value')->first();
+        $rooms_hero_image = Content::whereName('rooms_hero_image')->pluck('value')->first();
         $available_rooms = RoomType::all();
 
         return view('rooms', [
             'heading' => html_entity_decode($heading),
             'subheading' => html_entity_decode($subheading),
-            'available_rooms' => $available_rooms
+            'available_rooms' => $available_rooms,
+            'rooms_hero_image' => $rooms_hero_image
         ]);
     }
 

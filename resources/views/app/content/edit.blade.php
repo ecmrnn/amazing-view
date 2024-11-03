@@ -32,7 +32,7 @@
                 <livewire:app.content.home.edit-home />
                 @break
             @case(2)
-                
+                <livewire:app.content.rooms.edit-rooms />
                 @break
             @case(3)
                  <livewire:app.content.about.edit-about />

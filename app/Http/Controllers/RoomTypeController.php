@@ -12,10 +12,10 @@ class RoomTypeController extends Controller
      */
     public function index()
     {
-        $rooms = RoomType::all();
+        $room_types = RoomType::withCount('rooms')->get();
 
         return view('app.roomType.index', [
-            'rooms' => $rooms
+            'room_types' => $room_types
         ]);
     }
 

@@ -4,7 +4,6 @@ namespace App\Livewire\App\Content\Contact;
 
 use App\Models\ContactDetails;
 use App\Models\Content;
-use App\Models\Milestone;
 use App\Models\Page;
 use App\Traits\DispatchesToast;
 use Livewire\Component;

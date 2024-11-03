@@ -14,6 +14,11 @@ class RoomSeeder extends Seeder
      */
     public function run(): void
     {
+        $hero_image = Content::create([
+            'name' => 'rooms_hero_image',
+            'type' => 'image',
+        ]);
+
         $heading = Content::create([
             'name' => 'rooms_heading',
             'type' => 'text',
@@ -28,6 +33,7 @@ class RoomSeeder extends Seeder
 
         $page = Page::whereTitle('Rooms')->first();
         $page->contents()->attach([
+            $hero_image->id,
             $heading->id,
             $subheading->id,
         ]);

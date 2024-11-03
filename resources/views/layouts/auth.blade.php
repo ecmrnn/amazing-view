@@ -27,7 +27,7 @@
             <!-- Image -->
             <div
                 class="relative hidden md:block lg:col-span-2"
-                 style="background-image: url(https://placehold.co/1000);
+                 style="background-image: url({{ asset('storage/global/login.jpg') }});
                         background-size: cover;
                         background-position: center;">
                 <x-overlay />

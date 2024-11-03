@@ -57,11 +57,11 @@ class EditContactDetails extends Component
 
             <div class="space-y-2">
                 <div>
-                    <x-form.input-label for="contact">Contact Details</x-form.input-label>
+                    <x-form.input-label for="edit-contact-{{ $contact_detail->id }}">Contact Details</x-form.input-label>
                     <p class="text-xs">Enter the phone number of your new contact</p>
                 </div>
                 
-                <x-form.input-text id="contact" maxlength="11" name="contact" label="Phone Number" wire:model.live="contact" />
+                <x-form.input-text id="edit-contact-{{ $contact_detail->id }}" maxlength="11" name="contact" label="Phone Number" wire:model.live="contact" />
                 <x-form.input-error field="contact" />
             </div>
             

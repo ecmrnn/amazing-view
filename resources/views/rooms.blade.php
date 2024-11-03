@@ -1,23 +1,31 @@
 <x-guest-layout>
     {{-- Landing Page --}}
-    <div class="grid h-screen max-w-screen-xl mx-auto place-items-center">
-        <div class="space-y-5 text-center">
-            <x-h1>
-                {!! $heading !!}
-            </x-h1>
+    <x-slot:hero>
+        <div class="grid h-full max-w-screen-xl mx-auto rounded-lg place-items-center">
+            <div class="space-y-5 text-center text-white">
+                <x-h1>
+                    {!! $heading !!}
+                </x-h1>
         
-            <p class="max-w-sm mx-auto">
-                {!! $subheading !!}
-            </p>
+                <p class='max-w-sm mx-auto'>
+                    {!! $subheading !!}
+                </p>
         
-            <a class="block" href="#rooms">
-                <x-primary-button>Explore More</x-primary-button>
-            </a>
+                <a class="block" href="#rooms">
+                    <x-primary-button>Explore our Rooms</x-primary-button>
+                </a>
+            </div>
+
+            <div class="absolute w-full h-full rounded-lg -z-10 before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
+                style="background-image: url({{ asset('storage/' . $rooms_hero_image) }});
+                background-size: cover;
+                background-position: center;">
+            </div>
         </div>
-    </div>
+    </x-slot:hero>
 
     {{-- Rooms List --}}
-    <x-section id="rooms">
+    <x-section id="rooms" class="bg-white">
         <x-slot:heading>Amazing Rooms</x-slot:heading>
         <x-slot:subheading>Experience elegant comfort through our rooms!</x-slot:subheading>
 
@@ -36,10 +44,10 @@
                     
                     <hgroup>
                         <h3 class="text-2xl font-semibold">{{ $room->name }}</h3>
-                        <span class="text-sm"><x-currency /> {{ $room->max_rate }} / night</span>
+                        <span class="font-semibold"><x-currency /> {{ number_format($room->max_rate, 2) }} / night</span>
                     </hgroup>
                     
-                    <p class="">{{ $room->description }}</p>
+                    <p class="text-justify indent-8">{{ $room->description }}</p>
                     
                     <a class="block" href="#" wire:navigate>
                         <x-primary-button>More Details</x-primary-button>
