@@ -16,7 +16,7 @@ class HomeSeeder extends Seeder
      */
     public function run(): void
     {
-        $heading = Content::create([
+        $hero_image = Content::create([
             'name' => 'home_hero_image',
             'type' => 'image',
         ]);
@@ -37,6 +37,7 @@ class HomeSeeder extends Seeder
 
         $page = Page::whereTitle('Home')->first();
         $page->contents()->attach([
+            $hero_image->id,
             $heading->id,
             $subheading->id
         ]);

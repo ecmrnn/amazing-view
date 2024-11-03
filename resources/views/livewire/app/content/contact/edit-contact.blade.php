@@ -16,7 +16,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                        <x-img-lg src="{{ asset('storage/' . $about_hero_image) }}" />
+                        <x-img-lg src="{{ asset('storage/' . $contact_hero_image) }}" />
 
                         <div class="grid p-5 border border-gray-300 rounded-md place-items-center">
                             <div>
@@ -30,92 +30,54 @@
         </x-form.form-section>
 
         <x-line-vertical />
-        
-        <!-- History -->
+
+        <!-- Contact Details -->
         <x-form.form-section>
-            <x-form.form-header step="2" title="History" />
+            <x-form.form-header step="2" title="Contact Details" />
+
             <x-form.form-body>
                 <div class="p-3 space-y-3 sm:p-5 sm:space-y-5">
                     <div class="flex items-start justify-between">
                         <hgroup>
-                            <h3 class="font-semibold">Brief History</h3>
-                            <p class="text-xs">Update your history here</p>
+                            <h3 class="font-semibold">Contact Details</h3>
+                            <p class="text-xs">Update your contact details here</p>
                         </hgroup>
 
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'edit-history-modal')">Edit History</x-primary-button>
+                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-contact-modal')">Add Contact</x-primary-button>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                        <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
+                    <div class="space-y-1">
+                        @foreach ($contact_details as $contact_detail)
+                            <div class="flex items-center justify-between px-3 py-2 border border-gray-300 border-dashed rounded-lg hover:border-solid">
+                                <p class="text-sm">{{ $contact_detail->value }}</p>
 
-                        <p class="text-sm text-justify indent-16">{!! $history !!}</p>
-                    </div>
-                </div>
-            </x-form.form-body>
-        </x-form.form-section>
-
-        <x-line-vertical />
-
-        <!-- Milestones -->
-        <x-form.form-section>
-            <x-form.form-header step="3" title="Milestones" />
-            <x-form.form-body>
-                <div class="p-3 space-y-3 sm:p-5">
-                    <div class="flex items-start justify-between">
-                        <hgroup>
-                            <h3 class="font-semibold">Milestones</h3>
-                            <p class="text-xs">Manage your milestones</p>
-                        </hgroup>
-
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-milestone-modal')">Add Milestone</x-primary-button>
-                    </div>
-
-                    <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
-                        @foreach ($milestones as $milestone)
-                            <div key="{{ $milestone->id }}"
-                                class="relative p-3 border border-gray-300 rounded-md"
-                                >
-                                <div class="flex flex-col gap-3 md:flex-row">
-                                    @if (!empty($milestone->milestone_image))
-                                        <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" class="w-full md:max-w-[150px]" />
-                                    @else
-                                        <x-img-lg src="https://picsum.photos/id/{{ $milestone->id + 100 }}/200/300?grayscale" class="w-full md:max-w-[150px]" />
-                                    @endif
-
-                                    <div>
-                                        <h4 class="font-semibold">{{ $milestone->title }}</h4>
-                                        <p class="max-w-sm text-sm">Achieved on: {{ date_format(date_create($milestone->date_achieved), 'F j, Y') }}</p>
-                                        <p class="max-w-sm text-xs">{{ $milestone->description }}</p>
-                                    </div>
-                                </div>
-
-                                <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
+                                <div class="flex gap-1">
                                     <x-tooltip text="Edit" dir="bottom">
-                                        <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-milestone-modal-{{ $milestone->id }}')">
+                                        <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-contact-modal-{{ $contact_detail->id }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
                                         </x-icon-button>
                                     </x-tooltip>
-                                    
                                     <x-tooltip text="Delete" dir="bottom">
-                                        <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-milestone-modal-{{ $milestone->id }}')">
+                                        <x-icon-button  x-bind:disabled="feature_count <= 3" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-contact-modal-{{ $contact_detail->id }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                         </x-icon-button>
                                     </x-tooltip>
                                 </div>
 
-                                <x-modal.full name="edit-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
-                                    <livewire:app.content.about.edit-milestone wire:key="edit-{{ $milestone->id }}" :milestone="$milestone" />
-                                </x-modal.full>
-
-                                <x-modal.full name="delete-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
-                                    <livewire:app.content.about.delete-milestone wire:key="delete-{{ $milestone->id }}" :milestone="$milestone" />
-                                </x-modal.full>
+                                <x-modal.full name="edit-contact-modal-{{ $contact_detail->id }}" maxWidth="sm">
+                                    <livewire:app.content.contact.edit-contact-details wire:key="edit-{{ $contact_detail->id }}" :contact_detail="$contact_detail" />
+                                </x-modal.full>                             
+                                <x-modal.full  name="delete-contact-modal-{{ $contact_detail->id }}" maxWidth="sm">
+                                    <livewire:app.content.contact.delete-contact wire:key="delete-{{ $contact_detail->id }}" :contact_detail="$contact_detail" />
+                                </x-modal.full>                             
                             </div>
                         @endforeach
                     </div>
                 </div>
             </x-form.form-body>
         </x-form.form-section>
+
+        <x-line-vertical />
 
         <div class="mt-5">
             <!-- Status Change -->
@@ -149,55 +111,43 @@
                 </header>
                 
                 <div class="relative w-full rounded-lg before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                    style="background-image: url({{ asset('storage/' . $about_hero_image) }});
+                    style="background-image: url({{ asset('storage/' . $contact_hero_image) }});
                     background-size: cover;
                     background-position: center;">
-                    <section class="relative z-10 w-3/4 py-20 mx-auto space-y-3 text-white rounded-md">
-                        <p class="mx-auto font-bold text-center text-md">{!! $heading !!}</p>
-                        <p class="max-w-xs mx-auto text-xs text-center">{!! $subheading !!}</p>
-                        <div class="flex justify-center gap-1">
-                            <x-secondary-button type="button" class="text-xs">...</x-secondary-button>
-                            <x-primary-button type="button" class="text-xs">...</x-primary-button>
+                    <section class="relative z-10 grid w-3/4 py-20 mx-auto text-white rounded-md place-items-center">
+                        <div class="flex justify-between w-full px-2">
+                            <div class="space-y-3">
+                                <p class="font-bold text-md">{!! $heading !!}</p>
+                                <p class="max-w-xs text-xs">{!! $subheading !!}</p>
+                                
+                                <ul class="mx-auto space-y-1 w-max md:mx-0">
+                                    @foreach ($contact_details as $contact)
+                                        <li class="flex items-center gap-3 p-2 text-xs tracking-wider rounded-md bg-white/25 backdrop-blur-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                                            {{ $contact->value }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+
+                            <div class="w-32 p-3 space-y-3 bg-white rounded-md text-zinc-800">
+                                <h2 class="font-bold text-md">Send Email</h2>
+
+                                <div class="space-y-1">
+                                    <div class="p-2 rounded-md bg-slate-100"></div>
+                                    <div class="p-2 rounded-md bg-slate-100"></div>
+                                </div>
+
+                                <p class="text-xs font-semibold">Message</p>
+                                <div class="p-2 rounded-md bg-slate-100"></div>
+                                <div class="flex justify-end">
+                                    <x-primary-button type="button" class="ml-auto text-xs">...</x-primary-button>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </div>
                 
-                <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
-                    <hgroup>
-                        <p class="text-xs font-bold">Amazing View Mountain Resort</p>
-                        <p class="max-w-xs text-xs">A gilmpse of our story</p>
-                    </hgroup>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <p class="text-justify text-xxs indent-8">
-                            {!! $history !!}
-                        </p>
-
-                        <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
-                    </div>
-                </section>
-
-                <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
-                    <hgroup>
-                        <h3 class="text-xs font-bold">Our Milestones</h3>
-                        <p class="max-w-xs text-xs">Rcent awardsd and achievements of our resort</p>
-                    </hgroup>
-
-                    <div class="grid grid-cols-3 gap-3">
-                        @foreach ($milestones as $milestone)
-                            <div class="space-y-2">
-                                <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" />
-
-                                <h4 class="text-sm font-semibold line-clamp-1">{{ $milestone->title }}</h4>
-                                <div>
-                                    <p class="text-xs">Achieved on: {{ date_format(date_create($milestone->date_achieved), 'F j, Y' ) }}</p>
-                                    <p class="text-xs text-justify line-clamp-2">{{ $milestone->description }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </section>
-
                 <footer class="w-full py-10 mx-auto space-y-3 text-white rounded-md bg-blue-950">
                     <div class="w-3/4 gap-10 mx-auto space-y-10 md:space-y-0 md:grid md:grid-cols-3 lg:grid-cols-4">
                         <div class="pr-5 space-y-5 border-dashed md:col-span-3 lg:col-span-1 lg:border-r border-white/50">
@@ -251,16 +201,8 @@
     </section>
 
     <!-- Modals -->
-    <x-modal.full name="create-milestone-modal" maxWidth="sm">
-        <livewire:app.content.about.create-milestone />
-    </x-modal.full> 
-
-    <x-modal.full name="edit-history-modal" maxWidth="sm">
-        <livewire:app.content.about.edit-history />
-    </x-modal.full> 
-
-    <x-modal.full name="edit-hero-modal" maxWidth="sm">
-        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
+    <x-modal.full name="create-contact-modal" maxWidth="sm">
+        <livewire:app.content.contact.create-contact />
     </x-modal.full> 
 
     <x-modal.full name="disable-page-modal" maxWidth="sm">

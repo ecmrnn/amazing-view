@@ -45,10 +45,11 @@
             </section>
         </div>
         
-        <main class="relative z-10 min-h-screen">
+        <main class="relative">
             {{--  --}}
-            <div class="absolute w-5 bg-white left-2 -top-2 inv-rad inv-rad-t-r-2 aspect-square"></div>
-            <div class="absolute w-5 bg-white right-2 -top-2 inv-rad inv-rad-t-l-2 aspect-square"></div>
+            <div class="absolute w-5 bg-white left-2 -top-7 inv-rad inv-rad-t-r-2 aspect-square"></div>
+            <div class="absolute w-5 bg-white right-2 -top-7 inv-rad inv-rad-t-l-2 aspect-square"></div>
+            <div class="absolute left-0 w-full h-5 bg-white -top-5"></div>
             
             {{ $slot }}
         </main>

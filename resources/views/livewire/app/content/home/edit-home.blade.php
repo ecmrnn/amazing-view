@@ -48,10 +48,7 @@
                     <div x-data="{ feature_count: @entangle('feature_count') }" class="space-y-1">
                         @foreach ($featured_services as $featured_service)
                             <div key="{{ $featured_service->id }}"
-                                {{-- class="" --}}
                                 @class(['relative p-3 border border-gray-300 rounded-md', 'bg-slate-100' => $featured_service->status == app\Models\FeaturedService::STATUS_INACTIVE])
-                                {{-- @if ()
-                                @endif --}}
                                 >
                                 <div class="flex flex-col gap-3 md:flex-row">
                                     <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full md:max-w-[150px]" />
@@ -142,20 +139,6 @@
             </x-form.form-body>
         </x-form.form-section>
     </section>
-    
-    {{-- <div>
-        <!-- Status Change -->
-        <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
-            <hgroup>
-                <h3 class="font-semibold text-red-500">Change Page Visibility</h3>
-                <p class="max-w-sm text-xs">If you need to prevent users from accessing this page, click the button below.</p>
-            </hgroup>
-
-            <div>
-                <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'disable-page-modal')">Hide this Page</x-danger-button>
-            </div>
-        </section>
-    </div> --}}
 
     <!-- Visuals -->
     <section class="hidden space-y-5 xl:block">
@@ -271,7 +254,7 @@
         </section>
 
         <x-note>
-            <p class="max-w-sm">Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview below. <strong>Proceed with caution</strong>!</p>
+            <p class="max-w-sm">Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview above. <strong>Proceed with caution</strong>!</p>
         </x-note>
     </section>
 
@@ -285,10 +268,6 @@
     </x-modal.full> 
 
     <x-modal.full name="edit-hero-modal" maxWidth="sm">
-        <livewire:app.content.edit-hero page="home" />
+        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
     </x-modal.full> 
-
-    {{-- <x-modal.full name="disable-page-modal" maxWidth="sm">
-        <livewire:app.content.disable-page :page="$page" />
-    </x-modal.full>  --}}
 </form>

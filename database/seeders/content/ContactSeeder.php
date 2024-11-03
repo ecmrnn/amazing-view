@@ -15,6 +15,11 @@ class ContactSeeder extends Seeder
      */
     public function run(): void
     {
+        $hero_image = Content::create([
+            'name' => 'contact_hero_image',
+            'type' => 'image',
+        ]);
+
         $heading = Content::create([
             'name' => 'contact_heading',
             'type' => 'text',
@@ -47,6 +52,7 @@ class ContactSeeder extends Seeder
 
         $page = Page::whereTitle('Contact')->first();
         $page->contents()->attach([
+            $hero_image->id,
             $heading->id,
             $subheading->id,
         ]);

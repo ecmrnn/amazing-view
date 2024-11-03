@@ -14,7 +14,7 @@ class AboutSeeder extends Seeder
      */
     public function run(): void
     {
-        $heading = Content::create([
+        $hero_image = Content::create([
             'name' => 'about_hero_image',
             'type' => 'image',
         ]);
@@ -45,6 +45,7 @@ class AboutSeeder extends Seeder
 
         $page = Page::whereTitle('About')->first();
         $page->contents()->attach([
+            $hero_image->id,
             $heading->id,
             $subheading->id,
             $history->id,

@@ -63,6 +63,7 @@ class PageController extends Controller
     }
 
     public function contact() {
+        $contact_hero_image = Content::whereName('contact_hero_image')->pluck('value')->first();
         $heading = Content::whereName('contact_heading')->pluck('value')->first();
         $subheading = Content::whereName('contact_subheading')->pluck('value')->first();
         $contact_details = ContactDetails::pluck('value');
@@ -71,6 +72,7 @@ class PageController extends Controller
             'heading' => html_entity_decode($heading),
             'subheading' => html_entity_decode($subheading),
             'contact_details' => $contact_details,
+            'contact_hero_image' => $contact_hero_image,
         ]);
     }
 }

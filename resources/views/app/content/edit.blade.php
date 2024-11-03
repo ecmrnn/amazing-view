@@ -37,6 +37,9 @@
             @case(3)
                  <livewire:app.content.about.edit-about />
                 @break
+            @case(4)
+                 <livewire:app.content.contact.edit-contact />
+                @break
             @default
                 
         @endswitch

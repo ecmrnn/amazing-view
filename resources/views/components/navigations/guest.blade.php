@@ -56,7 +56,7 @@
                     x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700" 
                     x-transition:leave-start="translate-x-0" 
                     x-transition:leave-end="translate-x-full" 
-                     class="fixed top-0 right-0 w-3/4 h-screen bg-white border-l md:hidden">
+                     class="fixed top-0 right-0 z-50 w-3/4 h-screen bg-white border-l md:hidden">
                     <div class="flex items-center justify-between p-5">
                         <div>
                             <p class="font-semibold">Main Menu</p>
