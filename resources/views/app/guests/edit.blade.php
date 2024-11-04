@@ -29,7 +29,7 @@
             
             <div>
                 <h2 class="text-lg font-semibold">Edit Reservation</h2>
-                <p class="max-w-sm text-xs">Update reservation details here.</p>
+                <p class="max-w-sm text-xs">Update reservation details here</p>
             </div>
         </div>
 

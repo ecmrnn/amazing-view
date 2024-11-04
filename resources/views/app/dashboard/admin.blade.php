@@ -67,7 +67,7 @@
         <div class="p-3 sm:p-5 h-[320px] bg-white rounded-lg flex flex-col gap-3 sm:gap-5">
             <div>
                 <h2 class="text-lg font-semibold">Monthly Reservations</h2>
-                <p class="max-w-sm text-xs">Monitor your reservation rate using the line graph below.</p>
+                <p class="max-w-sm text-xs">Monitor your reservation rate using the line graph below</p>
             </div>
 
             {{-- Area chart goes here... --}}
@@ -82,7 +82,7 @@
         <div class="p-3 sm:p-5 h-[320px] bg-white rounded-lg flex flex-col gap-3 sm:gap-5">
             <div>
                 <h2 class="text-lg font-semibold">Monthly Sales</h2>
-                <p class="max-w-sm text-xs">Monitor your monthly sales using the line graph below.</p>
+                <p class="max-w-sm text-xs">Monitor your monthly sales using the line graph below</p>
             </div>
 
             {{-- Pie chart goes here... --}}
@@ -99,7 +99,7 @@
     <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
         <div>
             <h2 class="text-lg font-semibold">Pending Reservations</h2>
-            <p class="max-w-sm text-xs">The table below are the lists of your pending reservations.</p>
+            <p class="max-w-sm text-xs">The table below are the lists of your pending reservations</p>
         </div>
 
         {{-- Reservation Table --}}

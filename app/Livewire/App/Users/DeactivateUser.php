@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\App\User;
+namespace App\Livewire\App\Users;
 
 use App\Models\User;
 use App\Traits\DispatchesToast;

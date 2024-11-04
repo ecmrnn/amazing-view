@@ -34,7 +34,7 @@
         @forelse ($room_types as $room_type)
             <div key="{{ $room_type->id }}" x-data="{ rooms_count: @js($room_type->rooms_count) }" class="p-5 space-y-5 bg-white border border-gray-300 rounded-lg group">
                 <div class="relative">
-                    <x-img-lg src="{{ $room_type->image_1_path }}" />
+                    <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" />
 
                     <div class="absolute hidden gap-1 top-3 right-3 group-hover:flex">
                         @can('update room type')

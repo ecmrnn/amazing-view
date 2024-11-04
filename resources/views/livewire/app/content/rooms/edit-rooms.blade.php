@@ -49,7 +49,7 @@
                     <div class="space-y-1">
                         @foreach ($room_types as $room_type)
                             <div class="flex gap-3 p-5 border border-gray-300 border-dashed rounded-md">
-                                <x-img-lg src="https://picsum.photos/400" class="w-full md:max-w-[150px]" /> {{-- Fix --}}
+                                <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" class="w-full md:max-w-[150px]" /> {{-- Fix --}}
 
                                 <div>
                                     <h4 class="text-sm font-semibold">{{ $room_type->name }}</h4>
@@ -115,24 +115,24 @@
                     </hgroup>
 
                     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        @foreach ($room_types as $room)
+                        @foreach ($room_types as $room_type)
                             <div class="space-y-2">
                                 <div>
-                                    <x-img-lg src="{{ $room->image_1_path }}" />
+                                    <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" />
                                     
                                     <div class="grid grid-cols-3 gap-1 mt-1">
-                                        <x-img-lg src="{{ $room->image_2_path }}" />
-                                        <x-img-lg src="{{ $room->image_3_path }}" />
-                                        <x-img-lg src="{{ $room->image_4_path }}" />
+                                        <x-img-lg src="{{ asset('storage/' . $room_type->image_2_path) }}" />
+                                        <x-img-lg src="{{ asset('storage/' . $room_type->image_3_path) }}" />
+                                        <x-img-lg src="{{ asset('storage/' . $room_type->image_4_path) }}" />
                                     </div>
                                 </div>
                                 
                                 <hgroup>
-                                    <h3 class="text-sm font-semibold leading-none">{{ $room->name }}</h3>
-                                    <span class="text-sm font-semibold leading-none"><x-currency /> {{ number_format($room->max_rate, 2) }} / night</span>
+                                    <h3 class="text-sm font-semibold leading-none">{{ $room_type->name }}</h3>
+                                    <span class="text-sm font-semibold leading-none"><x-currency /> {{ number_format($room_type->max_rate, 2) }} / night</span>
                                 </hgroup>
                                 
-                                <p class="text-xs text-justify indent-8 line-clamp-3">{{ $room->description }}</p>
+                                <p class="text-xs text-justify indent-8 line-clamp-3">{{ $room_type->description }}</p>
                                 
                                 <x-primary-button type="button" class="text-xs">...</x-primary-button>
                             </div>
