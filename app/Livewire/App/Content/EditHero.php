@@ -104,7 +104,7 @@ class EditHero extends Component
                 
                 <div class="flex items-center justify-center gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="submit">Edit Service</x-primary-button>
+                    <x-primary-button type="button" wire:click="submit">Edit Hero</x-primary-button>
                 </div>
             </div>
         HTML;

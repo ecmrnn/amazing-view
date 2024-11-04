@@ -48,7 +48,7 @@
 
                     <div class="space-y-1">
                         @foreach ($contact_details as $contact_detail)
-                            <div class="flex items-center justify-between px-3 py-2 border border-gray-300 border-dashed rounded-lg hover:border-solid">
+                            <div class="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg hover:border-solid">
                                 <p class="text-sm">{{ $contact_detail->value }}</p>
 
                                 <div class="flex gap-1">

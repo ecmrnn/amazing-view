@@ -43,18 +43,41 @@
                             <p class="text-xs">Update your room types here</p>
                         </hgroup>
 
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-contact-modal')">Add Room</x-primary-button>
+                        <a href="{{ route('app.rooms.create') }}" wire:navigate.hover>
+                            <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-contact-modal')">Add Room</x-primary-button>
+                        </a>
                     </div>
 
                     <div class="space-y-1">
                         @foreach ($room_types as $room_type)
-                            <div class="flex gap-3 p-5 border border-gray-300 border-dashed rounded-md">
+                            <div x-data="{ room_count: @js($room_type->rooms->count())}" class="relative flex gap-3 p-5 border border-gray-300 rounded-md">
                                 <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" class="w-full md:max-w-[150px]" /> {{-- Fix --}}
 
                                 <div>
                                     <h4 class="text-sm font-semibold">{{ $room_type->name }}</h4>
                                     <p class="max-w-sm text-xs">{{ $room_type->description }}</p>
                                 </div>
+
+                                <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
+                                    <x-tooltip text="Edit" dir="bottom">
+                                        <a href="{{ route('app.rooms.edit', ['room' => $room_type->id]) }}" wire.navigate.hover>
+                                            <x-icon-button x-ref="content" type="button">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                                            </x-icon-button>
+                                        </a>
+                                    </x-tooltip>
+                                    
+                                    <x-tooltip text="Delete" dir="bottom">
+                                        <x-icon-button x-bind:disabled="room_count > 0" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-room-type-{{ $room_type->id }}-modal')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        </x-icon-button>
+                                    </x-tooltip>
+                                </div>
+
+                                {{-- Delete Modal --}}
+                                <x-modal.full name='delete-room-type-{{ $room_type->id }}-modal' maxWidth='sm'>
+                                    <livewire:app.room-type.delete-room-type :room_type="$room_type" />
+                                </x-modal.full>
                             </div>
                         @endforeach
                     </div>

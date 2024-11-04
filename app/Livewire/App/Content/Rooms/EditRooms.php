@@ -19,6 +19,7 @@ class EditRooms extends Component
         'rooms-edited' => '$refresh',
         'rooms-hidden' => '$refresh',
         'rooms-deleted' => '$refresh',
+        'room-type-deleted' => '$refresh',
         'hero-edited' => '$refresh',
     ];
 

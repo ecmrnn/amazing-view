@@ -37,7 +37,7 @@ class EmailForm extends Component
     public function render()
     {
         return <<<'HTML'
-            <form x-data="{ count : 200, max : 200 }" x-on:client-email-sent.window="count = 200" class="p-5 mx-auto space-y-3 rounded-lg shadow-[0_2px_0_0_rgba(23,37,84,1)] bg-white/90 backdrop-blur-md text-zinc-800 md:ml-auto md:mx-0" wire:submit="sendEmail">
+            <form x-data="{ count : 200, max : 200 }" x-on:client-email-sent.window="count = 200" class="p-5 mx-auto space-y-3 rounded-lg shadow-[0_2px_0_0_rgba(23,37,84,1)] bg-gradient-to-b from-white to-white/90  backdrop-blur-md text-zinc-800 md:ml-auto md:mx-0" wire:submit="sendEmail">
                 <h2 class="text-lg font-semibold">Send us an email here!</h2>
 
                 <div class="space-y-3">

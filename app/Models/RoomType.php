@@ -17,7 +17,7 @@ class RoomType extends Model
             'name' => 'required',
             'description' => 'required',
             'min_rate' => 'required|numeric',
-            'max_rate' => 'required|numeric',
+            'max_rate' => 'required|numeric|gt:min_rate',
             'image_1_path' => 'nullable|image|mimes:jpg,jpeg,png',
             'image_2_path' => 'nullable|image|mimes:jpg,jpeg,png',
             'image_3_path' => 'nullable|image|mimes:jpg,jpeg,png',
@@ -39,6 +39,7 @@ class RoomType extends Model
             'description.required' => 'Enter a description',
             'min_rate.required' => 'Enter a minimum room rate',
             'max_rate.required' => 'Enter a maximum room rate',
+            'max_rate.gt' => 'Maximum rate must be greater than the minimum rate',
 
             'image_1_path.required' => 'Upload a thumbnail',
             'image_1_path.mimes' => 'Image must be JPG, JPEG, or PNG',
