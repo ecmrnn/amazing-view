@@ -40,6 +40,9 @@
             @case(4)
                  <livewire:app.content.contact.edit-contact />
                 @break
+            @case(5)
+                 <livewire:app.content.reservation.edit-reservation />
+                @break
             @default
                 
         @endswitch

@@ -19,7 +19,7 @@ Route::name('guest.')->group(function () {
     Route::get('/rooms', [PageController::class, 'rooms'])->name('rooms');
     Route::get('/about', [PageController::class, 'about'])->name('about');
     Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-    Route::view('/reservation', 'reservation')->name('reservation');
+    Route::get('/reservation', [PageController::class, 'reservation'])->name('reservation');
     Route::view('/search', 'search')->name('search');
 
     // Add route for specific room details

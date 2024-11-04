@@ -77,4 +77,16 @@ class PageController extends Controller
             'contact_hero_image' => $contact_hero_image,
         ]);
     }
+
+    public function reservation() {
+        $reservation_hero_image = Content::whereName('reservation_hero_image')->pluck('value')->first();
+        $heading = Content::whereName('reservation_heading')->pluck('value')->first();
+        $subheading = Content::whereName('reservation_subheading')->pluck('value')->first();
+        
+        return view('reservation', [
+            'heading' => html_entity_decode($heading),
+            'subheading' => html_entity_decode($subheading),
+            'reservation_hero_image' => $reservation_hero_image,
+        ]);
+    }
 }

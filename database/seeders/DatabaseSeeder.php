@@ -8,8 +8,10 @@ use Database\Seeders\content\AboutSeeder;
 use Database\Seeders\content\ContactSeeder;
 use Database\Seeders\content\HomeSeeder;
 use Database\Seeders\content\MilestoneSeeder;
+use Database\Seeders\content\ReservationSeeder as ContentReservationSeeder;
 use Database\Seeders\content\RoomSeeder;
-use Database\Seeders\RoomSeeder as SeedersRoomSeeder;
+use Database\Seeders\ReservationSeeder as AppReservationSeeder;
+use Database\Seeders\RoomSeeder as AppRoomSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,12 +24,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BuildingSeeder::class,
             RoomTypeSeeder::class,
-            SeedersRoomSeeder::class,
+            AppRoomSeeder::class,
             AmenitySeeder::class,
             RolePermissionSeeder::class,
             UserSeeder::class,
             DiscountSeeder::class,
-            ReservationSeeder::class,
+            AppReservationSeeder::class,
             ReportSeeder::class,
             // Content
             PageSeeder::class,
@@ -35,7 +37,8 @@ class DatabaseSeeder extends Seeder
             HomeSeeder::class,
             MilestoneSeeder::class,
             RoomSeeder::class,
-            ContactSeeder::class
+            ContactSeeder::class,
+            ContentReservationSeeder::class,
         ]);
     }
 }
