@@ -22,8 +22,8 @@
             </x-tooltip>
             
             <div>
-                <h2 class="text-lg font-semibold">Create Reservation</h2>
-                <p class="max-w-sm text-xs">Create reservation for guests here.</p>
+                <h2 class="text-lg font-semibold">Create Room Type</h2>
+                <p class="max-w-sm text-xs">Add a new room type here</p>
             </div>
         </div>
 

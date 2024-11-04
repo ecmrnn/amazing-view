@@ -24,34 +24,11 @@ class CreateRoomType extends Component
     public $image_count = 0;
 
     public function rules() {
-        return [
-            'name' => 'required',
-            'description' => 'required',
-            'min_rate' => 'required|integer',
-            'max_rate' => 'required|integer',
-            'image_1_path' => 'required|image|mimes:jpg,jpeg,png',
-            'image_2_path' => 'required|image|mimes:jpg,jpeg,png',
-            'image_3_path' => 'required|image|mimes:jpg,jpeg,png',
-            'image_4_path' => 'required|image|mimes:jpg,jpeg,png',
-        ];
+        return RoomType::rules();
     }
 
     public function messages() {
-        return [
-            'name.required' => 'Enter a room name',
-            'description.required' => 'Enter a description',
-            'min_rate.required' => 'Enter a minimum room rate',
-            'max_rate.required' => 'Enter a maximum room rate',
-
-            'image_1_path.required' => 'Upload a thumbnail',
-            'image_1_path.mimes' => 'Image must be JPG, JPEG, or PNG',
-            'image_2_path.required' => 'Upload an image',
-            'image_2_path.mimes' => 'Image must be JPG, JPEG, or PNG',
-            'image_3_path.required' => 'Upload an image',
-            'image_3_path.mimes' => 'Image must be JPG, JPEG, or PNG',
-            'image_4_path.required' => 'Upload an image',
-            'image_4_path.mimes' => 'Image must be JPG, JPEG, or PNG',
-        ];
+        return RoomType::messages();
     }
 
     public function submit() {

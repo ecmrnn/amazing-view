@@ -39,7 +39,7 @@
             </x-form.form-body>
         </x-form.form-section>
 
-        <x-primary-button class="hidden lg:block">Add Room Type</x-primary-button> 
+        <x-primary-button class="hidden lg:block">Edit Room Type</x-primary-button> 
     </section>
 
     <aside>
@@ -50,8 +50,20 @@
                 <div class="p-5 space-y-3">
                     <div class="space-y-3">
                         <div>
-                            <x-form.input-label for="image_1_path">Thumbnail</x-form.input-label>
-                            <p class="text-xs">Upload an image for your thumbnail</p>
+                            <x-form.input-label for="image_1_path">Gallery</x-form.input-label>
+                            <p class="text-xs">Here are the current images for this room</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <x-img-lg src="{{ asset('storage/' . $temp_image_1_path) }}" />
+                            <x-img-lg src="{{ asset('storage/' . $temp_image_2_path) }}" />
+                            <x-img-lg src="{{ asset('storage/' . $temp_image_3_path) }}" />
+                            <x-img-lg src="{{ asset('storage/' . $temp_image_4_path) }}" />
+                        </div>
+
+                        <div>
+                            <x-form.input-label for="image_1_path">Update Thumbnail &amp; Images</x-form.input-label>
+                            <p class="text-xs">Update your thumbnail and images here</p>
                         </div>
 
                         <x-note>
@@ -94,6 +106,6 @@
     </aside>
 
     <div class="lg:hidden">
-        <x-primary-button>Add Room Type</x-primary-button> 
+        <x-primary-button>Edit Room Type</x-primary-button> 
     </div>
 </form>

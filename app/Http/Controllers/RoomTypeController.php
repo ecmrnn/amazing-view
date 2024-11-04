@@ -49,7 +49,7 @@ class RoomTypeController extends Controller
     public function edit(RoomType $room)
     {
         return view('app.roomType.edit', [
-            'room' => $room
+            'room_type' => $room
         ]);
     }
 
