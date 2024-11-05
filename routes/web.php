@@ -3,6 +3,7 @@
 use App\Http\Controllers\App\RoomController;
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\PageController;
@@ -50,7 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Specific rooms for a room type route
         Route::resource('/rooms/{type}/room', RoomController::class);
 
-        // Room type route
+        // Billing route
         Route::resource('/billings', BillingController::class);
 
         // Admin specific routes
@@ -63,6 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             // Content route
             Route::resource('/contents', ContentController::class);
+
+            // Building
+            Route::resource('/buildings', BuildingController::class);
         });
     });
 

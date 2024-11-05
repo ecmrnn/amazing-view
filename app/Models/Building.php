@@ -9,11 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Building extends Model
 {
     use HasFactory;
+    public const STATUS_ACTIVE = 0;
+    public const STATUS_INACTIVE = 1;
 
-    protected $fillable =[
-        'name',
-        'floor_count',
-    ];
+    protected $guarded = [];
 
     public function rooms(): HasMany {
         return $this->hasMany(Room::class);
