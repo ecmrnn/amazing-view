@@ -29,17 +29,17 @@ class AmenitySeeder extends Seeder
 
         Amenity::create([
             'name' => 'Breakfast',
-            'price' => 500,
+            'price' => 250,
             'quantity' => 1,
             'is_addons' => 1,
         ]);
 
-        Amenity::create([
-            'name' => 'Dinner',
-            'price' => 500,
-            'quantity' => 1,
-            'is_addons' => 1,
-        ]);
+        // Amenity::create([
+        //     'name' => 'Dinner',
+        //     'price' => 500,
+        //     'quantity' => 1,
+        //     'is_addons' => 1,
+        // ]);
 
         Amenity::create([
             'name' => 'Electric Fan',
@@ -68,12 +68,6 @@ class AmenitySeeder extends Seeder
         Amenity::create([
             'name' => 'Crib',
             'price' => 500,
-            'quantity' => 20,
-        ]);
-
-        Amenity::create([
-            'name' => 'Induction Cooker',
-            'price' => 1000,
             'quantity' => 20,
         ]);
     }

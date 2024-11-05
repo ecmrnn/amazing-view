@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(RoomType::class)->constrained();
-            $table->foreignIdFor(Building::class)->constrained();
+            $table->foreignIdFor(Building::class)->nullable()->constrained();
             $table->string('room_number');
-            $table->smallInteger('floor_number');
+            $table->smallInteger('floor_number')->nullable();
             $table->smallInteger('min_capacity');
             $table->smallInteger('max_capacity');
             $table->decimal('rate');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('image_2_path');
             $table->string('image_3_path');
             $table->string('image_4_path');
-            $table->smallInteger('status');
+            $table->smallInteger('status')->default(0); /* Refactor */
             $table->timestamps();
         });
     }
