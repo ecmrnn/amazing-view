@@ -18,7 +18,7 @@ class ShowRoomTypes extends Component
         return <<<'HTML'
         <div class="grid gap-1 p-5 bg-white rounded-lg lg:grid-cols-5 sm:grid-cols-2">
             @forelse ($room_types as $room_type)
-                <div key="{{ $room_type->id }}" x-data="{ rooms_count: @js($room_type->rooms_count) }" class="p-5 space-y-5 bg-white border border-gray-300 rounded-lg group">
+                <div wire:key="{{ $room_type->id }}" x-data="{ rooms_count: @js($room_type->rooms_count) }" class="p-5 space-y-5 bg-white border border-gray-300 rounded-lg group">
                     <div class="relative">
                         <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" />
 
@@ -70,7 +70,7 @@ class ShowRoomTypes extends Component
 
                     {{-- Delete Modal --}}
                     <x-modal.full name='delete-room-type-{{ $room_type->id }}-modal' maxWidth='sm'>
-                        <livewire:app.room-type.delete-room-type :room_type="$room_type" />
+                        <livewire:app.room-type.delete-room-type wire:key="delete-{{ $room_type->id }}" :room_type="$room_type" />
                     </x-modal.full>
                 </div>
             @empty

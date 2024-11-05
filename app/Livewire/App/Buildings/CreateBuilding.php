@@ -23,7 +23,7 @@ class CreateBuilding extends Component
     public function rules() {
         return [
             'name' => 'required',
-            'prefix' => 'required|max:4',
+            'prefix' => 'required|max:4|unique:buildings,prefix',
             'description' => 'required|max:200',
             'image' => 'required',
             'floor_count' => 'required|integer|min:1',
@@ -36,6 +36,7 @@ class CreateBuilding extends Component
         return [
             'name.required' => 'Enter a name',
             'prefix.required' => 'Enter a prefix',
+            'prefix.unique' => 'Prefix is used',
             'description.required' => 'Enter a description',
             'image.required' => 'Upload an image',
         ];
@@ -50,6 +51,7 @@ class CreateBuilding extends Component
         // Store the data in database
         Building::create($validated);
         $this->toast('Building Created!', 'success', 'New building added successfully');
+        $this->reset();
         $this->dispatch('building-created');
         $this->dispatch('pond-reset');
     }

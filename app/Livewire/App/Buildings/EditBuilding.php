@@ -71,9 +71,9 @@ class EditBuilding extends Component
         $this->building->name = $validated['name'];
         $this->building->prefix = $validated['prefix'];
         $this->building->description = $validated['description'];
-        $this->building->floor_count = $validated['floor_count'];
-        $this->building->room_row_count = $validated['room_row_count'];
-        $this->building->room_col_count = $validated['room_col_count'];
+        // $this->building->floor_count = $validated['floor_count'];
+        // $this->building->room_row_count = $validated['room_row_count'];
+        // $this->building->room_col_count = $validated['room_col_count'];
         $this->building->save();
 
         $this->toast('Building Edited!', 'success', 'Building details updated');
@@ -106,23 +106,23 @@ class EditBuilding extends Component
             <div class="space-y-3">
                 <div class="space-y-2">
                     <div>
-                        <x-form.input-label for="name">Name, Prefix, &amp; Description</x-form.input-label>
+                        <x-form.input-label for="name-{{ $building->id }}">Name, Prefix, &amp; Description</x-form.input-label>
                         <p class="text-xs">Give your building a new name, prefix, and a brief description</p>
                     </div>
                     {{-- Name --}}
                     <div class="grid grid-cols-3 gap-1">
                         <div class="col-span-2 space-y-2">
-                            <x-form.input-text id="name" label="Name" wire:model.live='name' />
+                            <x-form.input-text id="name-{{ $building->id }}" label="Name" wire:model.live='name' />
                             <x-form.input-error field="name" />
                         </div>
                         <div class="space-y-2">
-                            <x-form.input-text id="prefix" class="uppercase" label="Prefix" wire:model.live='prefix' />
+                            <x-form.input-text id="prefix-{{ $building->id }}" class="uppercase" label="Prefix" wire:model.live='prefix' />
                             <x-form.input-error field="prefix" />
                         </div>
                     </div>
                     {{-- Description --}}
                     <div class="space-y-2">
-                        <x-form.textarea id="description" name="description" label="description" wire:model.live='description' class="w-full" />
+                        <x-form.textarea id="description-{{ $building->id }}" name="description-{{ $building->id }}" label="description" wire:model.live='description' class="w-full" />
                         <x-form.input-error field="description" />
                     </div>
                 </div>
@@ -130,7 +130,7 @@ class EditBuilding extends Component
                 <!-- Image -->
                 <div class="space-y-2">
                     <div>
-                        <x-form.input-label for="image">Image</x-form.input-label>
+                        <x-form.input-label for="image-{{ $building->id }}">Image</x-form.input-label>
                         <p class="text-xs">Upload a new image of your building</p>
                     </div>
                     <x-filepond::upload

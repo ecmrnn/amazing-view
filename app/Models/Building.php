@@ -17,4 +17,16 @@ class Building extends Model
     public function rooms(): HasMany {
         return $this->hasMany(Room::class);
     }
+
+    public static function boot() {
+        parent::boot();
+
+        Building::creating(function ($building) {
+            $building->prefix = strtoupper($building->prefix);
+        });
+
+        Building::updating(function ($building) {
+            $building->prefix = strtoupper($building->prefix);
+        });
+    }
 }
