@@ -43,19 +43,11 @@
         />
 
         {{-- Removed Rooms --}}
-        <x-danger-button class="text-xs" x-on:click="$dispatch('open-modal', 'view-deleted-rooms')">
-            View Removed Rooms
-        </x-danger-button>
+        <livewire:app.room.show-deleted-rooms room="{{ $room->id }}" />
 
         {{-- Modals --}}
         <x-modal.full name='add-room-modal' maxWidth='lg'>
             <livewire:app.room.create-room room="{{ $room->id }}" />
-        </x-modal.full>
-
-        <x-modal.full name='view-deleted-rooms' maxWidth='lg'>
-            <div class="p-5 bg-white rounded-lg">
-                Hello!
-            </div>
         </x-modal.full>
     </div>
 </x-app-layout>
