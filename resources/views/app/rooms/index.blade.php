@@ -19,6 +19,9 @@
         </div>
     </x-slot:header>
 
+    {{-- Room Cards --}}
+    <livewire:app.cards.room-cards :roomType="$room->id" />
+
     <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
         <div class="flex items-center gap-3 sm:gap-5">
             <x-tooltip text="Back" dir="bottom">
@@ -39,8 +42,20 @@
             :room_type_id="$room->id"
         />
 
+        {{-- Removed Rooms --}}
+        <x-danger-button class="text-xs" x-on:click="$dispatch('open-modal', 'view-deleted-rooms')">
+            View Removed Rooms
+        </x-danger-button>
+
+        {{-- Modals --}}
         <x-modal.full name='add-room-modal' maxWidth='lg'>
             <livewire:app.room.create-room room="{{ $room->id }}" />
+        </x-modal.full>
+
+        <x-modal.full name='view-deleted-rooms' maxWidth='lg'>
+            <div class="p-5 bg-white rounded-lg">
+                Hello!
+            </div>
         </x-modal.full>
     </div>
 </x-app-layout>

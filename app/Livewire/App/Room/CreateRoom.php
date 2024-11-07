@@ -89,15 +89,10 @@ class CreateRoom extends Component
 
         $this->toast('Success!', 'success', 'Room added successfully!');
         $this->reset([
-            // 'building_id',
-            // 'room_number',
             'floor_number',
             'min_capacity',
             'max_capacity',
             'rate',
-            // 'building',
-            'max_floor_number',
-            // 'room_number_input',
         ]);
         $this->dispatch('pond-reset');
         $this->dispatch('pg:eventRefresh-RoomTable');
