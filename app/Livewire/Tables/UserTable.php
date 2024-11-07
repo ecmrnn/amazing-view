@@ -28,7 +28,7 @@ final class UserTable extends PowerGridComponent
 
     public $user;
     public $key;
-    #[Validate()] public $password;
+    #[Validate] public $password;
 
     public string $tableName = 'UserTable';
 
@@ -132,7 +132,6 @@ final class UserTable extends PowerGridComponent
         ]);
     }
 
-    // #[On('')]
     public function deactivateUser($id) {
         $this->validate([
             'password' => $this->rules()['password'],

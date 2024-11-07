@@ -10,7 +10,7 @@
         </div>
     </x-slot:header>
 
-    {{-- Room  Table --}}
+    {{-- User  Table --}}
     <div class="p-5 space-y-5 bg-white rounded-lg">
         <div class="flex items-center gap-3 sm:gap-5">
             <x-tooltip text="Back" dir="bottom">
@@ -139,7 +139,7 @@
     {{-- Deactivate User Modal --}}
     <x-modal.full name="deactivate-user" maxWidth="sm">
         <div x-data="{ checked: false }">
-            <livewire:app.user.deactivate-user :user="$user" />
+            <livewire:app.users.deactivate-user :user="$user" />
         </div>
     </x-modal.full> 
 </x-app-layout>

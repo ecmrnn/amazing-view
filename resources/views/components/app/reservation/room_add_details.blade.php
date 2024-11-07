@@ -72,7 +72,7 @@
                             <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 border rounded-lg">
                                 <div class="flex items-start w-full gap-5">
                                     <div class="w-full max-w-[150px]">
-                                        <x-img-lg src="{{ $room->image_1_path }}" />
+                                        <x-img-lg src="{{ asset('storage/' . $room->image_1_path) }}" />
                                     </div>
                                     <div>
                                         <h3 class="text-sm font-semibold">{{ $room->name }}</h3>

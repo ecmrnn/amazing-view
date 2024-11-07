@@ -43,6 +43,16 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'update billing']);
         Permission::create(['name' => 'delete billing']);
 
+        Permission::create(['name' => 'create building']);
+        Permission::create(['name' => 'read buildings']);
+        Permission::create(['name' => 'update building']);
+        Permission::create(['name' => 'delete building']);
+
+        Permission::create(['name' => 'create amenity']);
+        Permission::create(['name' => 'read amenities']);
+        Permission::create(['name' => 'update amenity']);
+        Permission::create(['name' => 'delete amenity']);
+
         Permission::create(['name' => 'create user']);
         Permission::create(['name' => 'read users']);
         Permission::create(['name' => 'update user']);
@@ -101,6 +111,16 @@ class RolePermissionSeeder extends Seeder
             'read billings',
             'update billing',
             'delete billing',
+
+            'create building',
+            'read buildings',
+            'update building',
+            'delete building',
+
+            'create amenity',
+            'read amenities',
+            'update amenity',
+            'delete amenity',
 
             'create user',
             'read users',

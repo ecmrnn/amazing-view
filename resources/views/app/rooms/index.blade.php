@@ -9,7 +9,7 @@
             </hgroup>
 
             @can('create room')
-                <x-primary-button class="text-xs">
+                <x-primary-button class="text-xs" x-on:click="$dispatch('open-modal', 'add-room-modal')">
                     <div class="flex items-center gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                         <span>Add Room</span>
@@ -38,5 +38,9 @@
         <livewire:tables.room-table
             :room_type_id="$room->id"
         />
+
+        <x-modal.full name='add-room-modal' maxWidth='lg'>
+            <livewire:app.room.create-room room="{{ $room->id }}" />
+        </x-modal.full>
     </div>
 </x-app-layout>
