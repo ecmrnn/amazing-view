@@ -17,7 +17,7 @@
                     <x-form.input-label for="building_id">Select a Building</x-form.input-label>
                     <p class="text-xs">Choose a building that this room belongs to</p>
                 </div>
-                <x-form.select class="flex-grow" id="building_id" name="building_id" wire:model.live="building_id" wire:change="selectBuilding">
+                <x-form.select class="flex-grow" id="building_id" name="building_id" wire:model.live="building_id" wire:change="selectBuilding()">
                     <option value="">Select a Building</option>
                     @foreach($buildings as $bldg)
                         <option value="{{ $bldg->id }}">{{ $bldg->name }}</option>

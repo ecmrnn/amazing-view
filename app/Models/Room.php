@@ -20,6 +20,27 @@ class Room extends Model
 
     protected $guarded = [];
 
+    public static function rules(array $excepts = []) {
+        $rules = [
+            'room_type' => 'required',
+            'building' => 'nullable',
+            'room_number' => 'required|unique:rooms,room_number',
+            'floor_number' => 'required|numeric|min:1|lte:max_floor_number',
+            'min_capacity' => 'required|numeric|min:1',
+            'max_capacity' => 'required|numeric|gte:min_capacity',
+            'rate' => 'required|numeric|min:1000',
+            'image_1_path' => 'nullable|image|mimes:jpeg,jpg,png',
+        ];
+
+        if (!empty($excepts)) {
+            foreach ($excepts as $field) {
+                unset($rules[$field]);
+            }
+        } 
+
+        return $rules;
+    }
+
     public function building(): BelongsTo {
         return $this->belongsTo(Building::class);
     }

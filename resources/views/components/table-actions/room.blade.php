@@ -6,19 +6,13 @@
 
 <div wire:key="{{ $row->id }}" class="flex justify-end gap-1">
     @can('update room')
-        <x-tooltip text="Edit" dir="top">
-            <a x-ref="content" href="{{ route($edit_link, ['room' => $row->id, 'type' => $row->room_type_id]) }}" wire:navigate>
-                <x-icon-button>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-pencil">
-                        <path
-                            d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-                        <path d="m15 5 4 4" />
-                    </svg>
+        <a href="{{ route('app.room.edit', ['type' => $row->roomType->id, 'room' => $row->id]) }}" wire:navigate.hover>
+            <x-tooltip text="Edit" dir="top">
+                <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'edit-room-{{ $row->id }}-modal')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"> <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /> <path d="m15 5 4 4" /></svg>
                 </x-icon-button>
-            </a>
-        </x-tooltip>
+            </x-tooltip>
+        </a>
     @endcan
     @can('delete room')
         <x-tooltip text="Edit" dir="top">
@@ -33,7 +27,7 @@
         <section class="p-5 space-y-5 bg-white" x-on:room-deleted.window="show = false">
             <hgroup>
                 <h2 class="font-semibold text-center text-red-500 capitalize">Delete room</h2>
-                <p class="max-w-sm text-sm text-center">Are you sure you really want this room?</p>
+                <p class="max-w-sm text-sm text-center">Are you sure you really want to delete this room?</p>
             </hgroup>
 
             <div class="space-y-2">

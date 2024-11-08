@@ -35,16 +35,7 @@ class CreateRoom extends Component
     }
 
     public function rules() {
-        return [
-            'room_type' => 'required',
-            'building' => 'nullable',
-            'room_number' => 'required|unique:rooms,room_number',
-            'floor_number' => 'required|numeric|min:1|lte:max_floor_number',
-            'min_capacity' => 'required|numeric|min:1',
-            'max_capacity' => 'required|numeric|gte:min_capacity',
-            'rate' => 'required|numeric|min:1000',
-            'image_1_path' => 'nullable|image|mimes:jpeg,jpg,png',
-        ];
+        return Room::rules();
     }
     
     public function selectBuilding() {

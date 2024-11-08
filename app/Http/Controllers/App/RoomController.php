@@ -56,11 +56,9 @@ class RoomController extends Controller
     {
         $room = Room::findOrFail($room);
 
-        if (!empty($room)) {
-            return view('app.rooms.edit', [
-                'room' => $room,
-            ]);
-        }
+        return view('app.rooms.edit', [
+            'room' => $room,
+        ]);
     }
 
     /**

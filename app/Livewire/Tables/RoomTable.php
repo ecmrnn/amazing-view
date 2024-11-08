@@ -21,10 +21,12 @@ use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
+use Spatie\LivewireFilepond\WithFilePond;
 
 final class RoomTable extends PowerGridComponent
 {
-    use WithExport, DispatchesToast;
+    use WithExport, DispatchesToast, WithFilePond;
+    
     #[Validate] public $password;
 
     public string $tableName = 'RoomTable';
@@ -48,6 +50,8 @@ final class RoomTable extends PowerGridComponent
 
     public function setUp(): array
     {
+        $this->showCheckBox();
+        
         return [
             Header::make()
                 ->showToggleColumns()
@@ -81,9 +85,9 @@ final class RoomTable extends PowerGridComponent
             })
 
             ->add('room_number')
-            ->add('room_type_id')
-            ->add('room_type_id_formatted', function ($room) {
-                return $room->roomType->name;
+            ->add('building')
+            ->add('building_formatted', function ($room) {
+                return $room->building->name;
             })
 
             ->add('max_capacity')
@@ -105,13 +109,15 @@ final class RoomTable extends PowerGridComponent
         return [
             // Column::make('Thumbnail', 'image_1_path'),
 
-            // Column::make('Room Type', 'room_type_id_formatted', 'room_type_id')
-            //     ->sortable()
-            //     ->searchable(),
-
             Column::make('Room Number', 'room_number')
                 ->sortable()
                 ->searchable(),
+            
+            Column::make('Building', 'building_formatted', 'building')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('Min. Capacity', 'min_capacity'),
 
             Column::make('Max. Capacity', 'max_capacity'),
 
