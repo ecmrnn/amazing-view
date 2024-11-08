@@ -16,7 +16,7 @@
                         <p class="text-xs">Add, edit, or delete buildings</p>
                     </div>
                 </x-app-nav-link>
-                <x-app-nav-link :active="false" href="{{ route('app.users.index') }}" class="flex items-center gap-3 p-3">
+                <x-app-nav-link :active="false" href="{{ route('app.amenity.index') }}" class="flex items-center gap-3 p-3">
                     <div class="pl-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tv-minimal"><path d="M7 21h10"/><rect width="20" height="14" x="2" y="3" rx="2"/></svg>
                     </div>

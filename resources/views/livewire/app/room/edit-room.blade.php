@@ -6,7 +6,7 @@
         <!-- Building -->
         <div class="space-y-3">
             <div class="flex gap-3 p-3 border border-gray-300 rounded-lg">
-                <p class="text-lg font-semibold text-zinc-800/50">{{ $room->floor_number . 'F' }}</p>
+                <p class="pl-1 text-lg font-semibold text-blue-500">{{ $room->floor_number . 'F' }}</p>
                 <p class="text-lg font-semibold">{{ $room->building->name }}</p>
             </div> 
         </div>

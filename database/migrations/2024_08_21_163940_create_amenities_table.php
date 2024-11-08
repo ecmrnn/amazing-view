@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('price');
             $table->binary('is_reservable')->default(0);
             $table->binary('is_addons')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
