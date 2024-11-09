@@ -3,6 +3,7 @@
 namespace App\Livewire\Tables;
 
 use App\Models\Reservation;
+use Carbon\Carbon as CarbonCarbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -63,6 +64,12 @@ final class GuestTable extends PowerGridComponent
         return PowerGrid::fields()
             ->add('id')
             ->add('rid')
+            ->add('rid_formatted', function ($reservation) {
+                if ($reservation->date_out == Carbon::now()->format('Y-m-d')) {
+                    return Blade::render('<div class="flex items-center gap-3"><div class="w-2 bg-red-500 rounded-full aspect-square"></div>' . $reservation->rid . '</div>');
+                }
+                return Blade::render('<div class="flex items-center gap-3"><div class="w-2 bg-green-500 rounded-full aspect-square"></div>' . $reservation->rid . '</div>');
+            })
 
             ->add('first_name')
             ->add('last_name')
@@ -109,7 +116,7 @@ final class GuestTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Reservation Id', 'rid', 'rid')
+            Column::make('Reservation Id', 'rid_formatted', 'rid')
                 ->sortable()
                 ->searchable(),
 

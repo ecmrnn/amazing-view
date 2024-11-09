@@ -34,9 +34,9 @@ class CheckInGuest extends Component
         $this->reservation = Reservation::where('rid', $this->reservation_rid)->first();
         
         if (!empty($this->reservation)) {
-            if ($this->reservation->status == Reservation::STATUS_CHECKED_IN) {
+            if ($this->reservation->status != Reservation::STATUS_CONFIRMED) {
                 $this->reservation = null;
-                $this->toast('Alread in', 'info', 'Guest already checked-in');
+                $this->toast('Check-in Failed', 'warning', 'Reservation status must be confirmed');
             } else {
                 // Initialize properties
                 $this->date_in = Carbon::parse($this->reservation->date_in)->format('F j, Y');
