@@ -85,7 +85,7 @@ final class RoomTable extends PowerGridComponent
             })
 
             ->add('room_number')
-            ->add('building')
+            ->add('building_id')
             ->add('building_formatted', function ($room) {
                 return $room->building->name;
             })
@@ -113,7 +113,7 @@ final class RoomTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
             
-            Column::make('Building', 'building_formatted', 'building')
+            Column::make('Building', 'building_formatted', 'building_id')
                 ->sortable()
                 ->searchable(),
 

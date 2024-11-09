@@ -78,7 +78,7 @@
             break;
         case 5:
             $label = 'Completed';
-            $class = 'text-white border-emerald-500 bg-emerald-500/75';
+            $class = 'text-white border-lime-500 bg-lime-500/75';
             break;
         case 6:
             $label = 'Canceled';

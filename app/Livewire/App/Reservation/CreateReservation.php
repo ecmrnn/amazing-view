@@ -23,10 +23,13 @@ class CreateReservation extends Component
     // Reservation Details
     #[Validate] public $date_in;
     #[Validate] public $date_out;
+    #[Validate] public $senior_count = 0;
+    #[Validate] public $pwd_count = 0;
     #[Validate] public $adult_count = 1;
     #[Validate] public $children_count = 0;
     #[Validate] public $selected_rooms;
     #[Validate] public $selected_amenities;
+    #[Validate] public $reservation_type = 'walk-in-reservation';
     // Guest Details
     #[Validate] public $first_name;
     #[Validate] public $last_name;
@@ -60,6 +63,7 @@ class CreateReservation extends Component
     public $can_submit_payment = false; /* Must be set to false */
     public $can_add_amenity = false; /* Must be set to false */
     public $selected_type; 
+    public $max_senior_count;
     public $selected_building;
     public $additional_amenity;
     public $available_amenities;
@@ -87,7 +91,7 @@ class CreateReservation extends Component
 
     public function mount()
     {
-        $this->min_date = date_format(Carbon::now(), 'Y-m-d');
+        $this->min_date = Carbon::now()->format('Y-m-d');
         $this->selected_rooms = collect();
         $this->selected_amenities = collect();
         $this->additional_amenity_quantities = collect();
@@ -415,12 +419,22 @@ class CreateReservation extends Component
     }
 
     public function store() {
+        $status = Reservation::STATUS_PENDING;
+
+        if ($this->reservation_type == 'walk-in-reservation' && $this->date_in == Carbon::now()->format('Y-m-d')) {
+            $status = Reservation::STATUS_CHECKED_IN;
+        } elseif ($this->downpayment > 0) {
+            $status = Reservation::STATUS_CONFIRMED;
+        }
+
         $reservation = Reservation::create([
             'date_in' => $this->date_in,
             'date_out' => $this->date_out,
+            'senior_count' => $this->senior_count,
+            'pwd_count' => $this->pwd_count,
             'adult_count' => $this->adult_count,
             'children_count' => $this->children_count,
-            'status' => Reservation::STATUS_PENDING,
+            'status' => $status,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'phone' => $this->phone,
@@ -433,6 +447,13 @@ class CreateReservation extends Component
             // Store rooms
             foreach ($this->selected_rooms as $room) {
                 $room->reservations()->attach($reservation->id);
+                
+                if ($status == Reservation::STATUS_CHECKED_IN) {
+                    $room->status = Room::STATUS_OCCUPIED;
+                } else {
+                    $room->status = Room::STATUS_RESERVED;
+                }
+                $room->save();
             }
         }
 
@@ -455,6 +476,8 @@ class CreateReservation extends Component
         }
 
         // Create invoice to store downpayment
+        $this->downpayment != '' ?: $this->downpayment = 0;
+
         $invoice = Invoice::create([
             'reservation_id' => $reservation->id,
             'total_amount' => $this->net_total,

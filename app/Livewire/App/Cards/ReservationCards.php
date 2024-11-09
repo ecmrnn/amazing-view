@@ -13,15 +13,16 @@ class ReservationCards extends Component
 
     public function render()
     {
-        $reservation_count = Reservation::select(DB::raw('count(*) as count, status'))
-            ->groupBy('status')
-            ->get();
+        $pending_reservations = Reservation::whereStatus(Reservation::STATUS_PENDING)->count();
+        $confirmed_reservations = Reservation::whereStatus(Reservation::STATUS_CONFIRMED)->count();
+        $completed_reservations = Reservation::whereStatus(Reservation::STATUS_COMPLETED)->count();
+        $expired_reservations = Reservation::whereStatus(Reservation::STATUS_EXPIRED)->count();
 
         return view('livewire.app.cards.reservation-cards', [
-            'pending_reservations' => $reservation_count[Reservation::STATUS_PENDING]->count,
-            'confirmed_reservations' => $reservation_count[Reservation::STATUS_CONFIRMED]->count,
-            'completed_reservations' => $reservation_count[Reservation::STATUS_COMPLETED]->count,
-            'expired_reservations' => $reservation_count[Reservation::STATUS_EXPIRED]->count,
+            'pending_reservations' => $pending_reservations,
+            'confirmed_reservations' => $confirmed_reservations,
+            'completed_reservations' => $completed_reservations,
+            'expired_reservations' => $expired_reservations,
         ]);
     }
 }

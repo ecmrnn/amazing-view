@@ -27,6 +27,8 @@ class Reservation extends Model
         $rules = [
             'date_in' => 'required|date|after_or_equal:today',
             'date_out' => 'required|date|after_or_equal:date_in',
+            'senior_count' => 'nullable|integer',
+            'pwd_count' => 'nullable|integer',
             'adult_count' => 'required|integer|min:1',
             'children_count' => 'integer|min:0',
             'selected_rooms' => 'required',
@@ -36,7 +38,7 @@ class Reservation extends Model
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'required',
             'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000|required_unless:payment_method,cash',
-            'downpayment' => 'integer|min:500|required',
+            'downpayment' => 'integer|min:500|nullable',
             'transaction_id' => 'nullable|string|required_unless:payment_method,cash',
             'note' => 'nullable|max:200',
         ];

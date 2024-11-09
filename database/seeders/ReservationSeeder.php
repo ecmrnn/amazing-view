@@ -20,12 +20,15 @@ class ReservationSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $reservations = Reservation::factory(50)->create();
+        
+         $reservations = Reservation::factory(10)->create();
 
         foreach ($reservations as $reservation) {
             $reservation->rooms()->attach($faker->numberBetween(1, 12));
 
-            if ($reservation->status == Reservation::STATUS_CHECKED_IN) {
+            if ($reservation->date_in <= Carbon::now()->format('Y-m-d')) {
+                $reservation->statuss = Reservation::STATUS_CHECKED_IN;
+
                 foreach ($reservation->rooms as $room) {
                     $room->status = Room::STATUS_OCCUPIED;
                     $room->save();

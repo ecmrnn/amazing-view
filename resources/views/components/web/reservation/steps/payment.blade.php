@@ -171,10 +171,10 @@
                 </x-note>
 
                 {{-- Payment Methods --}}
-                <div class="grid gap-3 md:grid-cols-2">
-                    <div class="flex items-center gap-3 p-3 bg-white border rounded-lg">
+                <div class="grid md:grid-cols-2">
+                    <div class="flex items-center gap-3 p-3 bg-white border border-gray-300 rounded-lg">
                         <div class="max-w-[80px] aspect-square w-full rounded-lg"
-                            style="background-image: url('https://placehold.co/80');
+                            style="background-image: url({{ asset('storage/global/gcash-qr.png') }});
                                 background-size: cover;">
                         </div>
                         <div>
@@ -182,22 +182,10 @@
                             <p class="">+63 917 139 9334</p>
                             <p class="text-xs">Fabio Basbaño</p>
                         </div>
-                    </div>
-
-                    <div class="flex items-center gap-3 p-3 bg-white border rounded-lg">
-                        <div class="max-w-[80px] aspect-square w-full rounded-lg"
-                            style="background-image: url('https://placehold.co/80');
-                                background-size: cover;">
-                        </div>
-                        <div>
-                            <h3 class="font-semibold">Philippine National Bank</h3>
-                            <p class="">0000-0000-0000</p>
-                            <p class="text-xs">Amazing View Mountain Resort</p>
-                        </div>
-                    </div>
+                    </div>                 
                 </div>
 
-                <div>
+                <div class="w-full md:w-1/2">
                     <x-filepond::upload
                         wire:model="proof_image_path"
                         placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"

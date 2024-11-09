@@ -29,8 +29,8 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             UserSeeder::class,
             DiscountSeeder::class,
-            AppReservationSeeder::class,
-            ReportSeeder::class,
+            // AppReservationSeeder::class,
+            // ReportSeeder::class,
             // Content
             PageSeeder::class,
             AboutSeeder::class,

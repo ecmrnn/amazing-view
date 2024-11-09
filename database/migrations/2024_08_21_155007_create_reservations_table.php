@@ -22,6 +22,8 @@ return new class extends Migration
             $table->date('resched_date_in')->nullable();
             $table->date('resched_date_out')->nullable();
             $table->date('cancel_date')->nullable();
+            $table->integer('senior_count');
+            $table->integer('pwd_count');
             $table->integer('adult_count');
             $table->integer('children_count');
             $table->smallInteger('status');

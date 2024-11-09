@@ -10,7 +10,7 @@
         </div>
     </x-slot:header>
 
-    <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
+    <div class="p-5 space-y-5 bg-white rounded-lg">
         <div class="flex items-center gap-3 sm:gap-5">
             <x-tooltip text="Back" dir="bottom">
                 <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>

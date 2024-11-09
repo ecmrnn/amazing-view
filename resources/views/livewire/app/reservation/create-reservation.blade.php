@@ -3,6 +3,9 @@
     min: new Date(),
     date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
     date_out: $persist($wire.entangle('date_out')).using(sessionStorage),
+    max_senior_count: $persist($wire.entangle('max_senior_count')).using(sessionStorage),
+    senior_count: $persist($wire.entangle('senior_count')).using(sessionStorage),
+    pwd_count: $persist($wire.entangle('pwd_count')).using(sessionStorage),
     adult_count: $persist($wire.entangle('adult_count')).using(sessionStorage),
     children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
     capacity: $wire.entangle('capacity'),
@@ -35,7 +38,20 @@
         let options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(date).toLocaleDateString('en-US', options)
     },
-}" wire:submit="submit()">
+
+    setMaxSeniorCount() {
+        if (this.pwd_count > 0) {
+            this.max_senior_count = this.adult_count;
+
+            if (this.pwd_count + this.senior_count > this.adult_count + this.children_count) {
+                this.pwd_count--;
+            }
+
+        } else {
+            this.max_senior_count = this.adult_count - this.pwd_count;
+        }
+    },
+}" x-init="setMaxSeniorCount()" wire:submit="submit()">
 @csrf
 
 <div class="relative flex flex-col gap-5 lg:flex-row">
@@ -95,6 +111,11 @@
 
             <div class="px-3 py-2 border border-gray-300 rounded-md">
                 <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
+            </div>
+
+            <div class="grid gap-2 px-3 py-2 border border-gray-300 rounded-md">
+                <x-form.input-radio value="walk-in-reservation" id="walk-in-reservation" name="reservation_type" label="Walk-in Reservation" wire:model.live='reservation_type' />
+                <x-form.input-radio value="online-reservation" id="online-reservation" name="reservation_type" label="Online Reservation" wire:model.live='reservation_type' />
             </div>
 
             <div class="space-y-1">
