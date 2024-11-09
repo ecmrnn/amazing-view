@@ -4,6 +4,7 @@ namespace App\Livewire\App\Invoice;
 
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
+use App\Models\Reservation;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Validate;
@@ -15,6 +16,7 @@ class CreatePayment extends Component
     use WithFilePond, DispatchesToast;
     
     public $invoice;
+    public $reservation;
     #[Validate] public $proof_image_path;
     #[Validate] public $payment_date;
     #[Validate] public $payment_method = 'cash';
@@ -24,6 +26,7 @@ class CreatePayment extends Component
     public function mount(Invoice $invoice) {
         $this->invoice = $invoice;
         $this->payment_date = Carbon::now()->format('Y-m-d');
+        $this->reservation = $this->invoice->reservation;
     }
 
     public function rules() {
@@ -42,6 +45,12 @@ class CreatePayment extends Component
             'transaction_id' => $this->rules()['transaction_id'],
             'amount' => $this->rules()['amount'],
         ]);
+
+        if ($this->reservation->status == Reservation::STATUS_PENDING) {
+            $this->reservation->status = Reservation::STATUS_CONFIRMED;
+            $this->reservation->save();
+            $this->dispatch('pg:eventRefresh-ReservationTable');
+        }
         
         $payment = InvoicePayment::create([
             'invoice_id' => $this->invoice->id,
@@ -124,7 +133,7 @@ class CreatePayment extends Component
                 </div>
                 
                 <div class="flex items-center justify-center gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                    <x-secondary-button type="button" x-on:click="$dispatch('cancel-confirmation'); show = false">Cancel</x-secondary-button>
                     <x-primary-button type="button" x-bind:disabled="!checked" wire:click="store">Submit Payment</x-primary-button>
                 </div>
             </section>

@@ -141,7 +141,8 @@
     <div x-show="can_select_a_room" x-collapse.duration.1000ms>
         <x-form.form-body>
             <div class="p-5 space-y-3">
-                <p class="text-sm">Enhance your stay by availing our additional services.</p>
+                <p class="text-sm">Enhance your stay by availing our additional services</p>
+
                 <div class="grid gap-2 sm:grid-cols-2">
                     @forelse ($reservable_amenities as $amenity)
                         @php
@@ -190,7 +191,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
-                    <p class="text-xs text-zinc-800">Click a room to select</p>
+                    <p class="text-xs text-zinc-800">Click a room to reserve</p>
                 </hgroup>
             </header>
             
@@ -268,11 +269,13 @@
         </hgroup>
 
         <div class="space-y-3">
+            <x-note>The maximum number of senior and PWD is based on the number of adults and children you have entered respectively</x-note>
             <div class="grid grid-cols-2 gap-3">
                 <x-form.input-group>
                     <x-form.input-label for="senior_count">Number of Seniors</x-form.input-label>
-                    <x-form.input-number x-model="senior_count" id="senior_count" 
+                    <x-form.input-number 
                         max="{{ $max_senior_count }}"
+                        x-model="senior_count" id="senior_count" 
                         wire:model.live="senior_count"
                         x-on:change.window="setMaxSeniorCount()"
                         class="block w-full" />
@@ -281,7 +284,10 @@
 
                 <x-form.input-group>
                     <x-form.input-label for="pwd_count">Number of PWD</x-form.input-label>
-                    <x-form.input-number x-model="pwd_count" id="pwd_count" max="{{ ($adult_count - $senior_count) + $children_count }}"
+                    <x-form.input-number 
+                        max="{{ ($adult_count - $senior_count) + $children_count }}"
+                        x-model="pwd_count" 
+                        id="pwd_count"
                         wire:model.live="pwd_count"
                         x-on:change.window="setMaxSeniorCount()"
                         class="block w-full" />

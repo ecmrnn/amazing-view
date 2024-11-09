@@ -20,7 +20,7 @@ class ReservationForm extends Component
 {
     use WithFilePond, WithPagination, DispatchesToast;
 
-    public $step = 1;
+    public $step = 2;
     public $capacity = 0;
 
     // Reservation Details
@@ -36,7 +36,7 @@ class ReservationForm extends Component
     public $reservable_amenities = [];
     public $room_type_name;
     public $room_type_id;
-    public $max_senior_count;
+    public $max_senior_count = 0;
     // Guest Details
     #[Validate] public $first_name;
     #[Validate] public $last_name;

@@ -25,14 +25,14 @@
         type="number" min="{{ $min }}" max="{{ $max }}" id="{{ $id }}" />
 
     {{-- Less Button --}}
-    <button x-on:click="{{ is_null($model) ? '$refs.number' : $number }} - 1 >= {{ $min }} ? {{ is_null($model) ? '$refs.number' : $number }}-- : 0; $wire.set('{{ $model }}', {{ $model }}); $dispatch('change')"
+    <button x-on:click="{{ is_null($model) ? 'number' : $number }} - 1 >= {{ $min }} ? {{ is_null($model) ? 'number' : $number }}-- : 0; $wire.set('{{ $model }}', {{ $model }}); $dispatch('change')"
         class="w-[40px] order-first inline-block shrink-0 rounded-s-md border border-r-0 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border peer-invalid:bg-red-50 peer-invalid:border-red-500 peer-invalid:focus:border-red-500"
         type="button"
         {{ $attributes['disabled'] }}
         >-</button>
 
     {{-- Add Button --}}
-    <button x-on:click="{{ is_null($model) ? '$refs.number' : $number }} + 1 <= {{ $max }} ? {{ is_null($model) ? '$refs.number' : $number }}++ : ''; $wire.set('{{ $model }}', {{ $model }}); $dispatch('change')"
+    <button x-on:click="{{ is_null($model) ? 'number' : $number }} + 1 <= {{ $max }} ? {{ is_null($model) ? 'number' : $number }}++ : ''; $wire.set('{{ $model }}', {{ $model }}); $dispatch('change')"
         class="w-[40px] inline-block shrink-0 rounded-e-md border border-l-0 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border peer-invalid:bg-red-50 peer-invalid:border-red-500 peer-invalid:focus:border-red-500"
         type="button"
         {{ $attributes['disabled'] }}
