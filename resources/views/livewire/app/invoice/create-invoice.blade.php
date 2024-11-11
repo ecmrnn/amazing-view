@@ -41,7 +41,10 @@
                             <p class="text-xs">Enter the reservation ID below.</p>
                         </hgroup>
                         <div class="flex flex-col items-start gap-1 sm:flex-row sm:items-stretch">
-                            <x-form.input-text x-on:keyup.enter.prevent="$wire.getReservation(reservation_id)"  x-model="reservation_id" id="reservation_id" form="reservation_id_form" class="w-min" label="Reservation ID" />
+                            <div>
+                                <x-form.input-text class="w-min" x-on:keyup.enter.prevent="$wire.getReservation(reservation_id)"  x-model="reservation_id" id="reservation_id" form="reservation_id_form" class="w-min" label="Reservation ID" />
+                            </div>
+                            
                             <x-primary-button type="button" x-on:click="$wire.getReservation(reservation_id)">Find Reservation</x-primary-button>
                         </div>
                     </div>

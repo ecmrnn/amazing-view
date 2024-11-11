@@ -61,7 +61,7 @@ final class UserTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return User::query()->whereStatus(User::STATUS_ACTIVE);
+        return User::query()->whereStatus(User::STATUS_ACTIVE)->orderByDesc('created_at');
     }
 
     public function relationSearch(): array
@@ -90,20 +90,25 @@ final class UserTable extends PowerGridComponent
         return [
             // Column::make('Id', 'id'),
             Column::make('First Name', 'first_name')
+                ->sortable()
                 ->searchable(),
             
             Column::make('Last Name', 'last_name')
+                ->sortable()
                 ->searchable(),
             
             Column::make('Address', 'address', 'address'),
 
             Column::make('Phone', 'phone', 'phone')
+                ->sortable()
                 ->searchable(),
             
             Column::make('Email', 'email', 'email')
+                ->sortable()
                 ->searchable(),
             
-            Column::make('Role', 'role_formatted', 'role'),
+            Column::make('Role', 'role_formatted', 'role')
+                ->sortable(),
 
             Column::action('')
         ];

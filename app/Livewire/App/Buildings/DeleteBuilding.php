@@ -35,8 +35,10 @@ class DeleteBuilding extends Component
         $admin = Auth::user();
 
         if (Hash::check($this->password, $admin->password)) {
-            // delete image
-            Storage::disk('public')->delete($this->building->image);
+            if ($this->building->image) {
+                // delete image
+                Storage::disk('public')->delete($this->building->image);
+            }
             
             // delete building
             $this->building->delete();

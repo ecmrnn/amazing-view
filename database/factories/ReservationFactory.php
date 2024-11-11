@@ -20,8 +20,8 @@ class ReservationFactory extends Factory
      */
     public function definition(): array
     {
-        // $date_in = fake()->dateTimeBetween(Carbon::create(2024, 1, 1), Carbon::create(2024, Carbon::now()->addMonth()->format('m'), 1));
-        $date_in = fake()->dateTimeBetween(Carbon::yesterday(), Carbon::create(2024, Carbon::now()->addMonth()->format('m'), 1));
+        $date_in = fake()->dateTimeBetween(Carbon::create(2024, 1, 1), Carbon::create(2024, Carbon::now()->addMonth()->format('m'), 1));
+        // $date_in = fake()->dateTimeBetween(Carbon::yesterday(), Carbon::create(2024, Carbon::now()->addMonth()->format('m'), 1));
         $date_out = Carbon::parse($date_in)->addDays(fake()->numberBetween(1, 3));
         return [
             'date_in' => $date_in,

@@ -24,15 +24,7 @@
         <x-tooltip text="Deactivate" dir="top">
             <a x-ref="content" x-on:click="$dispatch('open-modal', 'deactivate-user-{{ $row->id }}')">
                 <x-icon-button>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-trash-2">
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                        <line x1="10" x2="10" y1="11" y2="17" />
-                        <line x1="14" x2="14" y1="11" y2="17" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
                 </x-icon-button>
             </a>
         </x-tooltip>

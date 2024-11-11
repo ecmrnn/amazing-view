@@ -13,14 +13,21 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" wire:navigate class="space-y-5">
         @csrf
         @method('patch')
 
-        <div>
-            <x-form.input-label for="name" :value="__('Name')" />
-            <x-form.input-text id="name" name="name" type="text" class="block w-full mt-1" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-form.input-error class="mt-2" :messages="$errors->get('name')" />
+        <div class="grid grid-cols-2 gap-5">
+            <div>
+                <x-form.input-label for="first_name" :value="__('First Name')" />
+                <x-form.input-text id="first_name" name="first_name" type="text" class="block w-full mt-1 capitalize" :value="old('first_name', $user->first_name)" required autofocus autocomplete="name" />
+                <x-form.input-error field="first_name" />
+            </div>
+            <div>
+                <x-form.input-label for="last_name" :value="__('Last Name')" />
+                <x-form.input-text id="last_name" name="last_name" type="text" class="block w-full mt-1 capitalize" :value="old('last_name', $user->last_name)" required autofocus autocomplete="name" />
+                <x-form.input-error field="last_name" />
+            </div>
         </div>
 
         <div>

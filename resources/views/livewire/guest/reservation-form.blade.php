@@ -9,6 +9,7 @@
         pwd_count: $persist($wire.entangle('pwd_count')).using(sessionStorage),
         adult_count: $persist($wire.entangle('adult_count')).using(sessionStorage),
         children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
+        night_count: $persist($wire.entangle('night_count')).using(sessionStorage),
         capacity: $wire.entangle('capacity'),
         address: $persist($wire.entangle('address')).using(sessionStorage),
 

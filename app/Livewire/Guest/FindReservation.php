@@ -20,6 +20,7 @@ class FindReservation extends Component
     public $net_total = 0;
     public $sub_total = 0;
     public $night_count;
+    public $discount_amount = 0;
 
     public function mount() {
         $this->reservation = new Collection;

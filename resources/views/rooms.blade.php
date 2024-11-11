@@ -49,8 +49,8 @@
                     
                     <p class="text-justify indent-8">{{ $room->description }}</p>
                     
-                    <a class="block" href="#" wire:navigate>
-                        <x-primary-button>More Details</x-primary-button>
+                    <a class="block" href="{{ route('guest.reservation') }}" wire:navigate.hover>
+                        <x-primary-button>Book this Room</x-primary-button>
                     </a>
                 </div>
             @endforeach

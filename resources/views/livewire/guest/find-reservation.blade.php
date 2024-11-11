@@ -169,7 +169,7 @@
                                         {{ ucwords(strtolower($discount->name)) }}</p>
                                 @endforeach
                 
-                                <p class="text-sm font-semibold text-blue-500">Net Payable Amount</p>
+                                {{-- <p class="text-sm font-semibold text-blue-500">Net Payable Amount</p> --}}
                             @endif
                         </div>
                         <div class="text-right">
@@ -187,7 +187,7 @@
                                     @endif
                                 @endforeach
                 
-                                <p class="text-sm font-semibold text-blue-500">{{ number_format($net_total - $discount_amount, 2) }}</p>
+                                {{-- <p class="text-sm font-semibold text-blue-500">{{ number_format($net_total - $discount_amount, 2) }}</p> --}}
                             @endif
                         </div>
                     </div>

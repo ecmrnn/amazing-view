@@ -4,6 +4,7 @@ namespace App\Livewire\Guest;
 
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
+use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
@@ -20,7 +21,7 @@ class ReservationForm extends Component
 {
     use WithFilePond, WithPagination, DispatchesToast;
 
-    public $step = 2;
+    public $step = 1;
     public $capacity = 0;
 
     // Reservation Details
@@ -95,6 +96,8 @@ class ReservationForm extends Component
         return[
             'date_in' => 'required|date|after_or_equal:today',
             'date_out' => 'required|date|after_or_equal:date_in',
+            'senior_count' => 'required|integer',
+            'pwd_count' => 'required|integer',
             'adult_count' => 'required|integer|min:1',
             'children_count' => 'integer|min:0',
             'selected_rooms' => 'required',
@@ -356,8 +359,8 @@ class ReservationForm extends Component
         $this->validate([
             'date_in' => $this->rules()['date_in'],
             'date_out' => $this->rules()['date_out'],
-            'senior_count' => $this->rules()['adult_count'],
-            'pwd_count' => $this->rules()['adult_count'],
+            'senior_count' => $this->rules()['senior_count'],
+            'pwd_count' => $this->rules()['pwd_count'],
             'adult_count' => $this->rules()['adult_count'],
             'children_count' => $this->rules()['children_count'],
             'selected_rooms' => $this->rules()['selected_rooms'],
@@ -405,6 +408,12 @@ class ReservationForm extends Component
                 ]);
             }
         }
+
+        Invoice::create([
+            'reservation_id' => $reservation->id,
+            'total_amount' => $this->net_total,
+            'status' => Invoice::STATUS_PENDING
+        ]);
 
         // Dispatch event
         $this->dispatch('reservation-created');
