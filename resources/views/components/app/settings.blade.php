@@ -56,6 +56,24 @@
                     </div>
                 </x-app-nav-link>
             </div>
+
+            <div class="flex justify-between gap-3 p-3 text-white border border-blue-600 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
+                <a href="{{ route('dashboard') }}" class="inline-block" wire:navigate>
+                    <p class="font-semibold capitalize">{{ Auth::user()->first_name . " " . Auth::user()->last_name }}</p>
+                    <p class="text-xs text-white">{{ Auth::user()->email }}</p>
+                </a>
+
+                {{-- Logout --}}
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="grid p-2 text-white transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none hover:bg-white/25 hover:border-white/50 focus:text-white/50 focus:border-white/25">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                    </button>
+                </form>
+            </div>
         </article>
     </section>
 </x-modal.full>

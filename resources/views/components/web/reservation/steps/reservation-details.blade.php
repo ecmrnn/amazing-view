@@ -50,7 +50,7 @@
                         <x-form.input-error field="children_count" />
                     </x-form.input-group>
 
-                    <x-secondary-button x-on:click="$dispatch('open-modal', 'pwd-senior-modal');">Add Senior or PWD</x-secondary-button>
+                    <x-secondary-button class="text-xs" x-on:click="$dispatch('open-modal', 'pwd-senior-modal');">Add Senior or PWD</x-secondary-button>
                 </div>
             </div>
 
@@ -206,11 +206,10 @@
                     @forelse ($available_room_types as $capacity => $rooms)
                         @php
                             $rate_sum = 0;
-                            $thumbnail = '';
                             $selected_room_count = 0;
                             foreach ($rooms as $room) {
                                 $rate_sum += $room->rate;
-                                $thumbnail = $room->image_1_path;
+                                $thumbnail = $room->roomType->image_1_path;
 
                                 if ($selected_rooms->contains('id', $room->id)) {
                                     $selected_room_count++;
@@ -221,7 +220,7 @@
                         <div x-data="{ show_rooms: false }" class="flex items-start justify-between gap-3 p-3 bg-white border rounded-md">
                             <div class="flex w-full gap-3">
                                 <div class="max-w-[150px] w-full relative">
-                                    <x-img-lg src="{{ $thumbnail }}" class="w-full" />
+                                    <x-img-lg src="{{ asset('storage/' . $thumbnail) }}" class="w-full" />
                                     @if ($selected_room_count > 0)
                                         <p class="absolute px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-md top-1 left-1 w-max">{{ $selected_room_count }} Selected</p>
                                     @endif
