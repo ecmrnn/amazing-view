@@ -3,17 +3,20 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Models\Reservation;
+use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class UpdateNote extends Component
 {
+    use DispatchesToast;
+    
     #[Validate]
     public $note = '';
     public $reservation;
 
     public function mount(Reservation $reservation) {
-        $this->note = $reservation->note;
+        $this->note = html_entity_decode($reservation->note, ENT_QUOTES, 'UTF-8');
         $this->reservation = $reservation;
     }
 
@@ -29,9 +32,9 @@ class UpdateNote extends Component
                 'note' => Reservation::rules()['note']
             ]);
 
-            $this->reservation->note = $this->note;
+            $this->reservation->note = htmlentities(str_replace('"', "'", $this->note));
             $this->reservation->save();
-            $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Yay, note updated!']));
+            $this->toast('Success!', 'success', 'Yay, note updated!');
         }
     }
 

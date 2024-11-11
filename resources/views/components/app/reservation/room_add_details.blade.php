@@ -72,7 +72,7 @@
                             <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 border rounded-lg">
                                 <div class="flex items-start w-full gap-5">
                                     <div class="w-full max-w-[150px]">
-                                        <x-img-lg src="{{ $room->image_1_path }}" />
+                                        <x-img-lg src="{{ asset('storage/' . $room->image_1_path) }}" />
                                     </div>
                                     <div>
                                         <h3 class="text-sm font-semibold">{{ $room->name }}</h3>
@@ -147,7 +147,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">{{ $selected_building->name }} Building</h2>
-                    <p class="text-xs text-zinc-800">Click a room to select</p>
+                    <p class="text-xs text-zinc-800">Click a room to reserve</p>
                 </hgroup>
             </header>
             
@@ -235,7 +235,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
-                    <p class="text-xs text-zinc-800">Click a room to select</p>
+                    <p class="text-xs text-zinc-800">Click a room to reserve</p>
                 </hgroup>
             </header>
             
@@ -345,7 +345,7 @@
                             </div>
 
                             <x-tooltip text="Remove Room" dir="left">
-                                <x-danger-button x-ref="content" class="text-xs min-w-max" wire:click="removeRoom({{ $room->id }})">
+                                <x-danger-button type="button" x-ref="content" class="text-xs min-w-max" wire:click="removeRoom({{ $room->id }})">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                 </x-danger-button>
                             </x-tooltip>

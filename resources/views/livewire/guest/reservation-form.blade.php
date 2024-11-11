@@ -1,8 +1,12 @@
-<div x-data="{
+<div
+    x-data="{
         {{-- Reservation Details --}}
         min: new Date(),
         date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
         date_out: $persist($wire.entangle('date_out')).using(sessionStorage),
+        senior_count: $persist($wire.entangle('senior_count')).using(sessionStorage),
+        max_senior_count: $persist($wire.entangle('max_senior_count')).using(sessionStorage),
+        pwd_count: $persist($wire.entangle('pwd_count')).using(sessionStorage),
         adult_count: $persist($wire.entangle('adult_count')).using(sessionStorage),
         children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
         capacity: $wire.entangle('capacity'),
@@ -30,11 +34,28 @@
             return new Date(date).toLocaleDateString('en-US', options)
         },
 
+        setMaxSeniorCount() {
+            if (this.pwd_count > 0) {
+                this.max_senior_count = this.adult_count;
+
+                if (this.pwd_count + this.senior_count > this.adult_count + this.children_count) {
+                    this.pwd_count--;
+                }
+
+            } else {
+                this.max_senior_count = this.adult_count - this.pwd_count;
+            }
+        },
+
         resetProperties() {
             localStorage.removeItem('_x_date_in');
             this.date_in = null;
             localStorage.removeItem('_x_date_out');
             this.date_out = null;
+            localStorage.setItem('_x_senior_count', 0);
+            this.senior_count = 0;
+            localStorage.setItem('_x_pwd_count', 0);
+            this.pwd_count = 0;
             localStorage.setItem('_x_adult_count', 1);
             this.adult_count = 1;
             localStorage.setItem('_x_children_count', 0);
@@ -53,6 +74,7 @@
             this.street = null;
         }
     }"
+    x-init="setMaxSeniorCount()"
     x-on:reservation-created.window="resetProperties()"
     class="max-w-screen-xl py-5 mx-auto space-y-5">
 
@@ -163,7 +185,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">Reservation Confirmation</h2>
-                    <p class="max-w-sm text-xs text-zinc-800/50">Confirm that the reservation details entered are correct.</p>
+                    <p class="max-w-sm text-xs">Confirm that the reservation details entered are correct.</p>
                 </hgroup>
             </header>
             

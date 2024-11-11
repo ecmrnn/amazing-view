@@ -17,22 +17,21 @@ class RoomTypeSeeder extends Seeder
             'name' => 'La Terraza',
             'min_rate' => 2500,
             'max_rate' => 3000,
-            'description' => 'Lorem ipsum dolor sit amet.',
-            'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
+            'description' => 'Discover the epitome of elegance in our La Terreza rooms, where breathtaking mountain views meet luxurious comfort. Relax and unwind in a serene setting that perfectly blends sophistication with tranquility.',
         ]);
 
         RoomType::create([
             'name' => 'Cabana',
             'min_rate' => 2500,
             'max_rate' => 3000,
-            'description' => 'Lorem ipsum dolor sit amet.',
-            'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
+            'description' => 'Immerse yourself in tropical bliss with our Cabana rooms, where comfort meets island charm. Enjoy your private retreat, surrounded by lush gardens and the soothing sounds of nature.',
+        ]);
+
+        RoomType::create([
+            'name' => 'Pandan Villa',
+            'min_rate' => 2500,
+            'max_rate' => 3000,
+            'description' => 'Unwind in our Pandan Villa, where luxurious comfort meets tranquil privacy amidst lush greenery. This serene retreat offers an escape from the everyday, complete with modern amenities and breathtaking views.',
         ]);
     }
 }

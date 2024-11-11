@@ -4,11 +4,14 @@ namespace App\Livewire\App\Guest;
 
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class CheckInGuest extends Component
 {
+    use DispatchesToast;
+
     public $reservation;
     public $reservation_rid;
     public $date_in;
@@ -31,9 +34,9 @@ class CheckInGuest extends Component
         $this->reservation = Reservation::where('rid', $this->reservation_rid)->first();
         
         if (!empty($this->reservation)) {
-            if ($this->reservation->status == Reservation::STATUS_CHECKED_IN) {
+            if ($this->reservation->status != Reservation::STATUS_CONFIRMED) {
                 $this->reservation = null;
-                $this->dispatch('toast', json_encode(['message' => 'Already in', 'type' => 'info', 'description' => 'Guest already checked-in']));
+                $this->toast('Check-in Failed', 'warning', 'Reservation status must be confirmed');
             } else {
                 // Initialize properties
                 $this->date_in = Carbon::parse($this->reservation->date_in)->format('F j, Y');
@@ -43,7 +46,7 @@ class CheckInGuest extends Component
                 $this->status = $this->reservation->status;
             }    
         } else {
-            $this->dispatch('toast', json_encode(['message' => 'Oof, not found!', 'type' => 'warning', 'description' => 'Reservation not found']));
+            $this->toast('Oof, not found!', 'warning', 'Reservation not found!');
         }
     }
 
@@ -51,7 +54,7 @@ class CheckInGuest extends Component
         // If a reservation was found
         if (!empty($this->reservation)) {
             if ($this->reservation->status == Reservation::STATUS_CHECKED_IN) {
-                $this->dispatch('toast', json_encode(['message' => 'Already in', 'type' => 'info', 'description' => 'Guest already checked-in']));
+                $this->toast('Already in', 'info', 'Guest already checked-in');
             } else {
                 $this->reservation->status = Reservation::STATUS_CHECKED_IN;
                 $this->reservation->save();
@@ -68,11 +71,11 @@ class CheckInGuest extends Component
                 
                 $this->dispatch('pg:eventRefresh-GuestTable');
                 $this->dispatch('guest-checked-in');
-                $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Yay, guest checked-in!']));
+                $this->toast('Success!', 'success', 'yay, guest checked-in!');
             }
             // If the reservation is already checked-in
         } else {
-            $this->dispatch('toast', json_encode(['message' => 'Oof, not found!', 'type' => 'warning', 'description' => 'Reservation not found']));
+            $this->toast('Oof, not found!', 'warning', 'Reservation not found!');
         }
     }
 

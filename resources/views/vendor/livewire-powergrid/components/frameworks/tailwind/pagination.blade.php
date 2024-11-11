@@ -1,5 +1,5 @@
 <div
-    class="items-center justify-between sm:flex gap-2"
+    class="items-center justify-between gap-2 sm:flex"
     wire:loading.class="blur-[2px]"
     wire:target="loadMore"
 >
@@ -55,43 +55,24 @@
 
                     @if (!$paginator->onFirstPage())
                         <a
-                            class="cursor-pointer relative inline-flex items-center px-2 py-2 text-sm font-medium text-pg-primary-500 dark:text-pg-primary-300 bg-white dark:bg-pg-primary-600 border border-pg-primary-300 dark:border-transparent rounded-l-md leading-5 hover:text-pg-primary-400 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-500 transition ease-in-out duration-150"
+                            class="relative inline-flex items-center text-sm font-medium leading-5 transition duration-150 ease-in-out bg-white border cursor-pointer text-pg-primary-500 dark:text-pg-primary-300 dark:bg-pg-primary-600 border-pg-primary-300 dark:border-transparent rounded-l-md hover:text-pg-primary-400 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-500"
+                            wire:navigate
                             wire:click="gotoPage(1, '{{ $paginator->getPageName() }}')"
                         >
-                            <svg
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-5 h-5"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5"
-                                />
-                            </svg>
+                            <x-icon-button>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-left"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
+                            </x-icon-button>
                         </a>
 
                         <a
-                            class="cursor-pointer relative inline-flex items-center px-2 py-2 text-sm font-medium text-pg-primary-500 dark:text-pg-primary-300 bg-white dark:bg-pg-primary-600 border border-pg-primary-300 dark:border-transparent leading-5 hover:text-pg-primary-400 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-500 transition ease-in-out duration-150"
+                            class="relative inline-flex items-center text-sm font-medium leading-5 transition duration-150 ease-in-out bg-white border cursor-pointer text-pg-primary-500 dark:text-pg-primary-300 dark:bg-pg-primary-600 border-pg-primary-300 dark:border-transparent hover:text-pg-primary-400 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-500"
                             wire:click="previousPage('{{ $paginator->getPageName() }}')"
+                            wire:navigate
                             rel="next"
                         >
-                            <svg
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-5 h-5"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M15.75 19.5 8.25 12l7.5-7.5"
-                                />
-                            </svg>
-
+                           <x-icon-button>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+                           </x-icon-button>
                         </a>
                     @endif
 
@@ -99,16 +80,14 @@
                         @if (is_array($element))
                             @foreach ($element as $page => $url)
                                 @if ($page == $paginator->currentPage())
-                                    <span
-                                        class="select-none relative z-10 inline-flex items-center px-3 py-2 -ml-px text-sm font-bold text-primary-700 dark:text-pg-primary-300 bg-primary-100 dark:bg-pg-primary-700 border border-primary-300 dark:border-transparent cursor-default select-none"
-                                    >{{ $page }}</span>
+                                    <span class="relative z-10 inline-flex items-center px-3 py-2 -ml-px text-sm font-semibold cursor-default select-none">{{ $page }}</span>
                                 @elseif (
                                     $page === $paginator->currentPage() + 1 ||
                                         $page === $paginator->currentPage() + 2 ||
                                         $page === $paginator->currentPage() - 1 ||
                                         $page === $paginator->currentPage() - 2)
                                     <a
-                                        class="select-none cursor-pointer relative inline-flex items-center px-3 py-2 -ml-px text-sm font-medium text-pg-primary-600 dark:text-pg-primary-400 bg-white dark:bg-pg-primary-600 border border-pg-primary-300 dark:border-transparent leading-5 hover:text-pg-primary-500 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-700 transition ease-in-out duration-150"
+                                        class="relative inline-flex items-center px-3 py-2 -ml-px text-sm font-semibold leading-5 transition duration-150 ease-in-out cursor-pointer select-none text-zinc-800/25"
                                         wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')"
                                     >{{ $page }}</a>
                                 @endif
@@ -121,42 +100,25 @@
                             @class([
                                 'block' => $paginator->lastPage() - $paginator->currentPage() >= 2,
                                 'hidden' => $paginator->lastPage() - $paginator->currentPage() < 2,
-                                'select-none cursor-pointer relative inline-flex items-center px-2 py-2 text-sm font-medium text-pg-primary-500 dark:text-pg-primary-300 bg-white dark:bg-pg-primary-600 border border-pg-primary-300 dark:border-transparent leading-5 hover:text-pg-primary-400 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-500 transition ease-in-out duration-150'
+                                'select-none cursor-pointer relative inline-flex items-center text-sm font-medium text-pg-primary-500 dark:text-pg-primary-300 bg-white dark:bg-pg-primary-600 border border-pg-primary-300 dark:border-transparent leading-5 hover:text-pg-primary-400 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-500 transition ease-in-out duration-150'
                             ])
                             wire:click="nextPage('{{ $paginator->getPageName() }}')"
+                            wire:navigate
                             rel="next"
                         >
-                            <svg
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-5 h-5"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                                />
-                            </svg>
+                        <x-icon-button>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+                        </x-icon-button>
                         </a>
                         <a
-                            class="select-none cursor-pointer cursor-pointer relative inline-flex items-center px-2 py-2 text-sm font-medium text-pg-primary-500 dark:text-pg-primary-300 bg-white dark:bg-pg-primary-600 border border-pg-primary-300 dark:border-transparent rounded-r-md leading-5 hover:text-pg-primary-400 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-500 transition ease-in-out duration-150"
+                            class="relative inline-flex items-center text-sm font-medium leading-5 transition duration-150 ease-in-out bg-white border cursor-pointer select-none text-pg-primary-500 dark:text-pg-primary-300 dark:bg-pg-primary-600 border-pg-primary-300 dark:border-transparent rounded-r-md hover:text-pg-primary-400 focus:z-10 focus:outline-none focus:shadow-outline-blue active:bg-pg-primary-100 active:text-pg-primary-500"
                             wire:click="gotoPage({{ $paginator->lastPage() }}, '{{ $paginator->getPageName() }}')"
+                            wire:navigate
                         >
-                            <svg
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-5 h-5"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"
-                                />
-                            </svg></a>
+                        <x-icon-button>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-right"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
+                        </x-icon-button>
+                        </a>
                     @endif
                 </div>
             </nav>
@@ -175,7 +137,7 @@
                             @if ($paginator->onFirstPage())
                                 <button
                                     disabled
-                                    class="focus:ring-offset-white focus:shadow-outline group inline-flex items-center justify-center gap-x-2 border outline-none transition-all duration-200 ease-in-out hover:shadow-sm focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-80 text-md font-semibold px-4 py-2 text-pg-primary-500 bg-pg-primary-50 ring-0 ring-inset ring-pg-primary-300 hover:bg-pg-primary-100 dark:bg-pg-primary-800 dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-900 dark:text-pg-primary-300 focus-visible:outline-offset-0 rounded-md"
+                                    class="inline-flex items-center justify-center px-4 py-2 font-semibold transition-all duration-200 ease-in-out border rounded-md outline-none focus:ring-offset-white focus:shadow-outline group gap-x-2 hover:shadow-sm focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-80 text-md text-pg-primary-500 bg-pg-primary-50 ring-0 ring-inset ring-pg-primary-300 hover:bg-pg-primary-100 dark:bg-pg-primary-800 dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-900 dark:text-pg-primary-300 focus-visible:outline-offset-0"
                                 >
                                     @lang('Previous')
                                 </button>
@@ -184,7 +146,7 @@
                                     <button
                                         wire:click="setPage('{{ $paginator->previousCursor()->encode() }}','{{ $paginator->getCursorName() }}')"
                                         wire:loading.attr="disabled"
-                                        class="select-none p-2 m-1 text-center text-white bg-pg-primary-600 border-pg-primary-400 rounded cursor-pointer border-1 hover:bg-pg-primary-600 hover:border-pg-primary-800 dark:text-pg-primary-300"
+                                        class="p-2 m-1 text-center text-white rounded cursor-pointer select-none bg-pg-primary-600 border-pg-primary-400 border-1 hover:bg-pg-primary-600 hover:border-pg-primary-800 dark:text-pg-primary-300"
                                     >
                                         <svg
                                             fill="none"
@@ -205,7 +167,7 @@
                                     <button
                                         wire:click="previousPage('{{ $paginator->getPageName() }}')"
                                         wire:loading.attr="disabled"
-                                        class="select-none focus:ring-offset-white focus:shadow-outline group inline-flex items-center justify-center gap-x-2 border outline-none transition-all duration-200 ease-in-out hover:shadow-sm focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-80 text-md font-semibold px-4 py-2 text-pg-primary-500 bg-pg-primary-50 ring-0 ring-inset ring-pg-primary-300 hover:bg-pg-primary-100 dark:bg-pg-primary-800 dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-900 dark:text-pg-primary-300 focus-visible:outline-offset-0 rounded-md"
+                                        class="inline-flex items-center justify-center px-4 py-2 font-semibold transition-all duration-200 ease-in-out border rounded-md outline-none select-none focus:ring-offset-white focus:shadow-outline group gap-x-2 hover:shadow-sm focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-80 text-md text-pg-primary-500 bg-pg-primary-50 ring-0 ring-inset ring-pg-primary-300 hover:bg-pg-primary-100 dark:bg-pg-primary-800 dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-900 dark:text-pg-primary-300 focus-visible:outline-offset-0"
                                     >
                                         @lang('Previous')
                                     </button>
@@ -220,7 +182,7 @@
                                     <button
                                         wire:click="setPage('{{ $paginator->nextCursor()->encode() }}','{{ $paginator->getCursorName() }}')"
                                         wire:loading.attr="disabled"
-                                        class="select-none p-2 m-1 text-center text-white bg-pg-primary-600 border-pg-primary-400 rounded cursor-pointer border-1 hover:bg-pg-primary-600 hover:border-pg-primary-800 dark:text-pg-primary-300"
+                                        class="p-2 m-1 text-center text-white rounded cursor-pointer select-none bg-pg-primary-600 border-pg-primary-400 border-1 hover:bg-pg-primary-600 hover:border-pg-primary-800 dark:text-pg-primary-300"
                                     >
                                         <svg
                                             fill="none"
@@ -241,7 +203,7 @@
                                     <button
                                         wire:click="nextPage('{{ $paginator->getPageName() }}')"
                                         wire:loading.attr="disabled"
-                                        class="select-none focus:ring-offset-white focus:shadow-outline group inline-flex items-center justify-center gap-x-2 border outline-none transition-all duration-200 ease-in-out hover:shadow-sm focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-80 text-md font-semibold px-4 py-2 text-pg-primary-500 bg-pg-primary-50 ring-0 ring-inset ring-pg-primary-300 hover:bg-pg-primary-100 dark:bg-pg-primary-800 dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-900 dark:text-pg-primary-300 focus-visible:outline-offset-0 rounded-md"
+                                        class="inline-flex items-center justify-center px-4 py-2 font-semibold transition-all duration-200 ease-in-out border rounded-md outline-none select-none focus:ring-offset-white focus:shadow-outline group gap-x-2 hover:shadow-sm focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-80 text-md text-pg-primary-500 bg-pg-primary-50 ring-0 ring-inset ring-pg-primary-300 hover:bg-pg-primary-100 dark:bg-pg-primary-800 dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-900 dark:text-pg-primary-300 focus-visible:outline-offset-0"
                                     >
                                         @lang('Next')
                                     </button>
@@ -249,7 +211,7 @@
                             @else
                                 <button
                                     disabled
-                                    class="focus:ring-offset-white focus:shadow-outline group inline-flex items-center justify-center gap-x-2 border outline-none transition-all duration-200 ease-in-out hover:shadow-sm focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-80 text-md font-semibold px-4 py-2 text-pg-primary-500 bg-pg-primary-50 ring-0 ring-inset ring-pg-primary-300 hover:bg-pg-primary-100 dark:bg-pg-primary-800 dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-900 dark:text-pg-primary-300 focus-visible:outline-offset-0 rounded-md"
+                                    class="inline-flex items-center justify-center px-4 py-2 font-semibold transition-all duration-200 ease-in-out border rounded-md outline-none focus:ring-offset-white focus:shadow-outline group gap-x-2 hover:shadow-sm focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-80 text-md text-pg-primary-500 bg-pg-primary-50 ring-0 ring-inset ring-pg-primary-300 hover:bg-pg-primary-100 dark:bg-pg-primary-800 dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-900 dark:text-pg-primary-300 focus-visible:outline-offset-0"
                                 >
                                     @lang('Next')
                                 </button>

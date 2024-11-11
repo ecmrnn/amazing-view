@@ -13,7 +13,7 @@
                         <x-form.input-date
                             wire:model.live="date_in"
                             x-model="date_in"
-                            x-bind:min="`${min.getFullYear()}-${String(min.getMonth() + 1).padStart(2, '0')}-${String(min.getDate()).padStart(2, '0')}`"
+                            x-bind:min="`${min.getFullYear()}-${String(min.getMonth() + 1).padStart(2, '0')}-${String(min.getDate() + 1).padStart(2, '0')}`"
                             id="date_in" class="block w-full" />
                         <x-form.input-error field="date_in" />
                     </x-form.input-group>
@@ -39,8 +39,9 @@
                             id="adult_count"
                             class="block w-full"
                             min="1" />
-                            <x-form.input-error field="adult_count" />
+                        <x-form.input-error field="adult_count" />
                     </x-form.input-group>
+                    
                     <x-form.input-group>
                         <x-form.input-label for="children_count">Number of Children</x-form.input-label>
                         <x-form.input-number x-model="children_count" id="children_count"
@@ -48,6 +49,8 @@
                             class="block w-full" />
                         <x-form.input-error field="children_count" />
                     </x-form.input-group>
+
+                    <x-secondary-button x-on:click="$dispatch('open-modal', 'pwd-senior-modal');">Add Senior or PWD</x-secondary-button>
                 </div>
             </div>
 
@@ -138,7 +141,8 @@
     <div x-show="can_select_a_room" x-collapse.duration.1000ms>
         <x-form.form-body>
             <div class="p-5 space-y-3">
-                <p class="text-sm">Enhance your stay by availing our additional services.</p>
+                <p class="text-sm">Enhance your stay by availing our additional services</p>
+
                 <div class="grid gap-2 sm:grid-cols-2">
                     @forelse ($reservable_amenities as $amenity)
                         @php
@@ -187,7 +191,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
-                    <p class="text-xs text-zinc-800">Click a room to select</p>
+                    <p class="text-xs text-zinc-800">Click a room to reserve</p>
                 </hgroup>
             </header>
             
@@ -255,4 +259,55 @@
             </section>
         </div>
     @endif
+</x-modal.full>
+
+<x-modal.full name='pwd-senior-modal' maxWidth='sm'>
+    <div class="p-5 space-y-5">
+        <hgroup>
+            <h3 class="font-bold">Add Senior and PWD</h3>
+            <p class="text-xs">If your fellow guest are senior or with disability</p>
+        </hgroup>
+
+        <div class="space-y-3">
+            <x-note>The maximum number of senior and PWD is based on the number of adults and children you have entered respectively</x-note>
+            <div class="grid grid-cols-2 gap-3">
+                <x-form.input-group>
+                    <x-form.input-label for="senior_count">Number of Seniors</x-form.input-label>
+                    <x-form.input-number 
+                        max="{{ $max_senior_count }}"
+                        x-model="senior_count" id="senior_count" 
+                        wire:model.live="senior_count"
+                        x-on:change.window="setMaxSeniorCount()"
+                        class="block w-full" />
+                    <x-form.input-error field="senior_count" />
+                </x-form.input-group>
+
+                <x-form.input-group>
+                    <x-form.input-label for="pwd_count">Number of PWD</x-form.input-label>
+                    <x-form.input-number 
+                        max="{{ ($adult_count - $senior_count) + $children_count }}"
+                        x-model="pwd_count" 
+                        id="pwd_count"
+                        wire:model.live="pwd_count"
+                        x-on:change.window="setMaxSeniorCount()"
+                        class="block w-full" />
+                    <x-form.input-error field="pwd_count" />
+                </x-form.input-group>
+            </div>
+            
+            <div class="p-3 space-y-3 border border-gray-300 rounded-lg">
+                <h4 class="text-sm font-bold">Guest Summary</h4>
+
+                <div>
+                    <p class="text-xs">
+                        Adults: <span x-text="adult_count"></span> Adult<span x-show="adult_count > 1">s</span>
+                        <span x-show="senior_count > 0">&lpar;<span x-text="senior_count"></span>  Senior<span x-show="senior_count > 1">s</span>&rpar;</span>
+                    </p>
+                    <p class="text-xs">Children: <span x-text="children_count"></span> Child<span s-how="children_count > 1">ren</span></p>
+                    <p class="text-xs">PWD: <span x-text="pwd_count"></span> PWD<span x-show="pwd_count > 1">s</span></p>
+                    <p class="text-xs"><strong class="text-blue-500">Total Guests: {{ $adult_count + $children_count }}</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-modal.full>

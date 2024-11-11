@@ -4,10 +4,14 @@
 
     <div x-show="!can_select_address" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body>
-            <div class="p-5 space-y-3">
+            <div class="p-5 space-y-5">
                 {{-- Personal Information --}}
                 <div class="space-y-3">
-                    <p class="max-w-sm text-xs">Kindly enter your <strong class="text-blue-500">First Name</strong> and <strong class="text-blue-500">Last Name</strong> on their respective input fields below.</p>
+                    <hgroup>
+                        <h3 class="text-sm font-semibold">First &amp; Last Name</h3>
+                        <p class="max-w-sm text-xs">Kindly enter your <strong class="text-blue-500">First Name</strong> and <strong class="text-blue-500">Last Name</strong> on their respective input fields below.</p>
+                    </hgroup>
+
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div class="space-y-2">
                             <x-form.input-text
@@ -36,7 +40,10 @@
                 
                 {{-- Contact Information --}}
                 <div class="space-y-3">
-                    <p class="max-w-sm text-xs">Kindly enter your <strong class="text-blue-500">Email</strong> and <strong class="text-blue-500">Contact Number</strong> on their respective input fields below.</p>
+                    <hgroup>
+                        <h3 class="text-sm font-semibold">Email &amp; Contact Number</h3>
+                        <p class="max-w-sm text-xs">Kindly enter your <strong class="text-blue-500">Email</strong> and <strong class="text-blue-500">Contact Number</strong> on their respective input fields below.</p>
+                    </hgroup>
 
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div class="space-y-2">
@@ -63,11 +70,26 @@
                     </div>
                 </div>
 
+                {{-- Vehicle --}}
+                {{-- <div class="space-y-3">
+                    <hgroup>
+                        <h3 class="text-sm font-semibold">Vehicle</h3>
+                        <p class="text-sm">If you have a private vehicle, enter your vehicle details below</p>
+                    </hgroup>
+
+                    <x-note>
+                        <p class="max-w-sm">These details will be used by our security personnels to identify you upon arrival to the resort.</p>
+                    </x-note>
+
+                    <div>
+                        
+                    </div>
+                </div> --}}
+
                 <div class="flex items-center gap-3">
                     <x-primary-button type="button" wire:click="selectAddress()">Select Address</x-primary-button>
                     <p wire:loading wire:target='selectAddress()' class="text-xs font-semibold">Please wait while we load the next form.</p>
                 </div>
-                
             </div>
         </x-form.form-body>
     </div>

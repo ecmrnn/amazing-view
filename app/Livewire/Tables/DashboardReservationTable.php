@@ -48,7 +48,6 @@ final class DashboardReservationTable extends PowerGridComponent
     public function datasource()
     {
         return Reservation::where('status', Reservation::STATUS_PENDING)
-            ->orWhere('status', Reservation::STATUS_CONFIRMED)
             ->get();
     }
 

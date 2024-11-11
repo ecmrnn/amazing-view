@@ -43,6 +43,35 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'update billing']);
         Permission::create(['name' => 'delete billing']);
 
+        Permission::create(['name' => 'create building']);
+        Permission::create(['name' => 'read buildings']);
+        Permission::create(['name' => 'update building']);
+        Permission::create(['name' => 'delete building']);
+
+        Permission::create(['name' => 'create amenity']);
+        Permission::create(['name' => 'read amenities']);
+        Permission::create(['name' => 'update amenity']);
+        Permission::create(['name' => 'delete amenity']);
+
+        Permission::create(['name' => 'create user']);
+        Permission::create(['name' => 'read users']);
+        Permission::create(['name' => 'update user']);
+        Permission::create(['name' => 'delete user']);
+
+        Permission::create(['name' => 'create content']);
+        Permission::create(['name' => 'read contents']);
+        Permission::create(['name' => 'update content']);
+        Permission::create(['name' => 'delete content']);
+
+        Permission::create(['name' => 'create report']);
+        Permission::create(['name' => 'read reports']);
+        Permission::create(['name' => 'update report']);
+        Permission::create(['name' => 'delete report']);
+
+        $guest_permissions = [
+            'read reservations',
+        ];
+
         $frontdesk_permissions = [
             'read guests',
             'update guest',
@@ -57,7 +86,7 @@ class RolePermissionSeeder extends Seeder
             'read billings',
         ];
 
-        $admin_permission = [
+        $admin_permissions = [
             'create guest',
             'read guests',
             'update guest',
@@ -67,6 +96,7 @@ class RolePermissionSeeder extends Seeder
             'read rooms',
             'update room',
             'delete room',
+
             'create room type',
             'read rooms type',
             'update room type',
@@ -81,6 +111,21 @@ class RolePermissionSeeder extends Seeder
             'read billings',
             'update billing',
             'delete billing',
+
+            'create building',
+            'read buildings',
+            'update building',
+            'delete building',
+
+            'create amenity',
+            'read amenities',
+            'update amenity',
+            'delete amenity',
+
+            'create user',
+            'read users',
+            'update user',
+            'delete user',
         ];
 
         // Create Roles
@@ -89,6 +134,8 @@ class RolePermissionSeeder extends Seeder
         $admin = Role::create(['name' => 'admin']);
 
         // Sync Permissions with Roles
+        $guest->syncPermissions($guest_permissions);
         $frontdesk->syncPermissions($frontdesk_permissions);
+        $admin->syncPermissions($admin_permissions);
     }
 }

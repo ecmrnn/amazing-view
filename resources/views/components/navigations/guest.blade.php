@@ -1,8 +1,8 @@
-<div class="fixed top-0 z-10 w-full">
+<div class="w-full">
     {{-- <x-banner /> --}}
     
-    <nav class="px-5 text-sm font-semibold border-b bg-white/75 before:backdrop-blur-xl before:backdrop-hack">
-        <div class="max-w-screen-xl py-3 mx-auto">
+    <nav class="py-2 text-sm font-semibold bg-white/90 before:backdrop-blur-xl before:backdrop-hack">
+        <div class="max-w-screen-xl mx-auto">
             {{-- Desktop --}}
             <div class="items-center justify-between hidden md:flex">
                 <x-application-logo />
@@ -56,7 +56,7 @@
                     x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700" 
                     x-transition:leave-start="translate-x-0" 
                     x-transition:leave-end="translate-x-full" 
-                     class="fixed top-0 right-0 w-3/4 h-screen bg-white border-l md:hidden">
+                     class="fixed top-0 right-0 z-50 w-3/4 h-screen bg-white border-l md:hidden">
                     <div class="flex items-center justify-between p-5">
                         <div>
                             <p class="font-semibold">Main Menu</p>

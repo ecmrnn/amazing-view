@@ -7,6 +7,12 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('redketchup/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('redketchup/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('redketchup/favicon-16x16.png') }}">
+        <link rel="manifest" href="/site.webmanifest">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -38,9 +44,22 @@
                 position: 'top-right',
             })"
         >
-        <x-navigations.guest />
+        <div @class([
+                'sticky top-0 flex flex-col px-5 pb-5',
+                'h-screen' => ! Request::is('reservation'),
+            ])>
+            <x-navigations.guest />
+            <section class="relative flex-grow">
+                {{ $hero }}
+            </section>
+        </div>
         
-        <main class="min-h-screen">
+        <main class="relative">
+            {{--  --}}
+            <div class="absolute w-5 bg-white left-2 -top-7 inv-rad inv-rad-t-r-2 aspect-square"></div>
+            <div class="absolute w-5 bg-white right-2 -top-7 inv-rad inv-rad-t-l-2 aspect-square"></div>
+            <div class="absolute left-0 w-full h-5 bg-white -top-5"></div>
+            
             {{ $slot }}
         </main>
 

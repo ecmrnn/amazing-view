@@ -4,11 +4,14 @@ namespace App\Livewire\App\Guest;
 
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Traits\DispatchesToast;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use Livewire\Component;
 
 class CheckOutGuest extends Component
 {
+    use DispatchesToast;
+
     public $send_invoice = true;
     public $reservation;
 
@@ -32,12 +35,7 @@ class CheckOutGuest extends Component
             $amenity->save();
         }
         
-        $this->dispatch('toast', json_encode([
-            'message' => 'Success!',
-            'type' => 'success',
-            'description' => 'Guest checked-out'
-        ]));
-
+        $this->toast('Success!', 'success', 'Guest checked-out');
     }
 
     public function render()

@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot:header>
-        <div class="flex items-center justify-between gap-3 p-5 py-3 bg-white rounded-lg">
+        <div class="flex items-center justify-between gap-3">
             <hgroup>
                 <h1 class="text-xl font-bold leading-tight text-gray-800">
                     {{ __('Guests') }}
@@ -30,7 +30,7 @@
             <section class="p-5 space-y-5 bg-white">
                 <hgroup>
                     <h2 class="font-semibold capitalize">Check-in Guest</h2>
-                    <p class="max-w-sm text-sm">Enter the <strong class="text-blue-500">Reservation ID</strong> of the guest you want to check-in.</p>
+                    <p class="max-w-sm text-sm">Enter the <strong class="text-blue-500">Reservation ID</strong> of the guest you want to check-in</p>
                 </hgroup>
 
                 <livewire:app.guest.check-in-guest />

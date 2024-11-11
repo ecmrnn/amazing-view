@@ -7,6 +7,12 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('redketchup/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('redketchup/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('redketchup/favicon-16x16.png') }}">
+        <link rel="manifest" href="/site.webmanifest">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -17,6 +23,7 @@
         <!-- Scripts -->
         @filepondScripts
         @livewireChartsScripts
+        <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="antialiased font-inter text-zinc-800"
@@ -45,7 +52,7 @@
             <div class="w-full p-3 space-y-3 sm:p-10 sm:space-y-5">
                 <!-- Page Heading -->
                 @isset($header)
-                    <header>
+                    <header class="py-3 pl-5 rounded-lg bg-gradient-to-r from-white to-white/0">
                         {{ $header }}
                     </header>
                 @endisset
@@ -58,6 +65,9 @@
     
         {{-- Toast --}}
         <x-toast />
+
+        {{-- Settings Modal --}}
+        <x-app.settings />
 
         @livewireScripts
         @livewireStyles

@@ -4,7 +4,7 @@
     'selectedAmenities' => '',
 ])
 
-<aside class="sticky self-start p-5 space-y-5 border rounded-lg top-[84px]">
+<aside class="sticky self-start p-5 space-y-5 border border-gray-300 rounded-lg top-5">
     <h2 class="text-lg font-semibold">Reservation Summary</h2>
 
     <div>

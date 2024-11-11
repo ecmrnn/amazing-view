@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Building;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,10 +15,13 @@ return new class extends Migration
         Schema::create('buildings', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('prefix');
+            $table->string('description');
+            $table->string('image')->nullable();
+            $table->string('prefix')->unique();
             $table->smallInteger('floor_count');
             $table->smallInteger('room_row_count')->nullable();
             $table->smallInteger('room_col_count')->nullable();
+            $table->smallInteger('status')->default(Building::STATUS_ACTIVE);
             $table->timestamps();
         });
     }

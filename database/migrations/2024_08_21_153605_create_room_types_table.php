@@ -17,10 +17,10 @@ return new class extends Migration
             $table->decimal('min_rate');
             $table->decimal('max_rate');
             $table->text('description');
-            $table->string('image_1_path');
-            $table->string('image_2_path');
-            $table->string('image_3_path');
-            $table->string('image_4_path');
+            $table->string('image_1_path')->nullable();
+            $table->string('image_2_path')->nullable();
+            $table->string('image_3_path')->nullable();
+            $table->string('image_4_path')->nullable();
             $table->timestamps();
         });
     }

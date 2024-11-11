@@ -22,9 +22,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 4,
             'rate' => 2500,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -37,9 +34,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 5,
             'rate' => 2700,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -52,9 +46,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 6,
             'rate' => 3000,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -67,9 +58,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 5,
             'rate' => 2700,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -82,9 +70,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 5,
             'rate' => 2700,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -97,9 +82,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 6,
             'rate' => 2500,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -112,9 +94,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 4,
             'rate' => 2000,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -127,9 +106,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 7,
             'rate' => 2700,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -142,9 +118,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 4,
             'rate' => 2400,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
 
@@ -157,9 +130,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 6,
             'rate' => 2800,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
         Room::create([
@@ -171,9 +141,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 9,
             'rate' => 4000,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
         Room::create([
@@ -185,9 +152,6 @@ class RoomSeeder extends Seeder
             'max_capacity' => 8,
             'rate' => 3500,
             'image_1_path' => 'https://placehold.co/300',
-            'image_2_path' => 'https://placehold.co/300',
-            'image_3_path' => 'https://placehold.co/300',
-            'image_4_path' => 'https://placehold.co/300',
             'status' => 0,
         ]);
     }

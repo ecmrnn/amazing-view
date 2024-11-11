@@ -8,6 +8,7 @@ use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Validate;
@@ -17,14 +18,16 @@ use Spatie\LivewireFilepond\WithFilePond;
 
 class ReservationForm extends Component
 {
-    use WithFilePond, WithPagination;
+    use WithFilePond, WithPagination, DispatchesToast;
 
-    public $step = 1;
+    public $step = 2;
     public $capacity = 0;
 
     // Reservation Details
     #[Validate] public $date_in;
     #[Validate] public $date_out;
+    #[Validate] public $senior_count = 0;
+    #[Validate] public $pwd_count = 0;
     #[Validate] public $adult_count = 1;
     #[Validate] public $children_count = 0;
     #[Validate] public $selected_rooms;
@@ -33,6 +36,7 @@ class ReservationForm extends Component
     public $reservable_amenities = [];
     public $room_type_name;
     public $room_type_id;
+    public $max_senior_count = 0;
     // Guest Details
     #[Validate] public $first_name;
     #[Validate] public $last_name;
@@ -53,6 +57,7 @@ class ReservationForm extends Component
     public $districts = [];
     // Payment
     #[Validate] public $proof_image_path;
+    #[Validate] public $transaction_id;
 
     // Operational Variables
     public $can_select_a_room = false;
@@ -76,8 +81,6 @@ class ReservationForm extends Component
         
         $this->room_types = RoomType::all();
         $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
-
-
     }
 
     // Custome Validation Messages
@@ -89,12 +92,32 @@ class ReservationForm extends Component
     // Validation Methods
     public function rules()
     {
-        return Reservation::rules(['downpayment', 'note']);
+        return[
+            'date_in' => 'required|date|after_or_equal:today',
+            'date_out' => 'required|date|after_or_equal:date_in',
+            'adult_count' => 'required|integer|min:1',
+            'children_count' => 'integer|min:0',
+            'selected_rooms' => 'required',
+            'first_name' => 'required|min:2',
+            'last_name' => 'required|min:2',
+            'email' => 'required|email:rfc,dns',
+            'phone' => 'required|digits:11|starts_with:09',
+            'address' => 'required',
+            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
+        ];
     }
 
     public function validationAttributes()
     {
         return Reservation::validationAttributes(['downpayment', 'note']);
+    }
+
+    public function setMaxSeniorCount() {
+        if ($this->pwd_count > 0) {
+            $this->max_senior_count = $this->adult_count - $this->pwd_count + $this->children_count;
+        } else {
+            $this->max_senior_count = $this->adult_count - $this->pwd_count;
+        }
     }
 
     public function toggleRoom(Room $room)
@@ -140,7 +163,7 @@ class ReservationForm extends Component
                 $room = Room::find($room_id);
                 $this->toggleRoom($room);
 
-                $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Room added!']));
+                $this->toast('Success!', 'success', 'Room added!');
                 break;
             }
         }
@@ -155,7 +178,7 @@ class ReservationForm extends Component
             return $room->id == $room_to_delete->id;
         });
 
-        $this->dispatch('toast', json_encode(['message' => 'For Your Info.', 'type' => 'info', 'description' => 'Room removed']));
+        $this->toast('For Your Info.', 'info', 'Room removed');
     }
 
     public function computeBreakdown() {
@@ -299,10 +322,10 @@ class ReservationForm extends Component
                         $this->regions = AddressController::getRegions();
                         $this->districts = AddressController::getDistricts();
                     } catch (\Throwable $th) {
-                        $this->dispatch('toast', json_encode(['message' => 'Oh no', 'type' => 'warning', 'description' => 'Failed getting data from server']));
+                        $this->toast('Oh no', 'warning', 'Failed getting data from server');
                     }
 
-                    $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Next, Guest Details']));
+                    $this->toast('Success!', 'success', 'Next, Guest Details');
                     break;
                 case 2:
                     $this->validate([
@@ -314,11 +337,11 @@ class ReservationForm extends Component
                     ]);
 
                     $this->step++;
-                    $this->dispatch('toast', json_encode(['message' => 'Success!.', 'type' => 'success', 'description' => 'Next, Payment']));
+                    $this->toast('Success!', 'success', 'Next, Payment');
                     break;
                 case 3:
                     $this->validate([
-                        'proof_image_path' => 'mimes:jpg,jpeg,png|image|max:1000|required'
+                        'proof_image_path' => $this->rules()['proof_image_path']
                     ]);
     
                     $this->dispatch('open-modal', 'show-reservation-confirmation');
@@ -333,6 +356,8 @@ class ReservationForm extends Component
         $this->validate([
             'date_in' => $this->rules()['date_in'],
             'date_out' => $this->rules()['date_out'],
+            'senior_count' => $this->rules()['adult_count'],
+            'pwd_count' => $this->rules()['adult_count'],
             'adult_count' => $this->rules()['adult_count'],
             'children_count' => $this->rules()['children_count'],
             'selected_rooms' => $this->rules()['selected_rooms'],
@@ -347,6 +372,8 @@ class ReservationForm extends Component
         $reservation = Reservation::create([
             'date_in' => $this->date_in,
             'date_out' => $this->date_out,
+            'senior_count' => $this->senior_count,
+            'pwd_count' => $this->pwd_count,
             'adult_count' => $this->adult_count,
             'children_count' => $this->children_count,
             'status' => Reservation::STATUS_PENDING,
@@ -363,6 +390,8 @@ class ReservationForm extends Component
             // Store rooms
             foreach ($this->selected_rooms as $room) {
                 $room->reservations()->attach($reservation->id);
+                $room->status = Room::STATUS_RESERVED;
+                $room->save();
             }
         }
 
@@ -379,7 +408,7 @@ class ReservationForm extends Component
 
         // Dispatch event
         $this->dispatch('reservation-created');
-        $this->dispatch('toast', json_encode(['message' => 'Success!.', 'type' => 'success', 'description' => 'Reservation sent!']));
+        $this->toast('Success!', 'success', 'Reservation sent!');
         $this->step++;
     }
 

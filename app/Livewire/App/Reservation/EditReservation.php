@@ -10,6 +10,7 @@ use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -17,7 +18,7 @@ use Spatie\LivewireFilepond\WithFilePond;
 
 class EditReservation extends Component
 {
-    use WithFilePond;
+    use WithFilePond, DispatchesToast;
 
     // Reservation Details
     #[Validate] public $date_in;
@@ -198,7 +199,7 @@ class EditReservation extends Component
                 'additional_amenity',
             ]);
         } else {
-            $this->dispatch('toast', json_encode(['message' => 'Oof, not enough item!', 'type' => 'warning', 'description' => 'Item quantity is not enough']));
+            $this->toast('Oof, not enough item', 'warning', 'Item quantity is not enough');
         }
     }
 
@@ -407,7 +408,7 @@ class EditReservation extends Component
         $invoice->balance = $this->net_total - $invoice->downpayment;
         $invoice->save();
 
-        $this->dispatch('toast', json_encode(['message' => 'Success!', 'type' => 'success', 'description' => 'Yay, Reservation Updated!']));
+        $this->toast('Success!', 'success', 'Yay, reservation updated!');
     }
 
     public function render()

@@ -17,8 +17,11 @@ class RoomController extends Controller
      */
     public function index(RoomType $type)
     {
+        $deleted_rooms = Room::onlyTrashed()->whereBelongsTo($type)->count();
+
         return view('app.rooms.index', [
-            'room' => $type
+            'room' => $type,
+            'deleted_rooms' => $deleted_rooms,
         ]);
     }
 
@@ -53,11 +56,9 @@ class RoomController extends Controller
     {
         $room = Room::findOrFail($room);
 
-        if (!empty($room)) {
-            return view('app.rooms.edit', [
-                'room' => $room,
-            ]);
-        }
+        return view('app.rooms.edit', [
+            'room' => $room,
+        ]);
     }
 
     /**

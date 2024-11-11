@@ -3,13 +3,13 @@
 
     <p class="text-sm font-semibold text-center">No rooms found!</p>
 
-    @can('create room')
+    {{-- @can('create room')
         <a class="inline-block text-xs" href="{{ route('app.room.create', ['type' => $room_type_id]) }}" wire:navigate>
             <x-primary-button>
                 Add Room
             </x-primary-button>
         </a>
-    @endcan
+    @endcan --}}
 
     @cannot('create room')
         <p class="max-w-xs mx-auto text-xs font-bold text-zinc-800/50">Ask the administrator to add a room first to proceed</p>
