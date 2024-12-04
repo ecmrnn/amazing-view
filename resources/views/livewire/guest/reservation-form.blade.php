@@ -1,80 +1,80 @@
 <div
-    x-data="{
-        {{-- Reservation Details --}}
-        min: new Date(),
-        date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
-        date_out: $persist($wire.entangle('date_out')).using(sessionStorage),
-        senior_count: $persist($wire.entangle('senior_count')).using(sessionStorage),
-        max_senior_count: $persist($wire.entangle('max_senior_count')).using(sessionStorage),
-        pwd_count: $persist($wire.entangle('pwd_count')).using(sessionStorage),
-        adult_count: $persist($wire.entangle('adult_count')).using(sessionStorage),
-        children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
-        night_count: $persist($wire.entangle('night_count')).using(sessionStorage),
-        capacity: $wire.entangle('capacity'),
-        address: $persist($wire.entangle('address')).using(sessionStorage),
+        x-data="{
+            {{-- Reservation Details --}}
+            min: new Date(),
+            date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
+            date_out: $persist($wire.entangle('date_out')).using(sessionStorage),
+            senior_count: $persist($wire.entangle('senior_count')).using(sessionStorage),
+            max_senior_count: $persist($wire.entangle('max_senior_count')).using(sessionStorage),
+            pwd_count: $persist($wire.entangle('pwd_count')).using(sessionStorage),
+            adult_count: $persist($wire.entangle('adult_count')).using(sessionStorage),
+            children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
+            night_count: $persist($wire.entangle('night_count')).using(sessionStorage),
+            capacity: $wire.entangle('capacity'),
+            address: $persist($wire.entangle('address')).using(sessionStorage),
 
-        {{-- Guest Details --}}
-        first_name: $persist($wire.entangle('first_name')).using(sessionStorage),
-        last_name: $persist($wire.entangle('last_name')).using(sessionStorage),
-        email: $persist($wire.entangle('email')).using(sessionStorage),
-        phone: $persist($wire.entangle('phone')).using(sessionStorage),
-        region: $wire.entangle('region'),
-        province: $wire.entangle('province'),
-        city: $wire.entangle('city'),
-        district: $wire.entangle('district'),
-        baranggay: $wire.entangle('baranggay'),
-        street: $persist($wire.entangle('street')).using(sessionStorage),
+            {{-- Guest Details --}}
+            first_name: $persist($wire.entangle('first_name')).using(sessionStorage),
+            last_name: $persist($wire.entangle('last_name')).using(sessionStorage),
+            email: $persist($wire.entangle('email')).using(sessionStorage),
+            phone: $persist($wire.entangle('phone')).using(sessionStorage),
+            region: $wire.entangle('region'),
+            province: $wire.entangle('province'),
+            city: $wire.entangle('city'),
+            district: $wire.entangle('district'),
+            baranggay: $wire.entangle('baranggay'),
+            street: $persist($wire.entangle('street')).using(sessionStorage),
 
-        {{-- Operations --}}
-        can_select_a_room: $wire.entangle('can_select_a_room'),
-        can_submit_payment: $wire.entangle('can_submit_payment'),
-        can_select_address: $wire.entangle('can_select_address'),
+            {{-- Operations --}}
+            can_select_a_room: $wire.entangle('can_select_a_room'),
+            can_submit_payment: $wire.entangle('can_submit_payment'),
+            can_select_address: $wire.entangle('can_select_address'),
 
-        formatDate(date) {
-            let options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(date).toLocaleDateString('en-US', options)
-        },
+            formatDate(date) {
+                let options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return new Date(date).toLocaleDateString('en-US', options)
+            },
 
-        setMaxSeniorCount() {
-            if (this.pwd_count > 0) {
-                this.max_senior_count = this.adult_count;
+            setMaxSeniorCount() {
+                if (this.pwd_count > 0) {
+                    this.max_senior_count = this.adult_count;
 
-                if (this.pwd_count + this.senior_count > this.adult_count + this.children_count) {
-                    this.pwd_count--;
+                    if (this.pwd_count + this.senior_count > this.adult_count + this.children_count) {
+                        this.pwd_count--;
+                    }
+
+                } else {
+                    this.max_senior_count = this.adult_count - this.pwd_count;
                 }
+            },
 
-            } else {
-                this.max_senior_count = this.adult_count - this.pwd_count;
+            resetProperties() {
+                localStorage.removeItem('_x_date_in');
+                this.date_in = null;
+                localStorage.removeItem('_x_date_out');
+                this.date_out = null;
+                localStorage.setItem('_x_senior_count', 0);
+                this.senior_count = 0;
+                localStorage.setItem('_x_pwd_count', 0);
+                this.pwd_count = 0;
+                localStorage.setItem('_x_adult_count', 1);
+                this.adult_count = 1;
+                localStorage.setItem('_x_children_count', 0);
+                this.children_count = 0;
+                localStorage.setItem('_x_capacity', 0);
+                this.capacity = 0;
+                localStorage.removeItem('_x_first_name');
+                this.first_name = null;
+                localStorage.removeItem('_x_last_name');
+                this.last_name = null;
+                localStorage.removeItem('_x_email');
+                this.email = null;
+                localStorage.removeItem('_x_phone');
+                this.phone = null;
+                localStorage.removeItem('_x_street');
+                this.street = null;
             }
-        },
-
-        resetProperties() {
-            localStorage.removeItem('_x_date_in');
-            this.date_in = null;
-            localStorage.removeItem('_x_date_out');
-            this.date_out = null;
-            localStorage.setItem('_x_senior_count', 0);
-            this.senior_count = 0;
-            localStorage.setItem('_x_pwd_count', 0);
-            this.pwd_count = 0;
-            localStorage.setItem('_x_adult_count', 1);
-            this.adult_count = 1;
-            localStorage.setItem('_x_children_count', 0);
-            this.children_count = 0;
-            localStorage.setItem('_x_capacity', 0);
-            this.capacity = 0;
-            localStorage.removeItem('_x_first_name');
-            this.first_name = null;
-            localStorage.removeItem('_x_last_name');
-            this.last_name = null;
-            localStorage.removeItem('_x_email');
-            this.email = null;
-            localStorage.removeItem('_x_phone');
-            this.phone = null;
-            localStorage.removeItem('_x_street');
-            this.street = null;
-        }
-    }"
+        }"
     x-init="setMaxSeniorCount()"
     x-on:reservation-created.window="resetProperties()"
     class="max-w-screen-xl py-5 mx-auto space-y-5">
@@ -93,14 +93,13 @@
         {{-- Form --}}
         <form
             wire:submit="submit"
-            @if ($step >= 3)
-                class="md:col-span-3"
-            @else
-                class="md:col-span-2"
-            @endif>
-            {{-- Step 1: Reservation Details --}}
-            @if ($step == 1)
-                <div>
+            @class([
+                'md:col-span-3' => $step >= 3,
+                'md:col-span-2' => $step < 3
+            ])
+            >
+            @switch($step)
+                @case(1)
                     @include('components.web.reservation.steps.reservation-details', [
                         'suggested_rooms' => $suggested_rooms,
                         'room_types' => $room_types,
@@ -110,12 +109,8 @@
                         'selected_amenities' => $selected_amenities,
                         'room_type_name' => $room_type_name,
                     ])
-                </div>
-            @endif
-
-            {{-- Step 2: Guest Details --}}
-            @if ($step == 2)
-                <div>
+                    @break
+                @case(2)
                     @include('components.web.reservation.steps.guest-details', [
                         'region' => $region,
                         'regions' => $regions,
@@ -128,13 +123,9 @@
                         'baranggay' => $baranggay,
                         'baranggays' => $baranggays,
                         'address' => $address,
-                    ])
-                </div>
-            @endif
-
-            {{-- Step 3: Payment --}}
-            @if ($step == 3)
-                <div>
+                    ])>
+                    @break
+                @case(3)
                     @include('components.web.reservation.steps.payment', [
                         'date_in' => $date_in,
                         'date_out' => $date_out,
@@ -153,17 +144,13 @@
                         'net_total' => $net_total,
                         'night_count' => $night_count,
                     ])
-                </div>                
-            @endif
-
-            {{-- Success Message --}}
-            @if ($step == 4)
-                <div>
+                    @break
+                @case(4)
                     @include('components.web.reservation.steps.success', [
                         'reservation_id' => $reservation_rid
                     ]);
-                </div>
-            @endif
+                    @break
+            @endswitch
         </form>
     
         {{-- Summary --}}

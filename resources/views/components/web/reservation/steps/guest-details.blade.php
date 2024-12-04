@@ -1,6 +1,6 @@
 {{-- Personal & Contact Information --}}
 <x-form.form-section>
-    <x-form.form-header step="1" title="Personal &amp; Contact Information" />
+    <x-form.form-header title="Personal &amp; Contact Information" />
 
     <div x-show="!can_select_address" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body>

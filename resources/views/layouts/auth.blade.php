@@ -22,20 +22,29 @@
     </head>
     <body class="antialiased font-inter text-zinc-800">
         {{-- Back --}}
-        <div class="fixed top-0 left-0 p-5 ml-2 text-xs font-semibold">
-            <x-nav-link href="/">Back to Home</x-nav-link>
-        </div>
         
-        <main class="grid min-h-screen sm:grid-cols-2 lg:grid-cols-3">
-            <div class="sm:col-span-2 md:col-span-1">
+        <main class="grid min-h-screen grid-cols-1 lg:grid-cols-2">
+            <div class="relative">
                 {{ $slot }}
+
+                <div class="absolute top-0 p-5 text-xs font-semibold -translate-x-1/2 left-1/2">
+                    <x-nav-link href="/">Back to Home</x-nav-link>
+                </div>
             </div>
             <!-- Image -->
             <div
-                class="relative hidden md:block lg:col-span-2"
+                class="relative hidden m-4 overflow-hidden rounded-2xl lg:block"
                  style="background-image: url({{ asset('storage/global/login.jpg') }});
                         background-size: cover;
                         background-position: center;">
+
+                <div class="absolute z-50 px-4 py-3 bg-white top-4 left-4 rounded-xl">
+                    <hgroup class="space-y-1">
+                        <h2 class="font-bold leading-none">Amazing View Mountain Resort</h2>
+                        <p class="text-xs leading-none">Book a room now, amazing experience awaits!</p>
+                    </hgroup>
+                </div>
+
                 <x-overlay />
             </div>
         </main>

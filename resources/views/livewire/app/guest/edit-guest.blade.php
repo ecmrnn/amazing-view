@@ -38,6 +38,18 @@
 
 <div class="relative flex flex-col gap-5 lg:flex-row">
     <section class="w-full space-y-5">
+        {{-- Late Notice --}}
+        <section class="flex flex-col justify-between px-3 py-2 text-red-500 border border-red-500 rounded-lg bg-red-50 md:flex-row">
+            <div>
+                <p class="text-sm font-semibold">Late Checkout Notice!</p>
+                <p class="text-xs">
+                    This guest is expected to be checked-out on <strong>{{ date_format(date_create($date_out), 'F j, Y') }}</strong>.
+                    <br />
+                </p>
+            </div>
+
+            <x-danger-button x-on:click="$dispatch('open-modal', 'show-check-out-modal')" type="button" class="text-xs">Check-out Guest</x-danger-button>
+        </section>
         {{-- Reservation Details --}}
         <section class="p-3 space-y-5 border rounded-lg sm:p-5">
             <hgroup>

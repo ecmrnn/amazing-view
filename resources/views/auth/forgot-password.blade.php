@@ -1,5 +1,5 @@
 <x-auth-layout>
-    <div class="grid px-5 py-20 place-items-center md:min-h-screen">
+    <div class="grid min-h-screen px-5 py-20 place-items-center">
         <div>
             <h1 class="mb-4 text-2xl font-semibold">Forgot your Password?</h1>
             
@@ -11,17 +11,19 @@
             <form method="POST" action="{{ route('password.email') }}">
                 @csrf
                 <!-- Email Address -->
-                <div>
+                <div class="space-y-2">
                     <x-form.input-text label="Email" id="email" class="block w-full mt-1" type="email" name="email" :value="old('email')" />
-                    <x-form.input-error field="email" class="mt-2" />
+                    <x-form.input-error field="email" />
                 </div>
-                <div class="text-sm">
-                    <x-nav-link class="inline-block" href="/login">I remember my password!</x-nav-link>
-                </div>
+                
                 <div class="mt-4">
                     <x-primary-button>
                         {{ __('Email Password Reset Link') }}
                     </x-primary-button>
+                </div>
+
+                <div class="mt-4 text-sm">
+                    <x-nav-link class="inline-block" href="/login">I remember my password!</x-nav-link>
                 </div>
             </form>
         </div>

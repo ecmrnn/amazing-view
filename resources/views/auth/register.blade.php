@@ -1,5 +1,5 @@
 <x-auth-layout>
-    <form method="POST" action="{{ route('register') }}" class="grid px-5 py-20 place-items-center md:min-h-screen">
+    <form method="POST" action="{{ route('register') }}" class="grid min-h-screen px-5 py-20 place-items-center">
         @csrf
 
         <div class="max-w-sm">
@@ -13,7 +13,7 @@
 
             <div class="mt-5 space-y-3">
                 <!-- First Name -->
-                <div>
+                <div class="space-y-2">
                     <x-form.input-text
                         label="First Name"
                         id="first_name"
@@ -22,10 +22,10 @@
                         name="first_name"
                         :value="old('first_name')"
                     />
-                    <x-form.input-error field="first_name" class="mt-2" />
+                    <x-form.input-error field="first_name" />
                     </div>
                     <!-- Last Name -->
-                <div>
+                <div class="space-y-2">
                     <x-form.input-text
                         label="Last Name"
                         id="last_name"
@@ -34,7 +34,7 @@
                         name="last_name"
                         :value="old('last_name')"
                     />
-                    <x-form.input-error field="last_name" class="mt-2" />
+                    <x-form.input-error field="last_name" />
                 </div>
             </div>
 
@@ -45,7 +45,7 @@
 
             <div class="space-y-3">
                 <!-- Email Address -->
-                <div>
+                <div class="space-y-2">
                     <x-form.input-text 
                         label="Email"
                         id="email"
@@ -53,10 +53,10 @@
                         type="email"
                         name="email"
                     />
-                    <x-form.input-error field="email" class="mt-2" />
+                    <x-form.input-error field="email" />
                 </div>
                 <!-- Password -->
-                <div>
+                <div class="space-y-2">
                     <x-form.input-text
                         label="Password"
                         id="password"
@@ -64,17 +64,17 @@
                         type="password"
                         name="password"
                     />
-                    <x-form.input-error field="password" class="mt-2" />
+                    <x-form.input-error field="password" />
                 </div>
                 <!-- Confirm Password -->
-                <div>
+                <div class="space-y-2">
                     <x-form.input-text
                         label="Confirm Password"
                         id="password_confirmation"
                         class="block w-full mt-1"
                         type="password"
                         name="password_confirmation" />
-                    <x-form.input-error field="password_confirmation" class="mt-2" />
+                    <x-form.input-error field="password_confirmation" />
                 </div>
             </div>
 

@@ -90,7 +90,7 @@
                         Adults: <span x-text="adult_count"></span> Adult<span x-show="adult_count > 1">s</span>
                         <span x-show="senior_count > 0">&lpar;<span x-text="senior_count"></span>  Senior<span x-show="senior_count > 1">s</span>&rpar;</span>
                     </p>
-                    <p class="text-xs">Children: <span x-text="children_count"></span> Child<span s-how="children_count > 1">ren</span></p>
+                    <p class="text-xs">Children: <span x-text="children_count"></span> Child<span x-show="children_count > 1">ren</span></p>
                     <p class="text-xs">PWD: <span x-text="pwd_count"></span> PWD<span x-show="pwd_count > 1">s</span></p>
                     <p class="text-xs"><strong class="text-blue-500">Total Guests: {{ $adult_count + $children_count }}</strong></p>
                 </div>

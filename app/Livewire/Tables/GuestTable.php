@@ -65,10 +65,13 @@ final class GuestTable extends PowerGridComponent
             ->add('id')
             ->add('rid')
             ->add('rid_formatted', function ($reservation) {
+                $style = 'bg-green-500';
                 if ($reservation->date_out == Carbon::now()->format('Y-m-d')) {
-                    return Blade::render('<div class="flex items-center gap-3"><div class="w-2 bg-red-500 rounded-full aspect-square"></div>' . $reservation->rid . '</div>');
+                    $style = 'bg-amber-500';
+                } elseif ($reservation->date_out < Carbon::now()->format('Y-m-d')) {
+                    $style = 'bg-red-500';
                 }
-                return Blade::render('<div class="flex items-center gap-3"><div class="w-2 bg-green-500 rounded-full aspect-square"></div>' . $reservation->rid . '</div>');
+                return Blade::render('<div class="flex items-center gap-3 font-semibold"><div class="w-2 rounded-full aspect-square ' . $style . '"></div>' . $reservation->rid . '</div>');
             })
 
             ->add('first_name')

@@ -1,12 +1,12 @@
 <x-auth-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
-    <form method="POST" action="{{ route('login') }}" class="grid px-5 py-20 place-items-center md:min-h-screen">
+    <form method="POST" action="{{ route('login') }}" class="grid min-h-screen px-5 py-20 place-items-center">
         @csrf
         <div class="max-w-sm">
             <h1 class="mb-5 text-2xl font-semibold">Amazing View <br /> Mountain Resort</h1>
             <!-- Email Address -->
-            <div>
+            <div class="space-y-2">
                 <x-form.input-text
                     label="Email"
                     id="email"
@@ -15,11 +15,11 @@
                     name="email"
                     :value="old('email')"
                 />
-                <x-form.input-error field="email" class="mt-2" />
+                <x-form.input-error field="email" />
             </div>
             
             <!-- Password -->
-            <div class="mt-4">
+            <div class="mt-4 space-y-2">
                 <x-form.input-text
                     label="Password"
                     id="password"
@@ -27,7 +27,7 @@
                     type="password"
                     name="password"
                 />
-                <x-form.input-error field="password" class="mt-2" />
+                <x-form.input-error field="password" />
             </div>
             
             <!-- Remember Me -->

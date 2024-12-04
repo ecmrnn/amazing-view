@@ -1,6 +1,15 @@
 {{-- Reservation Date & Guest Count --}}
 <x-form.form-section class="grid lg:grid-cols-2">
-    <x-form.form-header step="1" title="Reservation Date &amp; Guest Count" class="lg:col-span-2" />
+    <div class="relative lg:col-span-2">
+        <x-form.form-header step="1" title="Reservation Date &amp; Guest Count" class="lg:col-span-2" />
+
+        <button type="button"
+            :class="can_select_a_room ? 'scale-100' : 'scale-0'"
+            class="absolute right-0 px-5 py-2 transition-all duration-200 ease-in-out -translate-y-1/2 top-1/2"
+            x-on:click="can_select_a_room = false">
+            <p class="text-xs font-semibold">Edit</p>
+        </button>
+    </div>
     
     <div x-show="!can_select_a_room" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body class="grid p-0 lg:grid-cols-2 lg:col-span-2">
@@ -49,14 +58,18 @@
                             class="block w-full" />
                         <x-form.input-error field="children_count" />
                     </x-form.input-group>
-
-                    <x-secondary-button class="text-xs" x-on:click="$dispatch('open-modal', 'pwd-senior-modal');">Add Senior or PWD</x-secondary-button>
                 </div>
             </div>
 
-            <div class="flex items-center gap-5 p-5 border-t lg:col-span-2">
-                <x-primary-button type="button" class="block" wire:click="selectRoom()">Select a Room</x-primary-button>
-                <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
+            <div class="flex justify-between p-5 pt-0 lg:col-span-2">
+                <div class="flex items-center gap-5">
+                    <x-primary-button type="button" class="block" wire:click="selectRoom()">Select a Room</x-primary-button>
+                    <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
+                </div>
+
+                <x-secondary-button class="text-xs" x-on:click="$dispatch('open-modal', 'pwd-senior-modal');">
+                    Add Senior or PWD
+                </x-secondary-button>
             </div>
         </x-form.form-body>
     </div>
@@ -75,17 +88,38 @@
                     &quot;<span class="font-semibold text-blue-500">Find me a Room</span>&quot;
                     button <span class="lg:hidden">below</span><span class="hidden lg:inline">on the
                         right</span> to find the room for you.</p>
-                <x-primary-button type="button" wire:click="suggestRooms">Find me a Room</x-primary-button>
+                <x-primary-button class="text-xs" type="button" wire:click="suggestRooms">Find me a Room</x-primary-button>
             </div>
             
             <div wire:loading.delay wire:target="suggestRooms" class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-lg">Amazing rooms incoming!</div>
 
             @if (!empty($suggested_rooms))
-            <div class="p-3 m-5 mb-0 space-y-3 bg-white border rounded-lg border-slate-200">
-                <h3 class="font-semibold">Suggested Rooms</h3>
-                <div class="grid-cols-3 gap-2 space-y-3 lg:space-y-0 lg:grid">
-                    @forelse ($suggested_rooms as $room)
-                        <x-web.reservation.step-1.suggested-room :key="$room->id" :selectedRooms="$selected_rooms" :room="$room" />
+            <div class="p-5 m-5 mb-0 space-y-5 bg-white border rounded-lg border-slate-200">
+                <div class="grid-cols-3 gap-2 space-y-5 lg:space-y-0 lg:grid">
+                    @forelse ($suggested_rooms as $key => $room)
+                        <div key="{{ $key }}" class="flex gap-3 border-slate-200 lg:block lg:space-y-2">
+                            <x-img-lg class="w-full max-w-[200px] lg:max-w-full" src="{{ $room->image_1_path }}" />
+                        
+                            <div class="w-full space-y-2">
+                                <hgroup>
+                                    <h4 class="font-semibold capitalize text-md">Good for {{ $room->max_capacity }} guests</h4>
+                                    <p class="text-sm font-semibold"><x-currency />{{ $room->rate }} &#47; night</p>
+                                </hgroup>
+                        
+                                <p class="text-xs text-zinc-800/50">{{ $room->roomType->name }}</p>
+                        
+                                <div class="flex flex-col gap-1 sm:flex-row lg:flex-col xl:flex-row">
+                                    {{-- Identify if the room is already selected or not --}}
+                                    @if ($selected_rooms->contains('id', $room->id))
+                                        <x-secondary-button type="button" wire:click="removeRoom({{ $room->id }})">Remove Room</x-secondary-button>
+                                    @else
+                                        <x-primary-button type="button" wire:click="addRoom({{ json_encode(array($room->id)) }})">Book this Room</x-primary-button>
+                                    @endif
+                                    
+                                    <x-secondary-button type="button">Details</x-secondary-button>
+                                </div>
+                            </div>
+                        </div>
                     @empty
                         <div class="col-span-3 text-center text-zinc-800/50">No available rooms at the moment...</div>
                     @endforelse
@@ -95,23 +129,23 @@
             
             {{-- Room Categories --}}
             <div class="p-5 space-y-3">
-                <h3 class="text-lg font-semibold">Our Rooms</h3>
+                <h3 class="font-semibold">Our Rooms</h3>
                 <x-form.input-error field="selected_rooms" />
 
                 <div class="space-y-1">
                     @forelse ($room_types as $room)
-                        <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 bg-white border rounded-lg">
-                            <div class="flex items-start w-full gap-5">
-                                <div class="w-full max-w-[150px]">
+                        <div key="{{ $room->id }}" class="flex flex-col items-start justify-between gap-3 p-3 bg-white border rounded-lg shadow-sm sm:flex-row">
+                            <div class="flex flex-col items-start w-full gap-3 sm:flex-row">
+                                <div class="w-full lg:max-w-[150px]">
                                     <x-img-lg src="{{ $room->image_1_path }}" />
                                 </div>
                                 <div>
                                     <h3 class="text-sm font-semibold">{{ $room->name }}</h3>
-                                    <p class="max-w-xs text-xs">{{ $room->description }}</p>
+                                    <p class="max-w-xs text-xs line-clamp-3">{{ $room->description }}</p>
                                 </div>
                             </div>
 
-                            <x-secondary-button class="flex-shrink-0 text-xs" x-on:click="$dispatch('open-modal', 'show-typed-rooms')" wire:click="viewRooms({{ $room->id }})">
+                            <x-secondary-button class="flex-shrink-0 text-xs" wire:click="viewRooms({{ $room->id }})">
                                 View Rooms
                             </x-secondary-button>
                         </div>
@@ -121,12 +155,6 @@
                         </div>
                     @endforelse
                 </div>
-            </div>
-
-            <div class="px-5 pb-5">
-                <x-secondary-button x-on:click="can_select_a_room = false">
-                    Edit Reservation Date
-                </x-secondary-button>
             </div>
         </x-form.form-body>
     </div>
@@ -182,8 +210,8 @@
 {{-- Modal for viewing rooms --}}
 <x-modal.full name="show-typed-rooms" maxWidth="lg">
     @if (!empty($selected_type))
-        <div>
-            <header class="flex items-center gap-3 p-5 border-b">
+        <div class="flex flex-col min-h-screen sm:min-h-0">
+            <header class="sticky top-0 flex items-center gap-3 p-5 border-b">
                 <x-tooltip text="Back" dir="bottom">
                     <x-icon-button x-ref="content" x-on:click="show = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
@@ -196,12 +224,10 @@
             </header>
             
             {{-- Room List --}}
-            <section class="grid gap-1 p-5 bg-slate-100/50">
-
+            <section class="grid flex-grow h-full gap-1 p-5 bg-slate-100/50">
                 <div wire:loading.delay wire:target='selectBuilding' class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
                     Amazing rooms incoming!
                 </div>
-
                 <div class="space-y-1">
                     @forelse ($available_room_types as $capacity => $rooms)
                         @php
@@ -210,22 +236,20 @@
                             foreach ($rooms as $room) {
                                 $rate_sum += $room->rate;
                                 $thumbnail = $room->roomType->image_1_path;
-
                                 if ($selected_rooms->contains('id', $room->id)) {
                                     $selected_room_count++;
                                 }
                             }
                             $average_rate = $rate_sum / intval($rooms->count());
                         @endphp
-                        <div x-data="{ show_rooms: false }" class="flex items-start justify-between gap-3 p-3 bg-white border rounded-md">
-                            <div class="flex w-full gap-3">
-                                <div class="max-w-[150px] w-full relative">
+                        <div x-data="{ show_rooms: false }" class="flex flex-col items-start justify-between gap-3 p-3 bg-white border rounded-md sm:flex-row">
+                            <div class="flex flex-col w-full gap-3 sm:flex-row">
+                                <div class="sm:max-w-[150px] w-full relative">
                                     <x-img-lg src="{{ asset('storage/' . $thumbnail) }}" class="w-full" />
                                     @if ($selected_room_count > 0)
                                         <p class="absolute px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-md top-1 left-1 w-max">{{ $selected_room_count }} Selected</p>
                                     @endif
                                 </div>
-
                                 <hgroup>
                                     <h3 class="font-semibold">For {{ $capacity }} Guests</h3>
                                     <p class="text-xs text-zinc-800/50">
@@ -238,16 +262,16 @@
                                     <p class="text-xs text-zinc-800/50">Average Rate: <x-currency />{{ number_format($average_rate, 2) }}</p>
                                 </hgroup>
                             </div>
-                            
+            
                             <div class="min-w-max">
                                 @if ($selected_room_count == $rooms->count())
                                     <x-secondary-button disabled class="text-xs">
                                         All Room Selected
-                                    </x-secondary-button>    
+                                    </x-secondary-button>
                                 @else
                                     <x-primary-button type="button" class="text-xs" wire:click="addRoom({{ json_encode($rooms->pluck('id')) }})">
                                         Add Room
-                                    </x-primary-button>    
+                                    </x-primary-button>
                                 @endif
                             </div>
                         </div>

@@ -1,19 +1,10 @@
 @props([
-    'collapsable' => true,
-    'step' => 1,
+    'collapsable' => false,
     'title' => 'This is a default title',
 ])
 
 <div {{ $attributes->merge(['class' => 'flex items-center justify-between bg-white overflow-visible']) }}>
-    <div class="flex items-center">
-        {{-- <div class="m-2 rounded-md w-[30px] aspect-square grid place-items-center bg-gradient-to-r border border-blue-600 from-blue-500 to-blue-600">
-            <span class="text-xs font-semibold text-white">{{ $step }}</span>
-        </div> --}}
-        <div class="m-2 w-[30px] aspect-square grid place-items-center">
-            <span class="text-sm font-semibold text-zinc-800/50">{{ $step }}</span>
-        </div>
-        <h2 class="text-sm font-semibold">{{ html_entity_decode($title) }}</h2>
-    </div>
+    <h2 class="px-5 py-3 font-bold text-md">{{ html_entity_decode($title) }}</h2>
 
     @if ($collapsable)
         <template x-if="expanded">

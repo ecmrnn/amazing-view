@@ -46,7 +46,9 @@ $maxWidth = [
     x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"
     x-on:close-modal.window="$event.detail == '{{ $name }}' ? show = false : null"
     x-on:close.stop="show = false"
-    x-on:keydown.escape.window="show = false"
+    @if (!$click_outside)
+        x-on:keydown.escape.window="show = false"
+    @endif
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()"
     x-show="show"
@@ -73,7 +75,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="w-full mt-10 sm:mt-5 overflow-hidden transition-all transform bg-white rounded-lg shadow-md sm:w-full {{ $maxWidth }} mx-auto"
+        class="w-full sm:mt-5 overflow-hidden min-h-screen relative sm:min-h-0 transition-all transform bg-white sm:rounded-lg shadow-md sm:w-full {{ $maxWidth }} mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
@@ -81,6 +83,6 @@ $maxWidth = [
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-        <div>{{ $slot }}</div>
+    {{ $slot }}
     </div>
 </div>

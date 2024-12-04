@@ -155,7 +155,7 @@ class ReservationForm extends Component
             ->toBase();
 
         $this->available_room_types = $room_by_capacity->groupBy('max_capacity');
-        // dd($this->available_room_types);
+        $this->dispatch('open-modal', 'show-typed-rooms');
     }
 
     public function addRoom($room_ids) {
