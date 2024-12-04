@@ -61,6 +61,17 @@
             <div class="absolute left-0 w-full h-5 bg-white -top-5"></div>
             
             {{ $slot }}
+
+            {{-- Scroll to Top --}}
+             <div x-data="{ scroll_height: window.scrollY }" x-on:scroll.window="scroll_height = window.scrollY"
+                x-show="scroll_height > 200"
+                x-transition.duration.200ms
+                class="fixed bottom-5 right-5">
+                <x-primary-button x-on:click="window.scroll(0,0)" class="flex items-center gap-3 text-xs ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+                    <p>Scroll to Top</p>
+                </x-primary-button>
+            </div>
         </main>
 
         <div x-show="open"
