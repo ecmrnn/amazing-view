@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-slot:hero>
         <div class="grid h-full max-w-screen-xl mx-auto rounded-lg place-items-center">
-            <div class="flex flex-col items-start justify-between w-full p-5 text-center text-white md:flex-row md:text-left">
+            <div class="flex flex-col items-center justify-between w-full p-5 text-center text-white md:items-start md:flex-row md:text-left">
                 <div class="space-y-5">
                     <x-h1>
                         {!! $heading !!}

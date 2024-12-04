@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="sticky top-0 z-50 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-100">
+<nav class="sticky top-0 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-100">
     <!-- Primary Navigation Menu -->
     <div class="h-full p-5">
         <div x-data="{ expanded: $persist(false) }" class="justify-between hidden h-full sm:flex sm:flex-col">
@@ -77,7 +77,7 @@
         </div>
 
         {{-- Mobile --}}
-        <div class="relative z-50 flex items-center justify-between sm:hidden">
+        <div x-data="{ open: false }"  class="relative z-[999] flex items-center justify-between sm:hidden">
             <a href="{{ route('guest.home') }}" class="block overflow-hidden rounded-lg" wire:navigate>
                 <img src="https://placehold.co/40x40" alt="Alternative Logo">
             </a>
@@ -86,7 +86,7 @@
             <x-burger x-on:click="open = true" />
 
             <div x-show="open" x-transition.opacity.duration.600ms x-on:click="open = false"
-                class="fixed inset-0 bg-gradient-to-b from-blue-800/75 to-blue-500/50 backdrop-blur-sm"></div>
+                class="fixed inset-0 bg-gradient-to-b from-blue-800/75 to-blue-500/50 backdrop-blur-sm z-[999]"></div>
 
             <div x-cloak x-show="open" x-on:click.outside="open = false"
                 x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"

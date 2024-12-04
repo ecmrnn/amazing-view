@@ -1,8 +1,7 @@
 <x-guest-layout>
-    {{-- Landing Page --}}
     <x-slot:hero>
-        <div class="grid h-full max-w-screen-xl py-20 mx-auto rounded-lg place-items-center">
-            <div class="flex flex-col items-start justify-between w-full text-center text-white md:flex-row md:text-left">
+        <div class="grid h-full max-w-screen-xl px-5 py-20 mx-auto rounded-lg xl:px-0 place-items-center">
+            <div class="flex flex-col items-center justify-between w-full text-center text-white md:items-start md:flex-row md:text-left">
                 <div class="space-y-5">
                     <x-h1>
                         {!! $heading !!}
@@ -11,7 +10,7 @@
                         {!! $subheading !!}
                     </p>
 
-                    <div class="flex gap-1">
+                    <div class="flex justify-center gap-1 md:justify-start">
                         <a class="inline-block" href="#form">
                             <x-primary-button>Get Started!</x-primary-button>
                         </a>
