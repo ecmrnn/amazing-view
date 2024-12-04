@@ -8,11 +8,20 @@
                 <x-application-logo />
     
                 <div class="flex items-center gap-5">
-                    <x-nav-link :active="Request::is('/')" href="{{ route('guest.home') }}">Home</x-nav-link>
+                    {{-- <x-nav-link :active="Request::is('/')" href="{{ route('guest.home') }}">Home</x-nav-link>
                     <x-nav-link :active="Request::is('rooms*')" href="{{ route('guest.rooms') }}">Rooms</x-nav-link>
                     <x-nav-link :active="Request::is('about')" href="{{ route('guest.about') }}">About</x-nav-link>
                     <x-nav-link :active="Request::is('contact')" href="{{ route('guest.contact') }}">Contact</x-nav-link>
-                    <x-nav-link :active="Request::is('reservation')  || Request::is('search')"  href="{{ route('guest.reservation') }}">Reservation</x-nav-link>
+                    <div x-data="{ dropdown: false }" x-on:mouseover="dropdown = true" class="relative" x-on:mouseout="dropdown = false">
+                        <x-nav-link :active="Request::is('reservation')  || Request::is('search')"  href="{{ route('guest.reservation') }}">Reservation</x-nav-link>
+
+                        <div x-show="dropdown" class="absolute bottom-0 right-0 p-4 translate-y-full bg-white border rounded-lg w-max border-zinc-200">
+                            <p>Find Reservation</p>
+                            <p>Reserve a Room</p>
+                            <p>Function Hall</p>
+                        </div>
+                    </div> --}}
+                    <x-web.navigation-links />
 
                     <div class="w-[1px] h-4 bg-slate-200 inline-block"></div>
 
