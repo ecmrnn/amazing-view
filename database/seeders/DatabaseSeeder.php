@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             RoomSeeder::class,
             ContactSeeder::class,
             ContentReservationSeeder::class,
+            TestimonialSeeder::class,
         ]);
     }
 }

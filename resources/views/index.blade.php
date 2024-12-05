@@ -75,4 +75,44 @@
             </div>
         </div>
     </x-section>
+
+    {{-- Testimonials --}}
+    <x-section class="bg-white">
+        <x-slot:heading>Testimonials</x-slot:heading>
+        <x-slot:subheading>Hear feedbacks from our previous guests!</x-slot:subheading>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 place-items-start">
+            {{-- 2 Chunks --}}
+            @forelse ($testimonials->chunk(ceil($testimonials->count() / 2)) as $testimonial_chunks)
+                <div class="space-y-4 lg:hidden">
+                    @foreach ($testimonial_chunks as $testimonial)
+                        <div key="{{ $testimonial->id }}" class="p-4 border rounded-lg border-zinc-200">
+                            <p class="text-lg font-semibold text-center">{{ $testimonial->name }}</p>
+                            <p class="mt-4 text-sm text-justify indent-4">{{ $testimonial->testimonial }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            @empty
+                <div class="font-semibold text-center opacity-50">
+                    No Testimonials Yet
+                </div>
+            @endforelse
+
+            {{-- 3 Chunks --}}
+            @forelse ($testimonials->chunk(ceil($testimonials->count() / 3)) as $testimonial_chunks)
+                <div class="hidden space-y-4 lg:block">
+                    @foreach ($testimonial_chunks as $testimonial)
+                        <div key="{{ $testimonial->id }}" class="p-4 border rounded-lg border-zinc-200">
+                            <p class="text-lg font-semibold text-center">{{ $testimonial->name }}</p>
+                            <p class="mt-4 text-sm text-justify indent-4">{{ $testimonial->testimonial }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            @empty
+                <div class="font-semibold text-center opacity-50">
+                    No Testimonials Yet
+                </div>
+            @endforelse
+        </div>
+    </x-section>
 </x-guest-layout>

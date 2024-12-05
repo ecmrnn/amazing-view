@@ -7,6 +7,7 @@ use App\Models\Content;
 use App\Models\FeaturedService;
 use App\Models\Milestone;
 use App\Models\RoomType;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -21,6 +22,7 @@ class PageController extends Controller
         $featured_services = FeaturedService::select('image', 'title', 'description')
             ->whereStatus(FeaturedService::STATUS_ACTIVE)
             ->get();
+        $testimonials = Testimonial::whereStatus(Testimonial::STATUS_ACTIVE)->get();
 
         return view('index', [
             'heading' => html_entity_decode($heading),
@@ -29,6 +31,7 @@ class PageController extends Controller
             'featured_services' => $featured_services,
             'history_image' => $history_image,
             'history' => $history,
+            'testimonials' => $testimonials,
         ]);
     }
 
