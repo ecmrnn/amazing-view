@@ -34,6 +34,6 @@ class TestimonialSeeder extends Seeder
             'status' => 0
         ]);
 
-        Testimonial::factory(3)->create();
+        Testimonial::factory(6)->create();
     }
 }

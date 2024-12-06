@@ -58,9 +58,9 @@ class="relative z-10 w-auto">
         <div x-show="navigationMenu == 'reservation-menu'" class="flex items-stretch justify-center w-full p-3">
             <div class="space-y-1 w-72">
                 <a href="{{ route('guest.reservation') }}" @click="navigationMenuClose()" wire:navigate
-                    class="px-3.5 py-3 rounded hover:bg-zinc-100 flex items-center gap-3 group border border-zinc-200">
-                    <div class="p-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-closed"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><path d="M14 12v.01"/></svg>
+                    class="px-3.5 py-3 rounded hover:bg-zinc-100 flex items-center gap-4 group border border-zinc-200">
+                    <div class="p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-closed"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><path d="M14 12v.01"/></svg>
                     </div>
 
                     <div>
@@ -69,9 +69,9 @@ class="relative z-10 w-auto">
                     </div>
                 </a>
                 <a href="{{ route('guest.reservation') }}" wire:navigate
-                    class="px-3.5 py-3 rounded hover:bg-zinc-100 flex items-center gap-3 group border border-zinc-200">
-                    <div class="p-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                    class="px-3.5 py-3 rounded hover:bg-zinc-100 flex items-center gap-4 group border border-zinc-200">
+                    <div class="p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
                     </div>
 
                     <div>
@@ -80,9 +80,9 @@ class="relative z-10 w-auto">
                     </div>
                 </a>
                 <a href="{{ route('guest.search') }}" wire:navigate @click="navigationMenuClose()"
-                    class="px-3.5 py-3 rounded hover:bg-zinc-100 flex items-center gap-3 group border border-zinc-200">
-                    <div class="p-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    class="px-3.5 py-3 rounded hover:bg-zinc-100 flex items-center gap-4 group border border-zinc-200">
+                    <div class="p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     </div>
 
                     <div>
