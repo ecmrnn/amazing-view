@@ -20,5 +20,17 @@ class MilestoneSeeder extends Seeder
             'description' => 'Recognized as one of the cleanest and best resorts by the Provincial Government of Laguna, Laguna Tourist, Culture, Arts and Trade Office.',
             'date_achieved' => Carbon::now()->format('Y-m-d')
         ]);
+        Milestone::create([
+            'milestone_image' => 'https://placehold.co/400',
+            'title' => 'Cleanest and Best Resort Class A 2nd Place',
+            'description' => 'Recognized as one of the cleanest and best resorts by the Provincial Government of Laguna, Laguna Tourist, Culture, Arts and Trade Office.',
+            'date_achieved' => Carbon::now()->format('Y-m-d')
+        ]);
+        Milestone::create([
+            'milestone_image' => 'https://placehold.co/400',
+            'title' => 'Cleanest and Best Resort Class A 3rd Place',
+            'description' => 'Recognized as one of the cleanest and best resorts by the Provincial Government of Laguna, Laguna Tourist, Culture, Arts and Trade Office.',
+            'date_achieved' => Carbon::now()->format('Y-m-d')
+        ]);
     }
 }

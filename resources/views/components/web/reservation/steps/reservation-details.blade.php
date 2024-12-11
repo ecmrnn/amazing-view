@@ -13,7 +13,7 @@
     
     <div x-show="!can_select_a_room" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
         <x-form.form-body class="grid p-0 lg:grid-cols-2 lg:col-span-2">
-            <div class="p-5 border-b border-dashed lg:border-r lg:border-b-0">
+            <div class="px-5 border-b border-dashed lg:border-r lg:border-b-0">
                 <div
                      x-effect="date_in == '' ? date_out = '' : ''"
                      class="grid grid-cols-2 gap-2">
@@ -38,7 +38,7 @@
                 </div>
             </div>
             
-            <div class="p-5">
+            <div class="px-5">
                 <div class="grid grid-cols-2 gap-2">
                     <x-form.input-group>
                         <x-form.input-label for="adult_count">Number of Adults</x-form.input-label>
@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="flex justify-between p-5 pt-0 lg:col-span-2">
+            <div class="flex justify-between p-5 pt-5 lg:col-span-2">
                 <div class="flex items-center gap-5">
                     <x-primary-button type="button" class="block" wire:click="selectRoom()">Select a Room</x-primary-button>
                     <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
@@ -83,7 +83,7 @@
 
     <div x-show="can_select_a_room" x-collapse.duration.1000ms>
         <x-form.form-body>
-            <div class="flex flex-col items-start justify-between gap-3 p-5 pb-0 lg:flex-row">
+            <div class="flex flex-col items-start justify-between gap-3 px-5 lg:flex-row">
                 <p class="max-w-sm text-sm">Browse our list of available rooms below or click the
                     &quot;<span class="font-semibold text-blue-500">Find me a Room</span>&quot;
                     button <span class="lg:hidden">below</span><span class="hidden lg:inline">on the
@@ -168,7 +168,7 @@
 
     <div x-show="can_select_a_room" x-collapse.duration.1000ms>
         <x-form.form-body>
-            <div class="p-5 space-y-3">
+            <div class="p-5 pt-0 space-y-3">
                 <p class="text-sm">Enhance your stay by availing our additional services</p>
 
                 <div class="grid gap-2 sm:grid-cols-2">
