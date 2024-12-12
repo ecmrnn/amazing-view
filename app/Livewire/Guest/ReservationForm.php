@@ -62,7 +62,6 @@ class ReservationForm extends Component
 
     // Operational Variables
     public $can_select_a_room = false;
-    public $can_submit_payment = false;
     public $can_select_address = false;
     public $show_available_rooms = false;
     public $available_room_types;
@@ -224,7 +223,6 @@ class ReservationForm extends Component
             'phone' => $this->rules()['phone'],
         ]);
 
-        // Turn can_select_a_room to 'true'
         $this->can_select_address = true;
     }
     
@@ -318,16 +316,17 @@ class ReservationForm extends Component
                         'selected_rooms' => $this->rules()['selected_rooms'],
                     ]);
 
-                    $this->step++;
-
                     // Fetch regions and districts
-                    try {
-                        $this->regions = AddressController::getRegions();
-                        $this->districts = AddressController::getDistricts();
-                    } catch (\Throwable $th) {
-                        $this->toast('Oh no', 'warning', 'Failed getting data from server');
+                    if (empty($this->regions)) {
+                        try {
+                            $this->regions = AddressController::getRegions();
+                            $this->districts = AddressController::getDistricts();
+                        } catch (\Throwable $th) {
+                            $this->toast('Oh no', 'warning', 'Failed getting data from server');
+                        }
                     }
 
+                    $this->step++;
                     $this->toast('Success!', 'success', 'Next, Guest Details');
                     break;
                 case 2:

@@ -2,6 +2,7 @@
     'capacity' => '',
     'selectedRooms' => '',
     'selectedAmenities' => '',
+    'step',
 ])
 
 <aside class="sticky self-start p-5 space-y-5 border border-gray-300 rounded-lg top-5">
@@ -57,13 +58,15 @@
                             </div>
 
                             {{-- Remove Room button --}}
-                            <button 
-                                class="absolute text-xs font-semibold text-red-500 top-2 right-3"
-                                wire:click="removeRoom({{ $room->id }})"
-                            >
-                                <span wire:loading.remove wire:target="removeRoom({{ $room->id }})">Remove</span>
-                                <span wire:loading wire:target="removeRoom({{ $room->id }})">Removing</span>
-                            </button>
+                            @if ($step == 1)
+                                <button 
+                                    class="absolute text-xs font-semibold text-red-500 top-2 right-3"
+                                    wire:click="removeRoom({{ $room->id }})"
+                                >
+                                    <span wire:loading.remove wire:target="removeRoom({{ $room->id }})">Remove</span>
+                                    <span wire:loading wire:target="removeRoom({{ $room->id }})">Removing</span>
+                                </button>
+                            @endif
                         </div>
                     @endforeach
                 </div>

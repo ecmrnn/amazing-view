@@ -1,11 +1,10 @@
 <x-form.form-section>
     <x-form.form-header step="1" title="Reservation Summary" />
 
-    <div x-show="!can_submit_payment" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
+    <div>
         <x-form.form-body>
-            <div class="p-5 space-y-3">
+            <div class="p-5 pt-0 space-y-3">
                 <p class="text-sm">Kindly check if the information you provided is <strong class="text-blue-500">correct</strong>.</p>
-
                 {{-- Guest and Reservation Details --}}
                 <section class="grid border rounded-lg md:grid-cols-2 ">
                     {{-- Guest Details --}}
@@ -34,7 +33,6 @@
                             </p>
                         </div>
                     </div>
-
                     {{-- Reservation Details --}}
                     <div class="p-3 space-y-2 bg-white sm:p-5">
                         <div class="flex justify-between">
@@ -45,9 +43,9 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bed-single"><path d="M3 20v-8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8"/><path d="M5 10V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4"/><path d="M3 18h18"/></svg>
                                 <span>
                                     @if ($date_in == $date_out)
-                                        {{ __('Day Tour') }}    
+                                        {{ __('Day Tour') }}
                                     @else
-                                        {{ __('Overnight') }}    
+                                        {{ __('Overnight') }}
                                     @endif
                                 </span></p>
                             <p class="flex items-center gap-3">
@@ -73,7 +71,6 @@
                         </div>
                     </div>
                 </section>
-
                 {{-- Check-in and Check-out date --}}
                 <div class="flex flex-col gap-3 text-sm md:gap-5 md:flex-row">
                     <p class="flex items-center gap-3">
@@ -83,7 +80,6 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
                         <span><strong>Check out: </strong>{{ $date_out }}</span></p>
                 </div>
-                
                 {{-- Breakdown --}}
                 <section class="p-3 space-y-3 bg-white border rounded-lg sm:p-5">
                     {{-- Header --}}
@@ -95,13 +91,11 @@
                             <p>Total</p>
                         </div>
                     </div>
-            
                     {{-- Body --}}
                     <div class="space-y-1">
                         @forelse ($selected_rooms as $room)
                             <div class="grid grid-cols-2 text-sm">
                                 <p>{{ $room->building->prefix . ' ' . $room->room_number }}</p>
-            
                                 <div class="grid grid-cols-3 place-items-end">
                                     <p>&lpar;night<span x-show="night_count > 1">s</span>&rpar; {{ $night_count }}</p>
                                     <p>{{ number_format($room->rate, 2) }}</p>
@@ -115,16 +109,13 @@
                             </div>
                         @endforelse
                     </div>
-            
                     <div class="space-y-1">
                         @foreach ($selected_amenities as $amenity)
                             @php
                                 $quantity = 1;
                             @endphp
-
                             <div class="grid grid-cols-2">
                                 <p class="uppercase">{{ $amenity->name }}</p>
-                                
                                 <div class="grid grid-cols-3 place-items-end">
                                     <p>{{ $quantity }}</p>
                                     <p>{{ number_format($amenity->price, 2) }}</p>
@@ -134,7 +125,6 @@
                         @endforeach
                     </div>
                 </section>
-
                 {{-- Bills --}}
                 <div class="flex justify-end gap-5 px-5">
                     <div class="text-right">
@@ -147,59 +137,53 @@
                         <p class="text-sm">{{ number_format($vat, 2) }}</p>
                         <p class="text-sm font-semibold text-blue-500">{{ number_format($net_total, 2) }}</p>
                     </div>
-                </div>    
+                </div>
             </div>
         </x-form.form-body>
     </div>
 </x-form.form-section>
-
-<x-line-vertical />
-
-<x-primary-button type="button" x-show="!can_submit_payment" x-on:click="$wire.set('can_submit_payment', true)">Send Payment</x-primary-button>
-<x-secondary-button x-show="can_submit_payment" x-on:click="$wire.set('can_submit_payment', false)">Check Reservation Summary</x-secondary-button>
 
 <x-line-vertical />
 
 <x-form.form-section>
-    <x-form.form-header step="2" title="Payment" />
+    <x-form.form-header step="2" title="Submit Payment" />
 
-    <div x-show="can_submit_payment" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
-        <x-form.form-body>
-            <div class="p-5 space-y-3">
+    <x-form.form-body>
+        <div class="p-5 pt-0 space-y-3">
+            <div class="md:w-1/2">
                 <x-note>
-                    <p class="max-w-sm"></strong> A minimum of <x-currency />500.00 must be paid to process your reservation. Kindly send an image of your receipt using the following payment methods below.</p>
+                    <p>A minimum of <strong><x-currency />500.00</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we have sent to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </p>
                 </x-note>
+            </div>
 
-                {{-- Payment Methods --}}
-                <div class="grid md:grid-cols-2">
-                    <div class="flex items-center gap-3 p-3 bg-white border border-gray-300 rounded-lg">
-                        <div class="max-w-[80px] aspect-square w-full rounded-lg"
-                            style="background-image: url({{ asset('storage/global/gcash-qr.png') }});
-                                background-size: cover;">
-                        </div>
-                        <div>
-                            <h3 class="font-semibold">GCash</h3>
-                            <p class="">+63 917 139 9334</p>
-                            <p class="text-xs">Fabio Basbaño</p>
-                        </div>
-                    </div>                 
-                </div>
-
-                <div class="w-full md:w-1/2">
-                    <x-filepond::upload
-                        wire:model="proof_image_path"
-                        placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
-                    />
-                    <x-form.input-error field="proof_image_path" />
-                    
-                    <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Maximum image size &lpar;<strong class="text-blue-500">1MB or 1024KB</strong>&rpar;</p>
-                </div>
-
-                <div class="flex gap-1">
-                    <x-secondary-button wire:click="submit(true)">Guest Details</x-secondary-button>
-                    <x-primary-button type="submit">Submit</x-primary-button>
+            {{-- Payment Methods --}}
+            <div class="grid md:grid-cols-2">
+                <div class="flex items-center gap-3 p-3 bg-white border border-gray-300 rounded-lg">
+                    <div class="max-w-[80px] aspect-square w-full rounded-lg"
+                        style="background-image: url({{ asset('storage/global/gcash-qr.png') }});
+                            background-size: cover;">
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">GCash</h3>
+                        <p class="">+63 917 139 9334</p>
+                        <p class="text-xs">Fabio Basbaño</p>
+                    </div>
                 </div>
             </div>
-        </x-form.form-body>
-    </div>
+
+            <div class="w-full md:w-1/2">
+                <x-filepond::upload
+                    wire:model="proof_image_path"
+                    placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
+                />
+                <x-form.input-error field="proof_image_path" />
+
+                <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Maximum image size &lpar;<strong class="text-blue-500">1MB or 1024KB</strong>&rpar;</p>
+            </div>
+        </div>
+    </x-form.form-body>
 </x-form.form-section>
+
+<x-line-vertical />
+
+<x-primary-button type="submit">Submit</x-primary-button>

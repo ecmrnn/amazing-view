@@ -27,8 +27,6 @@
 
         {{-- Operations --}}
         can_select_a_room: $wire.entangle('can_select_a_room'),
-        can_submit_payment: $wire.entangle('can_submit_payment'),
-        can_select_address: $wire.entangle('can_select_address'),
 
         formatDate(date) {
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -75,23 +73,13 @@
             this.street = null;
         }
     }"
+    x-ref="form" 
     x-init="setMaxSeniorCount()"
     x-on:reservation-created.window="resetProperties()"
     class="max-w-screen-xl py-5 mx-auto space-y-5">
 
-    {{-- Loader --}}
-    <div class="fixed top-0 left-0 z-50 w-screen h-screen place-items-center bg-slate-200/25 backdrop-blur-sm" wire:loading.delay.long wire:target='submit'>
-        <div class="grid h-screen place-items-center">
-            <div>
-                <p class="text-2xl font-bold text-center">Loading, please wait</p>
-                <p class="mb-4 text-xs font-semibold text-center">Preparing amazing things for you~</p>
-                <svg class="mx-auto animate-spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-            </div>
-        </div>
-    </div>
-
     {{-- Reservation steps --}}
-    <div x-ref="form" class="flex flex-col justify-between gap-2 md:flex-row md:items-center md:gap-5 ">
+    <div class="flex flex-col justify-between gap-2 md:flex-row md:items-center md:gap-5 ">
         <x-web.reservation.steps step="1" currentStep="{{ $step }}" icon="bed" name="Reservation Details" />
         <div class="h-[1px] hidden md:block border-b border-dashed w-full"></div>
         <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Guest Details" />
@@ -134,7 +122,8 @@
                         'baranggay' => $baranggay,
                         'baranggays' => $baranggays,
                         'address' => $address,
-                    ])>
+                        'can_select_address' => $can_select_address,
+                    ])
                     @break
                 @case(3)
                     @include('components.web.reservation.steps.payment', [
@@ -167,6 +156,7 @@
         {{-- Summary --}}
         @if ($step < 3)
             <x-web.reservation.summary 
+                :step=$step
                 :selectedRooms="$selected_rooms"
                 :selectedAmenities="$selected_amenities"
             />
@@ -184,7 +174,7 @@
                 </x-tooltip>
                 <hgroup>
                     <h2 class="text-sm font-semibold capitalize">Reservation Confirmation</h2>
-                    <p class="max-w-sm text-xs">Confirm that the reservation details entered are correct.</p>
+                    <p class="max-w-sm text-sm">Confirm that the reservation details entered are correct.</p>
                 </hgroup>
             </header>
             
