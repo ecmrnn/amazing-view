@@ -64,7 +64,7 @@ class CreateRoom extends Component
         $this->validate();
 
         if (!empty($this->image_1_path)) {
-            $this->image_1_path = $this->image_1_path->store('rooms/', 'public');
+            $this->image_1_path = $this->image_1_path->store('rooms', 'public');
         }
 
         Room::create([

@@ -37,7 +37,9 @@
             <div class="mt-3 space-y-3">
                 <hgroup>
                     <h3 class="font-semibold">Rooms</h3>
-                    <p class="text-xs">The following are the room&lpar;s&rpar; you have selected. Click the &apos;<span class="font-semibold text-red-500">Remove</span>&apos; button on the right to deselect it.</p>
+                    @if ($step == 1)
+                        <p class="text-xs">The following are the room&lpar;s&rpar; you have selected. Click the &apos;<span class="font-semibold text-red-500">Remove</span>&apos; button on the right to deselect it.</p>
+                    @endif
                 </hgroup>
 
                 {{-- Note message for capacity --}}

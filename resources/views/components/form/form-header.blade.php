@@ -3,7 +3,7 @@
     'title' => 'This is a default title',
 ])
 
-<div {{ $attributes->merge(['class' => 'flex items-center justify-between bg-white overflow-visible']) }}>
+<div {{ $attributes->merge(['class' => 'flex items-center justify-between overflow-visible']) }}>
     <h2 class="px-5 py-3 font-bold text-md">{{ html_entity_decode($title) }}</h2>
 
     @if ($collapsable)

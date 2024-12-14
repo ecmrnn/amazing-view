@@ -11,7 +11,7 @@
 @endphp
 
 <div 
-    @class(['flex rounded-md',
+    @class(['flex rounded-md bg-white',
         'opacity-50 bg-slate-100' => $attributes['disabled']
     ])
     x-data="{ number: @js($number) }">

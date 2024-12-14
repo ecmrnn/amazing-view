@@ -5,6 +5,7 @@ namespace App\Livewire\Guest;
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
@@ -302,7 +303,7 @@ class ReservationForm extends Component
         if ($previous) {
             $this->step -= 1;
         } else {
-            // Validate input for each step
+            // Validate input for each step/cases
             // 1: Reservation Details
             // 2: Guest Details
             // 3: Payment
@@ -316,7 +317,7 @@ class ReservationForm extends Component
                         'selected_rooms' => $this->rules()['selected_rooms'],
                     ]);
 
-                    // Fetch regions and districts
+                    // Fetch regions and districts from from https://psgc.cloud
                     if (empty($this->regions)) {
                         try {
                             $this->regions = AddressController::getRegions();
@@ -339,6 +340,11 @@ class ReservationForm extends Component
                     ]);
 
                     $this->step++;
+                    sleep(2);
+
+                    // TODOS:
+                    // [ ] 1. Send a Reservation Notification Email
+
                     $this->toast('Success!', 'success', 'Next, Payment');
                     break;
                 case 3:
@@ -368,7 +374,12 @@ class ReservationForm extends Component
             'email' => $this->rules()['email'],
             'phone' => $this->rules()['phone'],
             'address' => $this->rules()['address'],
+            'proof_image_path' => $this->rules()['proof_image_path']
         ]);
+
+        if (!empty($this->proof_image_path)) {
+            $this->proof_image_path = $this->proof_image_path->store('downpayments', 'public');
+        }
 
         // Create Reservation
         $reservation = Reservation::create([
@@ -384,12 +395,15 @@ class ReservationForm extends Component
             'phone' => $this->phone,
             'address' => trim(implode($this->address), ', '),
             'email' => $this->email,
+            'expires_at' => Carbon::now()->addHour(),
+            'proof_image_path' => $this->proof_image_path,
         ]);
 
         $this->reservation_rid = $reservation->rid;
 
         if (!empty($this->selected_rooms)) {
             // Store rooms
+            // ✅: Update the status of the selected rooms to 'reserved'
             foreach ($this->selected_rooms as $room) {
                 $room->reservations()->attach($reservation->id);
                 $room->status = Room::STATUS_RESERVED;
@@ -408,7 +422,7 @@ class ReservationForm extends Component
             }
         }
 
-        Invoice::create([
+        $invoice = Invoice::create([
             'reservation_id' => $reservation->id,
             'total_amount' => $this->net_total,
             'status' => Invoice::STATUS_PENDING

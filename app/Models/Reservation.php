@@ -22,6 +22,7 @@ class Reservation extends Model
     public const STATUS_CHECKED_OUT = 4;
     public const STATUS_COMPLETED = 5;
     public const STATUS_CANCELED = 6;
+    public const STATUS_RESERVED = 7;
 
     public static function rules(array $excepts = []) {
         $rules = [
