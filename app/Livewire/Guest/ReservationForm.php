@@ -377,8 +377,11 @@ class ReservationForm extends Component
             'proof_image_path' => $this->rules()['proof_image_path']
         ]);
 
+        $expires_at = Carbon::now()->addHour();
+
         if (!empty($this->proof_image_path)) {
             $this->proof_image_path = $this->proof_image_path->store('downpayments', 'public');
+            $expires_at = null;
         }
 
         // Create Reservation
@@ -395,7 +398,7 @@ class ReservationForm extends Component
             'phone' => $this->phone,
             'address' => trim(implode($this->address), ', '),
             'email' => $this->email,
-            'expires_at' => Carbon::now()->addHour(),
+            'expires_at' => $expires_at,
             'proof_image_path' => $this->proof_image_path,
         ]);
 

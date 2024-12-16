@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Models\RoomReservation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class FindReservation extends Component
@@ -21,10 +22,17 @@ class FindReservation extends Component
     public $sub_total = 0;
     public $night_count;
     public $discount_amount = 0;
+    #[Url]
+    public $rid;
 
     public function mount() {
         $this->reservation = new Collection;
         $this->selected_rooms = new Collection;
+
+        if (!empty($this->rid)) {
+            $this->reservation_id = $this->rid;
+            $this->getReservation();
+        }
     }
 
     public function rules() {
@@ -33,7 +41,7 @@ class FindReservation extends Component
         ];
     }
 
-    public function submit() {
+    public function getReservation() {
         $this->validate(['reservation_id' => $this->rules()['reservation_id']]);
 
         $this->vat = 0;
@@ -62,6 +70,10 @@ class FindReservation extends Component
             $this->vat = ($this->sub_total) - $this->vatable_sales;
             $this->net_total = $this->vatable_sales + $this->vat;
         }
+    }
+
+    public function submit() {
+        $this->getReservation();
     }
 
     public function render()

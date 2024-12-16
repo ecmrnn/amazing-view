@@ -146,9 +146,7 @@
                     ])
                     @break
                 @case(4)
-                    @include('components.web.reservation.steps.success', [
-                        'reservation_id' => $reservation_rid
-                    ]);
+                    @livewire('guest.success', ['reservation' => $reservation_rid])
                     @break
             @endswitch
         </form>
