@@ -234,7 +234,7 @@ class ReservationForm extends Component
         $this->suggested_rooms = Room::whereNotIn('id', $reserved_rooms)
                                     ->where('status', Room::STATUS_AVAILABLE)
                                     ->where('max_capacity', '>=', $this->capacity)
-                                    ->orderByDesc('rate')
+                                    ->orderBy('max_capacity')
                                     ->limit(3)
                                     ->get();
     }

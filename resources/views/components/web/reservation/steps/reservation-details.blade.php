@@ -109,7 +109,7 @@
                 <div class="grid-cols-3 gap-2 space-y-5 lg:space-y-0 lg:grid">
                     @forelse ($suggested_rooms as $key => $room)
                         <div key="{{ $key }}" class="flex gap-3 border-slate-200 lg:block lg:space-y-2">
-                            <x-img-lg class="w-full max-w-[200px] lg:max-w-full" src="{{ $room->image_1_path }}" />
+                            <x-img-lg class="w-full max-w-[200px] lg:max-w-full" src="{{ asset('storage/' . $room->image_1_path) }}" />
                         
                             <div class="w-full space-y-2">
                                 <hgroup>
@@ -139,7 +139,7 @@
             @endif
             
             {{-- Room Categories --}}
-            <div class="p-5 space-y-3">
+            <div x-data="{ show: true }" class="p-5 space-y-3">
                 <h3 class="font-semibold">Our Rooms</h3>
                 <x-form.input-error field="selected_rooms" />
 
@@ -166,6 +166,41 @@
                         </div>
                     @endforelse
                 </div>
+
+                @if ($selected_rooms->count() > 0)
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">Selected Rooms</h3>
+                        <button type="button" x-on:click="show = false" x-show="show" class="text-xs font-semibold text-blue-500">Hide Rooms</button>
+                        <button type="button" x-on:click="show = true" x-show="!show" class="text-xs font-semibold text-blue-500">Show Rooms</button>
+                    </div>
+                    
+                    <div x-show="show" class="grid grid-cols-2 gap-1">
+                        @forelse ($selected_rooms as $room)
+                        <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
+                            {{-- Room Details --}}
+                            <div>
+                                <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->roomType->name }}</p>
+                                <p class="text-sm">
+                                    <span class="uppercase">{{ $room->building->prefix }}</span>
+                                    {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
+                                <p class="text-xs text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
+                            </div>
+                            {{-- Remove Room button --}}
+                            <button
+                                type="button"
+                                class="absolute text-xs font-semibold text-red-500 top-2 right-3"
+                                wire:click="removeRoom({{ $room->id }})">
+                                <span wire:loading.remove wire:target="removeRoom({{ $room->id }})">Remove</span>
+                                <span wire:loading wire:target="removeRoom({{ $room->id }})">Removing</span>
+                            </button>
+                        </div>
+                        @empty
+                            <div class="border rounded-lg">
+                                <x-table-no-data.rooms />
+                            </div>
+                        @endforelse
+                    </div>
+                @endif
             </div>
         </x-form.form-body>
     </div>
