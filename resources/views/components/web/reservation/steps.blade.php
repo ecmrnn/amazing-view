@@ -15,7 +15,7 @@
             ])>
         </div>
 
-        <hgroup @class(['p-3',
+        <hgroup @class(['py-3 px-4',
             'bg-gradient-to-b from-blue-500/20 to-blue-500/0' => $step == $currentStep,
             'bg-gradient-to-b from-emerald-500/20 to-emerald-500/0' => $step < $currentStep,
             ])>

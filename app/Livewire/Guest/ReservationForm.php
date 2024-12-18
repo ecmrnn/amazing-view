@@ -272,14 +272,17 @@ class ReservationForm extends Component
 
         $this->can_select_address = true;
     }
+
+    public function viewRoom(Room $room) {
+        $this->dispatch('open-modal', 'view-room-' . $room->id);
+    }
     
     // Populate 'suggested_rooms' property
     public function suggestRooms() {
         $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
 
         $this->suggested_rooms = Room::whereNotIn('id', $reserved_rooms)
-                                    ->where('status', Room::STATUS_AVAILABLE)
-                                    ->where('max_capacity', '>=', $this->capacity)
+                                    ->where('max_capacity', '>=', $this->adult_count + $this->children_count)
                                     ->orderBy('max_capacity')
                                     ->limit(3)
                                     ->get();

@@ -9,9 +9,7 @@
     </div>
 </div>
 
-<div x-data="{
-        can_select_address: @entangle('can_select_address')
-    }">
+<div class="space-y-5">
     {{-- Personal & Contact Information --}}
     <x-form.form-section>
         <div class="relative lg:col-span-2">
@@ -99,8 +97,6 @@
             </x-form.form-body>
         </div>
     </x-form.form-section>
-    
-    <x-line-vertical />
     
     {{-- Address --}}
     <x-form.form-section>
@@ -216,8 +212,6 @@
         </div>
     </x-form.form-section>
 
-    <x-line-vertical />
-
     <x-form.form-section>
         <x-form.form-header step="3" title="Additional Details" />
     
@@ -300,8 +294,6 @@
             </x-form.form-body>
         </div>
     </x-form.form-section>
-
-    <x-line-vertical />
 
     <div class="flex gap-1">
         <x-secondary-button wire:click="submit(true)">Reservation Details</x-secondary-button>

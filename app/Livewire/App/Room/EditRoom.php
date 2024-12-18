@@ -4,6 +4,7 @@ namespace App\Livewire\App\Room;
 
 use App\Models\Room;
 use App\Traits\DispatchesToast;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -45,6 +46,17 @@ class EditRoom extends Component
         $this->room->min_capacity = $this->min_capacity;
         $this->room->max_capacity = $this->max_capacity;
         $this->room->rate = $this->rate;
+
+        if (!empty($this->image_1_path)) {
+            // Delete previous image
+            if (!empty($this->room->image_1_path)) {
+                Storage::disk('public')->delete($this->room->image_1_path);
+            }
+            
+            // Store the image in the disk
+            $this->room->image_1_path = $this->image_1_path->store('rooms', 'public');
+        }
+
         $this->room->save();
 
         $this->toast('Success!', 'success', 'Room edited successfully!');

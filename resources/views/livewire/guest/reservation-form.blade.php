@@ -27,6 +27,7 @@
 
         {{-- Operations --}}
         can_select_a_room: $wire.entangle('can_select_a_room'),
+        can_select_address: @entangle('can_select_address'),
 
         formatDate(date) {
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
