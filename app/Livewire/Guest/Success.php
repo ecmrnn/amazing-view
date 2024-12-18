@@ -14,7 +14,7 @@ class Success extends Component
     public function mount($reservation) {
         $this->reservation = Reservation::whereRid($reservation)->first();
         
-        if (!empty($this->expires_at)) {
+        if (!empty($this->reservation->expires_at)) {
             $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');
         }
     }
@@ -39,7 +39,7 @@ class Success extends Component
                 <p class="text-sm text-center">Take note of your Reservation ID, you may use this to view or update your reservation.</p>
 
                 @empty ($reservation->proof_image_path)
-                    <p class="text-sm text-center"><br/> If you wish to send your payment <a href="{{ route('guest.search') }}" class="text-blue-500 underline underline-offset-2" wire:navigate>click here.</a></p>
+                    <p class="text-sm text-center"><br/> If you wish to send your payment <a href="{{ route('guest.search', ['rid' => $reservation->rid]) }}" wire:navigate> class="text-blue-500 underline underline-offset-2" wire:navigate>click here.</a></p>
                 @endempty
             </div>
 

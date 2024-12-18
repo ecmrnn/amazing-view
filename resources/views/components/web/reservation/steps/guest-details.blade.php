@@ -91,20 +91,6 @@
                         </div>
                     </div>
     
-                    {{-- Vehicle --}}
-                    {{-- <div class="space-y-3">
-                        <hgroup>
-                            <h3 class="text-sm font-semibold">Vehicle</h3>
-                            <p class="text-sm">If you have a private vehicle, enter your vehicle details below</p>
-                        </hgroup>
-                        <x-note>
-                            <p class="max-w-sm">These details will be used by our security personnels to identify you upon arrival to the resort.</p>
-                        </x-note>
-                        <div>
-    
-                        </div>
-                    </div> --}}
-    
                     <div class="flex items-center gap-3">
                         <x-primary-button type="button" wire:click="selectAddress()">Select Address</x-primary-button>
                         <p wire:loading wire:target='selectAddress()' class="text-xs font-semibold">Please wait while we load the next form.</p>
@@ -225,6 +211,91 @@
                         <div wire:loading wire:target="getDistrictBaranggays" class="text-xs font-semibold">Loading Baranggay...</div>
                     </div>
     
+                </div>
+            </x-form.form-body>
+        </div>
+    </x-form.form-section>
+
+    <x-line-vertical />
+
+    <x-form.form-section>
+        <x-form.form-header step="3" title="Additional Details" />
+    
+        <div x-show="can_select_address" x-collapse.duration.1000ms>
+            <x-form.form-body>
+                <div class="p-5 pt-0 space-y-3">
+                    <div class="flex items-start justify-between">
+                        <hgroup class="space-y-1">
+                            <h3 class="text-sm font-semibold">Vehicle</h3>
+                            {{-- <x-note>These details will be used by our security personnels to identify you upon arrival to the resort.</x-note> --}}
+                            <p class="max-w-sm text-sm">Add your vehicle here for parking reservations</p>
+                        </hgroup>
+        
+                        <x-primary-button class="flex-shrink-0" type="button" x-on:click="$dispatch('open-modal', 'add-vehicle-modal')">Add Vehicle</x-primary-button>
+                    </div>
+        
+                    <!-- Form -->
+                    <div class="space-y-1">
+                        @forelse ($cars as $car)
+                            <div class="flex items-start justify-between p-3 bg-white border rounded-lg">
+                                <div>
+                                    <p class="font-semibold">{{ $car['plate_number'] }}</p>
+                                    <p class="text-sm">{{ $car['color'] . " / " . $car['make'] . " " . $car['model'] }}</p>
+                                </div>
+
+                                {{-- Remove Room button --}}
+                                <button
+                                    type="button"
+                                    class="text-xs font-semibold text-red-500"
+                                    wire:click="removeVehicle('{{ $car['plate_number'] }}')">
+                                    <span wire:loading.remove wire:target="removeVehicle('{{ $car['plate_number'] }}')">Remove</span>
+                                    <span wire:loading wire:target="removeVehicle('{{ $car['plate_number'] }}')">Removing</span>
+                                </button>
+                            </div>
+                        @empty
+                            <div class="py-10 space-y-3 bg-white border rounded-lg">
+                                <svg class="mx-auto text-zinc-200" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car-front"><path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.646 5H8.4a2 2 0 0 0-1.903 1.257L5 10 3 8"/><path d="M7 14h.01"/><path d="M17 14h.01"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>
+                            
+                                <p class="text-sm font-semibold text-center">No Cars Yet</p>
+                            
+                                <p class="max-w-xs mx-auto text-xs font-bold text-zinc-800/50">Add your vehicle here to be used to go to our resort</p>
+                            </div>                        
+                        @endforelse
+                    </div>
+        
+                    <x-modal.full name="add-vehicle-modal" maxWidth="sm">
+                        <div class="p-5 space-y-3" x-on:car-added.window="show = false">
+                            <hgroup>
+                                <h3 class="font-semibold">Add Vehicle</h3>
+                                <p class="text-sm">Enter the details of your vehicle below</p>
+                            </hgroup>
+        
+                            <x-form.input-group>
+                                <x-form.input-text id="plate_number" class="uppercase" name="plate_number" label="Plate Number" wire:model="plate_number" />
+                                <x-form.input-error field="plate_number" />
+                            </x-form.input-group>
+        
+                            <x-form.input-group>
+                                <x-form.input-text id="make" name="make" class="capitalize" label="Brand / Make" wire:model="make" />
+                                <x-form.input-error field="make" />
+                            </x-form.input-group>
+        
+                            <x-form.input-group>
+                                <x-form.input-text id="model" name="model" class="capitalize" label="Model" wire:model="model" />
+                                <x-form.input-error field="model" />
+                            </x-form.input-group>
+        
+                            <x-form.input-group>
+                                <x-form.input-text id="color" name="color" class="capitalize" label="Color" wire:model="color" />
+                                <x-form.input-error field="color" />
+                            </x-form.input-group>
+        
+                            <div class="flex justify-between">
+                                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                                <x-primary-button type="button" wire:click='addVehicle'>Add Vehicle</x-primary-button>
+                            </div>
+                        </div>
+                    </x-modal.full>
                 </div>
             </x-form.form-body>
         </div>

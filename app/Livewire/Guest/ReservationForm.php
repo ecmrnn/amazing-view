@@ -4,12 +4,14 @@ namespace App\Livewire\Guest;
 
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
+use App\Models\CarReservation;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Services\CarService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -51,6 +53,12 @@ class ReservationForm extends Component
     public $baranggay;
     public $street;
     public $district; 
+    // Car Properties
+    public $cars;
+    public $plate_number; 
+    public $make; 
+    public $model; 
+    public $color; 
     // Populated Address Arrays
     public $regions = [];
     public $provinces = [];
@@ -79,6 +87,7 @@ class ReservationForm extends Component
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
         $this->available_room_types = new Collection;
+        $this->cars = collect();
         
         $this->room_types = RoomType::all();
         $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
@@ -158,6 +167,31 @@ class ReservationForm extends Component
         $this->dispatch('open-modal', 'show-typed-rooms');
     }
 
+    public function addVehicle() {
+        $this->validate([
+            'plate_number' => 'required',
+            'make' => 'required',
+            'model' => 'required',
+            'color' => 'required',
+        ]);
+
+        if (!$this->cars->contains('plate_number', strtoupper($this->plate_number))) {
+            $this->cars->push(collect([
+                'plate_number' => strtoupper($this->plate_number),
+                'make' => ucwords(strtolower($this->make)),
+                'model' => ucwords(strtolower($this->model)),
+                'color' => ucwords(strtolower($this->color)),
+            ]));
+            // $this->cars->push();
+
+            $this->toast('Success!', 'success', 'Car added!');
+            $this->reset('plate_number', 'make', 'model', 'color');
+            $this->dispatch('car-added');
+        } else {
+            $this->toast('Oops!', 'warning', 'Car already added!');
+        }
+    }
+
     public function addRoom($room_ids) {
         // Loops through all the room ids
         foreach ($room_ids as $room_id) {
@@ -170,6 +204,14 @@ class ReservationForm extends Component
                 break;
             }
         }
+    }
+
+    public function removeVehicle($plate_number) {
+        $this->cars = $this->cars->reject(function ($car) use ($plate_number) {
+            return $car['plate_number'] == $plate_number;
+        });
+
+        $this->toast('For Your Info.', 'info', 'Room removed');
     }
 
     public function removeRoom(Room $room_to_delete) {
@@ -421,6 +463,19 @@ class ReservationForm extends Component
                     'reservation_id' => $reservation->id,
                     'amenity_id' => $amenity->id,
                     'quantity' => 0,
+                ]);
+            }
+        }
+
+        // Car Park Reservations
+        if (!empty($this->cars)) {
+            foreach ($this->cars as $cars) {
+                CarReservation::create([
+                    'reservation_id' => $reservation->id,
+                    'plate_number' => $cars['plate_number'],
+                    'make' => $cars['make'],
+                    'model' => $cars['model'],
+                    'color' => $cars['color'],
                 ]);
             }
         }

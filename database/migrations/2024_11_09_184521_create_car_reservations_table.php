@@ -16,7 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Reservation::class);
             $table->string('plate_number');
-            $table->string('brand');
+            $table->string('make');
+            $table->string('model');
             $table->string('color');
             $table->timestamps();
         });

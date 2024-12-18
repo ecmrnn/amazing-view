@@ -26,7 +26,7 @@
         <x-form.form-body class="grid p-0 lg:grid-cols-2 lg:col-span-2">
             <div class="px-5 border-b border-dashed lg:border-r lg:border-b-0">
                 <div
-                     x-effect="date_in == '' ? date_out = '' : ''"
+                     x-effect="date_in == '' ? date_out = '' : '';"
                      class="grid grid-cols-2 gap-2">
                     <x-form.input-group>
                         <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
