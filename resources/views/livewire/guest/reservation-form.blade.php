@@ -76,14 +76,12 @@
     x-ref="form" 
     x-init="setMaxSeniorCount()"
     x-on:reservation-created.window="resetProperties()"
-    class="max-w-screen-xl py-5 mx-auto space-y-5">
+    class="max-w-screen-xl py-10 mx-auto space-y-5">
 
     {{-- Reservation steps --}}
-    <div class="flex flex-col justify-between gap-2 md:flex-row md:items-center md:gap-5 ">
+    <div class="flex items-start gap-5 mb-10">
         <x-web.reservation.steps step="1" currentStep="{{ $step }}" icon="bed" name="Reservation Details" />
-        <div class="h-[1px] hidden md:block border-b border-dashed w-full"></div>
         <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Guest Details" />
-        <div class="h-[1px] hidden md:block border-b border-dashed w-full"></div>
         <x-web.reservation.steps step="3" currentStep="{{ $step }}" icon="receipt" name="Payment" />
     </div>
     

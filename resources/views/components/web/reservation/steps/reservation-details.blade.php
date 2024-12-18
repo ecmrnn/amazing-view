@@ -78,9 +78,12 @@
                     <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
                 </div>
 
-                <x-secondary-button class="text-xs" x-on:click="$dispatch('open-modal', 'pwd-senior-modal');">
-                    Add Senior or PWD
-                </x-secondary-button>
+                <div class="flex gap-3">
+                    <p class="hidden max-w-xs text-xs text-right md:block">If you have a Senior or PWD fellow guest, click the button here</p>
+                    <x-secondary-button class="text-xs" x-on:click="$dispatch('open-modal', 'pwd-senior-modal');">
+                        Add Senior or PWD
+                    </x-secondary-button>
+                </div>
             </div>
         </x-form.form-body>
     </div>

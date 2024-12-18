@@ -197,4 +197,4 @@
 
 <x-line-vertical />
 
-<x-primary-button type="submit">Submit</x-primary-button>
+<x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="submit">Submit</x-primary-button>

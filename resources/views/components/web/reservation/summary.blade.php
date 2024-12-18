@@ -5,7 +5,7 @@
     'step',
 ])
 
-<aside class="sticky self-start p-5 space-y-5 border border-gray-300 rounded-lg top-5">
+<aside class="sticky self-start p-5 space-y-5 bg-white border rounded-lg shadow-sm border-slate-200 top-5">
     <h2 class="text-lg font-semibold">Reservation Summary</h2>
 
     <div>

@@ -132,6 +132,10 @@ class ReservationForm extends Component
         }
     }
 
+    public function goToStep($step) {
+        $this->step = $step;
+    }
+
     public function toggleRoom(Room $room)
     {
         if ($room && !$this->selected_rooms->contains('id', $room->id)) {

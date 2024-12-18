@@ -29,7 +29,7 @@
         </div>
     </x-slot:hero>
 
-    <div id="form" class="min-h-screen px-5 pb-20 bg-white">
+    <div id="form" class="min-h-screen px-5 pb-20 bg-slate-50">
         <section x-ref="form">
             <livewire:guest.reservation-form />
         </section>
