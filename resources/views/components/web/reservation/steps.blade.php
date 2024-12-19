@@ -5,7 +5,7 @@
     'icon' => ''
 ])
 
-<button type="button" class="block w-full text-left" x-data="{ currentStep: {{ $currentStep }} }" @disabled($step >= $currentStep) wire:click="goToStep('{{ $step }}')">
+<button type="button" class="block w-full text-left" x-data="{ currentStep: {{ $currentStep }} }" @disabled($step >= $currentStep || $currentStep == 3) wire:click="goToStep('{{ $step }}')">
     <div class="flex flex-col">
         <div @class([
             'w-full h-1',

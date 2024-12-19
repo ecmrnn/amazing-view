@@ -37,9 +37,6 @@
             <div class="mt-3 space-y-3">
                 <hgroup>
                     <h3 class="font-semibold">Rooms</h3>
-                    @if ($step == 1)
-                        <p class="text-xs">The following are the room&lpar;s&rpar; you have selected. Click the &apos;<span class="font-semibold text-red-500">Remove</span>&apos; button on the right to deselect it.</p>
-                    @endif
                 </hgroup>
 
                 {{-- Note message for capacity --}}
@@ -58,17 +55,6 @@
                                     {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
                                 <p class="text-xs text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
                             </div>
-
-                            {{-- Remove Room button --}}
-                            @if ($step == 1)
-                                <button 
-                                    class="absolute text-xs font-semibold text-red-500 top-2 right-3"
-                                    wire:click="removeRoom({{ $room->id }})"
-                                >
-                                    <span wire:loading.remove wire:target="removeRoom({{ $room->id }})">Remove</span>
-                                    <span wire:loading wire:target="removeRoom({{ $room->id }})">Removing</span>
-                                </button>
-                            @endif
                         </div>
                     @endforeach
                 </div>

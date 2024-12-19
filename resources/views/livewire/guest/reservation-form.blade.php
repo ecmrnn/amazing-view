@@ -27,7 +27,6 @@
 
         {{-- Operations --}}
         can_select_a_room: $wire.entangle('can_select_a_room'),
-        can_select_address: @entangle('can_select_address'),
 
         formatDate(date) {
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -80,20 +79,20 @@
     class="max-w-screen-xl py-10 mx-auto space-y-5">
 
     {{-- Reservation steps --}}
-    <div class="flex items-start gap-5 mb-10">
+    <div class="flex items-start mb-10 lg:gap-5">
         <x-web.reservation.steps step="1" currentStep="{{ $step }}" icon="bed" name="Reservation Details" />
         <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Guest Details" />
         <x-web.reservation.steps step="3" currentStep="{{ $step }}" icon="receipt" name="Payment" />
     </div>
     
     {{-- Reservation form --}}
-    <article class="relative grid gap-5 md:grid-cols-3">
+    <article class="relative grid gap-5 lg:grid-cols-3">
         {{-- Form --}}
         <form
             wire:submit="submit"
             @class([
-                'md:col-span-3' => $step >= 3,
-                'md:col-span-2' => $step < 3
+                'lg:col-span-3' => $step >= 3,
+                'lg:col-span-2' => $step < 3
             ])
             >
             @switch($step)
@@ -121,7 +120,6 @@
                         'baranggay' => $baranggay,
                         'baranggays' => $baranggays,
                         'address' => $address,
-                        'can_select_address' => $can_select_address,
                     ])
                     @break
                 @case(3)

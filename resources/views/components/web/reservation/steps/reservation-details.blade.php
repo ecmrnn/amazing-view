@@ -9,7 +9,19 @@
     </div>
 </div>
 
-<div class="space-y-5">
+<div class="p-5 space-y-5 bg-white border rounded-lg shadow-sm border-slate-200">
+    {{-- Step Header --}}
+    <div class="flex flex-col items-start gap-3 sm:gap-5 sm:flex-row">
+        <div class="grid w-full text-white bg-blue-500 rounded-md aspect-square max-w-20 place-items-center">
+            <p class="text-5xl font-bold">1</p>
+        </div>
+
+        <div>
+            <p class="text-lg font-bold">Reservation Details</p>
+            <p class="max-w-sm text-sm leading-tight">Pick your reservation date, enter guest count, choose a room, as well as addons to avail!</p>
+        </div>
+    </div>
+
     {{-- Reservation Date & Guest Count --}}
     <x-form.form-section class="grid lg:grid-cols-2">
         <div class="relative lg:col-span-2">
@@ -213,7 +225,7 @@
                             <button type="button" x-on:click="show = true" x-show="!show" class="text-xs font-semibold text-blue-500">Show Rooms</button>
                         </div>
     
-                        <div x-show="show" class="grid grid-cols-2 gap-1">
+                        <div x-show="show" class="grid grid-cols-1 gap-1 sm:grid-cols-2">
                             @forelse ($selected_rooms as $room)
                             <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
                                 {{-- Room Details --}}
@@ -286,7 +298,7 @@
     
     <x-primary-button
         x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }"
-        type="submit">Guest Details
+        type="submit">Continue
     </x-primary-button>
 </div>
 

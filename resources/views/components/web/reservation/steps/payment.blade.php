@@ -10,6 +10,18 @@
 </div>
 
 <div class="space-y-5">
+    {{-- Step Header --}}
+    <div class="flex flex-col items-start gap-3 sm:gap-5 sm:flex-row">
+        <div class="grid w-full text-white bg-blue-500 rounded-md aspect-square max-w-20 place-items-center">
+            <p class="text-5xl font-bold">3</p>
+        </div>
+
+        <div>
+            <p class="text-lg font-bold">Payment</p>
+            <p class="max-w-sm text-sm leading-tight">Review your reservation details or if you can, you may upload an image of your downpayment</p>
+        </div>
+    </div>
+
     <x-form.form-section>
         <x-form.form-header step="1" title="Reservation Summary" />
 
