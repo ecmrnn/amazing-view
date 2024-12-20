@@ -393,9 +393,6 @@ class ReservationForm extends Component
                     $this->step++;
                     sleep(2);
 
-                    // TODOS:
-                    // [ ] 1. Send a Reservation Notification Email
-
                     $this->toast('Success!', 'success', 'Next, Payment');
                     break;
                 case 3:
@@ -497,7 +494,7 @@ class ReservationForm extends Component
 
         // Send email to the guest about their reservation
         // Mail::to($this->email)->send(new ReservationReceived($reservation));
-        Mail::to('delivered@resend.dev')->send(new ReservationReceived($reservation));
+        Mail::to('delivered@resend.dev')->queue(new ReservationReceived($reservation));
 
         // Dispatch event
         $this->dispatch('reservation-created');
