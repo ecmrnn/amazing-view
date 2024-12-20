@@ -3,6 +3,7 @@
 namespace App\Livewire\Guest;
 
 use App\Http\Controllers\AddressController;
+use App\Mail\ReservationReceived;
 use App\Models\Amenity;
 use App\Models\CarReservation;
 use App\Models\Invoice;
@@ -15,6 +16,7 @@ use App\Services\CarService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -492,6 +494,10 @@ class ReservationForm extends Component
             'total_amount' => $this->net_total,
             'status' => Invoice::STATUS_PENDING
         ]);
+
+        // Send email to the guest about their reservation
+        // Mail::to($this->email)->send(new ReservationReceived($reservation));
+        Mail::to('delivered@resend.dev')->send(new ReservationReceived($reservation));
 
         // Dispatch event
         $this->dispatch('reservation-created');
