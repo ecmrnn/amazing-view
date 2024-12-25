@@ -4,6 +4,7 @@ namespace App\Livewire\Guest;
 
 use App\Models\Reservation;
 use App\Models\RoomReservation;
+use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Url;
@@ -11,9 +12,10 @@ use Livewire\Component;
 
 class FindReservation extends Component
 {
+    use DispatchesToast;
 
     public $reservation_id;
-    public $reservation = [];
+    public $reservation;
     public $selected_rooms;
     public $selected_amenities = [];
     public $vat = 0;
@@ -24,6 +26,10 @@ class FindReservation extends Component
     public $discount_amount = 0;
     #[Url]
     public $rid;
+    // Operations
+    public $is_authorized = null;
+    public $email;
+    public $encrypted_email;
 
     public function mount() {
         $this->reservation = new Collection;
@@ -32,6 +38,17 @@ class FindReservation extends Component
         if (!empty($this->rid)) {
             $this->reservation_id = $this->rid;
             $this->getReservation();
+        }
+    }
+
+    public function checkEmail() {
+        $this->validate(['email' => 'required|email']);
+
+        if ($this->reservation->email == $this->email) {
+            $this->is_authorized = 'authorized';
+            $this->toast('Success!', description: 'Email is a match.');
+        } else {
+            $this->is_authorized = 'unauthorized';
         }
     }
 
@@ -69,6 +86,7 @@ class FindReservation extends Component
             $this->vatable_sales = $this->sub_total / 1.12;
             $this->vat = ($this->sub_total) - $this->vatable_sales;
             $this->net_total = $this->vatable_sales + $this->vat;
+            $this->encrypted_email = preg_replace('/(?<=.).(?=.*@)/u', '*', $this->reservation->email);
         }
     }
 
