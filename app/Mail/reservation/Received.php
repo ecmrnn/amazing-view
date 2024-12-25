@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\reservation;
 
+use App\Models\Reservation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,14 +10,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReservationReceived extends Mailable
+class Received extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(public Reservation $reservation)
     {
         //
     }
@@ -37,7 +38,7 @@ class ReservationReceived extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.reservation-received',
+            view: 'mail.reservation.received',
         );      
     }
 

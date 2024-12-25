@@ -36,7 +36,13 @@
         @if (count($selectedRooms) > 0)
             <div class="mt-3 space-y-3">
                 <hgroup>
-                    <h3 class="font-semibold">Rooms</h3>
+                    <h3 class="font-semibold">
+                        @if (count($selectedRooms) == 1)
+                            Room
+                        @else
+                            Rooms
+                        @endif
+                    </h3>
                 </hgroup>
 
                 {{-- Note message for capacity --}}
@@ -69,7 +75,9 @@
                     @foreach ($selectedAmenities as $amenity)
                         <div key="{{ $amenity->id }}" class="flex justify-between text-sm capitalize">
                             <p>{{ $amenity->name }}</p>
-                            <p>{{ $amenity->price }}</p>
+                            <p>
+                                <x-currency /> <span>{{ $amenity->price }}</span>
+                            </p>
                         </div>
                     @endforeach
                 </div>

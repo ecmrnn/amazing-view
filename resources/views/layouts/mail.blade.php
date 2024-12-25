@@ -8,7 +8,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="p-10 antialiased font-inter text-zinc-800 bg-slate-50">
+    <body class="text-sm antialiased md:p-10 font-inter text-zinc-800 bg-slate-50">
         {{ $slot }}
     </body>
 </html>

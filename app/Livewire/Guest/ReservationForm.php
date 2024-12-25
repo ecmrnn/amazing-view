@@ -3,16 +3,14 @@
 namespace App\Livewire\Guest;
 
 use App\Http\Controllers\AddressController;
-use App\Mail\ReservationReceived;
+use App\Mail\reservation\Received;
 use App\Models\Amenity;
 use App\Models\CarReservation;
 use App\Models\Invoice;
-use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
-use App\Services\CarService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -493,8 +491,8 @@ class ReservationForm extends Component
         ]);
 
         // Send email to the guest about their reservation
-        // Mail::to($this->email)->send(new ReservationReceived($reservation));
-        Mail::to('delivered@resend.dev')->queue(new ReservationReceived($reservation));
+        // NOTE! Don't forget to run 'php artisan queue:work' to process the queued email
+        Mail::to($this->email)->queue(new Received($reservation));
 
         // Dispatch event
         $this->dispatch('reservation-created');

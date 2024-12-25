@@ -85,8 +85,8 @@
                     </div>
                 </div>
     
-                <div class="flex justify-between p-5 pt-5 lg:col-span-2">
-                    <div class="flex items-center gap-5">
+                <div class="flex items-start justify-between p-5 pt-5 lg:col-span-2">
+                    <div class="flex items-start gap-5">
                         <x-primary-button type="button" class="block" wire:click="selectRoom()">Select a Room</x-primary-button>
                         <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
                     </div>
