@@ -2,17 +2,20 @@
 
 namespace App\Livewire\Guest;
 
+use App\Http\Controllers\OTP\MailOtp;
 use App\Models\Reservation;
 use App\Models\RoomReservation;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Url;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Spatie\LivewireFilepond\WithFilePond;
 
 class FindReservation extends Component
 {
-    use DispatchesToast;
+    use DispatchesToast, WithFilePond;
 
     public $reservation_id;
     public $reservation;
@@ -24,12 +27,22 @@ class FindReservation extends Component
     public $sub_total = 0;
     public $night_count;
     public $discount_amount = 0;
-    #[Url]
-    public $rid;
+    #[Url] public $rid;
     // Operations
     public $is_authorized = null;
     public $email;
     public $encrypted_email;
+    public $expires_at;
+    public $otp;
+    public $otp_input = [
+        'otp_1' => '',
+        'otp_2' => '',
+        'otp_3' => '',
+        'otp_4' => '',
+        'otp_5' => '',
+        'otp_6' => '',
+    ];
+    #[Validate] public $proof_image_path;
 
     public function mount() {
         $this->reservation = new Collection;
@@ -41,15 +54,26 @@ class FindReservation extends Component
         }
     }
 
-    public function checkEmail() {
-        $this->validate(['email' => 'required|email']);
+    public function checkOtp() {
+        $otp = implode($this->otp_input);
 
-        if ($this->reservation->email == $this->email) {
-            $this->is_authorized = 'authorized';
-            $this->toast('Success!', description: 'Email is a match.');
+        if (implode($this->otp_input) >= 100000 && implode($this->otp_input) <= 999999) {
+            sleep(2);
+
+            if (MailOtp::check($this->reservation->email, $otp)) {
+                $this->is_authorized = 'authorized';
+                $this->toast('Success!', 'success', 'OTP is correct.');
+            } else {
+                $this->is_authorized = 'unauthorized';
+                $this->toast('Error!', 'warning', 'Incorrect OTP.');
+            }
         } else {
-            $this->is_authorized = 'unauthorized';
+            $this->toast('Error!', 'warning', 'Invalid OTP.');
         }
+    }
+
+    public function resetOtp() {
+        $this->reset('otp_input', 'is_authorized');
     }
 
     public function rules() {
@@ -87,7 +111,23 @@ class FindReservation extends Component
             $this->vat = ($this->sub_total) - $this->vatable_sales;
             $this->net_total = $this->vatable_sales + $this->vat;
             $this->encrypted_email = preg_replace('/(?<=.).(?=.*@)/u', '*', $this->reservation->email);
+
+            if (!empty($this->reservation->expires_at)) {
+                $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');
+            }
+
+            $this->otp = MailOtp::send($this->reservation->email);
+
+            $this->reset('is_authorized', 'email');
         }
+    }
+
+    public function resetSearch() {
+        $this->reset();
+    }
+
+    public function submitPayment() {
+        dd('Hello world!');
     }
 
     public function submit() {

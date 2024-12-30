@@ -84,6 +84,14 @@
             $label = 'Canceled';
             $class = 'text-white border-stone-500 bg-stone-500/75';
             break;
+        case 7:
+            $label = 'Reserved';
+            $class = 'text-white border-green-500 bg-green-500/75';
+            break;
+        case 8:
+            $label = 'Awaiting Payment';
+            $class = 'text-white border-yellow-500 bg-yellow-500/75';
+            break;
         default:
             # code...
             break;

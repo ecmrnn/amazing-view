@@ -424,10 +424,12 @@ class ReservationForm extends Component
         ]);
 
         $expires_at = Carbon::now()->addHour();
+        $status = Reservation::STATUS_AWAITING_PAYMENT;
 
         if (!empty($this->proof_image_path)) {
             $this->proof_image_path = $this->proof_image_path->store('downpayments', 'public');
             $expires_at = null;
+            $status = Reservation::STATUS_PENDING;
         }
 
         // Create Reservation
@@ -438,7 +440,7 @@ class ReservationForm extends Component
             'pwd_count' => $this->pwd_count,
             'adult_count' => $this->adult_count,
             'children_count' => $this->children_count,
-            'status' => Reservation::STATUS_PENDING,
+            'status' => $status,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'phone' => $this->phone,

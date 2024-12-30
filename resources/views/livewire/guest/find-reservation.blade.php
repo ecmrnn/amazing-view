@@ -1,17 +1,23 @@
-<div>
-    <form wire:submit="submit" class="relative flex justify-center max-w-md gap-1 mx-auto mb-5">
-        <div class="space-y-3">
-            <x-form.input-search maxlength="12"  wire:model="reservation_id" label="Reservation ID" id="reservation_id" />
-            <x-form.input-error field="reservation_id" />
-        </div>
-        <x-primary-button type="submit" class="w-full">Find my Reservation</x-primary-button>
-    </form>
+<div x-data="{ focusSearch() { document.getElementById('reservation_id').focus(); } }">
+    @if ($is_authorized != 'authorized')
+        <form wire:submit="submit" class="relative flex items-start justify-center max-w-md gap-1 mx-auto mb-5">
+            <div class="space-y-3">
+                <x-form.input-search maxlength="12"  wire:model="reservation_id" label="Reservation ID" id="reservation_id" />
+                <x-form.input-error field="reservation_id" />
+            </div>
+            <x-primary-button type="submit" class="w-full">Find Reservation</x-primary-button>
+        </form>
+    @endif
 
     {{-- Reservation Details --}}
     @if (!empty($reservation_id))
         @if (!empty($reservation))
             @if ($is_authorized == 'authorized')
                 <div class="space-y-5">
+                    <div>
+                        <x-secondary-button>Download PDF</x-secondary-button>
+                    </div>
+
                     <div class="p-5 space-y-3 border border-gray-300 rounded-lg shadow-lg">
                         <hgroup class="flex items-start justify-between">
                             <div>
@@ -26,7 +32,7 @@
                         </hgroup>
             
                         {{-- Summary --}}
-                        <section class="grid border rounded-lg md:grid-cols-2">
+                        <section class="grid border border-gray-300 rounded-lg md:grid-cols-2">
                             {{-- Guest Details --}}
                             <div class="px-3 py-2 space-y-2 border-b border-dashed md:border-b-0 md:border-r">
                                 <h4 class="font-semibold">Guest Details</h4>
@@ -100,7 +106,7 @@
                         </div>
 
                         {{-- Breakdown --}}
-                        <section class="p-3 space-y-3 border rounded-lg sm:p-5">
+                        <section class="p-3 space-y-3 border border-gray-300 rounded-lg sm:p-5">
                             {{-- Header --}}
                             <div class="grid grid-cols-2 pb-3 text-sm font-semibold border-b border-dotted">
                                 <p>Description</p>
@@ -143,7 +149,7 @@
                                 <div class="grid grid-cols-2">
                                     <p class="text-sm uppercase">{{ $amenity->name }}</p>
                                     
-                                    <div class="grid grid-cols-3 place-items-end">
+                                    <div class="grid grid-cols-3 text-sm place-items-end">
                                             <p>{{ $quantity }}</p>
                                             <p>{{ number_format($amenity->price, 2) }}</p>
                                             <p>{{ number_format($amenity->price * $quantity, 2) }}</p>
@@ -189,29 +195,79 @@
                                 @endif
                             </div>
                         </div>
+
+                        {{-- Actions --}}
+                        @if ($expires_at)
+                            <div class="flex flex-col-reverse items-center justify-end gap-3 pt-5 border-t border-gray-300 border-dashed sm:flex-row">
+                                <p class="text-sm leading-tight text-right text-red-500">Your reservation is only valid until <br /> <strong>{{ $expires_at }}</strong>.</p>
+                                <x-primary-button x-on:click="$dispatch('open-modal', 'submit-payment-modal')">Submit Payment</x-primary-button>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @else
                 @if ($is_authorized == 'unauthorized')
                     <div class="mt-5">
                         <p class="mb-3 text-4xl text-center">✋</p>
-                        <p class="text-2xl font-semibold text-center text-red-500">Sorry!</p>
+                        <p class="text-2xl font-semibold text-center text-red-500">Incorrect OTP!</p>
                         <p class="text-center ">You are not authorized to view this reservation.</p>
+                        <div class="mx-auto mt-5 w-max">
+                            <x-secondary-button wire:click='resetOtp()'>Try Again</x-secondary-button>
+                        </div>
                     </div>
                 @else
-                    <form wire:submit.prevent="checkEmail" class="max-w-md p-5 mx-auto space-y-5 border border-gray-300 rounded-lg shadow-sm">
+                    <form wire:submit.prevent="checkOtp" class="max-w-md p-5 mx-auto space-y-5 border border-gray-300 rounded-lg shadow-sm">
                         <hgroup>
                             <h3 class="text-lg font-bold">Reservation Authorization</h3>
-                            <p class="text-sm">Enter your email address ending with <strong>{{ $encrypted_email }}</strong> to confirm that you own this reservation.</p>
+                            <p class="text-sm">An OTP has been sent to your email: <strong>{{ $encrypted_email }}</strong>. Please check your email and enter the OTP below to confirm that you own this reservation.</p>
                         </hgroup>
             
-                        <x-form.input-group>
-                            <x-form.input-label for='email'>Enter your Email Address</x-form.input-label>
-                            <x-form.input-text id="email" name="email" label="Email" wire:model='email' />
-                            <x-form.input-error field="email" />
-                        </x-form.input-group>
-            
-                        <x-primary-button>Submit</x-primary-button>
+                        <div class="space-y-3"  wire:loading.remove wire:target='checkOtp'>
+                            <label for="otp1" class="block text-sm font-semibold">Your OTP</label>
+                            <div class="grid grid-cols-6 gap-1">
+                                <input type="number" name="otp1" id="otp1" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                                    wire:model="otp_input.otp_1"
+                                    x-mask="9"
+                                    x-on:input="$refs.otp2.focus()"
+                                    x-ref="otp1" />
+                                <input type="number" name="otp2" id="otp2" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                                    wire:model="otp_input.otp_2"
+                                    x-mask="9"
+                                    x-on:input="$refs.otp3.focus()"
+                                    x-ref="otp2" />
+                                <input type="number" name="otp3" id="otp3" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                                    wire:model="otp_input.otp_3"
+                                    x-mask="9"
+                                    x-on:input="$refs.otp4.focus()"
+                                    x-ref="otp3" />
+                                <input type="number" name="otp4" id="otp4" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                                    wire:model="otp_input.otp_4"
+                                    x-mask="9"
+                                    x-on:input="$refs.otp5.focus()"
+                                    x-ref="otp4" />
+                                <input type="number" name="otp5" id="otp5" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                                    wire:model="otp_input.otp_5"
+                                    x-mask="9"
+                                    x-on:input="$refs.otp6.focus()"
+                                    x-ref="otp5" />
+                                <input type="number" name="otp6" id="otp6" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                                    wire:model="otp_input.otp_6"
+                                    x-mask="9"
+                                    x-on:input="$wire.checkOtp()"
+                                    x-ref="otp6" />
+                            </div>
+                            <x-primary-button wire:click='checkOtp()'>Check OTP</x-primary-button>
+                        </div>
+
+                        <div wire:loading wire:target='checkOtp'>
+                            <div class="flex items-center">
+                                <div class="mr-5">
+                                    <p class="text-xl font-bold">Checking OTP</p>
+                                    <p class="text-sm font-semibold">Please wait for a second</p>
+                                </div>
+                                <svg class="mx-auto animate-spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                            </div>
+                        </div>
                     </form>
                 @endif
             @endif
@@ -219,8 +275,28 @@
             <div class="mt-5">
                 <p class="mb-3 text-4xl text-center">🤷</p>
                 <p class="text-2xl font-semibold text-center text-red-500">No Reservation Found!</p>
-                <p class="text-center">There are no reservations with that Reservation ID</p>
+                <p class="max-w-sm mx-auto text-center">There are no reservations with that Reservation ID. If this is a mistake, kindly contact us <a href="{{ route('guest.contact') }}" class="text-blue-500 underline underline-offset-2" wire:navigate>here</a>.</p>
+                <div class="mx-auto mt-3 w-max">
+                    <x-secondary-button wire:click="resetSearch" x-on:click="focusSearch">Try Again</x-secondary-button>
+                </div>
             </div>
         @endif
     @endif
+
+    <x-modal.full name='submit-payment-modal' maxWidth='sm'>
+        <form wire:submit='submitPayment' class="p-5 space-y-5">
+            <h3 class="text-lg font-semibold">Submit Payment</h3>
+            <p class="text-sm text-justify">Upload an image of your receipt here to process your reservation, you will receive an email once your reservation is confirmed.</p>
+
+            <x-filepond::upload
+                wire:model.live="proof_image_path"
+                placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
+            />
+
+            <div class="flex justify-end gap-3">
+                <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+                <x-primary-button type="submit">Submit</x-primary-button>
+            </div>
+        </form>
+    </x-modal.full>
 </div>
