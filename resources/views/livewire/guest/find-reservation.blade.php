@@ -284,7 +284,7 @@
     @endif
 
     <x-modal.full name='submit-payment-modal' maxWidth='sm'>
-        <form wire:submit='submitPayment' class="p-5 space-y-5">
+        <form wire:submit='submitPayment' class="p-5 space-y-5" x-on:payment-submitted.window="show = false">
             <h3 class="text-lg font-semibold">Submit Payment</h3>
             <p class="text-sm text-justify">Upload an image of your receipt here to process your reservation, you will receive an email once your reservation is confirmed.</p>
 

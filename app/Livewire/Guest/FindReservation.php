@@ -127,7 +127,19 @@ class FindReservation extends Component
     }
 
     public function submitPayment() {
-        dd('Hello world!');
+        $this->validate([
+            'proof_image_path' => 'required|image|max:1024',
+        ]);
+
+        $this->reservation->update([
+            'status' => Reservation::STATUS_PENDING,
+            'expires_at' => null,
+            'proof_image_path' => $this->proof_image_path->store('downpayments', 'public'),
+        ]);
+
+        $this->toast('Success!', 'success', 'Payment submitted successfully.');
+        $this->reset('proof_image_path');
+        $this->dispatch('payment-submitted');
     }
 
     public function submit() {
