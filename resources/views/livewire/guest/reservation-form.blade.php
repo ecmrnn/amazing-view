@@ -1,7 +1,9 @@
 <div
     x-data="{
         {{-- Reservation Details --}}
-        min: new Date(),
+        reservation_type: $persist($wire.entangle('reservation_type')).using(sessionStorage),
+        min_date_in: $wire.entangle('min_date_in'),
+        min_date_out: $wire.entangle('min_date_out'),
         date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
         date_out: $persist($wire.entangle('date_out')).using(sessionStorage),
         senior_count: $persist($wire.entangle('senior_count')).using(sessionStorage),
@@ -71,11 +73,13 @@
             this.phone = null;
             localStorage.removeItem('_x_street');
             this.street = null;
+            localStorage.removeItem('_x_address');
         }
     }"
     x-ref="form" 
-    x-init="setMaxSeniorCount()"
+    x-init="setMaxSeniorCount();"
     x-on:reservation-created.window="resetProperties()"
+    x-on:reservation-reset.window="resetProperties()"
     class="max-w-screen-xl py-10 mx-auto space-y-5">
 
     {{-- Reservation steps --}}
@@ -87,6 +91,7 @@
     
     {{-- Reservation form --}}
     <article class="relative grid gap-5 lg:grid-cols-3">
+        
         {{-- Form --}}
         <form
             wire:submit="submit"
@@ -184,4 +189,27 @@
             </footer>
         </div>
     </x-modal.full> 
+
+    <x-modal.full name='reset-reservation-modal' maxWidth='sm'>
+        <div class="p-5 space-y-5">
+            <h3 class="text-lg font-semibold">Reset Reservation</hjson</h3>
+            <p class="text-sm">Are you sure you want to reset your reservation?</p>
+    
+            <div class="flex justify-end gap-1 mt-5">
+                <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+                <x-danger-button x-on:click="show = false; $wire.resetReservation()">Reset</x-danger-button>
+            </div>
+        </div>
+    </x-modal.full>
+
+    {{-- Loader for reset reservation --}}
+    <div class="fixed top-0 left-0 z-50 w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='resetReservation'>
+        <div class="grid h-screen place-items-center">
+            <div>
+                <p class="text-2xl font-bold text-center">Resetting Forms</p>
+                <p class="mb-4 text-xs font-semibold text-center">Clearing calendars, please wait...</p>
+                <svg class="mx-auto animate-spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            </div>
+        </div>
+    </div>
 </div>

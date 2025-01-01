@@ -122,6 +122,10 @@ class FindReservation extends Component
         }
     }
 
+    public function sendOtp() {
+        MailOtp::send($this->reservation->email);
+    }
+
     public function resetSearch() {
         $this->reset();
     }

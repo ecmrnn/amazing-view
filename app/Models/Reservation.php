@@ -28,7 +28,7 @@ class Reservation extends Model
     public static function rules(array $excepts = []) {
         $rules = [
             'date_in' => 'required|date|after_or_equal:today',
-            'date_out' => 'required|date|after_or_equal:date_in',
+            'date_out' => 'required_if:reservation_type,overnight|date|after_or_equal:date_in',
             'senior_count' => 'nullable|integer',
             'pwd_count' => 'nullable|integer',
             'adult_count' => 'required|integer|min:1',

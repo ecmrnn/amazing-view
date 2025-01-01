@@ -28,6 +28,8 @@ class ReservationForm extends Component
     public $capacity = 0;
 
     // Reservation Details
+    public $min_date_in;
+    public $min_date_out;
     #[Validate] public $date_in;
     #[Validate] public $date_out;
     #[Validate] public $senior_count = 0;
@@ -70,6 +72,7 @@ class ReservationForm extends Component
     #[Validate] public $transaction_id;
 
     // Operational Variables
+    public $reservation_type = null; /* Can be 'day tour' or 'overnight' */
     public $can_select_a_room = false;
     public $can_select_address = false;
     public $show_available_rooms = false;
@@ -88,9 +91,30 @@ class ReservationForm extends Component
         $this->selected_amenities = new Collection;
         $this->available_room_types = new Collection;
         $this->cars = collect();
+        $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
         
         $this->room_types = RoomType::all();
         $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
+    }
+
+    public function setMinDateOut($date_in) {
+        $this->min_date_out = Carbon::parse($date_in)->addDay()->format('Y-m-d');
+    }
+
+    public function resetReservation() {
+        $this->reset();
+
+        $this->selected_rooms = new Collection;
+        $this->selected_amenities = new Collection;
+        $this->available_room_types = new Collection;
+        $this->cars = collect();
+        $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
+        
+        $this->room_types = RoomType::all();
+        $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
+        $this->reservation_type = null;
+        $this->dispatch('reservation-reset');
+        sleep(2);
     }
 
     // Custome Validation Messages
@@ -494,11 +518,11 @@ class ReservationForm extends Component
 
         // Send email to the guest about their reservation
         // NOTE! Don't forget to run 'php artisan queue:work' to process the queued email
-        Mail::to($this->email)->queue(new Received($reservation));
+        // Mail::to($this->email)->queue(new Received($reservation));
 
         // Dispatch event
         $this->dispatch('reservation-created');
-        $this->toast('Success!', 'success', 'Reservation sent!');
+        $this->toast('Success!', description: 'Reservation sent!');
         $this->step++;
     }
 

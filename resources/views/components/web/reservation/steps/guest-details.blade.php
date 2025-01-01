@@ -12,15 +12,21 @@
     
     <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         {{-- Step Header --}}
-        <div class="flex flex-col items-start gap-3 sm:gap-5 sm:flex-row">
-            <div class="grid w-full text-white bg-blue-500 rounded-md aspect-square max-w-20 place-items-center">
-                <p class="text-5xl font-bold">2</p>
+        <div class="flex items-start justify-between">
+            <div class="flex flex-col items-start gap-3 sm:gap-5 sm:flex-row">
+                <div class="grid w-full text-white bg-blue-500 rounded-md aspect-square max-w-20 place-items-center">
+                    <p class="text-5xl font-bold">2</p>
+                </div>
+                <div>
+                    <p class="text-lg font-bold">Guest Details</p>
+                    <p class="max-w-sm text-sm leading-tight">Enter your personal and contact information, your address, and vehicles to ride on the way to our resort!</p>
+                </div>
             </div>
-    
-            <div>
-                <p class="text-lg font-bold">Guest Details</p>
-                <p class="max-w-sm text-sm leading-tight">Enter your personal and contact information, your address, and vehicles to ride on the way to our resort!</p>
-            </div>
+
+            <button :class="reservation_type != null ? 'scale-100' : 'scale-0'" type="button" x-on:click="$dispatch('open-modal', 'reset-reservation-modal')" class="flex items-center gap-2 text-xs font-semibold text-red-500 transition-all duration-200 ease-in-out w-max">
+                <p>Reset</p>
+                <svg class="text-red-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
         </div>
 
         {{-- Personal & Contact Information --}}
