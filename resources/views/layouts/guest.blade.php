@@ -46,7 +46,7 @@
         >
         <div @class([
                 'sticky top-0 flex flex-col px-5 pb-5',
-                'h-screen' => ! Request::is('reservation') && ! Request::is('search'), 
+                'h-screen' => ! Request::is('reservation') && ! Request::is('search') && ! Request::is('function-hall'), 
             ])>
             <x-navigations.guest />
             <section class="relative flex-grow">

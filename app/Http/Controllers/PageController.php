@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 class PageController extends Controller
 {
     public function home() {
-
         $heading = Content::whereName('home_heading')->pluck('value')->first();
         $home_hero_image = Content::whereName('home_hero_image')->pluck('value')->first();
         $subheading = Content::whereName('home_subheading')->pluck('value')->first();
@@ -89,6 +88,16 @@ class PageController extends Controller
         return view('reservation', [
             'heading' => html_entity_decode($heading),
             'subheading' => html_entity_decode($subheading),
+            'reservation_hero_image' => $reservation_hero_image,
+        ]);
+    }
+
+    public function functionHall() {
+        $reservation_hero_image = Content::whereName('reservation_hero_image')->pluck('value')->first();
+
+        return view('function-hall', [
+            'heading' => 'Function Hall',
+            'subheading' => 'Make your events unforgettable with our elegant Function Hall',
             'reservation_hero_image' => $reservation_hero_image,
         ]);
     }

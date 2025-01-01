@@ -91,7 +91,6 @@
     
     {{-- Reservation form --}}
     <article class="relative grid gap-5 lg:grid-cols-3">
-        
         {{-- Form --}}
         <form
             wire:submit="submit"
