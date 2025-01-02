@@ -384,7 +384,7 @@ class ReservationForm extends Component
                 case 1:
                     $this->validate([
                         'date_in' => $this->rules()['date_in'],
-                        'date_out' => 'required_if:reservation_type,overnight|date|after_or_equal:date_in',
+                        'date_out' => 'required|date|after_or_equal:date_in',
                         'adult_count' => $this->rules()['adult_count'],
                         'children_count' => $this->rules()['children_count'],
                         'selected_rooms' => $this->rules()['selected_rooms'],

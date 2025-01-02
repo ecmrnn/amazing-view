@@ -201,7 +201,7 @@
     <div class="fixed top-0 left-0 z-50 w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='resetReservation'>
         <div class="grid h-screen place-items-center">
             <div>
-                <p class="text-2xl font-bold text-center">Resetting Forms</p>
+                <p class="text-2xl font-bold text-center">Resetting Form</p>
                 <p class="mb-4 text-xs font-semibold text-center">Clearing calendars, please wait...</p>
                 <svg class="mx-auto animate-spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
             </div>

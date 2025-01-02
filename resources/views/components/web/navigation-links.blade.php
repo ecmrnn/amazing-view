@@ -38,7 +38,7 @@ class="relative z-10 w-auto">
             <x-nav-link :active="Request::is('contact')" href="{{ route('guest.contact') }}">Contact</x-nav-link>
         </li>
         <li class="flex items-center gap-2">
-            <x-nav-link :active="Request::is('reservation')  || Request::is('search')"  href="{{ route('guest.reservation') }}" @mouseover="navigationMenuOpen=true; navigationMenuReposition($el); navigationMenu='reservation-menu'" @mouseleave="navigationMenuLeave()">Reservation</x-nav-link>
+            <x-nav-link :active="Request::is('reservation')  || Request::is('search') || Request::is('function-hall')"  href="{{ route('guest.reservation') }}" @mouseover="navigationMenuOpen=true; navigationMenuReposition($el); navigationMenu='reservation-menu'" @mouseleave="navigationMenuLeave()">Reservation</x-nav-link>
             <svg class="relative top-[1px] ml-1 h-3 w-3 ease-out duration-300" :class="{ '-rotate-180' : navigationMenuOpen==true && navigationMenu == 'reservation-menu' }" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
         </li>
     </ul>
