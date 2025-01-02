@@ -5,21 +5,21 @@
     'step',
 ])
 
-<aside class="sticky self-start p-5 space-y-5 bg-white border rounded-lg shadow-sm border-slate-200 top-5">
+<aside class="sticky self-start p-5 space-y-5 bg-white rounded-lg shadow-sm top-5">
     <h2 class="text-lg font-semibold">Reservation Summary</h2>
 
     <div>
         {{-- Date and Time --}}
         <h3 class="font-semibold">Date and Time</h3>
         <div class="grid grid-cols-2 gap-2 mt-3 md:grid-cols-1 lg:grid-cols-2">
-            <div class="px-3 py-2 border rounded-lg">
+            <div class="px-3 py-2 border rounded-lg border-slate-200">
                 <p class="text-xs text-zinc-800">Check-in</p>
                 <p x-text="date_in === null || date_in === '' ? 'Select a Date' : formatDate(date_in)"
                     class="font-semibold line-clamp-1"></p>
                     <p x-show="reservation_type == 'day_tour'" class="text-xs text-zinc-800">From: 8:00 AM</p>
                     <p x-show="reservation_type != 'day_tour'" class="text-xs text-zinc-800">From: 2:00 PM</p>
             </div>
-            <div class="px-3 py-2 border rounded-lg">
+            <div class="px-3 py-2 border rounded-lg border-slate-200">
                 <p class="text-xs text-zinc-800">Check-out</p>
                 <p x-text="date_out === null || date_in === '' ? 'Select a Date' : formatDate(date_out)"
                     class="font-semibold line-clamp-1"></p>

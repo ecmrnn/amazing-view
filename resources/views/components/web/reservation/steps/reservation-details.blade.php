@@ -9,7 +9,7 @@
     </div>
 </div>
 
-<div class="p-5 space-y-5 bg-white border rounded-lg shadow-sm border-slate-200">
+<div class="p-5 space-y-5 bg-white rounded-lg shadow-sm">
     {{-- Step Header --}}
     <div class="flex items-start justify-between">
         <div class="flex flex-col items-start gap-3 sm:gap-5 sm:flex-row">
