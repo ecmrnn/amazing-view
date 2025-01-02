@@ -9,7 +9,7 @@
     </div>
 </div>
 
-<div class="p-5 space-y-5 bg-white border rounded-lg shadow-sm border-slate-200">
+<div class="p-5 space-y-5 bg-white rounded-lg shadow-sm">
     {{-- Step Header --}}
     <div class="flex items-start justify-between">
         <div class="flex flex-col items-start gap-3 sm:gap-5 sm:flex-row">
@@ -35,17 +35,16 @@
             <div class="p-5 pt-0 space-y-3">
                 <x-form.input-group>
                     <x-form.input-label for='event_name'>Event Name and Description</x-form.input-label>
-                    <x-form.input-text id="event_name" name="event_name" label="Event Name" class="w-full sm:w-max" />
+                    <x-form.input-text wire:model.live='event_name' id="event_name" name="event_name" label="Event Name" class="w-full sm:w-max" />
                     <x-form.input-error field="event_name" />
                 </x-form.input-group>
                 
-                <x-form.textarea id="event_description" name="event_description" label="Event Description" class="w-full">
-                    Describe the event or occasion you want to celebrate here!
+                <x-form.textarea wire:model.live='event_description' id="event_description" name="event_description" label="Event Description" class="w-full">
                 </x-form.textarea>
 
                 <x-form.input-group>
                     <x-form.input-label for='reservation_date'>Reservation Date</x-form.input-label>
-                    <x-form.input-date id="reservation_date" name="reservation_date" label="Reservation Date" min="{{ $min_date }}" />
+                    <x-form.input-date wire:model.live='reservation_date' id="reservation_date" name="reservation_date" label="Reservation Date" min="{{ $min_date }}" />
                     <x-form.input-error field="reservation_date" />
                 </x-form.input-group>
             </div>
@@ -57,21 +56,23 @@
     
         <x-form.form-body>
             <div class="p-5 pt-0 space-y-3">
-                <div class="grid items-end grid-cols-1 gap-3 sm:grid-cols-3">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <x-form.input-group>
                         <x-form.input-label for="first_name">Enter your name here</x-form.input-label>
-                        <x-form.input-text id="first_name" name="first_name" label="First Name" />
+                        <x-form.input-text wire:model.live='first_name' id="first_name" name="first_name" label="First Name" class="capitalize" />
                         <x-form.input-error field="first_name" />
                     </x-form.input-group>
 
-                    <x-form.input-group>
-                        <x-form.input-text id="last_name" name="last_name" label="Last Name" />
-                        <x-form.input-error field="last_name" />
-                    </x-form.input-group>
+                    <div class="self-end">
+                        <x-form.input-group>
+                            <x-form.input-text wire:model.live='last_name' id="last_name" name="last_name" label="Last Name" class="capitalize" />
+                            <x-form.input-error field="last_name" />
+                        </x-form.input-group>
+                    </div>
 
                     <x-form.input-group>
                         <x-form.input-label for='email'>Email Address</x-form.input-label>
-                        <x-form.input-text type="email" id="email" name="email" label="Email" class="w-full" />
+                        <x-form.input-text wire:model.blur='email' type="email" id="email" name="email" label="Email" class="w-full" />
                         <x-form.input-error field="email" />
                     </x-form.input-group>
                 </div>
@@ -79,5 +80,7 @@
         </x-form.form-body>
     </x-form.form-section>
 
-    <x-primary-button>Continue</x-primary-button>
+    <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }">
+        Continue
+    </x-primary-button>
 </div>
