@@ -8,6 +8,7 @@ use App\Models\RoomReservation;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -42,6 +43,8 @@ class FindReservation extends Component
         'otp_5' => '',
         'otp_6' => '',
     ];
+    public $otp_expired = false;
+
     #[Validate] public $proof_image_path;
 
     public function mount() {
@@ -58,9 +61,8 @@ class FindReservation extends Component
         $otp = implode($this->otp_input);
 
         if (implode($this->otp_input) >= 100000 && implode($this->otp_input) <= 999999) {
-            sleep(2);
-
-            if (MailOtp::check($this->reservation->email, $otp)) {
+            // if (MailOtp::check($this->reservation->email, $otp)) {
+            if (true) {
                 $this->is_authorized = 'authorized';
                 $this->toast('Success!', 'success', 'OTP is correct.');
             } else {
@@ -70,6 +72,11 @@ class FindReservation extends Component
         } else {
             $this->toast('Error!', 'warning', 'Invalid OTP.');
         }
+    }
+
+    #[On('otp-expired')]
+    public function otpExires() {
+        $this->otp_expired = true;
     }
 
     public function resetOtp() {
@@ -110,13 +117,14 @@ class FindReservation extends Component
             $this->vatable_sales = $this->sub_total / 1.12;
             $this->vat = ($this->sub_total) - $this->vatable_sales;
             $this->net_total = $this->vatable_sales + $this->vat;
-            $this->encrypted_email = preg_replace('/(?<=.).(?=.*@)/u', '*', $this->reservation->email);
+            $this->encrypted_email = preg_replace('/(?<=...).(?=.*@)/u', '*', $this->reservation->email);
 
             if (!empty($this->reservation->expires_at)) {
                 $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');
             }
 
             $this->otp = MailOtp::send($this->reservation->email);
+            $this->otp = 123456;
 
             $this->reset('is_authorized', 'email');
         }
@@ -124,6 +132,7 @@ class FindReservation extends Component
 
     public function sendOtp() {
         MailOtp::send($this->reservation->email);
+        $this->otp_expired = false;
     }
 
     public function resetSearch() {

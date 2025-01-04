@@ -10,14 +10,9 @@
                         {!! $subheading !!}
                     </p>
 
-                    <div class="flex justify-center gap-1 md:justify-start">
-                        <a class="inline-block" href="#form">
-                            <x-primary-button>Get Started!</x-primary-button>
-                        </a>
-                        <a class="inline-block" href="{{ route('guest.search') }}" wire:navigate>
-                            <x-secondary-button>Find my Reservation</x-secondary-button>
-                        </a>
-                    </div>
+                    <a class="inline-block" href="#form">
+                        <x-primary-button>Get Started!</x-primary-button>
+                    </a>
                 </div>
             </div>
 

@@ -87,7 +87,7 @@ class="relative z-10 w-auto">
 
                     <div>
                         <p class="font-bold">Find my Reservation</p>
-                        <p class="text-xs font-normal">Track your reservation</p>
+                        <p class="text-xs font-normal">Track your room reservation</p>
                     </div>
                 </a>
             </div>

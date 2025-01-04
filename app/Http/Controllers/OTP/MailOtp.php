@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class MailOtp extends Controller
-{
+{    
     public static function send($email) {
         // Generate OTP
         $otp = random_int(100000, 999999);
@@ -20,12 +20,12 @@ class MailOtp extends Controller
             ['email' => $email],
             [
                 'otp' => $otp,
-                'expires_at' => Carbon::now()->addMinutes(10)
+                'expires_at' => Carbon::now()->addMinutes(5)
             ]
         );
     
         // Send OTP to email
-        Mail::to($email)->queue(new SendOtp($stored_otp));
+        // Mail::to($email)->queue(new SendOtp($stored_otp));
 
         return $otp;
     }

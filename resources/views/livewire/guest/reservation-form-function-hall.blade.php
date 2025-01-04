@@ -4,11 +4,11 @@
         <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Confirmation" />
     </div>
 
-    <section class="grid grid-cols-1 gap-5 md:grid-cols-3">
+    <section class="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <form wire:submit='submit'
             @class([
-                'md:col-span-2' => $step < 3,
-                'md:col-span-3' => $step == 3])
+                'lg:col-span-2' => $step < 3,
+                'lg:col-span-3' => $step == 3])
             >
             @switch($step)
                 @case(1)
