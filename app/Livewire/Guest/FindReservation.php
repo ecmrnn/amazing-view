@@ -44,6 +44,7 @@ class FindReservation extends Component
         'otp_6' => '',
     ];
     public $otp_expired = false;
+    public $timer = 300;
 
     #[Validate] public $proof_image_path;
 
@@ -59,14 +60,22 @@ class FindReservation extends Component
 
     public function checkOtp() {
         $otp = implode($this->otp_input);
-
+        
         if (implode($this->otp_input) >= 100000 && implode($this->otp_input) <= 999999) {
-            // if (MailOtp::check($this->reservation->email, $otp)) {
-            if (true) {
+            if (MailOtp::check($this->reservation->email, $otp)) {
                 $this->is_authorized = 'authorized';
                 $this->toast('Success!', 'success', 'OTP is correct.');
             } else {
                 $this->is_authorized = 'unauthorized';
+                $this->otp_input = [
+                    'otp_1' => '',
+                    'otp_2' => '',
+                    'otp_3' => '',
+                    'otp_4' => '',
+                    'otp_5' => '',
+                    'otp_6' => '',
+                ];
+                $this->addError('otp_input', 'Incorrect OTP.');
                 $this->toast('Error!', 'warning', 'Incorrect OTP.');
             }
         } else {
@@ -124,14 +133,16 @@ class FindReservation extends Component
             }
 
             $this->otp = MailOtp::send($this->reservation->email);
-            $this->otp = 123456;
-
+            
             $this->reset('is_authorized', 'email');
         }
     }
-
+    
     public function sendOtp() {
         MailOtp::send($this->reservation->email);
+        $this->toast('Success!', description: 'OTP sent successfully.');
+        $this->dispatch('otp-sent');
+        $this->timer = 300;
         $this->otp_expired = false;
     }
 

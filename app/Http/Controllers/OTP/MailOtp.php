@@ -25,7 +25,7 @@ class MailOtp extends Controller
         );
     
         // Send OTP to email
-        // Mail::to($email)->queue(new SendOtp($stored_otp));
+        // Mail::to($email)->queue(new SendOtp($stored_otp));ay
 
         return $otp;
     }
