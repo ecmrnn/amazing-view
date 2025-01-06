@@ -1,18 +1,11 @@
 <x-app-layout>
     <x-slot:header>
-        <div class="flex items-center justify-between">
-            <hgroup>
-                <h1 class="text-xl font-bold leading-tight text-gray-800">
-                    {{ __('Dashboard') }}
-                </h1>
-                <p class="text-xs">Keep track of your records</p>
-            </hgroup>
-
-            <div class="hidden text-right sm:block">
-                <p class="text-sm font-bold capitalize">{{ Auth::user()->first_name . " " . Auth::user()->last_name }}</p>
-                <p class="text-xs">{{ Auth::user()->email }}</p>
-            </div>
-        </div>
+        <hgroup>
+            <h1 class="text-xl font-bold leading-tight text-gray-800">
+                {{ __('Dashboard') }}
+            </h1>
+            <p class="text-xs">Keep track of your records</p>
+        </hgroup>
     </x-slot:header>
 
     {{-- Cards --}}

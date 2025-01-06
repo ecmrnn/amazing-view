@@ -46,18 +46,37 @@
                 description: toast_details.description,
             })"
         >
-        <div class="flex flex-col min-h-screen bg-slate-100 sm:flex-row">
+        <div class="flex flex-col bg-slate-100 sm:flex-row">
             @include('layouts.navigation')
 
-            <div class="w-full p-3 space-y-3 sm:p-10 sm:space-y-5">
+            <div class="relative z-0 w-full">
                 <!-- Page Heading -->
                 @isset($header)
-                    <header class="py-3 pl-5 rounded-lg bg-gradient-to-r from-white to-white/0">
+                    <header class="sticky top-0 flex items-center justify-between w-full max-h-full px-5 py-3 bg-white border-b border-slate-200">
                         {{ $header }}
+
+                        <div class="flex items-center">
+                            <x-tooltip text="Profile" dir="bottom">
+                                <a x-ref='content' href="{{ route('profile.edit') }}" wire:navigate class="grid w-10 my-1 rounded-md aspect-square place-items-center hover:bg-slate-50 focus:text-zinc-800 focus:border-blue-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
+                                </a>
+                            </x-tooltip>
+
+                            <x-tooltip text="Settings" dir="bottom">
+                                <a x-ref='content' x-on:click="$dispatch('open-modal', 'settings-modal')" wire:navigate class="grid w-10 my-1 rounded-md aspect-square place-items-center hover:bg-slate-50 focus:text-zinc-800 focus:border-blue-500 hover:cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </a>
+                            </x-tooltip>
+
+                            <div class="grid w-10 my-1 ml-2 font-bold text-white uppercase bg-blue-500 rounded-md aspect-square place-items-center">
+                                {{ Auth::user()->first_name[0] }}
+                            </div>
+                        </div>
                     </header>
                 @endisset
+
                 <!-- Page Content -->
-                <main class="space-y-3 sm:space-y-5">
+                <main class="min-h-screen p-5 space-y-3 sm:space-y-5">
                     {{ $slot }}
                 </main>
             </div>
