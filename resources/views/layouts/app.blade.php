@@ -46,7 +46,9 @@
                 description: toast_details.description,
             })"
         >
-        <div class="flex flex-col bg-slate-100 sm:flex-row">
+        @stack('modals')
+        
+        <div class="flex flex-col bg-slate-50 sm:flex-row">
             @include('layouts.navigation')
 
             <div class="relative z-0 w-full">

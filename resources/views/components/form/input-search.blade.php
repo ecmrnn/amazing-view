@@ -6,7 +6,7 @@
 ])
 
 <div x-data="{ focus: false }"
-    :class="focus ? 'border-blue-600' : 'border-gray-300'"
+    :class="focus ? 'border-blue-600' : 'border-slate-200'"
     class="z-0 flex items-center pl-3 text-sm text-gray-900 transition-colors duration-200 ease-in-out bg-transparent bg-white border rounded-lg appearance-none border-1 focus:outline-none focus:ring-0 focus:border-blue-600 peer invalid:border-red-500 invalid:bg-red-50 focus:invalid:border-red-500">
     <label for="{{ $attributes['id'] }}" 
         :class="focus ? 'text-blue-600' : 'opacity-50'"

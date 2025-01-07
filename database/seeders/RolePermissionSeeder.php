@@ -126,6 +126,11 @@ class RolePermissionSeeder extends Seeder
             'read users',
             'update user',
             'delete user',
+
+            'create report',
+            'read reports',
+            'update report',
+            'delete report',
         ];
 
         // Create Roles

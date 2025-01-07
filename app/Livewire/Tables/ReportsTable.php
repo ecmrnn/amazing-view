@@ -26,7 +26,7 @@ final class ReportsTable extends PowerGridComponent
 
     public function noDataLabel(): string|View
     { 
-        return view('components.table-no-data.reservations');
+        return view('components.table-no-data.reports');
     }
 
     public function setUp(): array

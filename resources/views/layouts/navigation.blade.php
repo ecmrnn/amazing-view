@@ -1,4 +1,4 @@
-<nav class="sticky top-0 z-10 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-100">
+<nav class="sticky top-0 z-10 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-200">
     <!-- Primary Navigation Menu -->
     <div class="h-full">
         <div x-data="{ expanded: $persist(false) }" class="justify-between hidden h-full sm:flex sm:flex-col"
@@ -21,26 +21,22 @@
             <div class="hidden w-full p-5 space-y-2 sm:block">
                 {{-- Expand --}}
                 <template x-if="!expanded">
-                    <div class="p-1 border rounded-lg w-min">
-                        <x-tooltip text="Expand" dir="right">
-                            <button x-ref="content" x-on:click="expanded = !expanded"
-                                class="grid p-3 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none text-zinc-600 hover:text-zinc-800 hover:bg-slate-50 hover:border-slate-200 focus:text-zinc-800 focus:border-blue-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-from-line"><path d="M3 5v14"/><path d="M21 12H7"/><path d="m15 18 6-6-6-6"/></svg>
-                            </button>
-                        </x-tooltip>
-                    </div>
+                    <x-tooltip text="Expand" dir="right">
+                        <button x-ref="content" x-on:click="expanded = !expanded"
+                            class="grid p-3 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none hover:text-zinc-800 hover:bg-slate-50 hover:border-slate-200 focus:text-zinc-800 focus:border-blue-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-from-line"><path d="M3 5v14"/><path d="M21 12H7"/><path d="m15 18 6-6-6-6"/></svg>
+                        </button>
+                    </x-tooltip>
                 </template>
 
                 {{-- Collapse --}}
                 <template x-if="expanded">
-                    <div class="p-1 border rounded-lg w-min">
-                        <x-tooltip text="Collapse" dir="right">
-                            <button x-ref="content" x-on:click="expanded = !expanded"
-                                class="grid p-3 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none text-zinc-800/50 hover:text-zinc-800 hover:bg-slate-50 hover:border-slate-200 focus:text-zinc-800 focus:border-blue-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-from-line"><path d="m9 6-6 6 6 6"/><path d="M3 12h14"/><path d="M21 19V5"/></svg>
-                            </button>
-                        </x-tooltip>
-                    </div>
+                    <x-tooltip text="Collapse" dir="right">
+                        <button x-ref="content" x-on:click="expanded = !expanded"
+                            class="grid p-3 transition duration-150 ease-in-out border border-transparent rounded-lg place-items-center focus:outline-none hover:bg-slate-50 hover:border-slate-200 focus:text-zinc-800 focus:border-blue-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-from-line"><path d="m9 6-6 6 6 6"/><path d="M3 12h14"/><path d="M21 19V5"/></svg>
+                        </button>
+                    </x-tooltip>
                 </template>
             </div>
 
