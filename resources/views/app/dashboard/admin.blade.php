@@ -57,7 +57,7 @@
 
     {{-- Charts --}}
     <div class="grid gap-3 lg:grid-cols-2 lg:gap-5">
-        <div class="p-3 sm:p-5 h-[320px] bg-white rounded-lg flex flex-col gap-3 sm:gap-5">
+        <div class="p-3 sm:p-5 h-[320px] bg-white border border-slate-200 rounded-lg flex flex-col gap-3 sm:gap-5">
             <div>
                 <h2 class="text-lg font-semibold">Monthly Reservations</h2>
                 <p class="max-w-sm text-xs">Monitor your reservation rate using the line graph below</p>
@@ -72,7 +72,7 @@
             </div>
         </div>
 
-        <div class="p-3 sm:p-5 h-[320px] bg-white rounded-lg flex flex-col gap-3 sm:gap-5">
+        <div class="p-3 sm:p-5 h-[320px] bg-white border border-slate-200 rounded-lg flex flex-col gap-3 sm:gap-5">
             <div>
                 <h2 class="text-lg font-semibold">Monthly Sales</h2>
                 <p class="max-w-sm text-xs">Monitor your monthly sales using the line graph below</p>
@@ -89,7 +89,7 @@
     </div>
 
     {{-- Recent Reservations (Pending) --}}
-    <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
+    <div class="p-3 space-y-5 bg-white border rounded-lg sm:p-5 border-slate-200">
         <div>
             <h2 class="text-lg font-semibold">Pending Reservations</h2>
             <p class="max-w-sm text-xs">The table below are the lists of your pending reservations</p>

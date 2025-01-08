@@ -1,11 +1,16 @@
 <form x-data="{ reservation_type: @entangle('reservation_type') }" class="space-y-5">
-    <x-form.select id="report_type" name="report_type" wire:model.live='reservation_type' class="w-full">
+    <x-form.select x-show='! reservation_type' id="report_type" name="report_type" wire:model.live='reservation_type' class="w-full">
         <option value="">Select a Report</option>
-        <option value="reservation_summary">Reservation Summary</option>
-        <option value="daily_reservations">Daily Reservations</option>
-        <option value="occupancy">Occupancy Report</option>
-        <option value="financial">Financial Report</option>
+        <option value="reservation summary">Reservation Summary</option>
+        <option value="daily reservations">Daily Reservations</option>
+        <option value="occupancy report">Occupancy Report</option>
+        <option value="financial report">Financial Report</option>
     </x-form.select>
+
+    <div x-show='reservation_type' class="flex items-center justify-between pt-5 border-t border-dashed border-slate-200">
+        <h1 class="text-xl font-semibold capitalize" x-text='reservation_type'></h1>
+        <button type='button' class="text-xs font-semibold text-blue-500" wire:click='resetReportType()'>Change Report</button>
+    </div>
 
     <div x-show='reservation_type' class="space-y-5" x-cloak>
         {{-- Report Details --}}
@@ -33,7 +38,7 @@
         </div>
 
         {{-- Reservation Summary --}}
-        <template x-if='reservation_type === "reservation_summary"'>
+        <template x-if='reservation_type === "reservation summary"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Reservation Summary</h2>
@@ -60,7 +65,7 @@
             </div>
         </template>
 
-        <template x-if='reservation_type === "daily_reservations"'>
+        <template x-if='reservation_type === "daily reservations"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Daily Reservations</h2>
@@ -77,7 +82,7 @@
             </div>
         </template>
 
-        <template x-if='reservation_type === "occupancy"'>
+        <template x-if='reservation_type === "occupancy report"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Occupancy Report</h2>
@@ -111,7 +116,7 @@
             </div>
         </template>
 
-        <template x-if='reservation_type === "financial"'>
+        <template x-if='reservation_type === "financial report"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Financial Report</h2>
@@ -143,12 +148,17 @@
         <x-form.textarea id="note" name="note" label="Additional Note (Optional)" rows='4' class="w-full" />
         <x-form.input-error field="note" />
 
-        <x-primary-button>Generate Report</x-primary-button>
+        <div class="flex gap-3">
+            <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+            <x-primary-button>Generate Report</x-primary-button>
+        </div>
     </div>
 
-    <div x-show='! reservation_type' class="space-y-5 border rounded-md border-slate-200">
-        <div class="p-5 text-center">
+    <div x-show='! reservation_type' class="space-y-5">
+        <div class="p-5 text-center border rounded-md border-slate-200">
             <p class="text-sm text-slate-500">Please select a report type to continue</p>
         </div>
+        
+        <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
     </div>
 </form>

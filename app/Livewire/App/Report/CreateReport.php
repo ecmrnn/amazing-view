@@ -48,9 +48,21 @@ class CreateReport extends Component
     }
 
     #[On('generate-report')]
-    public function setReservationType($type) {
+    public function setReportType($type) {
+        if ($this->reservation_type != $type) {
+            $this->reset();
+        }
+
         $this->reservation_type = $type;
         $this->dispatch('open-modal', 'generate-report');
+    }
+
+    public function resetReportType() {
+        $this->reset();
+    }
+
+    public function store() {
+        $this->validate();
     }
 
     public function render()

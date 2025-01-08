@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot:header>
-        <div class="flex justify-between w-full">
+        <div class="flex items-center justify-between w-full">
             <hgroup>
                 <h1 class="text-xl font-bold leading-tight text-gray-800">
                     {{ __('Reports') }}
@@ -24,7 +24,7 @@
     <livewire:app.cards.report-cards />
 
     {{-- Report  Table --}}
-    <div class="p-5 bg-white rounded-lg">
+    <div class="p-5 bg-white border rounded-lg border-slate-200">
         <livewire:tables.reports-table />
     </div>
 
@@ -32,13 +32,10 @@
         {{-- Generate Report Modal --}}
         <x-modal.drawer name="generate-report" maxWidth="lg">
             <div class="p-5 space-y-5">
-                <div class="flex items-center justify-between">
-                    <hgroup>
-                        <h3 class="font-semibold">Generate Report</h3>
-                        <p class="text-xs">Choose a report type you want to generate.</p>
-                    </hgroup>
-                    <x-secondary-button x-on:click="show = false" class="text-xs">Cancel</x-secondary-button>
-                </div>
+                <hgroup>
+                    <h3 class="font-semibold">Generate Report</h3>
+                    <p class="text-xs">Choose a report type you want to generate.</p>
+                </hgroup>
 
                 @livewire('app.report.create-report')
             </div>
