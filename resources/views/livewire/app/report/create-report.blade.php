@@ -1,5 +1,5 @@
-<form x-data="{ reservation_type: @entangle('reservation_type') }" class="space-y-5">
-    <x-form.select x-show='! reservation_type' id="report_type" name="report_type" wire:model.live='reservation_type' class="w-full">
+<form x-data="{ type: @entangle('type') }" class="space-y-5" wire:submit='store()'>
+    <x-form.select x-show='! type' id="report_type" name="report_type" wire:model.live='type' class="w-full">
         <option value="">Select a Report</option>
         <option value="reservation summary">Reservation Summary</option>
         <option value="daily reservations">Daily Reservations</option>
@@ -7,12 +7,12 @@
         <option value="financial report">Financial Report</option>
     </x-form.select>
 
-    <div x-show='reservation_type' class="flex items-center justify-between pt-5 border-t border-dashed border-slate-200">
-        <h1 class="text-xl font-semibold capitalize" x-text='reservation_type'></h1>
+    <div x-show='type' class="flex items-center justify-between pt-5 border-t border-dashed border-slate-200">
+        <h1 class="text-xl font-semibold capitalize" x-text='type'></h1>
         <button type='button' class="text-xs font-semibold text-blue-500" wire:click='resetReportType()'>Change Report</button>
     </div>
 
-    <div x-show='reservation_type' class="space-y-5" x-cloak>
+    <div x-show='type' class="space-y-5" x-cloak>
         {{-- Report Details --}}
         <div class="p-5 space-y-3 border rounded-md border-slate-200">
             <hgroup>
@@ -35,10 +35,11 @@
                 <option value="pdf">PDF</option>
                 <option value="excel">CSV</option>
             </x-form.select>
+            <x-form.input-error field="format" />
         </div>
 
         {{-- Reservation Summary --}}
-        <template x-if='reservation_type === "reservation summary"'>
+        <template x-if='type === "reservation summary"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Reservation Summary</h2>
@@ -65,7 +66,7 @@
             </div>
         </template>
 
-        <template x-if='reservation_type === "daily reservations"'>
+        <template x-if='type === "daily reservations"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Daily Reservations</h2>
@@ -82,7 +83,7 @@
             </div>
         </template>
 
-        <template x-if='reservation_type === "occupancy report"'>
+        <template x-if='type === "occupancy report"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Occupancy Report</h2>
@@ -116,7 +117,7 @@
             </div>
         </template>
 
-        <template x-if='reservation_type === "financial report"'>
+        <template x-if='type === "financial report"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Financial Report</h2>
@@ -145,20 +146,20 @@
 
         {{-- Additional Note --}}
         <label for="note" class="block text-sm font-semibold">Additional Note (optional)</label>
-        <x-form.textarea id="note" name="note" label="Additional Note (Optional)" rows='4' class="w-full" />
+        <x-form.textarea id="note" name="note" label="Additional Note (Optional)" rows='4' wire:model.live='note' class="w-full" />
         <x-form.input-error field="note" />
 
         <div class="flex gap-3">
-            <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+            <x-secondary-button type='button' x-on:click="show = false">Cancel</x-secondary-button>
             <x-primary-button>Generate Report</x-primary-button>
         </div>
     </div>
 
-    <div x-show='! reservation_type' class="space-y-5">
+    <div x-show='! type' class="space-y-5">
         <div class="p-5 text-center border rounded-md border-slate-200">
             <p class="text-sm text-slate-500">Please select a report type to continue</p>
         </div>
         
-        <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+        <x-secondary-button type='button' x-on:click="show = false">Cancel</x-secondary-button>
     </div>
 </form>

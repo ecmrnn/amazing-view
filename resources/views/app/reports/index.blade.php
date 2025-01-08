@@ -31,7 +31,7 @@
     @push('modals')
         {{-- Generate Report Modal --}}
         <x-modal.drawer name="generate-report" maxWidth="lg">
-            <div class="p-5 space-y-5">
+            <div class="p-5 space-y-5" x-on:report-created.window="show = false">
                 <hgroup>
                     <h3 class="font-semibold">Generate Report</h3>
                     <p class="text-xs">Choose a report type you want to generate.</p>

@@ -2,15 +2,20 @@
 
 namespace App\Livewire\App\Report;
 
+use App\Models\Report;
 use App\Models\RoomType;
+use App\Traits\DispatchesToast;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use PhpParser\Node\Stmt\TryCatch;
 
 class CreateReport extends Component
 {
-    public $reservation_type;
+    use DispatchesToast;
+
     public $min_date;
 
     #[Validate] public $name;
@@ -49,11 +54,11 @@ class CreateReport extends Component
 
     #[On('generate-report')]
     public function setReportType($type) {
-        if ($this->reservation_type != $type) {
+        if ($this->type != $type) {
             $this->reset();
         }
 
-        $this->reservation_type = $type;
+        $this->type = $type;
         $this->dispatch('open-modal', 'generate-report');
     }
 
@@ -62,14 +67,39 @@ class CreateReport extends Component
     }
 
     public function store() {
-        $this->validate();
+        $validated = $this->validate([
+            'name' => $this->rules()['name'],
+            'description' => $this->rules()['description'],
+            'type' => $this->rules()['type'],
+            'format' => $this->rules()['format'],
+            'note' => $this->rules()['note'],
+            'start_date' => $this->rules()['start_date'],
+            'end_date' => $this->rules()['end_date'],
+        ]);
+
+        $validated['user_id'] = Auth::user()->id;
+
+        // Store report to database
+        try {
+            Report::create($validated);
+
+            $this->toast('Success!', description: 'Report created');
+            $this->dispatch('report-created');
+            $this->dispatch('pg:eventRefresh-ReportsTable');
+            $this->reset(); 
+        } catch (\Throwable $th) {
+            $this->toast('Can\' create your report', description: 'Sorry, try again later');
+        }
+
+        // Generate report
+        
     }
 
     public function render()
     {
         $room_types = RoomType::select('id', 'name')->get();
 
-        return view('livewire.app.report.create-report', [
+    return view('livewire.app.report.create-report', [
             'room_types' => $room_types,
         ]);
     }
