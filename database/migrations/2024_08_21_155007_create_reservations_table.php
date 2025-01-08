@@ -23,8 +23,8 @@ return new class extends Migration
             $table->date('resched_date_out')->nullable();
             $table->date('cancel_date')->nullable();
             $table->timestamp('expires_at')->nullable();
-            $table->integer('senior_count');
-            $table->integer('pwd_count');
+            $table->integer('senior_count')->nullable();
+            $table->integer('pwd_count')->nullable();
             $table->integer('adult_count');
             $table->integer('children_count');
             $table->smallInteger('status');

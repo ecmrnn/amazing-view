@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Report;
 
+use App\Http\Controllers\GenerateReportController as GenerateReport;
 use App\Models\Report;
 use App\Models\RoomType;
 use App\Traits\DispatchesToast;
@@ -10,13 +11,14 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use PhpParser\Node\Stmt\TryCatch;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class CreateReport extends Component
 {
     use DispatchesToast;
 
     public $min_date;
+    public $size = 'letter';
 
     #[Validate] public $name;
     #[Validate] public $description;
@@ -29,7 +31,7 @@ class CreateReport extends Component
 
     public function rules() {
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|alpha_dash:ascii',
             'description' => 'nullable|string',
             'type' => 'required|string',
             'format' => 'required|string',
@@ -80,19 +82,16 @@ class CreateReport extends Component
         $validated['user_id'] = Auth::user()->id;
 
         // Store report to database
-        try {
-            Report::create($validated);
-
-            $this->toast('Success!', description: 'Report created');
-            $this->dispatch('report-created');
-            $this->dispatch('pg:eventRefresh-ReportsTable');
-            $this->reset(); 
-        } catch (\Throwable $th) {
-            $this->toast('Can\' create your report', description: 'Sorry, try again later');
-        }
-
-        // Generate report
+        $report = Report::create($validated);
         
+        // Generate report
+        GenerateReport::generate($report, $this->type, $this->format, $this->name, $this->start_date, $this->end_date, $this->size, $this->room_id);
+        
+        
+        $this->toast('Success!', description: 'Report created');
+        $this->dispatch('pg:eventRefresh-ReportsTable');
+        $this->dispatch('report-created');
+        $this->reset(); 
     }
 
     public function render()

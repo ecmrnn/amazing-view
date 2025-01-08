@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -76,5 +77,18 @@ class Report extends Model
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
+    }
+
+    public static function boot() {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->rid = IdGenerator::generate([
+                'table' => 'reports',
+                'field' => 'rid',
+                'length' => 12,
+                'prefix' => date('Rymd'),
+                'reset_on_prefix_change' => true
+            ]);
+        });
     }
 }

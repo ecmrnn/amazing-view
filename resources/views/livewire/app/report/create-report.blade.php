@@ -1,4 +1,4 @@
-<form x-data="{ type: @entangle('type') }" class="space-y-5" wire:submit='store()'>
+<form x-data="{ type: @entangle('type'), format: @entangle('format') }" class="space-y-5" wire:submit='store()'>
     <x-form.select x-show='! type' id="report_type" name="report_type" wire:model.live='type' class="w-full">
         <option value="">Select a Report</option>
         <option value="reservation summary">Reservation Summary</option>
@@ -21,7 +21,7 @@
             </hgroup>
 
             <x-form.input-group>
-                <x-form.input-text id="name" name="name" label="Name" wire:model.live='name' />
+                <x-form.input-text id="name" name="name" label="File Name" wire:model.live='name' />
                 <x-form.input-error field="name" />
             </x-form.input-group>
 
@@ -33,9 +33,17 @@
             <x-form.select id="format" name="format" wire:model.live='format' class="w-full">
                 <option value="">Select a Format</option>
                 <option value="pdf">PDF</option>
-                <option value="excel">CSV</option>
+                <option value="csv">CSV</option>
             </x-form.select>
-            <x-form.input-error field="format" />
+
+            <div x-show="format === 'pdf'">
+                <x-form.select id="size" name="size" wire:model.live='size' class="w-full">
+                    <option value="">Select a Paper Size</option>
+                    <option value="letter">Letter &lpar;8.5in x 11in&rpar;</option>
+                    <option value="legal">Legal &lpar;8.5in x 14in&rpar;</option>
+                    <option value="a4">A4 &lpar;8.27in x 11.7in&rpar;</option>
+                </x-form.select>
+            </div>
         </div>
 
         {{-- Reservation Summary --}}
