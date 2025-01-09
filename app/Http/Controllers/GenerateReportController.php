@@ -14,6 +14,13 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class GenerateReportController extends Controller
 {
+    public static $margin = [
+        'top' => 112,
+        'bottom' => 112,
+        'right' => 48,
+        'left' => 48,
+    ];
+
     public static function generate(
             Report $report,
             $type,
@@ -46,7 +53,12 @@ class GenerateReportController extends Controller
                 'report' => $report,
             ])
             ->format($size)
-            ->margins(112, 48, 48, 48, Unit::Pixel)
+            ->margins(
+                self::$margin['top'],
+                self::$margin['right'],
+                self::$margin['bottom'],
+                self::$margin['left'],
+                Unit::Pixel)
             ->headerView('report.pdf.header')
             ->footerView('report.pdf.footer', [
                 'report' => $report

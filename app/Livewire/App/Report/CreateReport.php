@@ -18,8 +18,8 @@ class CreateReport extends Component
     use DispatchesToast;
 
     public $min_date;
-    public $size = 'letter';
-
+    public $max_date;
+    
     #[Validate] public $name;
     #[Validate] public $description;
     #[Validate] public $type;
@@ -28,6 +28,11 @@ class CreateReport extends Component
     #[Validate] public $start_date;
     #[Validate] public $end_date;
     #[Validate] public $room_id;
+    #[Validate] public $size = 'letter';
+
+    public function mount() {
+        $this->max_date = Carbon::tomorrow()->format('Y-m-d');
+    }
 
     public function rules() {
         return [
@@ -37,16 +42,19 @@ class CreateReport extends Component
             'format' => 'required|string',
             'note' => 'nullable|string',
             'start_date' => 'required|date',
-            'end_date' => 'nullable|date',
+            'end_date' => 'required_unless:type,"daily reservations"|date|nullable',
+            'size' => 'required_if:format,PDF'
         ];
     }
 
     public function messages() {
         return [
             'name.required' => 'Enter the name of your report.',
+            'name.regex' => 'Special characters are not allowed.',
             'type.required' => 'Select a type of report.',
             'format.required' => 'Select the format of your report.',
             'start_date.required' => 'Select a start date.',
+            'end_date.required_unless' => 'Select an end date.',
         ];
     }
 

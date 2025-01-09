@@ -1,4 +1,4 @@
-<form x-data="{ type: @entangle('type'), format: @entangle('format') }" class="space-y-5" wire:submit='store()'>
+<form x-data="{ type: @entangle('type'), start_date: @entangle('start_date'), format: @entangle('format') }" class="space-y-5" wire:submit='store()'>
     <x-form.select x-show='! type' id="report_type" name="report_type" wire:model.live='type' class="w-full">
         <option value="">Select a Report</option>
         <option value="reservation summary">Reservation Summary</option>
@@ -36,14 +36,15 @@
                 <option value="csv">CSV</option>
             </x-form.select>
 
-            <div x-show="format === 'pdf'">
+            <x-form.input-group x-show="format === 'pdf'">
                 <x-form.select id="size" name="size" wire:model.live='size' class="w-full">
                     <option value="">Select a Paper Size</option>
                     <option value="letter">Letter &lpar;8.5in x 11in&rpar;</option>
                     <option value="legal">Legal &lpar;8.5in x 14in&rpar;</option>
                     <option value="a4">A4 &lpar;8.27in x 11.7in&rpar;</option>
                 </x-form.select>
-            </div>
+                <x-form.input-error field="size" />
+            </x-form.input-group>
         </div>
 
         {{-- Reservation Summary --}}
@@ -58,7 +59,7 @@
                     <di class="space-y-3">
                         <label for="start_date" class="text-sm font-semibold">Start Date</label>
                         <x-form.input-group>
-                            <x-form.input-date x-on:input="$wire.setMinDate($el.value)" id="start_date" name="start_date" label="Start Date" wire:model.live='start_date' class="w-full" />
+                            <x-form.input-date max="{{ $max_date }}" x-on:input="$wire.setMinDate($el.value)" id="start_date" name="start_date" label="Start Date" wire:model.live='start_date' class="w-full" />
                             <x-form.input-error field="start_date" />
                         </x-form.input-group>
                     </di>
@@ -66,7 +67,7 @@
                     <di class="space-y-3">
                         <label for="end_date" class="text-sm font-semibold">End Date</label>
                         <x-form.input-group>
-                            <x-form.input-date min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
+                            <x-form.input-date x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
                             <x-form.input-error field="end_date" />
                         </x-form.input-group>
                     </di>
@@ -117,7 +118,7 @@
                     <div class="space-y-3">
                         <label for="end_date" class="text-sm font-semibold">End Date</label>
                         <x-form.input-group>
-                            <x-form.input-date min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
+                            <x-form.input-date x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
                             <x-form.input-error field="end_date" />
                         </x-form.input-group>
                     </div>
@@ -144,7 +145,7 @@
                     <div class="space-y-3">
                         <label for="end_date" class="text-sm font-semibold">End Date</label>
                         <x-form.input-group>
-                            <x-form.input-date min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
+                            <x-form.input-date x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
                             <x-form.input-error field="end_date" />
                         </x-form.input-group>
                     </div>
