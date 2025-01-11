@@ -8,6 +8,7 @@ use App\Models\RoomType;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -95,11 +96,12 @@ class CreateReport extends Component
         // Generate report
         GenerateReport::generate($report, $this->type, $this->format, $this->name, $this->start_date, $this->end_date, $this->size, $this->room_id);
         
-        
         $this->toast('Success!', description: 'Report created');
         $this->dispatch('pg:eventRefresh-ReportsTable');
         $this->dispatch('report-created');
-        $this->reset(); 
+        $this->reset();
+    
+        return response()->download(Storage::path('public/report/pdf/' . $report->name . ' - ' . $report->rid . '.' . $report->format));
     }
 
     public function render()

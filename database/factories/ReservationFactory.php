@@ -31,7 +31,7 @@ class ReservationFactory extends Factory
             'senior_count' => 0,
             'pwd_count' => 0,
             // 'status' => fake()->numberBetween(0, 6),
-            'status' => Reservation::STATUS_CONFIRMED,
+            'status' => Reservation::STATUS_COMPLETED,
 
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),

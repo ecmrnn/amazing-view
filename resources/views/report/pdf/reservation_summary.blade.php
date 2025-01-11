@@ -1,7 +1,7 @@
 <x-pdf-layout>
     <x-slot:title>{{ $report->name . ' - ' . $report->rid }}</x-slot:title>
 
-    <h1 class="text-xl font-bold text-blue-500">Reservations for {{ date_format(date_create($report->start_date), 'F j, Y') }}</h1>
+    <h1 class="text-xl font-bold text-blue-500">Reservations from {{ date_format(date_create($report->start_date), 'F j, Y') }} to {{ date_format(date_create($report->end_date), 'F j, Y') }}</h1>
     <p class="text-sm">Report ID: {{ $report->rid }}</p>
     
 
@@ -37,7 +37,7 @@
         <div class="p-10 mt-5 border rounded-lg border-slate-200">
             <p class="text-6xl font-bold text-center opacity-15">&#59;&#40;</p>
             <p class="mt-10 text-lg font-bold text-center">{{ date_format(date_create($report->start_date), 'F j, Y') }}</p>
-            <p class="text-sm text-center">No reservations for this day</p>
+            <p class="text-sm text-center">No reservations today</p>
         </div>
     @endif
 </x-pdf-layout>

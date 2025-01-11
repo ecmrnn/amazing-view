@@ -21,7 +21,7 @@ class ReservationSeeder extends Seeder
     {
         $faker = Faker::create();
         
-         $reservations = Reservation::factory(30)->create();
+        $reservations = Reservation::factory(10)->create();
 
         foreach ($reservations as $reservation) {
             $reservation->rooms()->attach($faker->numberBetween(1, 12));
