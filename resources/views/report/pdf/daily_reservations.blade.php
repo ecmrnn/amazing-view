@@ -5,7 +5,7 @@
     <p class="text-sm">Report ID: {{ $report->rid }}</p>
     
 
-    @if ($reservations->count() > 0)
+    @if (count($reservations) > 0)
         <div class="mt-5">
             <table class="w-full">
                 <thead>
@@ -32,6 +32,19 @@
                     <td class="px-2 py-3 text-xs text-center" colspan="6">Nothing follows...</td>
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-5 space-y-5">
+            <h2 class="font-semibold text-md">Summary</h2>
+
+            <ul class="list-disc list-inside">
+                <li>Total Reservations: {{ count($reservations) }}</li>
+                <li>Total Guests: </li>
+                <ul class="ml-8 list-inside">
+                    <li>Adult: {{ $guest_count->total_adults }}</li>
+                    <li>Children: {{ $guest_count->total_children }}</li>
+                </ul>
+            </ul>
         </div>
     @else
         <div class="p-10 mt-5 border rounded-lg border-slate-200">

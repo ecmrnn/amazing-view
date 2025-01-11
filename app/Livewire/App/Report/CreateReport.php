@@ -101,7 +101,7 @@ class CreateReport extends Component
         $this->dispatch('report-created');
         $this->reset();
     
-        return response()->download(Storage::path('public/report/pdf/' . $report->name . ' - ' . $report->rid . '.' . $report->format));
+        return response()->download(Storage::path('public/report/pdf/' . $report->name . ' - ' . strtoupper($report->rid) . '.' . $report->format));
     }
 
     public function render()

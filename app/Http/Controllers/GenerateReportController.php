@@ -74,15 +74,21 @@ class GenerateReportController extends Controller
     }
 
     public static function generateDailyReservations(Report $report, $format, $name, $start_date, $size) {
-        $reservations = Reservation::whereDateIn($start_date)
+        $reservations = Reservation::whereDate('date_in', $start_date)
             ->whereStatus(Reservation::STATUS_CONFIRMED)
             ->get();
+        $guest_count = Reservation::selectRaw('sum(adult_count) as total_adults, sum(children_count) as total_children')
+            ->whereDate('date_in', $start_date)
+            ->whereStatus(Reservation::STATUS_CONFIRMED)
+            ->first();
+        
         $path = 'storage/report/pdf/' . $name . ' - ' . $report->rid . '.' . $format;
 
         if ($format == 'pdf') {
             Pdf::view('report.pdf.daily_reservations', [
                 'reservations' => $reservations,
                 'report' => $report,
+                'guest_count' => $guest_count,
             ])
             ->format($size)
             ->margins(
