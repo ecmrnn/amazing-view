@@ -6,6 +6,7 @@ use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Report extends Model
 {
@@ -79,6 +80,10 @@ class Report extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function room(): HasMany {
+        return $this->hasMany(Room::class);
+    }
+
     public static function boot() {
         parent::boot();
         self::creating(function ($model) {
@@ -86,7 +91,7 @@ class Report extends Model
                 'table' => 'reports',
                 'field' => 'rid',
                 'length' => 12,
-                'prefix' => date('Rymd'),
+                'prefix' => date('REymd'),
                 'reset_on_prefix_change' => true
             ]);
         });

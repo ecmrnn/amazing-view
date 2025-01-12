@@ -4,6 +4,7 @@ namespace App\Livewire\App\Report;
 
 use App\Http\Controllers\GenerateReportController as GenerateReport;
 use App\Models\Report;
+use App\Models\Room;
 use App\Models\RoomType;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
@@ -28,7 +29,7 @@ class CreateReport extends Component
     #[Validate] public $note;
     #[Validate] public $start_date;
     #[Validate] public $end_date;
-    #[Validate] public $room_id;
+    #[Validate] public $room_type_id;
     #[Validate] public $size = 'letter';
 
     public function mount() {
@@ -37,21 +38,22 @@ class CreateReport extends Component
 
     public function rules() {
         return [
-            'name' => 'required|string|alpha_dash:ascii',
+            'name' => 'required|string|regex:/^[\pL\s\-0-9]+$/u',
             'description' => 'nullable|string',
             'type' => 'required|string',
             'format' => 'required|string',
             'note' => 'nullable|string',
             'start_date' => 'required|date',
             'end_date' => 'required_unless:type,"daily reservations"|date|nullable',
-            'size' => 'required_if:format,PDF'
+            'size' => 'required_if:format,PDF',
+            'room_type_id' => 'nullable|required_if:type,"occupancy report"'
         ];
     }
 
     public function messages() {
         return [
             'name.required' => 'Enter the name of your report.',
-            'name.regex' => 'Special characters are not allowed.',
+            'name.regex' => 'File name must include only letters, numbers, dashes, and spaces.',
             'type.required' => 'Select a type of report.',
             'format.required' => 'Select the format of your report.',
             'start_date.required' => 'Select a start date.',
@@ -80,6 +82,7 @@ class CreateReport extends Component
     public function store() {
         $validated = $this->validate([
             'name' => $this->rules()['name'],
+            'room_type_id' => $this->rules()['room_type_id'],
             'description' => $this->rules()['description'],
             'type' => $this->rules()['type'],
             'format' => $this->rules()['format'],
@@ -94,14 +97,23 @@ class CreateReport extends Component
         $report = Report::create($validated);
         
         // Generate report
-        GenerateReport::generate($report, $this->type, $this->format, $this->name, $this->start_date, $this->end_date, $this->size, $this->room_id);
+        GenerateReport::generate(
+            $report,
+            $report->room_type_id,
+            $report->type,
+            $report->format,
+            $report->name,
+            $report->start_date,
+            $report->end_date,
+            $this->size
+        );
         
         $this->toast('Success!', description: 'Report created');
         $this->dispatch('pg:eventRefresh-ReportsTable');
         $this->dispatch('report-created');
         $this->reset();
     
-        return response()->download(Storage::path('public/report/pdf/' . $report->name . ' - ' . strtoupper($report->rid) . '.' . $report->format));
+        return response()->download(Storage::path('public/report/pdf/' . $report->name . ' - ' . $report->rid . '.' . $report->format));
     }
 
     public function render()

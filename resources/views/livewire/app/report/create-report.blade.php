@@ -99,12 +99,15 @@
                     <p class="text-sm">Select a room type and the date range for the occupancy report.</p>
                 </hgroup>
 
-                <x-form.select id="room_id" name="room_id" wire:model.live='room_id' class="w-full">
-                    <option value="">Select a Room Type</option>
-                    @foreach ($room_types as $room)
-                        <option key="{{ $room->id }}" value="{{ $room->id }}">{{ $room->name }}</option>
-                    @endforeach
-                </x-form.select>
+                <x-form.input-group>
+                    <x-form.select id="room_type_id" name="room_type_id" wire:model.live='room_type_id' class="w-full">
+                        <option value="">Select a Room Type</option>
+                        @foreach ($room_types as $room)
+                            <option key="{{ $room->id }}" value="{{ $room->id }}">{{ $room->name }}</option>
+                        @endforeach
+                    </x-form.select>
+                    <x-form.input-error field="room_type_id" />
+                </x-form.input-group>
     
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-3">
