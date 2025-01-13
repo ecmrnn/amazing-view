@@ -10,18 +10,31 @@
     header {
         width: 100%;
         font-size: 14px;
-        padding: 40px;
-        padding-top: 20px;
-        text-align: center;
+        padding: 48px;
+        padding-top: 24px;
         color: #27272a;
+        display: flex;
+        justify-content: space-between;
     }
-    #resortName {
+    #resortName,
+    #reportId
+     {
         font-size: 18px;
-        font-weight: bold;
+        font-weight: 600;
+    }
+    #reportId {
+        color: #3B82F6;
     }
 </style>
 
 <header>
-    <p id="resortName">Amazing View Mountain Resort</p>
-    <p>Little Baguio, Paagahan Mabitac, Laguna, Philippines</p>
+    <div>
+        <p id="resortName">Amazing View Mountain Resort</p>
+        <p>Little Baguio, Paagahan Mabitac, Laguna, Philippines</p>
+    </div>
+
+    <div style="text-align: right;">
+        <p id="reportId">{{ $report->rid }}</p>
+        <p>Report ID</p>
+    </div>
 </header>

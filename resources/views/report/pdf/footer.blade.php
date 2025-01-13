@@ -8,11 +8,11 @@
         -webkit-print-color-adjust: white;
     }
     footer {
-        border-top: 1px dashed #64748b;
+        border-top: 1px dotted #64748b;
         width: 100%;
         font-size: 14px;
-        padding: 40px;
-        padding-bottom: 20px;
+        padding: 48px;
+        padding-bottom: 24px;
         color: #27272a;
     }
 </style>

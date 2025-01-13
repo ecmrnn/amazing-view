@@ -1,8 +1,8 @@
 <x-pdf-layout>
     <x-slot:title>{{ $report->name . ' - ' . $report->rid }}</x-slot:title>
 
-    <h1 class="text-xl font-bold text-blue-500">Reservations for {{ date_format(date_create($report->start_date), 'F j, Y') }}</h1>
-    <p class="text-sm">Report ID: {{ $report->rid }}</p>
+    <h1 class="text-xl font-bold text-blue-500">Daily Reservations</h1>
+    <p class="text-sm">Date: {{ date_format(date_create($report->start_date), 'F j, Y') }}</p>
     
 
     @if (count($reservations) > 0)

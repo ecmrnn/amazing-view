@@ -64,6 +64,7 @@ final class ReportsTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
+            ->add('rid')
             ->add('name')
             
             ->add('type', fn($report) => e(ucwords($report->type)))
@@ -95,6 +96,9 @@ final class ReportsTable extends PowerGridComponent
     public function columns(): array
     {
         return [
+            Column::make('Report ID', 'rid')
+                ->searchable(),
+
             Column::make('Name', 'name')
                 ->searchable(),
 

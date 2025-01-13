@@ -53,7 +53,7 @@ class CreateReport extends Component
     public function messages() {
         return [
             'name.required' => 'Enter the name of your report.',
-            'name.regex' => 'File name must include only letters, numbers, dashes, and spaces.',
+            'name.regex' => 'File name   must include only letters, numbers, dashes, and spaces.',
             'type.required' => 'Select a type of report.',
             'format.required' => 'Select the format of your report.',
             'start_date.required' => 'Select a start date.',
@@ -113,7 +113,7 @@ class CreateReport extends Component
         $this->dispatch('report-created');
         $this->reset();
     
-        return response()->download(Storage::path('public/report/pdf/' . $report->name . ' - ' . $report->rid . '.' . $report->format));
+        return response()->download(Storage::path('public/pdf/report/' . $report->name . ' - ' . $report->rid . '.' . $report->format));
     }
 
     public function render()

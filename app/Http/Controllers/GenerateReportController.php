@@ -21,6 +21,7 @@ class GenerateReportController extends Controller
     ];
     public static $headerView = 'report.pdf.header';
     public static $footerView = 'report.pdf.footer';
+    public static $path = 'storage/pdf/report/';
 
     public static function generate(
             Report $report,
@@ -53,7 +54,6 @@ class GenerateReportController extends Controller
         $reservations = Reservation::whereBetween('date_in', [$start_date, $end_date])
             ->whereStatus(Reservation::STATUS_COMPLETED)
             ->get();
-        $path = 'storage/report/pdf/' . $name . ' - ' . $report->rid . '.' . $format;
 
         if ($format == 'pdf') {
             Pdf::view('report.pdf.reservation_summary', [
@@ -67,11 +67,13 @@ class GenerateReportController extends Controller
                 self::$margin['bottom'],
                 self::$margin['left'],
                 Unit::Pixel)
-            ->headerView(self::$headerView)
+            ->headerView(self::$headerView, [
+                'report' => $report
+            ])
             ->footerView(self::$footerView, [
                 'report' => $report
             ])
-            ->save($path);
+            ->save(self::$path . $name . ' - ' . $report->rid . '.' . $format);
         }
     }
 
@@ -84,8 +86,6 @@ class GenerateReportController extends Controller
             ->whereStatus(Reservation::STATUS_CONFIRMED)
             ->first();
         
-        $path = 'storage/report/pdf/' . $name . ' - ' . $report->rid . '.' . $format;
-
         if ($format == 'pdf') {
             Pdf::view('report.pdf.daily_reservations', [
                 'reservations' => $reservations,
@@ -99,11 +99,13 @@ class GenerateReportController extends Controller
                 self::$margin['bottom'],
                 self::$margin['left'],
                 Unit::Pixel)
-            ->headerView(self::$headerView)
+            ->headerView(self::$headerView, [
+                'report' => $report
+            ])
             ->footerView(self::$footerView, [
                 'report' => $report
             ])
-            ->save($path);
+            ->save(self::$path . $name . ' - ' . $report->rid . '.' . $format);
         }
     }
 
@@ -130,11 +132,6 @@ class GenerateReportController extends Controller
                 return $carry + $nights_occupied;
             }, 0);
             
-        dd($total_room_nights_occupied);
-
-        $path = 'storage/report/pdf/' . $name . ' - ' . $report->rid . '.' . $format;
-        // dd($total_room_nights_occupied / $total_room_nights_available * 100);
-
         if ($format == 'pdf') {
             Pdf::view('report.pdf.occupancy_report', [
                 'report' => $report,
@@ -150,11 +147,13 @@ class GenerateReportController extends Controller
                 self::$margin['bottom'],
                 self::$margin['left'],
                 Unit::Pixel)
-            ->headerView(self::$headerView)
+            ->headerView(self::$headerView, [
+                'report' => $report
+            ])
             ->footerView(self::$footerView, [
                 'report' => $report
             ])
-            ->save($path);
+            ->save(self::$path . $name . ' - ' . $report->rid . '.' . $format);
         }
     }
 }
