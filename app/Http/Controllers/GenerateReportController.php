@@ -166,12 +166,42 @@ class GenerateReportController extends Controller
         $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
             ->whereStatus(Invoice::STATUS_PAID)
             ->sum('total_amount');
+        $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
+            ->whereStatus(Invoice::STATUS_PAID)
+            ->sum('total_amount');
+        $revenue_per_room_type = Invoice::whereIn('invoices.reservation_id', $reservations->pluck('id'))
+            ->join('room_reservations', 'invoices.reservation_id', '=', 'room_reservations.reservation_id')
+            ->join('rooms', 'rooms.id', '=', 'room_reservations.room_id')
+            ->join('room_types', 'rooms.room_type_id', '=', 'room_types.id')
+            ->selectRaw('
+                room_types.name as room_type,
+                count(room_reservations.id) as reservation_count,
+                sum(invoices.total_amount) as total_revenue,
+                avg(invoices.total_amount) as average_revenue
+            ')
+            ->groupBy('room_types.name')
+            ->get();
+        $room_type_count = RoomType::count();   
+        $grand_total = [
+            'reservation_count' => 0,
+            'total_revenue' => 0,
+            'average_revenue' => 0,
+        ];
+
+        foreach ($revenue_per_room_type as $reservation) {
+            $grand_total['reservation_count'] += $reservation->reservation_count;
+            $grand_total['total_revenue'] += $reservation->total_revenue;
+            $grand_total['average_revenue'] += $reservation->average_revenue;
+        }
             
         if ($format == 'pdf') {
             Pdf::view('report.pdf.revenue_performance', [
                 'report' => $report,
                 'reservations' => $reservations,
                 'revenue' => $revenue,
+                'room_type_count' => $room_type_count,
+                'revenue_per_room_type' => $revenue_per_room_type,
+                'grand_total' => $grand_total,
             ])
             ->format($size)
             ->margins(
