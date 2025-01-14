@@ -44,6 +44,9 @@ class GenerateReportController extends Controller
                 $room = RoomType::find($room);
                 self::generateOccupancyReport($report, $room, $format, $name, $start_date, $end_date, $size);
                 break;
+            case 'revenue performance':
+                self::generateRevenuePerformance($report,$format, $name, $start_date, $end_date, $size);
+                break;
             default:
                 # code...
                 break;
@@ -139,6 +142,36 @@ class GenerateReportController extends Controller
                 'room_type' => $room,
                 'revenue' => $revenue,
                 'occupancy_rate' => abs($total_room_nights_occupied / $total_room_nights_available * 100)
+            ])
+            ->format($size)
+            ->margins(
+                self::$margin['top'],
+                self::$margin['right'],
+                self::$margin['bottom'],
+                self::$margin['left'],
+                Unit::Pixel)
+            ->headerView(self::$headerView, [
+                'report' => $report
+            ])
+            ->footerView(self::$footerView, [
+                'report' => $report
+            ])
+            ->save(self::$path . $name . ' - ' . $report->rid . '.' . $format);
+        }
+    }
+
+    public static function generateRevenuePerformance(Report $report, $format, $name, $start_date, $end_date, $size) {
+        $reservations = Reservation::whereBetween('date_in', [$start_date, $end_date])
+            ->get();
+        $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
+            ->whereStatus(Invoice::STATUS_PAID)
+            ->sum('total_amount');
+            
+        if ($format == 'pdf') {
+            Pdf::view('report.pdf.revenue_performance', [
+                'report' => $report,
+                'reservations' => $reservations,
+                'revenue' => $revenue,
             ])
             ->format($size)
             ->margins(

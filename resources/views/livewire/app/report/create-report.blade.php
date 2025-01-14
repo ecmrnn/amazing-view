@@ -4,7 +4,7 @@
         <option value="reservation summary">Reservation Summary</option>
         <option value="daily reservations">Daily Reservations</option>
         <option value="occupancy report">Occupancy Report</option>
-        <option value="financial report">Financial Report</option>
+        <option value="revenue performance">Revenue Performance</option>
     </x-form.select>
 
     <div x-show='type' class="flex items-center justify-between pt-5 border-t border-dashed border-slate-200">
@@ -129,11 +129,11 @@
             </div>
         </template>
 
-        <template x-if='type === "financial report"'>
+        <template x-if='type === "revenue performance"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
-                    <h2 class="text-sm font-semibold">Financial Report</h2>
-                    <p class="text-sm">Select the date range for the financial report.</p>
+                    <h2 class="text-sm font-semibold">Revenue Performance</h2>
+                    <p class="text-sm">Select the date range for the revenue performance report.</p>
                 </hgroup>
     
                 <div class="grid grid-cols-2 gap-3">
@@ -163,7 +163,7 @@
 
         <div class="flex gap-3">
             <x-secondary-button type='button' x-on:click="show = false">Cancel</x-secondary-button>
-            <x-primary-button>Generate Report</x-primary-button>
+            <x-primary-button wire:click="store()">Generate Report</x-primary-button>
         </div>
     </div>
 
