@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\ReportGenerated;
+use App\Jobs\GenerateReport;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        view()->share([
-            "step" => 1,
-        ]);
+        // view()->share([
+        //     "step" => 1,
+        // ]);
     }
 }

@@ -10,6 +10,7 @@
         "garygreen/pretty-routes": "^1.0",
         "haruncpi/laravel-id-generator": "^1.1",
         "laravel/framework": "^11.9",
+        "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.9",
         "larswiegers/laravel-maps": "^0.18.0",
         "livewire/livewire": "^3.5",

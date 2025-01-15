@@ -58,10 +58,6 @@ class Room extends Model
         return $this->belongsToMany(Amenity::class, 'room_amenities');
     }
 
-    public function reports():BelongsTo {
-        return $this->belongsTo(Report::class);
-    }
-
     // Get all reserved rooms between a specific range of dates
     public function scopeReservedRooms($query, $date_in, $date_out) {
         return $query->whereHas('reservations', function ($query) use ($date_in, $date_out) {

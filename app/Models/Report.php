@@ -80,8 +80,8 @@ class Report extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function room(): HasMany {
-        return $this->hasMany(Room::class);
+    public function roomType(): BelongsTo {
+        return $this->belongsTo(RoomType::class);
     }
 
     public static function boot() {

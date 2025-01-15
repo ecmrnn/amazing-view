@@ -1,54 +1,70 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Jobs;
 
+use App\Events\ReportGenerated;
 use App\Models\Invoice;
 use App\Models\Report;
 use App\Models\Reservation;
-use App\Models\Room;
 use App\Models\RoomType;
 use Carbon\Carbon;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
 
-class GenerateReportController extends Controller
+class GenerateReport implements ShouldQueue
 {
-    public static $margin = [
+    use Queueable;
+
+    public $margin = [
         'top' => 112,
         'bottom' => 112,
         'right' => 48,
         'left' => 48,
     ];
-    public static $headerView = 'report.pdf.header';
-    public static $footerView = 'report.pdf.footer';
-    public static $path = 'storage/pdf/report/';
+    public $headerView = 'report.pdf.header';
+    public $footerView = 'report.pdf.footer';
+    public $path = 'storage/app/public/pdf/report/';
 
-    public static function generate(
-            Report $report,
-            $size = 'letter',
-        ) {
-        switch ($report->type) {
-            case 'reservation summary':
-                self::generateReservationSummmary($report, $size);
-                break;
-            case 'daily reservations':
-                self::generateDailyReservations($report, $size);
-                break;
-            case 'occupancy report':
-                self::generateOccupancyReport($report, $size);
-                break;
-            case 'revenue performance':
-                self::generateRevenuePerformance($report, $size);
-                break;
-            default:
-                # code...
-                break;
-        }    
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(
+        public Report $report,
+        public $size =  'letter',
+    )
+    {
+        //
     }
 
-    public static function generateReservationSummmary(Report $report, $size) {
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        switch ($this->report->type) {
+            case 'reservation summary':
+                $this->generateReservationSummmary($this->report, $this->size);
+                break;
+            case 'daily reservations':
+                $this->generateDailyReservations($this->report, $this->size);
+                break;
+            case 'occupancy report':
+                $this->generateOccupancyReport($this->report, $this->size);
+                break;
+            case 'revenue performance':
+                $this->generateRevenuePerformance($this->report, $this->size);
+                break;
+        }
+        broadcast(new ReportGenerated($this->report));
+    }
+
+    public function generateReservationSummmary(Report $report, $size) {
         $reservations = Reservation::whereBetween('date_in', [$report->start_date, $report->end_date])
-            // ->whereStatus(Reservation::STATUS_COMPLETED)
             ->get();
 
         if ($report->format == 'pdf') {
@@ -58,22 +74,22 @@ class GenerateReportController extends Controller
             ])
             ->format($size)
             ->margins(
-                self::$margin['top'],
-                self::$margin['right'],
-                self::$margin['bottom'],
-                self::$margin['left'],
+                $this->margin['top'],
+                $this->margin['right'],
+                $this->margin['bottom'],
+                $this->margin['left'],
                 Unit::Pixel)
-            ->headerView(self::$headerView, [
+            ->headerView($this->headerView, [
                 'report' => $report
             ])
-            ->footerView(self::$footerView, [
+            ->footerView($this->footerView, [
                 'report' => $report
             ])
-            ->save(self::$path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+            ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
         }
     }
 
-    public static function generateDailyReservations(Report $report, $size) {
+    public function generateDailyReservations(Report $report, $size) {
         $reservations = Reservation::whereDate('date_in', $report->start_date)
             ->whereStatus(Reservation::STATUS_CONFIRMED)
             ->get();
@@ -90,22 +106,22 @@ class GenerateReportController extends Controller
             ])
             ->format($size)
             ->margins(
-                self::$margin['top'],
-                self::$margin['right'],
-                self::$margin['bottom'],
-                self::$margin['left'],
+                $this->margin['top'],
+                $this->margin['right'],
+                $this->margin['bottom'],
+                $this->margin['left'],
                 Unit::Pixel)
-            ->headerView(self::$headerView, [
+            ->headerView($this->headerView, [
                 'report' => $report
             ])
-            ->footerView(self::$footerView, [
+            ->footerView($this->footerView, [
                 'report' => $report
             ])
-            ->save(self::$path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+            ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
         }
     }
 
-    public static function generateOccupancyReport(Report $report, $size) {
+    public function generateOccupancyReport(Report $report, $size) {
         $reservations = Reservation::whereBetween('date_in', [$report->start_date, $report->end_date])
             ->whereHas('rooms', function ($query) use ($report) {
                 $query->where('room_type_id', $report->room_type_id);
@@ -138,22 +154,22 @@ class GenerateReportController extends Controller
             ])
             ->format($size)
             ->margins(
-                self::$margin['top'],
-                self::$margin['right'],
-                self::$margin['bottom'],
-                self::$margin['left'],
+                $this->margin['top'],
+                $this->margin['right'],
+                $this->margin['bottom'],
+                $this->margin['left'],
                 Unit::Pixel)
-            ->headerView(self::$headerView, [
+            ->headerView($this->headerView, [
                 'report' => $report
             ])
-            ->footerView(self::$footerView, [
+            ->footerView($this->footerView, [
                 'report' => $report
             ])
-            ->save(self::$path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+            ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
         }
     }
 
-    public static function generateRevenuePerformance(Report $report, $size) {
+    public function generateRevenuePerformance(Report $report, $size) {
         $reservations = Reservation::whereBetween('date_in', [$report->start_date, $report->end_date])
             ->get();
         $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
@@ -198,18 +214,18 @@ class GenerateReportController extends Controller
             ])
             ->format($size)
             ->margins(
-                self::$margin['top'],
-                self::$margin['right'],
-                self::$margin['bottom'],
-                self::$margin['left'],
+                $this->margin['top'],
+                $this->margin['right'],
+                $this->margin['bottom'],
+                $this->margin['left'],
                 Unit::Pixel)
-            ->headerView(self::$headerView, [
+            ->headerView($this->headerView, [
                 'report' => $report
             ])
-            ->footerView(self::$footerView, [
+            ->footerView($this->footerView, [
                 'report' => $report
             ])
-            ->save(self::$path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+            ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
         }
     }
 }

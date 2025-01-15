@@ -2,7 +2,7 @@
 
 namespace App\Livewire\App\Report;
 
-use App\Http\Controllers\GenerateReportController as GenerateReport;
+use App\Jobs\GenerateReport;
 use App\Models\Report;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -34,6 +34,12 @@ class CreateReport extends Component
 
     public function mount() {
         $this->max_date = Carbon::tomorrow()->format('Y-m-d');
+    }
+
+    public function getListeners() {
+        return [
+            "echo:reports." . Auth::user()->id . ",ReportGenerated" => 'automaticDownloadReport'
+        ];
     }
 
     public function rules() {
@@ -97,23 +103,19 @@ class CreateReport extends Component
         $report = Report::create($validated);
         
         // Generate report
-        GenerateReport::generate(
-            $report,
-            $report->room_type_id,
-            $report->type,
-            $report->format,
-            $report->name,
-            $report->start_date,
-            $report->end_date,
-            $this->size
-        );
-        
+        GenerateReport::dispatch($report, $this->size);
+
         $this->toast('Success!', description: 'Report created');
         $this->dispatch('pg:eventRefresh-ReportsTable');
         $this->dispatch('report-created');
         $this->reset();
-    
-        return response()->download(Storage::path('public/pdf/report/' . $report->name . ' - ' . $report->rid . '.' . $report->format));
+    }
+
+    public function automaticDownloadReport($event) {
+        $filename = $event['report']['name'] . ' - ' . $event['report']['rid'] . '.' . $event['report']['format'];
+        $this->toast('Success!', description: 'Your file is ready to download');
+
+        return response()->download(Storage::path('public/pdf/report/' . $filename));
     }
 
     public function render()
