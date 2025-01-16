@@ -33,8 +33,7 @@
             <x-form.select id="format" name="format" wire:model.live='format' class="w-full">
                 <option value="">Select a Format</option>
                 <option value="pdf">PDF</option>
-                <option value="excel">Excel</option>
-                <option value="csv">CSV</option>
+                <option value="csv" x-show="type == 'daily reservations' || type == 'reservation summary'">CSV</option>
             </x-form.select>
 
             <x-form.input-group x-show="format === 'pdf'">

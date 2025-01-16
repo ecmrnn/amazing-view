@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Events\ReportGenerated;
+use App\Exports\DailyReservationExports;
+use App\Exports\ReservationSummaryExports;
 use App\Models\Invoice;
 use App\Models\Report;
 use App\Models\Reservation;
@@ -29,7 +31,8 @@ class GenerateReport implements ShouldQueue
     ];
     public $headerView = 'report.pdf.header';
     public $footerView = 'report.pdf.footer';
-    public $path = 'storage/app/public/pdf/report/';
+    public $path = '';
+    public $filename = '';
 
     /**
      * Create a new job instance.
@@ -39,7 +42,8 @@ class GenerateReport implements ShouldQueue
         public $size =  'letter',
     )
     {
-        //
+        $this->filename = $report->name . ' - ' . $report->rid . '.' . $report->format;
+        $this->path = 'storage/app/public/' . $report->format . '/report/' . $this->filename;
     }
 
     /**
@@ -86,8 +90,9 @@ class GenerateReport implements ShouldQueue
             ->footerView($this->footerView, [
                 'report' => $report
             ])
-            ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+            ->save($this->path);
         } else {
+            return (new ReservationSummaryExports($this->report))->store('public/csv/report/' . $this->filename);
         }
     }
 
@@ -119,7 +124,9 @@ class GenerateReport implements ShouldQueue
             ->footerView($this->footerView, [
                 'report' => $report
             ])
-            ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+            ->save($this->path);
+        } else {
+            return (new DailyReservationExports($this->report))->store('public/csv/report/' . $this->filename);
         }
     }
 
@@ -167,7 +174,7 @@ class GenerateReport implements ShouldQueue
             ->footerView($this->footerView, [
                 'report' => $report
             ])
-            ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+            ->save($this->path);
         }
     }
 
@@ -227,7 +234,7 @@ class GenerateReport implements ShouldQueue
             ->footerView($this->footerView, [
                 'report' => $report
             ])
-            ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+            ->save($this->path);
         }
     }
 }

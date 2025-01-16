@@ -115,7 +115,7 @@ class CreateReport extends Component
         $filename = $event['report']['name'] . ' - ' . $event['report']['rid'] . '.' . $event['report']['format'];
         $this->toast('Success!', description: 'Your file is ready to download');
 
-        return response()->download(Storage::path('public/pdf/report/' . $filename));
+        return response()->download(Storage::path('public/' . $event['report']['format'] . '/report/' . $filename));
     }
 
     public function render()
