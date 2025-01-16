@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
 
@@ -86,6 +87,7 @@ class GenerateReport implements ShouldQueue
                 'report' => $report
             ])
             ->save($this->path . $report->name . ' - ' . $report->rid . '.' . $report->format);
+        } else {
         }
     }
 
