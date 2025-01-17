@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Report;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -11,7 +12,11 @@ class ReportController extends Controller
      */
     public function index()
     {
-        return view('app.reports.index');
+        $reports = Report::count();
+
+        return view('app.reports.index', [
+            'reports_count' => $reports,
+        ]);
     }
 
     /**
