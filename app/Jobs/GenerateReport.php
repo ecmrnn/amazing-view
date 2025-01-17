@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ReportCreated;
 use App\Events\ReportGenerated;
 use App\Exports\DailyReservationExports;
 use App\Exports\ReservationSummaryExports;
@@ -65,7 +66,7 @@ class GenerateReport implements ShouldQueue
                 $this->generateRevenuePerformance($this->report, $this->size);
                 break;
         }
-        broadcast(new ReportGenerated($this->report));
+        broadcast(new ReportGenerated($this->report, $this->report->user_id));
     }
 
     public function generateReservationSummmary(Report $report, $size) {

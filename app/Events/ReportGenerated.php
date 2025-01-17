@@ -21,9 +21,10 @@ class ReportGenerated implements ShouldBroadcast
      */
     public function __construct(
         public Report $report,
+        public $user_id
     )
     {
-        //
+        $user_id = $report->user_id;
     }
 
     /**
@@ -34,7 +35,8 @@ class ReportGenerated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel("reports.{$this->report->user_id}"),
+            new PrivateChannel('reports.' . $this->user_id),
+            new Channel('report'),
         ];
     }
 }

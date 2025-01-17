@@ -49,9 +49,21 @@ class UserSeeder extends Seeder
             'password' => bcrypt('admin123'),
         ]);
 
+        $admin2 = User::create([
+            'first_name' => 'jane',
+            'last_name' => 'doe',
+            'address' => $faker->address(),
+            'phone' => '09' . $faker->randomNumber(9),
+            'role' => 2,
+            'status' => 0,
+            'email' => 'admin2@test.com',
+            'password' => bcrypt('admin123'),
+        ]);
+
         $guest->assignRole('guest');
         $frontdesk->assignRole('frontdesk');
         $admin->assignRole('admin');
+        $admin2->assignRole('admin');
 
         $users = User::factory(20)->create();
 

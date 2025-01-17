@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Storage;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -145,15 +146,10 @@ final class ReportsTable extends PowerGridComponent
         ]);
     }
 
-    /*
-    public function actionRules($row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
+    public function viewReport(Report $report) {
+        $filename = $report->name . ' - ' . $report->rid . '.' . $report->format;
+        return Storage::response('public/' . $report->format . '/report/' . $filename, headers: [
+            'Content-Type' => 'application/pdf'
+        ]);
     }
-    */
 }
