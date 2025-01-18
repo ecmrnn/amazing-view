@@ -85,6 +85,7 @@ class DashboardController extends Controller
         } elseif (Auth::user()->role == User::ROLE_ADMIN) {
             $view = 'app.dashboard.admin';            
             $months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+            $reservation_count = Reservation::whereStatus(Reservation::STATUS_PENDING)->count();
 
             // Monthly Revenue
             $monthly_revenue = InvoicePayment::select(DB::raw('sum(amount) as revenue'))
@@ -127,8 +128,6 @@ class DashboardController extends Controller
                 $area_chart_sales->addPoint($months[$sale->month - 1], $sale->total_sales);
             };
 
-            // dd($monthly_sales);
-
             $data = [
                 'area_chart_reservation' => $area_chart_reservation,
                 'area_chart_sales' => $area_chart_sales,
@@ -136,6 +135,7 @@ class DashboardController extends Controller
                 'outstanding_balance' => $outstanding_balance,
                 'monthly_new_guests' => $monthly_new_guests,
                 'monthly_reservations' => $monthly_reservations,
+                'reservation_count' => $reservation_count,
             ];
         }
 

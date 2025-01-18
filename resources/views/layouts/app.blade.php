@@ -51,10 +51,10 @@
         <div class="flex flex-col bg-slate-50 sm:flex-row">
             @include('layouts.navigation')
 
-            <div class="relative z-0 flex flex-col w-full h-screen overflow-y-auto">
+            <div class="relative z-0 flex flex-col w-full h-screen min-h-screen overflow-y-auto">
                 <!-- Page Heading -->
                 @isset($header)
-                    <header class="sticky top-0 flex items-center justify-between w-full max-h-full px-5 py-3 bg-white border-b border-slate-200">
+                    <header class="sticky top-0 z-50 flex items-center justify-between w-full max-h-full px-5 py-3 bg-white border-b border-slate-200">
                         {{ $header }}
 
                         <div class="flex items-center">
