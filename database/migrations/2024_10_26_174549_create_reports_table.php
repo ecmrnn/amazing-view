@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('format');
             $table->string('note')->nullable();
+            $table->string('path')->nullable();
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->timestamps();

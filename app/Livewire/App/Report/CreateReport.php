@@ -39,6 +39,7 @@ class CreateReport extends Component
         return [
             "echo-private:reports." . Auth::user()->id . ",ReportGenerated" => 'automaticDownloadReport',
             "echo:report,ReportGenerated" => 'refreshTable',
+            "echo:report,ReportDeleted" => 'refreshTable',
         ];
     }
 
@@ -101,6 +102,10 @@ class CreateReport extends Component
 
         // Store report to database
         $report = Report::create($validated);
+
+        // Update path of the report
+        $report->path = $report->format . '/report/' . $report->name . ' - ' . $report->rid . '.' . $report->format;
+        $report->save();
         
         // Generate report
         GenerateReport::dispatch($report, $this->size);
@@ -112,10 +117,8 @@ class CreateReport extends Component
     }
 
     public function automaticDownloadReport($event) {
-        $filename = $event['report']['name'] . ' - ' . $event['report']['rid'] . '.' . $event['report']['format'];
-        
         $this->toast('Success!', description: 'Your file is ready to download');
-        return response()->download(Storage::path('public/' . $event['report']['format'] . '/report/' . $filename));
+        return response()->download(Storage::path('public/' . $event['report']['path']));
     }
 
     public function refreshTable($event) {

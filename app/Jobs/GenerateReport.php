@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Events\ReportCreated;
+use App\Events\ReportDeleted;
 use App\Events\ReportGenerated;
 use App\Exports\DailyReservationExports;
 use App\Exports\ReservationSummaryExports;
@@ -16,7 +16,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
 
