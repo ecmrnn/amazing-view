@@ -26,7 +26,7 @@
         <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased font-inter text-zinc-800"
+    <body class="overflow-hidden antialiased font-inter text-zinc-800"
         x-init="
         window.toast = function(message, options = {}){
             let description = '';

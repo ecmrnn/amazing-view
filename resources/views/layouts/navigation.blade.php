@@ -47,10 +47,8 @@
         </div>
 
         {{-- Mobile --}}
-        <div x-data="{ open: false }"  class="relative flex items-center justify-between sm:hidden">
-            <a href="{{ route('guest.home') }}" class="block overflow-hidden rounded-lg" wire:navigate>
-                <img src="https://placehold.co/40x40" alt="Alternative Logo">
-            </a>
+        <div x-data="{ open: false }"  class="relative flex items-center justify-between px-5 py-2 sm:hidden">
+            <x-application-logo />
 
             {{-- Burger --}}
             <x-burger x-on:click="open = true" />
@@ -63,21 +61,22 @@
                 x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
                 x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
                 x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
-                class="fixed top-0 right-0 w-3/4 h-screen bg-white border-l md:hidden">
+                class="fixed top-0 right-0 w-3/4 h-screen overflow-auto bg-white border-l md:hidden">
                 {{-- Mobile Links --}}
-                <div>
-                    <div class="flex items-center justify-between p-5">
-                        <div>
-                            <p class="font-semibold">Menu</p>
+                <div class="flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center justify-between p-5">
+                            <div>
+                                <p class="font-semibold">Menu</p>
+                            </div>
+                            <div>
+                                <x-close-button x-on:click="open = false" />
+                            </div>
                         </div>
-                        <div>
-                            <x-close-button x-on:click="open = false" />
+                        {{-- Navigation Links --}}
+                        <div class="flex flex-col items-start px-5">
+                            @include('components.app.navigation', ['screen' => 'mobile'])
                         </div>
-                    </div>
-
-                    {{-- Navigation Links --}}
-                    <div class="flex flex-col items-start px-5 border-b border-slate-200">
-                        @include('components.app.navigation', ['screen' => 'mobile'])
                     </div>
 
                     {{-- Settings --}}
