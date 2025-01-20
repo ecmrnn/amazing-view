@@ -54,9 +54,11 @@ final class ReportsTable extends PowerGridComponent
             //     ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()
                 ->showToggleColumns()
-                ->showSearchInput(),
+                ->showSearchInput()
+                ->withoutLoading(),
             Footer::make()
-                ->showPerPage(),
+                ->showPerPage()
+                ->showRecordCount(),
         ];
     }
     
@@ -191,9 +193,9 @@ final class ReportsTable extends PowerGridComponent
             if (!$report) {
                 $this->toast('Missing Report', 'info', 'Report cannot be found.');
             } else {
-                Storage::disk('public')->delete($this->report->path);
+                Storage::disk('public')->delete($report->path);
         
-                $this->report->delete();
+                $report->delete();
         
                 $this->toast('Success', description: 'Report successfully deleted');
             }

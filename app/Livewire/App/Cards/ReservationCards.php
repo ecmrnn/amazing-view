@@ -3,8 +3,6 @@
 namespace App\Livewire\App\Cards;
 
 use App\Models\Reservation;
-use Illuminate\Support\Facades\DB;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ReservationCards extends Component

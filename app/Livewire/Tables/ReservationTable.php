@@ -47,9 +47,11 @@ final class ReservationTable extends PowerGridComponent
             //     ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()
                 ->showToggleColumns()
-                ->showSearchInput(),
+                ->showSearchInput()
+                ->withoutLoading(),
             Footer::make()
-                ->showPerPage(),
+                ->showPerPage()
+                ->showRecordCount(),
         ];
     }
 
@@ -83,9 +85,9 @@ final class ReservationTable extends PowerGridComponent
             ->add('status')
             ->add('status_update', function ($reservation) {
                 $reservation_statuses = [
-                    1 => 'Pending',
-                    0 => 'Confirmed',
-                    3 => 'Checked-in',
+                    Reservation::STATUS_PENDING => 'Pending',
+                    Reservation::STATUS_CONFIRMED => 'Confirmed',
+                    Reservation::STATUS_CHECKED_IN => 'Checked-in',
                 ];
 
                 if ($reservation->status != Reservation::STATUS_PENDING) {
@@ -96,23 +98,23 @@ final class ReservationTable extends PowerGridComponent
                 }
 
                 return Blade::render('
-                <div x-data="{ selected_value: @js($selected), default_value: @js($selected) }">
-                    <x-form.select type="occurrence"
-                        :options=$options
-                        :selected=$selected
-                        x-model="selected_value"
-                        x-bind:disabled="selected_value == 3"
-                        x-on:change="
-                            selected_value = $event.target.value;
-                            $wire.selected_value = $event.target.value;
-                            if ($event.target.value == 0) {
-                                $dispatch(\'open-modal\', \'show-checkin-confirmation-{{ $reservation->id }}\');
-                            } else {
-                                $dispatch(\'open-modal\', \'show-update-status-confirmation-{{ $reservation->id }}\');
-                            }
-                            "
-                        />
-                </div> ', ['reservation' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]);
+                    <div x-data="{ selected_value: @js($selected), default_value: @js($selected) }">
+                        <x-form.select type="occurrence"
+                            :options=$options
+                            :selected=$selected
+                            x-model="selected_value"
+                            x-bind:disabled="selected_value == 3"
+                            x-on:change="
+                                selected_value = $event.target.value;
+                                $wire.selected_value = $event.target.value;
+                                if ($event.target.value == 0) {
+                                    $dispatch(\'open-modal\', \'show-checkin-confirmation-{{ $reservation->id }}\');
+                                } else {
+                                    $dispatch(\'open-modal\', \'show-update-status-confirmation-{{ $reservation->id }}\');
+                                }
+                                "
+                            />
+                    </div> ', ['reservation' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]);
             })
             ->add('status_formatted', function ($reservation) {
                 return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');

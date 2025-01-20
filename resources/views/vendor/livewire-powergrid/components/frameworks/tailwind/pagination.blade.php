@@ -7,8 +7,8 @@
         @if ($recordCount === 'full')
             <div @class(['mr-3' => $paginator->hasPages()])>
                 <div @class([
-                    'mr-2' => $paginator->hasPages(),
-                    'leading-5 text-center text-pg-primary-700 text-md dark:text-pg-primary-300 sm:text-right',
+                    'mr-0' => $paginator->hasPages(),
+                    'leading-5 mr-3 text-center text-pg-primary-700 text-xs dark:text-pg-primary-300 sm:text-right',
                 ])>
                     {{ trans('livewire-powergrid::datatable.pagination.showing') }}
                     <span class="font-semibold firstItem">{{ $paginator->firstItem() }}</span>
