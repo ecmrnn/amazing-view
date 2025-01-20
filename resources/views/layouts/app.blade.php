@@ -54,7 +54,7 @@
             <div class="relative flex flex-col w-full h-screen min-h-screen overflow-y-auto">
                 <!-- Page Heading -->
                 @isset($header)
-                    <header class="sticky top-0 z-50 flex items-center justify-between w-full max-h-full px-5 py-3 bg-white border-b border-slate-200">
+                    <header class="sticky top-0 z-10 flex items-center justify-between w-full max-h-full px-5 py-3 bg-white border-b border-slate-200">
                         {{ $header }}
 
                         <div class="flex items-center">
@@ -78,7 +78,7 @@
                 @endisset
 
                 <!-- Page Content -->
-                <main class="relative p-5 space-y-3 grow sm:space-y-5">
+                <main class="relative z-0 p-5 space-y-3 grow sm:space-y-5">
                     {{ $slot }}
                 </main>
             </div>

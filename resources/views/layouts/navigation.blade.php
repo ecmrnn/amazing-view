@@ -1,4 +1,4 @@
-<nav class="sticky top-0 z-10 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-200">
+<nav class="sticky top-0 z-20 max-h-screen bg-white border-b border-r sm:border-b-0 border-slate-200">
     <!-- Primary Navigation Menu -->
     <div class="h-full">
         <div x-data="{ expanded: $persist(false) }" class="justify-between hidden h-full sm:flex sm:flex-col"

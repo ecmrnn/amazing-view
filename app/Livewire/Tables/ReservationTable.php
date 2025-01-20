@@ -112,53 +112,6 @@ final class ReservationTable extends PowerGridComponent
                             }
                             "
                         />
-                    
-                    <x-modal.full :click_outside="false" name="show-update-status-confirmation-{{ $reservation->id }}" maxWidth="xs">
-                        <div>
-                            <section class="p-5 space-y-5 bg-white">
-                                <hgroup>
-                                    <h2 class="font-semibold text-center capitalize">Update Status</h2>
-                                    <p class="max-w-sm text-xs text-center">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
-                                </hgroup>
-                
-                                <div class="flex items-center justify-center gap-1">
-                                    <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
-                                    <x-primary-button type="button"
-                                        wire:click="statusChanged(selected_value, {{ $reservation->id }});
-                                        show = false;
-                                        default_value = selected_value"
-                                        >
-                                        Yes, update
-                                    </x-primary-button>
-                                </div>
-                            </section>
-                        </div>
-                    </x-modal.full>
-
-                    <x-modal.full :click_outside="false" name="show-checkin-confirmation-{{ $reservation->id }}" maxWidth="sm">
-                        <div x-on:cancel-confirmation.window="selected_value = default_value">
-                            @if (intval($reservation->invoice->downpayment) != 0)
-                                <section class="p-5 space-y-5 bg-white">
-                                    <hgroup>
-                                        <h2 class="font-semibold text-center capitalize">Update Status</h2>
-                                        <p class="max-w-sm text-xs text-center">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
-                                    </hgroup>
-                                    <div class="flex items-center justify-center gap-1">
-                                        <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
-                                        <x-primary-button type="button"
-                                            wire:click="statusChanged(selected_value, {{ $reservation->id }});
-                                            show = false;
-                                            default_value = selected_value"
-                                            >
-                                            Yes, update
-                                        </x-primary-button>
-                                    </div>
-                                </section>
-                            @else
-                                <livewire:app.invoice.create-payment invoice="{{ $reservation->invoice->id }}" />
-                            @endif
-                        </div>
-                    </x-modal.full>
                 </div> ', ['reservation' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]);
             })
             ->add('status_formatted', function ($reservation) {
