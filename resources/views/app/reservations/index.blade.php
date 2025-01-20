@@ -22,11 +22,5 @@
         </div>
     </x-slot:header>
 
-    {{-- Cards --}}
-    <livewire:app.cards.reservation-cards />
-
-    {{-- Room  Table --}}
-    <div class="p-5 bg-white border rounded-lg border-slate-200">
-        <livewire:tables.reservation-table />
-    </div>
+    <livewire:app.reservation.show-reservations />
 </x-app-layout>

@@ -20,12 +20,14 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 
 final class ReservationTable extends PowerGridComponent
 {
     use WithExport;
 
     public string $tableName = 'ReservationTable';
+    #[Url] public $status;
 
     public function noDataLabel(): string|View
     { 
@@ -34,6 +36,7 @@ final class ReservationTable extends PowerGridComponent
 
     public function boot(): void
     {
+        // dd($this->status);
         config(['livewire-powergrid.filter' => 'outside']);
     }
 
@@ -57,9 +60,14 @@ final class ReservationTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Reservation::query()
-            ->whereNot('status', Reservation::STATUS_CANCELED)
-            ->orderByDesc('rid');
+        if (isset($this->status)) {
+            return Reservation::query()
+                ->whereStatus($this->status)
+                ->orderByDesc('rid');
+        } else {
+            return Reservation::query();
+        }
+        
     }
 
     public function relationSearch(): array
@@ -84,16 +92,16 @@ final class ReservationTable extends PowerGridComponent
 
             ->add('status')
             ->add('status_update', function ($reservation) {
-                $reservation_statuses = [
-                    Reservation::STATUS_PENDING => 'Pending',
-                    Reservation::STATUS_CONFIRMED => 'Confirmed',
-                    Reservation::STATUS_CHECKED_IN => 'Checked-in',
-                ];
-
-                if ($reservation->status != Reservation::STATUS_PENDING) {
+                if ($reservation->status == Reservation::STATUS_PENDING) {
                     $reservation_statuses = [
                         0 => 'Confirmed',
                         3 => 'Checked-in',
+                    ];
+                } else {
+                    $reservation_statuses = [
+                        Reservation::STATUS_PENDING => 'Pending',
+                        Reservation::STATUS_CONFIRMED => 'Confirmed',
+                        Reservation::STATUS_CHECKED_IN => 'Checked-in',
                     ];
                 }
 
@@ -113,7 +121,56 @@ final class ReservationTable extends PowerGridComponent
                                     $dispatch(\'open-modal\', \'show-update-status-confirmation-{{ $reservation->id }}\');
                                 }
                                 "
-                            />
+                        />
+                        
+                        <x-modal.full :click_outside="false" name="show-update-status-confirmation-{{ $reservation->id }}" maxWidth="xs">
+                            <div>
+                                <section class="p-5 space-y-5 bg-white">
+                                    <hgroup>
+                                        <h2 class="font-semibold text-center capitalize">Update Status</h2>
+                                        <p class="max-w-sm text-xs text-center">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
+                                    </hgroup>
+                    
+                                    <div class="flex items-center justify-center gap-1">
+                                        <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
+                                        <x-primary-button type="button"
+                                            wire:click="statusChanged(selected_value, {{ $reservation->id }});
+                                            show = false;
+                                            default_value = selected_value"
+                                            >
+                                            Yes, update
+                                        </x-primary-button>
+                                    </div>
+                                </section>
+                            </div>
+                        </x-modal.full>
+
+                        <x-modal.full :click_outside="false" name="show-checkin-confirmation-{{ $reservation->id }}" maxWidth="sm">
+                            <div x-on:cancel-confirmation.window="selected_value = default_value">
+                                @if(isset($reservation->invoice->downpayment))
+                                    @if (intval($reservation->invoice->downpayment) != 0)
+                                        <section class="p-5 space-y-5 bg-white">
+                                            <hgroup>
+                                                <h2 class="font-semibold text-center capitalize">Update Status</h2>
+                                                <p class="max-w-sm text-xs text-center">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
+                                            </hgroup>
+                                            <div class="flex items-center justify-center gap-1">
+                                                <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
+                                                <x-primary-button type="button"
+                                                    wire:click="statusChanged(selected_value, {{ $reservation->id }});
+                                                    show = false;
+                                                    default_value = selected_value"
+                                                    >
+                                                    Yes, update
+                                                </x-primary-button>
+                                            </div>
+                                        </section>
+                                    @else
+                                        <livewire:app.invoice.create-payment invoice="{{ $reservation->invoice->id }}" />
+                                    @endif
+                                @endif
+                            </div>
+                        </x-modal.full>
                     </div> ', ['reservation' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]);
             })
             ->add('status_formatted', function ($reservation) {

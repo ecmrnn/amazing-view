@@ -16,6 +16,9 @@ export default {
 
     theme: {
         extend: {
+            animation: {
+                'spin-slow': 'spin 3s linear infinite',
+            },
             fontFamily: {
                 inter: ['Inter', ...defaultTheme.fontFamily.sans],
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
