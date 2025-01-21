@@ -190,7 +190,7 @@
                 <div class="flex items-start justify-between gap-5 pr-5">
                     {{-- Payment Receipt --}}
                     <x-secondary-button class="text-xs justify-self-start" x-on:click="$dispatch('open-modal', 'show-downpayment-modal')">
-                        View Sent Receipt
+                        View Payment
                     </x-secondary-button>
 
                     <div class="flex gap-5">
@@ -267,37 +267,8 @@
 
     @push('modals')
         {{-- Proof of image modal --}}
-        <x-modal.full name="show-downpayment-modal" maxWidth="lg">
-            <div x-data="{ checked: false }">
-                <section class="p-5 space-y-5 bg-white">
-                    <hgroup>
-                        <h2 class="font-semibold text-center capitalize text">Payment upon Reservation</h2>
-                        <p class="max-w-sm mx-auto text-sm text-center 11">Confirm that the payment made below are successful before confirming the reservation.</p>
-                    </hgroup>
-
-                    <div class="relative">
-                        <img src="{{ asset($downpayment) }}" alt="payment receipt" class="w-full h-full rounded-lg" />
-
-                        <div class="absolute flex gap-1 top-3 right-3">
-                            <x-tooltip text="Download" dir="top">
-                                <a x-ref="content" href="{{ asset($downpayment) }}" download="{{ $reservation->rid . ' - ' . 'Payment'}}">
-                                    <x-icon-button>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-down"><path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21"/><path d="m14 19 3 3v-5.5"/><path d="m17 22 3-3"/><circle cx="9" cy="9" r="2"/></svg>
-                                    </x-icon-button>
-                                </a>
-                            </x-tooltip>
-
-                            <x-tooltip text="View" dir="top">
-                                <a href="{{ asset($downpayment) }}" target="_blank" x-ref="content">
-                                    <x-icon-button>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-                                    </x-icon-button>
-                                </a>
-                            </x-tooltip>
-                        </div>
-                    </div>
-                </section>
-            </div>
+        <x-modal.full name="show-downpayment-modal" maxWidth="sm">
+            <livewire:app.reservation.confirm-reservation :reservation="$reservation" :downpayment="$downpayment" />
         </x-modal.full> 
     @endpush
 </x-app-layout>  

@@ -55,7 +55,7 @@ class ShowReports extends Component
             @if ($reports_count > 0)
                 <livewire:tables.reports-table />
             @else
-                <div class="font-semibold text-center border rounded-md border-slate-200">
+                <div class="font-semibold text-center">
                     <x-table-no-data.reports />
                 </div>
             @endif

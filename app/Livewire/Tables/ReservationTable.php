@@ -36,7 +36,6 @@ final class ReservationTable extends PowerGridComponent
 
     public function boot(): void
     {
-        // dd($this->status);
         config(['livewire-powergrid.filter' => 'outside']);
     }
 
@@ -65,7 +64,8 @@ final class ReservationTable extends PowerGridComponent
                 ->whereStatus($this->status)
                 ->orderByDesc('rid');
         } else {
-            return Reservation::query();
+            return Reservation::query()->with('rooms')
+                ->orderByDesc('rid');
         }
         
     }
@@ -275,6 +275,7 @@ final class ReservationTable extends PowerGridComponent
             $this->toast('Success!', description: 'Reservation status updated successfully.');
             $this->dispatch('status-changed');
             $this->dispatch('pg:eventRefresh-ReservationTable');
+            $this->redirect(route('app.reservations.index', ['status' => $this->status]));
         }
     }
 }

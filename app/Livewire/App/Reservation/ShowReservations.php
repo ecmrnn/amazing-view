@@ -4,12 +4,11 @@ namespace App\Livewire\App\Reservation;
 
 use App\Models\Reservation;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class ShowReservations extends Component
 {
-    // protected $listeners = ['status-changed' => '$refresh'];
-    
     public $reservation_by_status = [
         'all' => 0,
         'awaiting_payment' => 0,
@@ -21,6 +20,8 @@ class ShowReservations extends Component
         'canceled' => 0,
         'expired' => 0,
     ];
+    public $reservation_count;
+    #[Url] public $status;
 
     public function mount() {
         $this->getReservationCount();
@@ -49,6 +50,7 @@ class ShowReservations extends Component
         }
         
         $this->reservation_by_status['all'] = $counts->sum();
+        $this->reservation_count = $this->status == '' ? Reservation::count() : Reservation::whereStatus($this->status)->count();
     }
 
     public function render()

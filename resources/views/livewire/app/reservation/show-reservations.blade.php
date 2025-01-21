@@ -113,7 +113,11 @@
         <livewire:app.cards.reservation-cards />
         {{-- Room  Table --}}
         <div class="p-5 bg-white border rounded-lg border-slate-200">
-            <livewire:tables.reservation-table />
+            @if ($reservation_count > 0)
+                <livewire:tables.reservation-table />
+            @else
+                <div class="font-semibold text-center"><x-table-no-data.reservations /></div>
+            @endif
         </div>
     </div>
 </div>
