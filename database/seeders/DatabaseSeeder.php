@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             UserSeeder::class,
             DiscountSeeder::class,
-            AppReservationSeeder::class,
+            // AppReservationSeeder::class,
             // ReportSeeder::class,
             // Content
             PageSeeder::class,

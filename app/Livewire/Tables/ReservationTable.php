@@ -24,7 +24,7 @@ use Livewire\Attributes\Url;
 
 final class ReservationTable extends PowerGridComponent
 {
-    use WithExport;
+    use WithExport, DispatchesToast;
 
     public string $tableName = 'ReservationTable';
     #[Url] public $status;
@@ -92,46 +92,54 @@ final class ReservationTable extends PowerGridComponent
 
             ->add('status')
             ->add('status_update', function ($reservation) {
-                if ($reservation->status == Reservation::STATUS_PENDING) {
-                    $reservation_statuses = [
-                        0 => 'Confirmed',
-                        3 => 'Checked-in',
-                    ];
-                } else {
-                    $reservation_statuses = [
-                        Reservation::STATUS_PENDING => 'Pending',
-                        Reservation::STATUS_CONFIRMED => 'Confirmed',
-                        Reservation::STATUS_CHECKED_IN => 'Checked-in',
-                    ];
-                }
-
-                return Blade::render('
-                    <div x-data="{ selected_value: @js($selected), default_value: @js($selected) }">
-                        <x-form.select type="occurrence"
-                            :options=$options
-                            :selected=$selected
-                            x-model="selected_value"
-                            x-bind:disabled="selected_value == 3"
-                            x-on:change="
-                                selected_value = $event.target.value;
-                                $wire.selected_value = $event.target.value;
-                                if ($event.target.value == 0) {
-                                    $dispatch(\'open-modal\', \'show-checkin-confirmation-{{ $reservation->id }}\');
-                                } else {
-                                    $dispatch(\'open-modal\', \'show-update-status-confirmation-{{ $reservation->id }}\');
-                                }
-                                "
-                        />
-                        
-                        <x-modal.full :click_outside="false" name="show-update-status-confirmation-{{ $reservation->id }}" maxWidth="xs">
-                            <div>
+                if (in_array($reservation->status, [Reservation::STATUS_AWAITING_PAYMENT, Reservation::STATUS_PENDING, Reservation::STATUS_CONFIRMED])) {
+                    if ($reservation->status == Reservation::STATUS_AWAITING_PAYMENT) {
+                        $reservation_statuses = [
+                            '' => 'Update Status',
+                            Reservation::STATUS_PENDING => 'Pending',
+                        ];
+                    } elseif ($reservation->status == Reservation::STATUS_PENDING) {
+                        $reservation_statuses = [
+                            '' => 'Update Status',
+                            Reservation::STATUS_CONFIRMED => 'Confirm',
+                        ];
+                    } elseif ($reservation->status == Reservation::STATUS_CONFIRMED) {
+                        $reservation_statuses = [
+                            '' => 'Update Status',
+                            Reservation::STATUS_CHECKED_IN => 'Check-in',
+                        ];
+                    } else {
+                        $reservation_statuses = [
+                            '' => 'Update Status',
+                        ];
+                    }
+    
+                    return Blade::render('
+                        <div x-data="{ selected_value: @js($selected), default_value: @js($selected) }">
+                            <x-form.select type="occurrence"
+                                :options=$options
+                                :selected=$selected
+                                x-model="selected_value"
+                                x-bind:disabled="selected_value == 3"
+                                x-on:change="
+                                    selected_value = $event.target.value;
+                                    $wire.selected_value = $event.target.value;
+                                    if ($event.target.value == 1) {
+                                        $dispatch(\'open-modal\', \'show-checkin-confirmation-{{ $reservation->id }}\');
+                                    } else {
+                                        $dispatch(\'open-modal\', \'show-update-status-confirmation-{{ $reservation->id }}\');
+                                    }
+                                    "
+                            />
+                            
+                            <x-modal.full :click_outside="false" name="show-update-status-confirmation-{{ $reservation->id }}" maxWidth="xs">
                                 <section class="p-5 space-y-5 bg-white">
                                     <hgroup>
-                                        <h2 class="font-semibold text-center capitalize">Update Status</h2>
-                                        <p class="max-w-sm text-xs text-center">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
+                                        <h2 class="font-semibold capitalize">Update Status</h2>
+                                        <p class="max-w-sm text-xs">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
                                     </hgroup>
                     
-                                    <div class="flex items-center justify-center gap-1">
+                                    <div class="flex items-end justify-center gap-1">
                                         <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
                                         <x-primary-button type="button"
                                             wire:click="statusChanged(selected_value, {{ $reservation->id }});
@@ -142,13 +150,11 @@ final class ReservationTable extends PowerGridComponent
                                         </x-primary-button>
                                     </div>
                                 </section>
-                            </div>
-                        </x-modal.full>
-
-                        <x-modal.full :click_outside="false" name="show-checkin-confirmation-{{ $reservation->id }}" maxWidth="sm">
-                            <div x-on:cancel-confirmation.window="selected_value = default_value">
-                                @if(isset($reservation->invoice->downpayment))
-                                    @if (intval($reservation->invoice->downpayment) != 0)
+                            </x-modal.full>
+    
+                            <x-modal.full :click_outside="false" name="show-checkin-confirmation-{{ $reservation->id }}" maxWidth="sm">
+                                <div x-on:cancel-confirmation.window="selected_value = default_value">
+                                    @if (!empty($reservation->invoice->downpayment) && intval($reservation->invoice->downpayment) != 0)
                                         <section class="p-5 space-y-5 bg-white">
                                             <hgroup>
                                                 <h2 class="font-semibold text-center capitalize">Update Status</h2>
@@ -168,10 +174,15 @@ final class ReservationTable extends PowerGridComponent
                                     @else
                                         <livewire:app.invoice.create-payment invoice="{{ $reservation->invoice->id }}" />
                                     @endif
-                                @endif
-                            </div>
-                        </x-modal.full>
-                    </div> ', ['reservation' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]);
+                                </div>
+                            </x-modal.full>
+                        </div> ', ['reservation' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]
+                    );
+                } elseif (in_array($reservation->status, [])) {
+                    return Blade::render('<a wire:navigate class="text-xs text-zinc-800/50" href="{{ route(\'app.reservations.edit\', [\'reservation\' => \'' . $reservation->rid . '\']) }}">View Reservation to Edit</a>');
+                } else {
+                    return Blade::render('<span class="text-xs text-zinc-800/50">Not Available</span>');
+                }
             })
             ->add('status_formatted', function ($reservation) {
                 return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
@@ -189,7 +200,7 @@ final class ReservationTable extends PowerGridComponent
 
     public function columns(): array
     {
-        return [
+        $columns = [
             Column::make('Reservation Id', 'rid', 'rid')
                 ->sortable()
                 ->searchable(),
@@ -206,10 +217,15 @@ final class ReservationTable extends PowerGridComponent
 
             Column::make('Status', 'status_formatted', 'status'),
 
-            Column::make('Update status', 'status_update'),
-
-            Column::action('')
         ];
+
+        if (in_array($this->status, [Reservation::STATUS_AWAITING_PAYMENT, Reservation::STATUS_PENDING, Reservation::STATUS_CONFIRMED])) {
+            $columns[] = Column::make('Update status', 'status_update');
+        }
+
+        $columns[] = Column::action('');
+        
+        return $columns;
     }
 
     public function filters(): array
@@ -217,19 +233,6 @@ final class ReservationTable extends PowerGridComponent
         return [
             Filter::inputText('rid')
                 ->placeholder('Reservation ID'),
-
-            Filter::select('status', 'status')
-                ->dataSource([
-                    ['status' => 0, 'name' => 'Confirmed'],
-                    ['status' => 1, 'name' => 'Pending'],
-                    ['status' => 2, 'name' => 'Expired'],
-                    ['status' => 3, 'name' => 'Checked-in'],
-                    ['status' => 4, 'name' => 'Checked-out'],
-                    ['status' => 5, 'name' => 'Completed'],
-                    ['status' => 6, 'name' => 'Canceled'],
-                ])
-                ->optionLabel('name')
-                ->optionValue('status'),
         ];
     }
 
@@ -269,6 +272,7 @@ final class ReservationTable extends PowerGridComponent
                 }
             }
 
+            $this->toast('Success!', description: 'Reservation status updated successfully.');
             $this->dispatch('status-changed');
             $this->dispatch('pg:eventRefresh-ReservationTable');
         }

@@ -7,6 +7,7 @@ use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -44,12 +45,17 @@ class CreatePayment extends Component
             'proof_image_path' => $this->rules()['proof_image_path'],
             'transaction_id' => $this->rules()['transaction_id'],
             'amount' => $this->rules()['amount'],
+            'proof_image_path' => $this->rules()['proof_image_path'],
         ]);
 
-        if ($this->reservation->status == Reservation::STATUS_PENDING) {
-            $this->reservation->status = Reservation::STATUS_CONFIRMED;
+        if ($this->reservation->status == Reservation::STATUS_AWAITING_PAYMENT) {
+            $this->reservation->status = Reservation::STATUS_PENDING;
             $this->reservation->save();
             $this->dispatch('pg:eventRefresh-ReservationTable');
+        }
+
+        if (!empty($this->proof_image_path)) {
+            $this->proof_image_path = $this->proof_image_path->store('payments', 'public');
         }
         
         $payment = InvoicePayment::create([
@@ -58,10 +64,11 @@ class CreatePayment extends Component
             'amount' => $this->amount,
             'payment_date' => $this->payment_date,
             'payment_method' => $this->payment_method,
-            // Image
+            'proof_image_path' => $this->proof_image_path,
         ]);
 
         $invoice = Invoice::whereId($this->invoice->id)->first();
+        $invoice->downpayment = $this->amount;
         $invoice->balance -= $this->amount;
 
         if ($invoice->balance == 0) {

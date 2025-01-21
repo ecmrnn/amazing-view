@@ -128,7 +128,7 @@ class ReservationForm extends Component
     {
         return[
             'date_in' => 'required|date|after_or_equal:today',
-            'date_out' => 'required|date|after_or_equal:date_in',
+            'date_out' => 'required_if:reservation_type,overnight|date|after_or_equal:date_in',
             'senior_count' => 'required|integer',
             'pwd_count' => 'required|integer',
             'adult_count' => 'required|integer|min:1',
@@ -384,7 +384,7 @@ class ReservationForm extends Component
                 case 1:
                     $this->validate([
                         'date_in' => $this->rules()['date_in'],
-                        'date_out' => 'required|date|after_or_equal:date_in',
+                        'date_out' => $this->rules()['date_out'],
                         'adult_count' => $this->rules()['adult_count'],
                         'children_count' => $this->rules()['children_count'],
                         'selected_rooms' => $this->rules()['selected_rooms'],
@@ -451,7 +451,7 @@ class ReservationForm extends Component
         $status = Reservation::STATUS_AWAITING_PAYMENT;
 
         if (!empty($this->proof_image_path)) {
-            $this->proof_image_path = $this->proof_image_path->store('downpayments', 'public');
+            $this->proof_image_path = $this->proof_image_path->store('payments', 'public');
             $expires_at = null;
             $status = Reservation::STATUS_PENDING;
         }
@@ -513,6 +513,7 @@ class ReservationForm extends Component
         $invoice = Invoice::create([
             'reservation_id' => $reservation->id,
             'total_amount' => $this->net_total,
+            'balance' => $this->net_total,
             'status' => Invoice::STATUS_PENDING
         ]);
 
