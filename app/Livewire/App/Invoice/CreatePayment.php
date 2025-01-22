@@ -24,7 +24,7 @@ class CreatePayment extends Component
     #[Validate] public $transaction_id;
     #[Validate] public $amount;
     
-    public function mount(Invoice $invoice) {
+    public function mount(Invoice $invoice = null) {
         $this->invoice = $invoice;
         $this->payment_date = Carbon::now()->format('Y-m-d');
         $this->reservation = $this->invoice->reservation;

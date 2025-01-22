@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             DiscountSeeder::class,
             // AppReservationSeeder::class,
             // ReportSeeder::class,
+            
             // Content
             PageSeeder::class,
             AboutSeeder::class,

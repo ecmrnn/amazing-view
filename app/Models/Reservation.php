@@ -7,23 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 
 class Reservation extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
-
-    public const STATUS_CONFIRMED = 0;
-    public const STATUS_PENDING = 1;
-    public const STATUS_EXPIRED = 2;
-    public const STATUS_CHECKED_IN = 3;
-    public const STATUS_CHECKED_OUT = 4;
-    public const STATUS_COMPLETED = 5;
-    public const STATUS_CANCELED = 6;
-    public const STATUS_RESERVED = 7;
-    public const STATUS_AWAITING_PAYMENT = 8;
 
     public static function rules(array $excepts = []) {
         $rules = [
@@ -39,9 +31,6 @@ class Reservation extends Model
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'required',
-            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000|required_unless:payment_method,cash',
-            'downpayment' => 'integer|min:500|nullable',
-            'transaction_id' => 'nullable|string|required_unless:payment_method,cash',
             'note' => 'nullable|max:200',
         ];
 
@@ -124,36 +113,8 @@ class Reservation extends Model
         return $attributes;
     }
 
-    public static function computeBreakdown(Reservation $reservation) {
-        $sub_total = 0;
-
-        foreach ($reservation->rooms as $room) {
-            $sub_total += $room->rate;
-        }
-
-        foreach ($reservation->amenities as $amenity) {
-            $quantity = $amenity->pivot->quantity;
-                        
-            // If quantity is 0, change it to 1
-            $quantity != 0 ?: $quantity = 1;
-
-            $sub_total += ($amenity->price * $quantity);
-        }
-        
-        // dd($reservation->amenities);
-        $vatable_sales = $sub_total / 1.12;
-        $vat = ($sub_total) - $vatable_sales;
-        $net_total = $vatable_sales + $vat;
-
-        return [
-            'vatable_sales' => $vatable_sales,
-            'vat' => $vat,
-            'net_total' => $net_total,
-        ];
-    }
-
     public function rooms(): BelongsToMany {
-        return $this->BelongsToMany(Room::class, 'room_reservations');
+        return $this->belongsToMany(Room::class, 'room_reservations')->withPivot('rate');
     }
 
     public function user(): BelongsTo {
@@ -161,11 +122,15 @@ class Reservation extends Model
     }
 
     public function amenities(): BelongsToMany {
-        return $this->belongsToMany(Amenity::class, 'reservation_amenities')->withPivot('quantity');
+        return $this->belongsToMany(Amenity::class, 'reservation_amenities')->withPivot('quantity', 'price');
     }
 
     public function invoice(): HasOne {
         return $this->hasOne(Invoice::class);
+    }
+
+    public function cars(): HasOneOrMany {
+        return $this->hasMany(CarReservation::class);
     }
 
     public static function boot()

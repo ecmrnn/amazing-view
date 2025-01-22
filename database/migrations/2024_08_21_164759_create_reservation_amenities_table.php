@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(Reservation::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Amenity::class)->constrained()->cascadeOnDelete();
             $table->smallInteger('quantity');
+            $table->decimal('price');
             $table->timestamps();
         });
     }

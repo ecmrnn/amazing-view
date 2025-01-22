@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoomStatus;
 use App\Models\Building;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -24,7 +25,7 @@ return new class extends Migration
             $table->smallInteger('max_capacity');
             $table->decimal('rate');
             $table->string('image_1_path')->nullable();
-            $table->smallInteger('status')->default(Room::STATUS_AVAILABLE);
+            $table->smallInteger('status')->default(RoomStatus::AVAILABLE);
             $table->softDeletes();
             $table->timestamps();
         });

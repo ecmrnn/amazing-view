@@ -31,395 +31,409 @@
 }" wire:submit="submit()">
 @csrf
 
-<div class="relative flex flex-col gap-5 lg:flex-row">
-    <section class="w-full space-y-5">
-        {{-- Reservation Details --}}
-        <section class="p-3 space-y-5 border rounded-lg sm:p-5">
-            <hgroup>
-                <h3 class="font-semibold">Reservation Details</h3>
-                <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
-            </hgroup>
-            
-            <div class="grid items-start gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                <div class="grid space-y-1">
-                    <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
-                    <x-form.input-date
-                        wire:model.live="date_in"
-                        x-model="date_in"
-                        min="{{ $min_date }}"
-                        id="date_in" />
-                    <x-form.input-error field="date_in" />
-                </div>
-                <div class="grid space-y-1">
-                    <x-form.input-label for="date_out">Check-out Date</x-form.input-label>
-                    <x-form.input-date
-                        wire:model.live="date_out"
-                        x-model="date_out"
-                        min="{{ $date_in }}"
-                        id="date_out" />
-                    <x-form.input-error field="date_out" />
-                </div>
-                <div class="grid space-y-1">
-                    <x-form.input-label for="adult_count">Number of Adults</x-form.input-label>
-                    <x-form.input-number wire:model.live="adult_count" x-model="adult_count"
-                        id="adult_count" min="1" />
-                    <x-form.input-error field="adult_count" />
-                </div>
-                <div class="grid space-y-1">
-                    <x-form.input-label for="children_count">Number of Children</x-form.input-label>
-                    <x-form.input-number x-model="children_count" id="children_count"
-                        wire:model.live="children_count" />
-                    <x-form.input-error field="children_count" />
-                </div>
-            </div>
-        </section>
-
-        {{-- Guest Details --}}
-        <section class="p-3 space-y-5 border rounded-lg sm:p-5">
-            <hgroup>
-                <h3 class="font-semibold">Guest Details</h3>
-                <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
-            </hgroup>
-
-            {{-- First & Last name --}}
-            <div class="grid items-start gap-3 sm:grid-cols-2">
-                <div class="space-y-1">
-                    <x-form.input-text class="capitalize" wire:model.live='first_name' x-model="first_name"
-                        id="first_name" label="First Name" />
-                    <x-form.input-error field="first_name" />
-                </div>
-                <div class="space-y-1">
-                    <x-form.input-text class="capitalize" wire:model.live='last_name' x-model="last_name"
-                        id="last_name" label="Last Name" />
-                    <x-form.input-error field="last_name" />
-                </div>
-                <div class="space-y-1">
-                    <x-form.input-text wire:model.live='phone' id="phone" label="Contact Number" />
-                    <x-form.input-error field="phone" />
-                </div>
-                <div class="space-y-1">
-                    <x-form.input-text wire:model.live='email' id="email" label="Email" />
-                    <x-form.input-error field="email" />
-                </div>
-                <div class="sm:col-span-2">
-                    <x-form.input-text wire:model.live='address' id="address" label="Address" />
-                    <x-form.input-error field="address" />
-                </div>
-            </div>
-        </section>
-
-        {{-- Room & Additional Details --}}
-        <section class="p-3 space-y-5 border rounded-lg sm:p-5">
-            <div>
-                {{-- header --}}
-                <div class="flex flex-col items-start justify-between gap-5 sm:flex-row">
-                    <hgroup>
-                        <h3 class="font-semibold">Rooms</h3>
-                        <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
-                    </hgroup>
+<section class="w-full max-w-screen-lg p-5 mx-auto space-y-5 bg-white rounded-lg shadow-md">
+    <div class="flex items-center gap-3 sm:gap-5">
+        <x-tooltip text="Back" dir="bottom">
+            <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>
+                <x-icon-button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </x-icon-button>
+            </a>
+        </x-tooltip>
+        
+        <div>
+            <h2 class="text-lg font-semibold">Edit Reservation</h2>
+            <p class="max-w-sm text-xs">Update reservation details here</p>
+        </div>
+    </div>
     
-                    <div class="flex border divide-x rounded-lg">
-                        <x-tooltip text="List View" dir="bottom">
-                            <x-icon-button x-on:click="is_map_view = !is_map_view" x-ref="content"
-                                x-bind:disabled="!is_map_view" class="flex gap-2 m-1 border-transparent">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-list-collapse">
-                                    <path d="m3 10 2.5-2.5L3 5" />
-                                    <path d="m3 19 2.5-2.5L3 14" />
-                                    <path d="M10 6h11" />
-                                    <path d="M10 12h11" />
-                                    <path d="M10 18h11" />
-                                </svg>
-                                <p class="text-xs font-semibold sm:hidden">List View</p>
-                            </x-icon-button>
-                        </x-tooltip>
-                        <x-tooltip text="Map View" dir="bottom">
-                            <x-icon-button x-on:click="is_map_view = !is_map_view" x-ref="content"
-                                x-bind:disabled="is_map_view" class="flex gap-2 m-1 border-transparent">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-map">
-                                    <path
-                                        d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
-                                    <path d="M15 5.764v15" />
-                                    <path d="M9 3.236v15" />
-                                </svg>
-                                <p class="text-xs font-semibold sm:hidden">Map View</p>
-                            </x-icon-button>
-                        </x-tooltip>
-                    </div>
+    {{-- Reservation Details --}}
+    <section class="p-3 space-y-5 border rounded-lg sm:p-5">
+        <hgroup>
+            <h3 class="font-semibold">Reservation Details</h3>
+            <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
+        </hgroup>
+        
+        <div class="grid items-start gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="grid space-y-1">
+                <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
+                <x-form.input-date
+                    wire:model.live="date_in"
+                    x-model="date_in"
+                    min="{{ $min_date }}"
+                    id="date_in" />
+                <x-form.input-error field="date_in" />
+            </div>
+            <div class="grid space-y-1">
+                <x-form.input-label for="date_out">Check-out Date</x-form.input-label>
+                <x-form.input-date
+                    wire:model.live="date_out"
+                    x-model="date_out"
+                    min="{{ $date_in }}"
+                    id="date_out" />
+                <x-form.input-error field="date_out" />
+            </div>
+            <div class="grid space-y-1">
+                <x-form.input-label for="adult_count">Number of Adults</x-form.input-label>
+                <x-form.input-number wire:model.live="adult_count" x-model="adult_count"
+                    id="adult_count" min="1" />
+                <x-form.input-error field="adult_count" />
+            </div>
+            <div class="grid space-y-1">
+                <x-form.input-label for="children_count">Number of Children</x-form.input-label>
+                <x-form.input-number x-model="children_count" id="children_count"
+                    wire:model.live="children_count" />
+                <x-form.input-error field="children_count" />
+            </div>
+        </div>
+    </section>
+
+    {{-- Guest Details --}}
+    <section class="p-3 space-y-5 border rounded-lg sm:p-5">
+        <hgroup>
+            <h3 class="font-semibold">Guest Details</h3>
+            <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
+        </hgroup>
+
+        {{-- First & Last name --}}
+        <div class="grid items-start gap-3 sm:grid-cols-2">
+            <div class="space-y-1">
+                <x-form.input-text class="capitalize" wire:model.live='first_name' x-model="first_name"
+                    id="first_name" label="First Name" />
+                <x-form.input-error field="first_name" />
+            </div>
+            <div class="space-y-1">
+                <x-form.input-text class="capitalize" wire:model.live='last_name' x-model="last_name"
+                    id="last_name" label="Last Name" />
+                <x-form.input-error field="last_name" />
+            </div>
+            <div class="space-y-1">
+                <x-form.input-text wire:model.live='phone' id="phone" label="Contact Number" />
+                <x-form.input-error field="phone" />
+            </div>
+            <div class="space-y-1">
+                <x-form.input-text wire:model.live='email' id="email" label="Email" />
+                <x-form.input-error field="email" />
+            </div>
+            <div class="sm:col-span-2">
+                <x-form.input-text wire:model.live='address' id="address" label="Address" />
+                <x-form.input-error field="address" />
+            </div>
+        </div>
+    </section>
+
+    {{-- Room & Additional Details --}}
+    <section class="p-3 space-y-5 border rounded-lg sm:p-5">
+        <div>
+            {{-- header --}}
+            <div class="flex flex-col items-start justify-between gap-5 sm:flex-row">
+                <hgroup>
+                    <h3 class="font-semibold">Rooms</h3>
+                    <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
+                </hgroup>
+
+                <div class="flex border divide-x rounded-lg">
+                    <x-tooltip text="List View" dir="bottom">
+                        <x-icon-button x-on:click="is_map_view = !is_map_view" x-ref="content"
+                            x-bind:disabled="!is_map_view" class="flex gap-2 m-1 border-transparent">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-list-collapse">
+                                <path d="m3 10 2.5-2.5L3 5" />
+                                <path d="m3 19 2.5-2.5L3 14" />
+                                <path d="M10 6h11" />
+                                <path d="M10 12h11" />
+                                <path d="M10 18h11" />
+                            </svg>
+                            <p class="text-xs font-semibold sm:hidden">List View</p>
+                        </x-icon-button>
+                    </x-tooltip>
+                    <x-tooltip text="Map View" dir="bottom">
+                        <x-icon-button x-on:click="is_map_view = !is_map_view" x-ref="content"
+                            x-bind:disabled="is_map_view" class="flex gap-2 m-1 border-transparent">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-map">
+                                <path
+                                    d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
+                                <path d="M15 5.764v15" />
+                                <path d="M9 3.236v15" />
+                            </svg>
+                            <p class="text-xs font-semibold sm:hidden">Map View</p>
+                        </x-icon-button>
+                    </x-tooltip>
                 </div>
             </div>
-            
-            <x-form.input-error field="selected_rooms" />
-    
-            {{-- 1. List View --}}
-            <template x-if="!is_map_view">
-                <div class="space-y-1">
-                    @forelse ($rooms as $room)
-                        <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 border rounded-lg">
-                            <div class="flex items-start w-full gap-5">
-                                <div class="w-full max-w-[150px]">
-                                    <x-img-lg src="{{ $room->image_1_path }}" />
-                                </div>
-                                <div>
-                                    <h3 class="text-sm font-semibold">{{ $room->name }}</h3>
-                                    <p class="max-w-xs text-xs">{{ $room->description }}</p>
-                                </div>
+        </div>
+        
+        <x-form.input-error field="selected_rooms" />
+
+        {{-- 1. List View --}}
+        <template x-if="!is_map_view">
+            <div class="space-y-1">
+                @forelse ($rooms as $room)
+                    <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 border rounded-lg">
+                        <div class="flex items-start w-full gap-5">
+                            <div class="w-full max-w-[150px]">
+                                <x-img-lg src="{{ $room->image_1_path }}" />
                             </div>
-    
-                            <x-secondary-button class="flex-shrink-0 text-xs" x-on:click="$dispatch('open-modal', 'show-typed-rooms')" wire:click="viewRooms({{ $room->id }})">
-                                View Rooms
-                            </x-secondary-button>
+                            <div>
+                                <h3 class="text-sm font-semibold">{{ $room->name }}</h3>
+                                <p class="max-w-xs text-xs">{{ $room->description }}</p>
+                            </div>
                         </div>
-                    @empty
-                        <div class="border rounded-lg">
-                            <x-table-no-data.rooms />
+
+                        <x-secondary-button class="flex-shrink-0 text-xs" x-on:click="$dispatch('open-modal', 'show-typed-rooms')" wire:click="viewRooms({{ $room->id }})">
+                            View Rooms
+                        </x-secondary-button>
+                    </div>
+                @empty
+                    <div class="border rounded-lg">
+                        <x-table-no-data.rooms />
+                    </div>
+                @endforelse
+            </div>
+        </template>
+
+        {{-- 2. Map View --}}
+        <template x-if="is_map_view">
+            <div class="grid grid-cols-3 gap-1 p-3 rounded-lg place-items-start lg:grid-cols-5 min-h-80 bg-gradient-to-tr from-teal-500/20 to-teal-600/20">
+                @forelse ($buildings as $building)
+                    <button type="button" key="{{ $building->id }}" class="w-full" x-on:click.prevent="$dispatch('open-modal', 'show-building-rooms')"
+                        wire:click="selectBuilding({{ $building->id }})">
+                        <div
+                            class="relative grid w-full font-semibold bg-white border rounded-lg aspect-square place-items-center">
+                            <div class="text-center">
+                                <p>{{ $building->name }}</p>
+                                <p class="text-xs text-zinc-800/50">{{ $building->floor_count }}
+                                    @if ($building->floor_count > 1)
+                                        Floors
+                                    @else
+                                        Floor
+                                    @endif
+                                </p>
+                            </div>
                         </div>
-                    @endforelse
+                    </button>
+                @empty
+                    
+                @endforelse
+            </div>
+        </template>
+
+        {{-- View Selected Rooms --}}
+        <x-secondary-button x-on:click="$dispatch('open-modal', 'show-selected-rooms')">View Selected Rooms</x-secondary-button>
+        <p class="max-w-xs text-xs">If you wish to <strong class="font-semibold text-red-500">remove</strong> or view all the selected rooms, click the button above.</p>
+    </section>
+
+    {{-- Additional Details (Optional) --}}
+    <section class="p-3 space-y-5 border rounded-lg sm:p-5">
+        <hgroup>
+            <h3 class="font-semibold">Amenities</h3>
+            <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
+        </hgroup>   
+
+        <div class="grid gap-1 sm:grid-cols-2 lg:grid-cols-4">
+            @forelse ($addons as $addon)
+                @php
+                    $checked = false;
+
+                    if ($selected_amenities->contains('id', $addon->id)) {
+                        $checked = true;
+                    }
+                @endphp
+                <div key="{{ $addon->id }}">
+                    <x-form.checkbox-toggle :checked="$checked" id="amenity{{ $addon->id }}" name="amenity" wire:click="toggleAmenity({{ $addon->id }})">
+                        <div class="px-3 py-2 select-none">
+                            <div class="w-full font-semibold capitalize text-md">
+                                {{ $addon->name }}
+                            </div>
+                            <div class="w-full text-xs">Standard Fee: &#8369;{{ $addon->price }}
+                            </div>
+                        </div>
+                    </x-form.checkbox-toggle>
                 </div>
-            </template>
-    
-            {{-- 2. Map View --}}
-            <template x-if="is_map_view">
-                <div class="grid grid-cols-3 gap-1 p-3 rounded-lg place-items-start lg:grid-cols-5 min-h-80 bg-gradient-to-tr from-teal-500/20 to-teal-600/20">
-                    @forelse ($buildings as $building)
-                        <button type="button" key="{{ $building->id }}" class="w-full" x-on:click.prevent="$dispatch('open-modal', 'show-building-rooms')"
-                            wire:click="selectBuilding({{ $building->id }})">
-                            <div
-                                class="relative grid w-full font-semibold bg-white border rounded-lg aspect-square place-items-center">
-                                <div class="text-center">
-                                    <p>{{ $building->name }}</p>
-                                    <p class="text-xs text-zinc-800/50">{{ $building->floor_count }}
-                                        @if ($building->floor_count > 1)
-                                            Floors
+            @empty
+                <div
+                    class="py-5 text-sm font-semibold text-center border rounded-lg sm:col-span-2 lg:col-span-4 text-zinc-800/50">
+                    No add ons yet...</div>
+            @endforelse
+        </div>
+
+        <div class="p-3 bg-white border rounded-md">
+            @if (!empty($available_amenities))
+                <div x-data="{ 
+                        additonal_amenity: $wire.entangle('additional_amenity_id'),
+                        additional_amenity_quantity: $wire.entangle('additional_amenity_quantity'),
+                    }" class="sm:space-y-3">
+                    <div class="hidden gap-1 text-sm sm:grid-cols-3 sm:grid">
+                        <strong>Amenity</strong>
+                        <strong>Quantity &amp; Price</strong>
+                        <strong>Total</strong>
+                    </div>
+        
+                    <div class="space-y-1">
+                        {{-- Selected Additional Amenities --}}
+                        <div class="grid gap-1 sm:grid-cols-3">
+                            @if ($additional_amenities->count() > 0)
+                                @foreach ($additional_amenities as $amenity)
+                                    @if ($amenity->is_addons == 0)
+                                        @php
+                                            $quantity = 0;
+
+                                            foreach ($additional_amenity_quantities as $selected_amenity) {
+                                                if ($selected_amenity['amenity_id'] == $amenity->id) {
+                                                    $quantity = $selected_amenity['quantity'];
+                                                }
+                                            }
+                                        @endphp
+                                        
+                                        <x-form.select disabled>
+                                            <option>{{ $amenity->name }}</option>
+                                        </x-form.select>
+
+                                        <div class="grid gap-1 sm:grid-cols-2">
+                                            <div>
+                                                <input disabled class="text-xs py-2 sm:py-0 disabled:opacity-50 w-full h-full px-2.5 border outline-0 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" value="{{ $quantity }}" />
+                                            </div>
+                                            <p class="grid px-2 text-xs border rounded-lg place-items-center">
+                                                <span>
+                                                    <x-currency /> {{ number_format($amenity->price, 2) }}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        
+                                        <div class="flex gap-1">
+                                            <p class="grid w-full px-2 py-2 text-xs font-semibold text-blue-500 border border-blue-500 rounded-lg sm:py-0 place-items-center">
+                                                <span>
+                                                    <x-currency /> {{ number_format($amenity->price * $quantity, 2) }}
+                                                </span>
+                                            </p>
+                                            <x-tooltip text="Remove Amenity" dir="left">
+                                                <x-secondary-button x-ref="content" type="button" class="p-0 text-xs" wire:click="removeAmenity({{ $amenity->id }})">
+                                                    <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                                </x-secondary-button>
+                                            </x-tooltip>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </div>
+                        
+                        {{-- Add Additional Amenity --}}
+                        @if ($additional_amenities->count() != $available_amenities->count())
+                            <div class="grid-cols-3 gap-1 space-y-1 sm:space-y-0 sm:grid">
+                                <p class="text-xs font-semibold sm:hidden">Amenity</p>
+                                <x-form.select
+                                    x-model="additonal_amenity"
+                                    wire:model.live="additional_amenity_id"
+                                    x-on:change="$wire.selectAmenity(additonal_amenity)"
+                                    >
+                                    <option value="">Select an Amenity</option>
+                                    @foreach ($available_amenities as $amenity)
+                                        @if (!$additional_amenities->contains('id', $amenity->id) && !$selected_amenities->contains('id', $amenity->id))
+                                            <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </x-form.select>
+        
+                                <div class="grid grid-cols-2 gap-1">
+                                    <p class="text-xs font-semibold sm:hidden">Quantity</p>
+                                    <p class="text-xs font-semibold sm:hidden">Price</p>
+        
+                                    <div>
+                                        <input
+                                            x-on:change="$wire.getTotal()"
+                                            x-model="additional_amenity_quantity"
+                                            wire:model.live="additional_amenity_quantity"
+                                            type="number"
+                                            min="1"
+                                            @if (!empty($additional_amenity_id))
+                                                max="{{ $additional_amenity->quantity }}"
+                                            @endif
+                                            value="1"
+                                            class="text-xs w-full h-full px-2.5 py-2 sm:py-0 border outline-0 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" />
+                                    </div>
+                                    <p class="grid px-2 py-2 text-xs border border-gray-300 rounded-lg sm:py-0 place-items-center">
+                                        @if (!empty($additional_amenity_id))
+                                            <span>
+                                                <x-currency /> {{ number_format($additional_amenity->price, 2) }}
+                                            </span>
                                         @else
-                                            Floor
+                                            <span>
+                                                <x-currency /> 0.00
+                                            </span>
                                         @endif
                                     </p>
                                 </div>
-                            </div>
-                        </button>
-                    @empty
-                        
-                    @endforelse
-                </div>
-            </template>
-    
-            {{-- View Selected Rooms --}}
-            <x-secondary-button x-on:click="$dispatch('open-modal', 'show-selected-rooms')">View Selected Rooms</x-secondary-button>
-            <p class="max-w-xs text-xs">If you wish to <strong class="font-semibold text-red-500">remove</strong> or view all the selected rooms, click the button above.</p>
-        </section>
-
-        {{-- Additional Details (Optional) --}}
-        <section class="p-3 space-y-5 border rounded-lg sm:p-5">
-            <hgroup>
-                <h3 class="font-semibold">Amenities</h3>
-                <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
-            </hgroup>   
-
-            <div class="grid gap-1 sm:grid-cols-2 lg:grid-cols-4">
-                @forelse ($addons as $addon)
-                    @php
-                        $checked = false;
-
-                        if ($selected_amenities->contains('id', $addon->id)) {
-                            $checked = true;
-                        }
-                    @endphp
-                    <div key="{{ $addon->id }}">
-                        <x-form.checkbox-toggle :checked="$checked" id="amenity{{ $addon->id }}" name="amenity" wire:click="toggleAmenity({{ $addon->id }})">
-                            <div class="px-3 py-2 select-none">
-                                <div class="w-full font-semibold capitalize text-md">
-                                    {{ $addon->name }}
-                                </div>
-                                <div class="w-full text-xs">Standard Fee: &#8369;{{ $addon->price }}
-                                </div>
-                            </div>
-                        </x-form.checkbox-toggle>
-                    </div>
-                @empty
-                    <div
-                        class="py-5 text-sm font-semibold text-center border rounded-lg sm:col-span-2 lg:col-span-4 text-zinc-800/50">
-                        No add ons yet...</div>
-                @endforelse
-            </div>
-
-            <div class="p-3 bg-white border rounded-md">
-                @if (!empty($available_amenities))
-                    <div x-data="{ 
-                            additonal_amenity: $wire.entangle('additional_amenity_id'),
-                            additional_amenity_quantity: $wire.entangle('additional_amenity_quantity'),
-                        }" class="sm:space-y-3">
-                        <div class="hidden gap-1 text-sm sm:grid-cols-3 sm:grid">
-                            <strong>Amenity</strong>
-                            <strong>Quantity &amp; Price</strong>
-                            <strong>Total</strong>
-                        </div>
-            
-                        <div class="space-y-1">
-                            {{-- Selected Additional Amenities --}}
-                            <div class="grid gap-1 sm:grid-cols-3">
-                                @if ($additional_amenities->count() > 0)
-                                    @foreach ($additional_amenities as $amenity)
-                                        @if ($amenity->is_addons == 0)
-                                            @php
-                                                $quantity = 0;
-
-                                                foreach ($additional_amenity_quantities as $selected_amenity) {
-                                                    if ($selected_amenity['amenity_id'] == $amenity->id) {
-                                                        $quantity = $selected_amenity['quantity'];
-                                                    }
-                                                }
-                                            @endphp
-                                            
-                                            <x-form.select disabled>
-                                                <option>{{ $amenity->name }}</option>
-                                            </x-form.select>
-
-                                            <div class="grid gap-1 sm:grid-cols-2">
-                                                <div>
-                                                    <input disabled class="text-xs py-2 sm:py-0 disabled:opacity-50 w-full h-full px-2.5 border outline-0 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" value="{{ $quantity }}" />
-                                                </div>
-                                                <p class="grid px-2 text-xs border rounded-lg place-items-center">
-                                                    <span>
-                                                        <x-currency /> {{ number_format($amenity->price, 2) }}
-                                                    </span>
-                                                </p>
-                                            </div>
-                                            
-                                            <div class="flex gap-1">
-                                                <p class="grid w-full px-2 py-2 text-xs font-semibold text-blue-500 border border-blue-500 rounded-lg sm:py-0 place-items-center">
-                                                    <span>
-                                                        <x-currency /> {{ number_format($amenity->price * $quantity, 2) }}
-                                                    </span>
-                                                </p>
-                                                <x-tooltip text="Remove Amenity" dir="left">
-                                                    <x-secondary-button x-ref="content" type="button" class="p-0 text-xs" wire:click="removeAmenity({{ $amenity->id }})">
-                                                        <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                                    </x-secondary-button>
-                                                </x-tooltip>
-                                            </div>
+        
+                                <p class="text-xs font-semibold sm:hidden">Total</p>
+        
+                                <div class="flex flex-col gap-1 sm:flex-row">
+                                    <p class="grid w-full px-2 py-2 text-xs font-semibold text-blue-500 border border-blue-500 rounded-lg sm:py-0 place-items-center">
+                                        @if (!empty($additional_amenity_id))
+                                            <span>
+                                                <x-currency /> {{ number_format($additional_amenity_total, 2) }}
+                                            </span>
+                                        @else
+                                            <span>
+                                                <x-currency /> 0.00
+                                            </span>
                                         @endif
-                                    @endforeach
-                                @endif
-                            </div>
-                            
-                            {{-- Add Additional Amenity --}}
-                            @if ($additional_amenities->count() != $available_amenities->count())
-                                <div class="grid-cols-3 gap-1 space-y-1 sm:space-y-0 sm:grid">
-                                    <p class="text-xs font-semibold sm:hidden">Amenity</p>
-                                    <x-form.select
-                                        x-model="additonal_amenity"
-                                        wire:model.live="additional_amenity_id"
-                                        x-on:change="$wire.selectAmenity(additonal_amenity)"
-                                        >
-                                        <option value="">Select an Amenity</option>
-                                        @foreach ($available_amenities as $amenity)
-                                            @if (!$additional_amenities->contains('id', $amenity->id) && !$selected_amenities->contains('id', $amenity->id))
-                                                <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
-                                            @endif
-                                        @endforeach
-                                    </x-form.select>
-            
-                                    <div class="grid grid-cols-2 gap-1">
-                                        <p class="text-xs font-semibold sm:hidden">Quantity</p>
-                                        <p class="text-xs font-semibold sm:hidden">Price</p>
-            
-                                        <div>
-                                            <input
-                                                x-on:change="$wire.getTotal()"
-                                                x-model="additional_amenity_quantity"
-                                                wire:model.live="additional_amenity_quantity"
-                                                type="number"
-                                                min="1"
-                                                @if (!empty($additional_amenity_id))
-                                                    max="{{ $additional_amenity->quantity }}"
-                                                @endif
-                                                value="1"
-                                                class="text-xs w-full h-full px-2.5 py-2 sm:py-0 border outline-0 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" />
-                                        </div>
-                                        <p class="grid px-2 py-2 text-xs border border-gray-300 rounded-lg sm:py-0 place-items-center">
-                                            @if (!empty($additional_amenity_id))
-                                                <span>
-                                                    <x-currency /> {{ number_format($additional_amenity->price, 2) }}
-                                                </span>
-                                            @else
-                                                <span>
-                                                    <x-currency /> 0.00
-                                                </span>
-                                            @endif
-                                        </p>
+                                    </p>
+                                    <x-tooltip text="Add Amenity" dir="left">
+                                        <x-primary-button x-ref="content" type="button" class="flex items-center justify-center w-full gap-3 p-0 text-sm sm:text-xs sm:w-min" wire:click="addAmenity()">
+                                            <svg class="hidden mx-auto sm:block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                                            <p class="sm:hidden">Add Amenity</p>
+                                        </x-primary-button>
+                                    </x-tooltip>
+                                </div>
+        
+                                {{-- Errors --}}
+                                <div class="grid-cols-3 col-span-3 gap-1 space-y-1 sm:grid sm:space-y-0">
+                                    <div>
+                                        <x-form.input-error field="additional_amenity" />
                                     </div>
-            
-                                    <p class="text-xs font-semibold sm:hidden">Total</p>
-            
-                                    <div class="flex flex-col gap-1 sm:flex-row">
-                                        <p class="grid w-full px-2 py-2 text-xs font-semibold text-blue-500 border border-blue-500 rounded-lg sm:py-0 place-items-center">
-                                            @if (!empty($additional_amenity_id))
-                                                <span>
-                                                    <x-currency /> {{ number_format($additional_amenity_total, 2) }}
-                                                </span>
-                                            @else
-                                                <span>
-                                                    <x-currency /> 0.00
-                                                </span>
-                                            @endif
-                                        </p>
-                                        <x-tooltip text="Add Amenity" dir="left">
-                                            <x-primary-button x-ref="content" type="button" class="flex items-center justify-center w-full gap-3 p-0 text-sm sm:text-xs sm:w-min" wire:click="addAmenity()">
-                                                <svg class="hidden mx-auto sm:block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
-                                                <p class="sm:hidden">Add Amenity</p>
-                                            </x-primary-button>
-                                        </x-tooltip>
-                                    </div>
-            
-                                    {{-- Errors --}}
-                                    <div class="grid-cols-3 col-span-3 gap-1 space-y-1 sm:grid sm:space-y-0">
-                                        <div>
-                                            <x-form.input-error field="additional_amenity" />
-                                        </div>
-                                        <div>
-                                            <x-form.input-error field="additional_amenity_quantity" />
-                                        </div>
+                                    <div>
+                                        <x-form.input-error field="additional_amenity_quantity" />
                                     </div>
                                 </div>
-                            @else
-                                <p class="text-xs font-semibold">
-                                    Selected all available amenities
-                                </p>
-                            @endif
-                        </div>
+                            </div>
+                        @else
+                            <p class="text-xs font-semibold">
+                                Selected all available amenities
+                            </p>
+                        @endif
                     </div>
-                @else
-                    <div class="pt-2 font-semibold text-center">
-                        No amenities yet.
-                    </div>
-                @endif
-            </div>
-        </section>
-
-        {{-- Save Changes button --}}
-        <x-primary-button type="button" wire:click='update()'>Save Changes</x-primary-button>
-
-        @if ($reservation->status == App\Models\Reservation::STATUS_PENDING || $reservation->status == App\Models\Reservation::STATUS_CONFIRMED)
-            {{-- Cancel reservation --}}
-            <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
-                <hgroup>
-                    <h3 class="font-semibold text-red-500">Cancel Reservation</h3>
-                    <p class="max-w-sm text-xs">If you need to cancel the reservation, click the button below.</p>
-                </hgroup>
-
-                <div>
-                    <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'show-cancel-reservation')">Cancel Reservation</x-danger-button>
                 </div>
-            </section>
-        @endif
+            @else
+                <div class="pt-2 font-semibold text-center">
+                    No amenities yet.
+                </div>
+            @endif
+        </div>
     </section>
 
+    {{-- Save Changes button --}}
+    <x-primary-button type="button" wire:click='update()'>Save Changes</x-primary-button>
+
+    @if ($reservation->status == App\Models\Reservation::STATUS_PENDING || $reservation->status == App\Models\Reservation::STATUS_CONFIRMED)
+        {{-- Cancel reservation --}}
+        <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
+            <hgroup>
+                <h3 class="font-semibold text-red-500">Cancel Reservation</h3>
+                <p class="max-w-sm text-xs">If you need to cancel the reservation, click the button below.</p>
+            </hgroup>
+
+            <div>
+                <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'show-cancel-reservation')">Cancel Reservation</x-danger-button>
+            </div>
+        </section>
+    @endif
+</section>
+{{-- <div class="relative flex flex-col gap-5 lg:flex-row">
     <section class="sticky self-start w-full overflow-auto border rounded-lg top-5">
         @include('components.app.reservation.summary', [
             'reservation' => $reservation,
@@ -427,7 +441,7 @@
             'selected_rooms' => $selected_rooms,
         ])
     </section>
-</div>
+</div> --}}
 
 {{-- Modal for showing building's rooms --}}
 <x-modal.full name="show-building-rooms" maxWidth="lg">

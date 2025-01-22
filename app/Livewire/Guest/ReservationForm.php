@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Guest;
 
+use App\Enums\RoomStatus;
 use App\Http\Controllers\AddressController;
 use App\Mail\reservation\Received;
 use App\Models\Amenity;
@@ -11,6 +12,7 @@ use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -390,6 +392,12 @@ class ReservationForm extends Component
                         'selected_rooms' => $this->rules()['selected_rooms'],
                     ]);
 
+                    if ($this->capacity < $this->adult_count + $this->children_count) {
+                        $this->toast('Oops!', 'warning', 'Selected rooms cannot accommodate the number of guests.');
+                        $this->addError('selected_rooms', 'Selected rooms cannot accommodate the number of guests.');
+                        return;
+                    }
+
                     // Fetch regions and districts from from https://psgc.cloud
                     if (empty($this->regions)) {
                         try {
@@ -431,95 +439,28 @@ class ReservationForm extends Component
     }
 
     public function store() {
-        $this->validate([
+        $validated = $this->validate([
             'date_in' => $this->rules()['date_in'],
             'date_out' => $this->rules()['date_out'],
             'senior_count' => $this->rules()['senior_count'],
             'pwd_count' => $this->rules()['pwd_count'],
             'adult_count' => $this->rules()['adult_count'],
             'children_count' => $this->rules()['children_count'],
-            'selected_rooms' => $this->rules()['selected_rooms'],
             'first_name' => $this->rules()['first_name'],
             'last_name' => $this->rules()['last_name'],
             'email' => $this->rules()['email'],
             'phone' => $this->rules()['phone'],
             'address' => $this->rules()['address'],
-            'proof_image_path' => $this->rules()['proof_image_path']
+            'proof_image_path' => $this->rules()['proof_image_path'],
         ]);
 
-        $expires_at = Carbon::now()->addHour();
-        $status = Reservation::STATUS_AWAITING_PAYMENT;
+        $validated['selected_rooms'] = $this->selected_rooms;
+        $validated['selected_amenities'] = $this->selected_amenities;
+        $validated['cars'] = $this->cars;
+        $validated['note'] = null;
 
-        if (!empty($this->proof_image_path)) {
-            $this->proof_image_path = $this->proof_image_path->store('payments', 'public');
-            $expires_at = null;
-            $status = Reservation::STATUS_PENDING;
-        }
-
-        // Create Reservation
-        $reservation = Reservation::create([
-            'date_in' => $this->date_in,
-            'date_out' => $this->date_out,
-            'senior_count' => $this->senior_count,
-            'pwd_count' => $this->pwd_count,
-            'adult_count' => $this->adult_count,
-            'children_count' => $this->children_count,
-            'status' => $status,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'phone' => $this->phone,
-            'address' => trim(implode($this->address), ', '),
-            'email' => $this->email,
-            'expires_at' => $expires_at,
-            'proof_image_path' => $this->proof_image_path,
-        ]);
-
-        $this->reservation_rid = $reservation->rid;
-
-        if (!empty($this->selected_rooms)) {
-            // Store rooms
-            // ✅: Update the status of the selected rooms to 'reserved'
-            foreach ($this->selected_rooms as $room) {
-                $room->reservations()->attach($reservation->id);
-                $room->status = Room::STATUS_RESERVED;
-                $room->save();
-            }
-        }
-
-        if (!empty($this->selected_amenities)) {
-            // Store amenities
-            foreach ($this->selected_amenities as $amenity) {
-                ReservationAmenity::create([
-                    'reservation_id' => $reservation->id,
-                    'amenity_id' => $amenity->id,
-                    'quantity' => 0,
-                ]);
-            }
-        }
-
-        // Car Park Reservations
-        if (!empty($this->cars)) {
-            foreach ($this->cars as $cars) {
-                CarReservation::create([
-                    'reservation_id' => $reservation->id,
-                    'plate_number' => $cars['plate_number'],
-                    'make' => $cars['make'],
-                    'model' => $cars['model'],
-                    'color' => $cars['color'],
-                ]);
-            }
-        }
-
-        $invoice = Invoice::create([
-            'reservation_id' => $reservation->id,
-            'total_amount' => $this->net_total,
-            'balance' => $this->net_total,
-            'status' => Invoice::STATUS_PENDING
-        ]);
-
-        // Send email to the guest about their reservation
-        // NOTE! Don't forget to run 'php artisan queue:work' to process the queued email
-        // Mail::to($this->email)->queue(new Received($reservation));
+        $service = new ReservationService();
+        $reservation = $service->create($validated);
 
         // Dispatch event
         $this->dispatch('reservation-created');
@@ -536,7 +477,7 @@ class ReservationForm extends Component
 
             $available_rooms = Room::whereNotIn('id', $reserved_rooms)
                                         ->where('room_type_id', $this->room_type_id)
-                                        ->where('status', Room::STATUS_AVAILABLE)
+                                        ->where('status', RoomStatus::AVAILABLE)
                                         ->paginate(10);
         }
 

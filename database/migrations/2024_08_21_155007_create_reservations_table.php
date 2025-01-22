@@ -28,7 +28,6 @@ return new class extends Migration
             $table->integer('adult_count');
             $table->integer('children_count');
             $table->smallInteger('status');
-            $table->string('proof_image_path')->nullable();
             $table->text('note')->nullable();
 
             // Optional parameter for reservation records

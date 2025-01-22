@@ -10,6 +10,7 @@ use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Validate;
@@ -25,6 +26,8 @@ class EditReservation extends Component
     #[Validate] public $date_out;
     #[Validate] public $adult_count = 1;
     #[Validate] public $children_count = 0;
+    #[Validate] public $senior_count = 0;
+    #[Validate] public $pwd_count = 0;
     #[Validate] public $selected_rooms;
     #[Validate] public $selected_amenities;
     // Guest Details
@@ -346,8 +349,8 @@ class EditReservation extends Component
 
     public function update() {
         
-        $this->validate([
-            // 'date_in' => 'required|date|after_or_equal:date_in',
+        $reservation_data = $this->validate([
+            'date_in' => 'required|date|after_or_equal:today',
             'date_out' => Reservation::rules()['date_out'],
             'adult_count' => Reservation::rules()['adult_count'],
             'children_count' => Reservation::rules()['children_count'],
@@ -359,54 +362,54 @@ class EditReservation extends Component
             'address' => Reservation::rules()['address'],
             'note' => Reservation::rules()['note'],
         ]);
-
         
-        
-        if (!empty($this->selected_rooms)) {
-            // Removes old and non existing amenity
-            foreach ($this->reservation->rooms as $room) {
-                if (!$this->selected_rooms->contains('id', $room->id)) {
-                    $this->reservation->rooms()->detach($room->id);
-                }
-            }
-            foreach ($this->selected_rooms as $room) {
-                if (!$this->reservation->rooms->contains('id', $room->id)) {
-                    $this->reservation->rooms()->attach($room->id);
-                }
-            }
-        }
+        $service = new ReservationService();
+        $service->update($this->reservation, $reservation_data);
+        // if (!empty($this->selected_rooms)) {
+        //     // Removes old and non existing amenity
+        //     foreach ($this->reservation->rooms as $room) {
+        //         if (!$this->selected_rooms->contains('id', $room->id)) {
+        //             $this->reservation->rooms()->detach($room->id);
+        //         }
+        //     }
+        //     foreach ($this->selected_rooms as $room) {
+        //         if (!$this->reservation->rooms->contains('id', $room->id)) {
+        //             $this->reservation->rooms()->attach($room->id);
+        //         }
+        //     }
+        // }
 
-        if (!empty($this->selected_amenities)) {
-            // Removes old and non existing amenity
-            foreach ($this->reservation->amenities as $amenity) {
-                if (!$this->selected_amenities->contains('id', $amenity->id)) {
-                    $this->reservation->amenities()->detach($amenity->id);
-                }
-            }
-            foreach ($this->selected_amenities as $amenity) {
-                // If the newly selected amenities exists in the already selected amenities
-                // - updates the record
-                $quantity = 0;    
+        // if (!empty($this->selected_amenities)) {
+        //     // Removes old and non existing amenity
+        //     foreach ($this->reservation->amenities as $amenity) {
+        //         if (!$this->selected_amenities->contains('id', $amenity->id)) {
+        //             $this->reservation->amenities()->detach($amenity->id);
+        //         }
+        //     }
+        //     foreach ($this->selected_amenities as $amenity) {
+        //         // If the newly selected amenities exists in the already selected amenities
+        //         // - updates the record
+        //         $quantity = 0;    
                 
-                foreach ($this->additional_amenity_quantities as $selected_amenity) {
-                    if ($selected_amenity['amenity_id'] == $amenity->id) {
-                        $quantity = $selected_amenity['quantity'];
-                        break;
-                    }
-                }
+        //         foreach ($this->additional_amenity_quantities as $selected_amenity) {
+        //             if ($selected_amenity['amenity_id'] == $amenity->id) {
+        //                 $quantity = $selected_amenity['quantity'];
+        //                 break;
+        //             }
+        //         }
 
-                if ($this->reservation->amenities->contains('id', $amenity->id)) {
-                    $this->reservation->amenities()->updateExistingPivot($amenity->id, ['quantity' => $quantity]);
-                } else {
-                    $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
-                }
-            }
-        }
+        //         if ($this->reservation->amenities->contains('id', $amenity->id)) {
+        //             $this->reservation->amenities()->updateExistingPivot($amenity->id, ['quantity' => $quantity]);
+        //         } else {
+        //             $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
+        //         }
+        //     }
+        // }
 
-        $invoice = Invoice::whereIid($this->reservation->invoice->iid)->first();
-        // dd($invoice);
-        $invoice->balance = $this->net_total - $invoice->downpayment;
-        $invoice->save();
+        // $invoice = Invoice::whereIid($this->reservation->invoice->iid)->first();
+        // // dd($invoice);
+        // $invoice->balance = $this->net_total - $invoice->downpayment;
+        // $invoice->save();
 
         $this->toast('Success!', 'success', 'Yay, reservation updated!');
     }

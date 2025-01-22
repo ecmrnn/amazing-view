@@ -14,11 +14,6 @@ class Room extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public const STATUS_AVAILABLE = 0;
-    public const STATUS_UNAVAILABLE = 1;
-    public const STATUS_OCCUPIED = 2;
-    public const STATUS_RESERVED = 3;
-
     protected $guarded = [];
 
     public static function rules(array $excepts = []) {

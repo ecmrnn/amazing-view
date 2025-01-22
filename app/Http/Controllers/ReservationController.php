@@ -39,10 +39,11 @@ class ReservationController extends Controller
     public function show(string $reservation)
     {
         $reservation = Reservation::where('rid', $reservation)->first();
+
         $reservation->date_in = Carbon::parse($reservation->date_in)->format('F j, Y');
         $reservation->date_out = Carbon::parse($reservation->date_out)->format('F j, Y');
         $breakdown = Reservation::computeBreakdown($reservation);
-        $downpayment = $reservation->invoice->payments->first()->proof_image_path;
+        $downpayment = $reservation->invoice->payments->first() == null ? null : $reservation->invoice->payments->first()->proof_image_path;
         
         $night_count = Carbon::parse($reservation->date_in)->diffInDays($reservation->date_out);
         // If night count is 0, set night_coutn to 1

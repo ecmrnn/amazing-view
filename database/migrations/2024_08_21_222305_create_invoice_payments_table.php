@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PaymentPurpose;
 use App\Models\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,11 +16,12 @@ return new class extends Migration
         Schema::create('invoice_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Invoice::class)->constrained();
-            $table->string('orid')->nullable(); /* newly added */
-            $table->string('transaction_id')->nullable(); /* newly added */
-            $table->decimal('amount');
-            $table->string('payment_method'); /* newly added */
+            $table->string('orid')->nullable();
+            $table->string('transaction_id')->nullable();
+            $table->decimal('amount')->nullable();
+            $table->string('payment_method')->nullable();
             $table->string('proof_image_path')->nullable();
+            $table->integer('purpose')->nullable();
             $table->date('payment_date');
             $table->timestamps();
         });

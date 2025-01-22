@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\App;
 
+use App\Enums\RoomStatus;
+use App\Enums\ReservationStatus;
 use App\Http\Controllers\Controller;
 use App\Livewire\tables\ReservationTable;
 use App\Models\Invoice;
@@ -38,10 +40,10 @@ class DashboardController extends Controller
 
         // Dashboard content for frontdesks
         if (Auth::user()->role == User::ROLE_FRONTDESK) {
-            $guest_in = Reservation::where('status', Reservation::STATUS_CHECKED_IN)->count();
-            $available_rooms = Room::where('status', Room::STATUS_AVAILABLE)
+            $guest_in = Reservation::where('status', ReservationStatus::CHECKED_IN)->count();
+            $available_rooms = Room::where('status', RoomStatus::AVAILABLE)
                 ->count();
-            $pending_reservations = Reservation::where('status', Reservation::STATUS_PENDING)->count();
+            $pending_reservations = Reservation::where('status', ReservationStatus::PENDING)->count();
             $due_invoices = Invoice::where('status', Invoice::STATUS_DUE)->count();
             $area_chart = (new areaChartModel())
                 ->setColor('#2563EB')
@@ -85,7 +87,7 @@ class DashboardController extends Controller
         } elseif (Auth::user()->role == User::ROLE_ADMIN) {
             $view = 'app.dashboard.admin';            
             $months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $reservation_count = Reservation::whereStatus(Reservation::STATUS_PENDING)->count();
+            $reservation_count = Reservation::whereStatus(ReservationStatus::PENDING)->count();
 
             // Monthly Revenue
             $monthly_revenue = InvoicePayment::select(DB::raw('sum(amount) as revenue'))

@@ -172,7 +172,7 @@ final class ReservationTable extends PowerGridComponent
                                             </div>
                                         </section>
                                     @else
-                                        <livewire:app.invoice.create-payment invoice="{{ $reservation->invoice->id }}" />
+                                        
                                     @endif
                                 </div>
                             </x-modal.full>

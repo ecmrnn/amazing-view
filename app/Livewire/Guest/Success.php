@@ -28,7 +28,7 @@ class Success extends Component
                 <p class="text-sm text-center">Reservation ID</p>
             </div>
             
-            @empty ($reservation->proof_image_path)
+            @empty ($reservation->status == App\Enums\ReservationStatus::PENDING)
                 <div class="max-w-sm mx-auto space-y-2">
                     <p class="text-sm text-center">Your reservation is only valid until <br /> <strong class="text-red-500">{{ $expires_at }}</strong></p>
                     <p class="px-3 py-2 text-sm text-red-500 border border-red-500 rounded-lg bg-red-50"><span class="font-semibold">Note:</span> Failure to pay the downpayment within the said date and time would result into your reservation be discarded.</p>
@@ -38,7 +38,7 @@ class Success extends Component
             <div class="max-w-sm">
                 <p class="text-sm text-center">Take note of your Reservation ID, you may use this to view or update your reservation.</p>
 
-                @empty ($reservation->proof_image_path)
+                @empty ($reservation->status == App\Enums\ReservationStatus::PENDING)
                     <p class="text-sm text-center"><br/> If you wish to send your payment <a href="{{ route('guest.search', ['rid' => $reservation->rid]) }}" class="text-blue-500 underline underline-offset-2" wire:navigate>click here.</a></p>
                 @endempty
             </div>
