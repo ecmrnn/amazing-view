@@ -35,12 +35,12 @@
             <x-form.form-body>
                 <div class="col-span-3 p-5 pt-0 space-y-5">
                     <div class="grid grid-cols-2 gap-5">
-                        <button x-on:click="$wire.set('reservation_type', 'day_tour')" type='button' class="p-5 text-left border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-gray-300">
+                        <button x-on:click="$wire.set('reservation_type', 'day_tour')" type='button' class="p-5 text-left transition-all duration-200 ease-in-out border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-500">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-medium"><circle cx="12" cy="12" r="4"/><path d="M12 3v1"/><path d="M12 20v1"/><path d="M3 12h1"/><path d="M20 12h1"/><path d="m18.364 5.636-.707.707"/><path d="m6.343 17.657-.707.707"/><path d="m5.636 5.636.707.707"/><path d="m17.657 17.657.707.707"/></svg>
                             <strong class="block mt-3">Day Tour</strong>
                             <p class="text-sm">Perfect for a quick staycation <br /> from <time datetime="8:00">8:00 AM</time> to <time datetime="18:00">6:00 PM</time></p>
                         </button>
-                        <button x-on:click="$wire.set('reservation_type', 'overnight')" type='button' class="p-5 text-left border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-gray-300">
+                        <button x-on:click="$wire.set('reservation_type', 'overnight')" type='button' class="p-5 text-left transition-all duration-200 ease-in-out border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-500"">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
                             <strong class="block mt-3">Overnight</strong>
                             <p class="text-sm">Ideal for a relaxing overnight stay <br /> from <time datetime="14:00">2:00 PM</time> to <time datetime="12:00">12:00 PM</time></p>
