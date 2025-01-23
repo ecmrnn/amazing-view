@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Reservation;
 
+use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
@@ -30,14 +31,14 @@ class ShowReservations extends Component
     #[On('status-changed')]
     public function getReservationCount() {
         $statuses = [
-            'awaiting_payment' => Reservation::STATUS_AWAITING_PAYMENT,
-            'pending' => Reservation::STATUS_PENDING,
-            'confirmed' => Reservation::STATUS_CONFIRMED,
-            'checked-in' => Reservation::STATUS_CHECKED_IN,
-            'checked-out' => Reservation::STATUS_CHECKED_OUT,
-            'completed' => Reservation::STATUS_COMPLETED,
-            'canceled' => Reservation::STATUS_CANCELED,
-            'expired' => Reservation::STATUS_EXPIRED,
+            'awaiting_payment' => ReservationStatus::AWAITING_PAYMENT->value,
+            'pending' => ReservationStatus::PENDING->value,
+            'confirmed' => ReservationStatus::CONFIRMED->value,
+            'checked-in' => ReservationStatus::CHECKED_IN->value,
+            'checked-out' => ReservationStatus::CHECKED_OUT->value,
+            'completed' => ReservationStatus::COMPLETED->value,
+            'canceled' => ReservationStatus::CANCELED->value,
+            'expired' => ReservationStatus::EXPIRED->value,
         ];
 
         $counts = Reservation::selectRaw('status, COUNT(*) as count')

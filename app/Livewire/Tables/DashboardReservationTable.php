@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -47,7 +48,7 @@ final class DashboardReservationTable extends PowerGridComponent
 
     public function datasource()
     {
-        return Reservation::where('status', Reservation::STATUS_PENDING)
+        return Reservation::where('status', ReservationStatus::PENDING)
             ->get();
     }
 

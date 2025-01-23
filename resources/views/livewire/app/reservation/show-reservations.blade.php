@@ -18,7 +18,7 @@
                 <span>In Progress</span>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Models\Reservation::STATUS_AWAITING_PAYMENT" href="{{ route('app.reservations.index', ['status' => \App\Models\Reservation::STATUS_AWAITING_PAYMENT]) }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::AWAITING_PAYMENT->value" href="{{ route('app.reservations.index', ['status' => \App\Enums\ReservationStatus::AWAITING_PAYMENT->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Awaiting Payment</span>
                         @if ($reservation_by_status['awaiting_payment'] > 0)
@@ -28,7 +28,7 @@
                 </x-side-nav-link>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Models\Reservation::STATUS_PENDING" href="{{ route('app.reservations.index', ['status' => \App\Models\Reservation::STATUS_PENDING]) }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::PENDING->value" href="{{ route('app.reservations.index', ['status' => \App\Enums\ReservationStatus::PENDING->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Pending</span>
                         @if ($reservation_by_status['pending'] > 0)
@@ -38,7 +38,7 @@
                 </x-side-nav-link>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Models\Reservation::STATUS_CONFIRMED" href="{{ route('app.reservations.index', ['status' => \App\Models\Reservation::STATUS_CONFIRMED]) }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::CONFIRMED->value" href="{{ route('app.reservations.index', ['status' => \App\Enums\ReservationStatus::CONFIRMED->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Confirmed</span>
                         @if ($reservation_by_status['confirmed'] > 0)
@@ -48,7 +48,7 @@
                 </x-side-nav-link>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Models\Reservation::STATUS_CHECKED_IN" href="{{ route('app.guests.index') }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::CHECKED_IN->value" href="{{ route('app.guests.index') }}">
                     <div class="flex items-center gap-1">
                         <span>Checked-in</span>
                         @if ($reservation_by_status['checked-in'] > 0)
@@ -62,7 +62,7 @@
                 <span>Finalized</span>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Models\Reservation::STATUS_CHECKED_OUT" href="{{ route('app.reservations.index', ['status' => \App\Models\Reservation::STATUS_CHECKED_OUT]) }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::CHECKED_OUT->value" href="{{ route('app.reservations.index', ['status' => \App\Enums\ReservationStatus::CHECKED_OUT->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Checked-out</span>
                         @if ($reservation_by_status['checked-out'] > 0)
@@ -72,7 +72,7 @@
                 </x-side-nav-link>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Models\Reservation::STATUS_COMPLETED" href="{{ route('app.reservations.index', ['status' => \App\Models\Reservation::STATUS_COMPLETED]) }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::COMPLETED->value" href="{{ route('app.reservations.index', ['status' => \App\Enums\ReservationStatus::COMPLETED->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Completed</span>
                         @if ($reservation_by_status['completed'] > 0)
@@ -86,7 +86,7 @@
                 <span>Problematic</span>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Models\Reservation::STATUS_CANCELED" href="{{ route('app.reservations.index', ['status' => \App\Models\Reservation::STATUS_CANCELED]) }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::CANCELED->value" href="{{ route('app.reservations.index', ['status' => \App\Enums\ReservationStatus::CANCELED->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Canceled</span>
                         @if ($reservation_by_status['canceled'] > 0)
@@ -96,7 +96,7 @@
                 </x-side-nav-link>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Models\Reservation::STATUS_EXPIRED" href="{{ route('app.reservations.index', ['status' => \App\Models\Reservation::STATUS_EXPIRED]) }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::EXPIRED->value" href="{{ route('app.reservations.index', ['status' => \App\Enums\ReservationStatus::EXPIRED->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Expired</span>
                         @if ($reservation_by_status['expired'] > 0)

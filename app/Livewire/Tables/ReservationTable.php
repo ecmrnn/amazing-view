@@ -2,6 +2,8 @@
 
 namespace App\Livewire\tables;
 
+use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
@@ -92,21 +94,21 @@ final class ReservationTable extends PowerGridComponent
 
             ->add('status')
             ->add('status_update', function ($reservation) {
-                if (in_array($reservation->status, [Reservation::STATUS_AWAITING_PAYMENT, Reservation::STATUS_PENDING, Reservation::STATUS_CONFIRMED])) {
-                    if ($reservation->status == Reservation::STATUS_AWAITING_PAYMENT) {
+                if (in_array($reservation->status, [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])) {
+                    if ($reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
                         $reservation_statuses = [
                             '' => 'Update Status',
-                            Reservation::STATUS_PENDING => 'Pending',
+                            ReservationStatus::PENDING->value => 'Pending',
                         ];
-                    } elseif ($reservation->status == Reservation::STATUS_PENDING) {
+                    } elseif ($reservation->status == ReservationStatus::PENDING->value) {
                         $reservation_statuses = [
                             '' => 'Update Status',
-                            Reservation::STATUS_CONFIRMED => 'Confirm',
+                            ReservationStatus::CONFIRMED->value => 'Confirm',
                         ];
-                    } elseif ($reservation->status == Reservation::STATUS_CONFIRMED) {
+                    } elseif ($reservation->status == ReservationStatus::CONFIRMED->value) {
                         $reservation_statuses = [
                             '' => 'Update Status',
-                            Reservation::STATUS_CHECKED_IN => 'Check-in',
+                            ReservationStatus::CHECKED_IN->value => 'Check-in',
                         ];
                     } else {
                         $reservation_statuses = [
@@ -219,7 +221,7 @@ final class ReservationTable extends PowerGridComponent
 
         ];
 
-        if (in_array($this->status, [Reservation::STATUS_AWAITING_PAYMENT, Reservation::STATUS_PENDING, Reservation::STATUS_CONFIRMED])) {
+        if (in_array($this->status, [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])) {
             $columns[] = Column::make('Update status', 'status_update');
         }
 
@@ -260,14 +262,14 @@ final class ReservationTable extends PowerGridComponent
             
             $reservation->save();
 
-            if ($reservation->status == Reservation::STATUS_CHECKED_IN) {
+            if ($reservation->status == ReservationStatus::CHECKED_IN) {
                 foreach ($reservation->rooms as $room) {
-                    $room->status = Room::STATUS_OCCUPIED;
+                    $room->status = RoomStatus::OCCUPIED;
                     $room->save();
                 }
             } else {
                 foreach ($reservation->rooms as $room) {
-                    $room->status = Room::STATUS_AVAILABLE;
+                    $room->status = RoomStatus::AVAILABLE;
                     $room->save();
                 }
             }

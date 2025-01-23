@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Cards;
 
+use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use Livewire\Component;
 
@@ -11,10 +12,10 @@ class ReservationCards extends Component
 
     public function render()
     {
-        $pending_reservations = Reservation::whereStatus(Reservation::STATUS_PENDING)->count();
-        $confirmed_reservations = Reservation::whereStatus(Reservation::STATUS_CONFIRMED)->count();
-        $completed_reservations = Reservation::whereStatus(Reservation::STATUS_COMPLETED)->count();
-        $expired_reservations = Reservation::whereStatus(Reservation::STATUS_EXPIRED)->count();
+        $pending_reservations = Reservation::whereStatus(ReservationStatus::PENDING)->count();
+        $confirmed_reservations = Reservation::whereStatus(ReservationStatus::CONFIRMED)->count();
+        $completed_reservations = Reservation::whereStatus(ReservationStatus::COMPLETED)->count();
+        $expired_reservations = Reservation::whereStatus(ReservationStatus::EXPIRED)->count();
 
         return view('livewire.app.cards.reservation-cards', [
             'pending_reservations' => $pending_reservations,
