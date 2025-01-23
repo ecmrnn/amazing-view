@@ -170,8 +170,10 @@
     </div>
     
     <aside class="self-start p-5 space-y-3 bg-white rounded-lg shadow-sm">
-        <h3 class="text-lg font-semibold">Submit Payment</h3>
-        <p class="text-sm">A minimum of <strong><x-currency />500.00</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we have sent to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </p>
+        <hgroup>
+            <h3 class="text-lg font-semibold">Submit Payment</h3>
+            <p class="text-sm">A minimum of <strong><x-currency />500.00</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we have sent to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </p>
+        </hgroup>
 
         {{-- Payment Methods --}}
         <div class="grid">

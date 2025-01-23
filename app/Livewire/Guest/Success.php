@@ -23,22 +23,24 @@ class Success extends Component
     {
         return <<<'HTML'
         <div class="grid gap-5 place-items-center">
-            <div>
-                <h2 class="text-3xl font-semibold text-center text-blue-500"><br /> {{ $reservation->rid }}</h2>
+            <hgroup>
+                <p class="mb-5 text-6xl text-center"> 🎊</p>
+                <p class="text-sm text-center">Success!</p>
+                <h2 class="text-3xl font-semibold text-center text-blue-500">{{ $reservation->rid }}</h2>
                 <p class="text-sm text-center">Reservation ID</p>
-            </div>
-            
-            @empty ($reservation->status == App\Enums\ReservationStatus::PENDING)
+            </hgroup>
+
+            @if ($expires_at)
                 <div class="max-w-sm mx-auto space-y-2">
                     <p class="text-sm text-center">Your reservation is only valid until <br /> <strong class="text-red-500">{{ $expires_at }}</strong></p>
                     <p class="px-3 py-2 text-sm text-red-500 border border-red-500 rounded-lg bg-red-50"><span class="font-semibold">Note:</span> Failure to pay the downpayment within the said date and time would result into your reservation be discarded.</p>
                 </div>
-            @endempty
+            @endif
 
             <div class="max-w-sm">
-                <p class="text-sm text-center">Take note of your Reservation ID, you may use this to view or update your reservation.</p>
+                <p class="text-sm text-center">Take note of your Reservation ID, you may use this to track or update your reservation.</p>
 
-                @empty ($reservation->status == App\Enums\ReservationStatus::PENDING)
+                @empty ($expires_at)
                     <p class="text-sm text-center"><br/> If you wish to send your payment <a href="{{ route('guest.search', ['rid' => $reservation->rid]) }}" class="text-blue-500 underline underline-offset-2" wire:navigate>click here.</a></p>
                 @endempty
             </div>

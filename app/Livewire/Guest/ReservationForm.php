@@ -106,6 +106,7 @@ class ReservationForm extends Component
     public function resetReservation() {
         $this->reset();
 
+        $this->step = 1;
         $this->selected_rooms = new Collection;
         $this->selected_amenities = new Collection;
         $this->available_room_types = new Collection;
@@ -114,7 +115,6 @@ class ReservationForm extends Component
         
         $this->room_types = RoomType::all();
         $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
-        $this->reservation_type = null;
         $this->dispatch('reservation-reset');
         sleep(2);
     }
@@ -375,6 +375,7 @@ class ReservationForm extends Component
 
     public function submit($previous = false)
     {
+        // dd('hello');
         if ($previous) {
             $this->step -= 1;
         } else {
@@ -384,6 +385,10 @@ class ReservationForm extends Component
             // 3: Payment
             switch ($this->step) {
                 case 1:
+                    // if ($this->reservation_type == 'day_tour') {
+                    //     $this->date_out = $this->date_in;
+                    // }
+
                     $this->validate([
                         'date_in' => $this->rules()['date_in'],
                         'date_out' => $this->rules()['date_out'],
@@ -391,6 +396,7 @@ class ReservationForm extends Component
                         'children_count' => $this->rules()['children_count'],
                         'selected_rooms' => $this->rules()['selected_rooms'],
                     ]);
+
 
                     if ($this->capacity < $this->adult_count + $this->children_count) {
                         $this->toast('Oops!', 'warning', 'Selected rooms cannot accommodate the number of guests.');
@@ -463,8 +469,10 @@ class ReservationForm extends Component
         $reservation = $service->create($validated);
 
         // Dispatch event
+        $this->reservation_rid = $reservation->rid;
         $this->dispatch('reservation-created');
         $this->toast('Success!', description: 'Reservation sent!');
+        $this->reset('reservation_type');
         $this->step++;
     }
 

@@ -82,6 +82,7 @@
                                         wire:model.live="date_in"
                                         x-model="date_in"
                                         x-bind:min="min_date_in"
+                                        name="date_in"
                                         x-on:input="$wire.setMinDateOut($event.target.value); if (reservation_type == 'day_tour') date_out = date_in;"
                                         id="date_in" class="block w-full" />
                                     <x-form.input-error field="date_in" />
@@ -94,6 +95,7 @@
                                             x-model="date_out"
                                             x-bind:value="date_in == '' ? null : date_out"
                                             x-bind:min="min_date_out"
+                                            name="date_out"
                                             id="date_out" class="block w-full" />
                                         <x-form.input-error field="date_out" />
                                     </x-form.input-group>
@@ -109,6 +111,7 @@
                                         wire:model.live="adult_count"
                                         x-model="adult_count"
                                         id="adult_count"
+                                        name="number_of_adults"
                                         class="block w-full"
                                         min="1" />
                                     <x-form.input-error field="adult_count" />
@@ -337,7 +340,8 @@
             
             <x-primary-button
                 x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }"
-                type="submit">Continue
+                type="submit"
+                wire:click='submit'>Continue
             </x-primary-button>
         </div>
     </template>

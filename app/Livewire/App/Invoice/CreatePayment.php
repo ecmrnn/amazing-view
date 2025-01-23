@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Invoice;
 
+use App\Enums\ReservationStatus;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Reservation;
@@ -48,8 +49,8 @@ class CreatePayment extends Component
             'proof_image_path' => $this->rules()['proof_image_path'],
         ]);
 
-        if ($this->reservation->status == Reservation::STATUS_AWAITING_PAYMENT) {
-            $this->reservation->status = Reservation::STATUS_PENDING;
+        if ($this->reservation->status == ReservationStatus::AWAITING_PAYMENT) {
+            $this->reservation->status = ReservationStatus::PENDING;
             $this->reservation->save();
             $this->dispatch('pg:eventRefresh-ReservationTable');
         }
@@ -139,7 +140,7 @@ class CreatePayment extends Component
                     </div>
                 </div>
                 
-                <div class="flex items-center justify-center gap-1">
+                <div class="flex items-center justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="$dispatch('cancel-confirmation'); show = false">Cancel</x-secondary-button>
                     <x-primary-button type="button" x-bind:disabled="!checked" wire:click="store">Submit Payment</x-primary-button>
                 </div>

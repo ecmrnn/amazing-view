@@ -50,7 +50,7 @@
 
     <x-modal.full name='reset-reservation-modal' maxWidth='sm'>
         <div class="p-5 space-y-5">
-            <h3 class="text-lg font-semibold">Reset Reservation</hjson</h3>
+            <h3 class="text-lg font-semibold">Reset Reservation</h3>
             <p class="text-sm">Are you sure you want to reset your reservation?</p>
     
             <div class="flex justify-end gap-1 mt-5">

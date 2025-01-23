@@ -154,15 +154,15 @@ final class ReservationTable extends PowerGridComponent
                                 </section>
                             </x-modal.full>
     
-                            <x-modal.full :click_outside="false" name="show-checkin-confirmation-{{ $reservation->id }}" maxWidth="sm">
+                            <x-modal.full :click_outside="false" name="show-checkin-confirmation-{{ $reservation->id }}" maxWidth="md">
                                 <div x-on:cancel-confirmation.window="selected_value = default_value">
                                     @if (!empty($reservation->invoice->downpayment) && intval($reservation->invoice->downpayment) != 0)
                                         <section class="p-5 space-y-5 bg-white">
                                             <hgroup>
-                                                <h2 class="font-semibold text-center capitalize">Update Status</h2>
-                                                <p class="max-w-sm text-xs text-center">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
+                                                <h2 class="font-semibold capitalize">Update Status</h2>
+                                                <p class="max-w-sm text-xs">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
                                             </hgroup>
-                                            <div class="flex items-center justify-center gap-1">
+                                            <div class="flex items-center justify-end gap-1">
                                                 <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
                                                 <x-primary-button type="button"
                                                     wire:click="statusChanged(selected_value, {{ $reservation->id }});
@@ -174,7 +174,7 @@ final class ReservationTable extends PowerGridComponent
                                             </div>
                                         </section>
                                     @else
-                                        
+                                        <livewire:app.invoice.create-payment :reservation="$reservation->invoice->id" />
                                     @endif
                                 </div>
                             </x-modal.full>
