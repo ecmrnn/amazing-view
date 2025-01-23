@@ -7,6 +7,7 @@ use App\Enums\RoomStatus;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
+use App\Services\AuthService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,6 +24,7 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
+use Livewire\Attributes\Validate;
 
 final class ReservationTable extends PowerGridComponent
 {
@@ -30,6 +32,13 @@ final class ReservationTable extends PowerGridComponent
 
     public string $tableName = 'ReservationTable';
     #[Url] public $status;
+    #[Validate] public string $password;
+
+    public function rules() {
+        return [
+            'password' => 'required',
+        ];
+    }
 
     public function noDataLabel(): string|View
     { 
@@ -137,11 +146,11 @@ final class ReservationTable extends PowerGridComponent
                             <x-modal.full :click_outside="false" name="show-update-status-confirmation-{{ $reservation->id }}" maxWidth="xs">
                                 <section class="p-5 space-y-5 bg-white">
                                     <hgroup>
-                                        <h2 class="font-semibold capitalize">Update Status</h2>
+                                        <h2 class="text-lg font-semibold capitalize">Update Status</h2>
                                         <p class="max-w-sm text-xs">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
                                     </hgroup>
                     
-                                    <div class="flex items-end justify-center gap-1">
+                                    <div class="flex items-end justify-end gap-1">
                                         <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
                                         <x-primary-button type="button"
                                             wire:click="statusChanged(selected_value, {{ $reservation->id }});
@@ -156,10 +165,10 @@ final class ReservationTable extends PowerGridComponent
     
                             <x-modal.full :click_outside="false" name="show-checkin-confirmation-{{ $reservation->id }}" maxWidth="md">
                                 <div x-on:cancel-confirmation.window="selected_value = default_value">
-                                    @if (!empty($reservation->invoice->downpayment) && intval($reservation->invoice->downpayment) != 0)
+                                    @if ($reservation->status != 8)
                                         <section class="p-5 space-y-5 bg-white">
                                             <hgroup>
-                                                <h2 class="font-semibold capitalize">Update Status</h2>
+                                                <h2 class="text-lg font-semibold capitalize">Update Status</h2>
                                                 <p class="max-w-sm text-xs">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
                                             </hgroup>
                                             <div class="flex items-center justify-end gap-1">
@@ -174,7 +183,7 @@ final class ReservationTable extends PowerGridComponent
                                             </div>
                                         </section>
                                     @else
-                                        <livewire:app.invoice.create-payment :reservation="$reservation->invoice->id" />
+                                        <livewire:app.invoice.create-payment :invoice="$reservation->invoice->id" />
                                     @endif
                                 </div>
                             </x-modal.full>
@@ -214,17 +223,15 @@ final class ReservationTable extends PowerGridComponent
             Column::make('Check out', 'date_out_formatted', 'date_out')
                 ->sortable()
                 ->searchable(),
-
-            Column::make('Note', 'note_formatted', 'note'),
-
+                
             Column::make('Status', 'status_formatted', 'status'),
-
         ];
 
         if (in_array($this->status, [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])) {
             $columns[] = Column::make('Update status', 'status_update');
         }
 
+        $columns[] = Column::make('Note', 'note_formatted', 'note');
         $columns[] = Column::action('');
         
         return $columns;
@@ -257,27 +264,57 @@ final class ReservationTable extends PowerGridComponent
     public function statusChanged($status, $id) {
         $reservation = Reservation::findOrFail($id);
 
-        if (Auth::user()->role == User::ROLE_FRONTDESK || Auth::user()->role == User::ROLE_ADMIN) {
-            $reservation->status = $status;
-            
-            $reservation->save();
-
-            if ($reservation->status == ReservationStatus::CHECKED_IN) {
-                foreach ($reservation->rooms as $room) {
-                    $room->status = RoomStatus::OCCUPIED;
-                    $room->save();
+        if (!empty($reservation)) {
+            if (Auth::user()->role == User::ROLE_FRONTDESK || Auth::user()->role == User::ROLE_ADMIN) {
+                $reservation->status = $status;
+                
+                $reservation->save();
+    
+                if ($reservation->status == ReservationStatus::CHECKED_IN) {
+                    foreach ($reservation->rooms as $room) {
+                        $room->status = RoomStatus::OCCUPIED;
+                        $room->save();
+                    }
                 }
+    
+                $this->toast('Success!', description: 'Reservation status updated successfully.');
+                $this->dispatch('status-changed');
+                $this->dispatch('pg:eventRefresh-ReservationTable');
+                $this->redirect(route('app.reservations.index', ['status' => $this->status]));
+            }
+        } else {
+            $this->toast('Error!', description: 'Reservation not found.');
+        }
+    }
+
+    #[On('delete-reservation')]
+    public function deleteReservation($id) {
+        $this->validate(['password' => $this->rules()['password']]);
+
+        $auth = new AuthService();
+        
+        if ($auth->validatePassword($this->password)) {
+            $reservation = Reservation::find($id);
+
+            if (!$reservation) {
+                $this->toast('Missing Reservation', 'info', 'Reservation cannot be found.');
             } else {
                 foreach ($reservation->rooms as $room) {
-                    $room->status = RoomStatus::AVAILABLE;
+                    $room->status = RoomStatus::AVAILABLE->value;
                     $room->save();
+                    
+                    $reservation->rooms()->detach($room->id);
                 }
-            }
 
-            $this->toast('Success!', description: 'Reservation status updated successfully.');
-            $this->dispatch('status-changed');
-            $this->dispatch('pg:eventRefresh-ReservationTable');
-            $this->redirect(route('app.reservations.index', ['status' => $this->status]));
+                $reservation->delete();
+        
+                $this->toast('Success', description: 'Reservation successfully deleted');
+            }
+        } else {
+            $this->addError('password', 'Password mismatch, try again.');
         }
+        
+        $this->dispatch('reservation-deleted');
+        $this->reset('password');
     }
 }

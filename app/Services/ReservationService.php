@@ -33,6 +33,7 @@ class ReservationService
             'children_count' => $data['children_count'],
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
+            'email' => $data['email'],
             'phone' => $data['phone'],
             'address' => trim(implode($data['address']), ', '),
             'note' => $data['note'],
@@ -73,9 +74,9 @@ class ReservationService
 
         // Create the invoice
         $invoice = $reservation->invoice()->create([
-            'total_amount' => $breakdown['total'],
+            'total_amount' => $breakdown['total_amount'],
             'downpayment' => 0,
-            'balance' => $breakdown['total'],
+            'balance' => $breakdown['total_amount'],
             'status' => Invoice::STATUS_PENDING,
         ]);
 
@@ -114,9 +115,11 @@ class ReservationService
             $reservation->rooms()->detach($room->id);
         }
         foreach ($data['selected_rooms'] as $room) {
-            $reservation->rooms()->attach($room['id'], [
-                'rate' => $room['rate'],
+            $reservation->rooms()->attach($room->id, [
+                'rate' => $room->rate,
             ]);
+            $room->status = RoomStatus::RESERVED->value;
+            $room->save();
         }
 
         // Update the invoice

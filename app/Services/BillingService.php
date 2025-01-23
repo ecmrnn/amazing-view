@@ -12,13 +12,13 @@ use Carbon\Carbon;
 class BillingService
 {
     public function breakdown(Reservation $reservation) {
-        $total = 0;
+        $total_amount = 0;
         $breakdown = [];
 
         // Compute room rates
         foreach ($reservation->rooms as $room) {
             if ($room->pivot) {
-                $total += $room->pivot->rate;
+                $total_amount += $room->pivot->rate;
                 $breakdown[] = [
                     'name' => $room->name,
                     'rate' => $room->pivot->rate,
@@ -28,7 +28,7 @@ class BillingService
 
         // Compute amenity rates
         foreach ($reservation->amenities as $amenity) {
-            $total += $amenity->pivot->price;
+            $total_amount += $amenity->pivot->price;
             $breakdown[] = [
                 'name' => $amenity->name,
                 'price' => $amenity->pivot->price,
@@ -36,7 +36,7 @@ class BillingService
         }
 
         return [
-            'total' => $total,
+            'total_amount' => $total_amount,
             'breakdown' => $breakdown,
         ];
         

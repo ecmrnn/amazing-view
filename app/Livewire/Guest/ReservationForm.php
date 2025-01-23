@@ -472,7 +472,6 @@ class ReservationForm extends Component
         $this->reservation_rid = $reservation->rid;
         $this->dispatch('reservation-created');
         $this->toast('Success!', description: 'Reservation sent!');
-        $this->reset('reservation_type');
         $this->step++;
     }
 

@@ -57,12 +57,13 @@
         <div class="grid items-start gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <div class="grid space-y-1">
                 <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
-                <x-form.input-date
+                {{-- <x-form.input-date
                     wire:model.live="date_in"
                     x-model="date_in"
                     min="{{ $min_date }}"
                     id="date_in" />
-                <x-form.input-error field="date_in" />
+                <x-form.input-error field="date_in" /> --}}
+                <x-form.input-text id="date_in_display" name="date_in_display" label="Check-in date" />
             </div>
             <div class="grid space-y-1">
                 <x-form.input-label for="date_out">Check-out Date</x-form.input-label>
@@ -201,7 +202,7 @@
         <template x-if="is_map_view">
             <div class="grid grid-cols-3 gap-1 p-3 rounded-lg place-items-start lg:grid-cols-5 min-h-80 bg-gradient-to-tr from-teal-500/20 to-teal-600/20">
                 @forelse ($buildings as $building)
-                    <button type="button" key="{{ $building->id }}" class="w-full" x-on:click.prevent="$dispatch('open-modal', 'show-building-rooms')"
+                    <button type="button" key="{{ $building->id }}" class="w-full"
                         wire:click="selectBuilding({{ $building->id }})">
                         <div
                             class="relative grid w-full font-semibold bg-white border rounded-lg aspect-square place-items-center">
@@ -419,7 +420,7 @@
     {{-- Save Changes button --}}
     <x-primary-button type="button" wire:click='update()'>Save Changes</x-primary-button>
 
-    @if ($reservation->status == App\Models\Reservation::STATUS_PENDING || $reservation->status == App\Models\Reservation::STATUS_CONFIRMED)
+    @if ($reservation->status != App\Enums\ReservationStatus::PENDING || $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT || $reservation->status == App\Enums\ReservationStatus::CONFIRMED)
         {{-- Cancel reservation --}}
         <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
             <hgroup>
@@ -483,7 +484,7 @@
                         if ($selected_rooms->contains('id', $room->id)) {
                             $checked = true;
                         }
-                        if ($room->status == \App\Models\Room::STATUS_UNAVAILABLE) {
+                        if ($room->status == \App\Enums\RoomStatus::UNAVAILABLE) {
                             $disabled = true;
                         }
                         if (in_array($room->id, $reserved_rooms)) {

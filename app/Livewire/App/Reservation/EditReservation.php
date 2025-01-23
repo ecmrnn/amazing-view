@@ -253,6 +253,8 @@ class EditReservation extends Component
         $this->available_rooms = Room::where('building_id', $this->selected_building->id)
             ->where('floor_number', $this->floor_number)
             ->get();
+
+        $this->dispatch('open-modal', 'show-building-rooms');
     }
 
     public function upFloor()
@@ -349,7 +351,7 @@ class EditReservation extends Component
 
     public function update() {
         
-        $reservation_data = $this->validate([
+        $validated = $this->validate([
             'date_in' => 'required|date|after_or_equal:today',
             'date_out' => Reservation::rules()['date_out'],
             'adult_count' => Reservation::rules()['adult_count'],
@@ -362,9 +364,11 @@ class EditReservation extends Component
             'address' => Reservation::rules()['address'],
             'note' => Reservation::rules()['note'],
         ]);
+
+        $validated['selected_rooms'] = $this->selected_rooms;
         
         $service = new ReservationService();
-        $service->update($this->reservation, $reservation_data);
+        $service->update($this->reservation, $validated);
         // if (!empty($this->selected_rooms)) {
         //     // Removes old and non existing amenity
         //     foreach ($this->reservation->rooms as $room) {

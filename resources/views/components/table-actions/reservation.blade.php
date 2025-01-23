@@ -23,7 +23,7 @@
     @can('delete reservation')
         <x-tooltip text="Delete" dir="top">
             <a x-ref="content">
-                <x-icon-button>
+                <x-icon-button x-on:click="$dispatch('open-modal', 'delete-reservation-{{ $row->id }}')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-trash-2">
@@ -51,4 +51,24 @@
             </x-icon-button>
         </a>
     </x-tooltip>
+
+    <x-modal.full name='delete-reservation-{{ $row->id }}' maxWidth='sm'>
+        <form class="p-5 space-y-5 bg-white" x-on:submit.prevent="$dispatch('delete-reservation', { id: {{ $row->id  }}})">
+            <hgroup>
+                <h2 class="text-base font-semibold text-red-500 capitalize">Delete Reservation</h2>
+                <p class="max-w-sm text-sm">You are about to delete this Reservation, this action cannot be undone</p>
+            </hgroup>
+    
+            <div class="space-y-2">
+                <x-form.input-label for="password-{{ $row->id }}">Enter your password to delete this reservation</x-form.input-label>
+                <x-form.input-text wire:model="password" type="password" label="Password" id="password-{{ $row->id }}" />
+                <x-form.input-error field="password" />
+            </div>
+            
+            <div class="flex items-center justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
+                <x-danger-button type="submit">Yes, Delete</x-danger-button>
+            </div>
+        </form>
+    </x-modal.full>
 </div>

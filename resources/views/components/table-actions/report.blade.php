@@ -29,37 +29,23 @@
         </x-icon-button>
     </x-tooltip>
 
-    {{-- <x-tooltip text="View" dir="top">
-        <x-icon-button x-ref="content" x-on:click="$wire.viewReport({{ $row->id }})">
-            <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" class="lucide lucide-eye">
-                <path
-                    d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                <circle cx="12" cy="12" r="3" />
-            </svg>
-        </x-icon-button>
-    </x-tooltip> --}}
-
     <x-modal.full name='delete-report-{{ $row->id }}' maxWidth='sm'>
-        <div>
-            <form class="p-5 space-y-5 bg-white" x-on:submit.prevent="$dispatch('delete-report', { id: {{ $row->id  }}})">
-                <hgroup>
-                    <h2 class="font-semibold text-red-500 capitalize">Delete Report</h2>
-                    <p class="max-w-sm text-sm">You are about to delete this report, this action cannot be undone</p>
-                </hgroup>
+        <form class="p-5 space-y-5 bg-white" x-on:submit.prevent="$dispatch('delete-report', { id: {{ $row->id  }}})">
+            <hgroup>
+                <h2 class="text-base font-semibold text-red-500 capitalize">Delete Report</h2>
+                <p class="max-w-sm text-sm">You are about to delete this report, this action cannot be undone</p>
+            </hgroup>
 
-                <div class="space-y-2">
-                    <x-form.input-label for="password-{{ $row->id }}">Enter your password to delete this report</x-form.input-label>
-                    <x-form.input-text wire:model="password" type="password" label="Password" id="password-{{ $row->id }}" />
-                    <x-form.input-error field="password" />
-                </div>
-                
-                <div class="flex items-center justify-end gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
-                    <x-danger-button type="submit">Yes, Delete</x-danger-button>
-                </div>
-            </form>
-        </div>
+            <div class="space-y-2">
+                <x-form.input-label for="password-{{ $row->id }}">Enter your password to delete this report</x-form.input-label>
+                <x-form.input-text wire:model="password" type="password" label="Password" id="password-{{ $row->id }}" />
+                <x-form.input-error field="password" />
+            </div>
+            
+            <div class="flex items-center justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
+                <x-danger-button type="submit">Yes, Delete</x-danger-button>
+            </div>
+        </form>
     </x-modal.full>
 </div>

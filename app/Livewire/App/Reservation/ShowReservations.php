@@ -29,6 +29,7 @@ class ShowReservations extends Component
     }
 
     #[On('status-changed')]
+    #[On('reservation-deleted')]
     public function getReservationCount() {
         $statuses = [
             'awaiting_payment' => ReservationStatus::AWAITING_PAYMENT->value,

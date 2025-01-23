@@ -25,18 +25,24 @@ class CreatePayment extends Component
     #[Validate] public $transaction_id;
     #[Validate] public $amount;
     
-    public function mount(Invoice $invoice = null) {
+    public function mount(Invoice $invoice) {
         $this->invoice = $invoice;
         $this->payment_date = Carbon::now()->format('Y-m-d');
-        $this->reservation = $this->invoice->reservation;
+        $this->reservation = $invoice->reservation;
     }
 
     public function rules() {
-        return InvoicePayment::rules();
+        $rules = InvoicePayment::rules();
+        $min = $this->invoice->balance > 500 ? 500 : 1;
+        $rules['amount'] = 'required|numeric|min:' . $min . '|max:' . $this->invoice->balance;
+        return $rules;
     }
 
     public function messages() {
-        return InvoicePayment::messages();
+        $messages = InvoicePayment::messages();
+        $messages['amount.min'] = $this->invoice->balance > 500 ? 'The minimum amount is 500.00' : 'The minimum amount is 1.00';
+        
+        return $messages;
     }
 
     public function store() {
@@ -49,9 +55,10 @@ class CreatePayment extends Component
             'proof_image_path' => $this->rules()['proof_image_path'],
         ]);
 
-        if ($this->reservation->status == ReservationStatus::AWAITING_PAYMENT) {
-            $this->reservation->status = ReservationStatus::PENDING;
+        if ($this->reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
+            $this->reservation->status = ReservationStatus::PENDING->value;
             $this->reservation->save();
+            $this->dispatch('status-changed');
             $this->dispatch('pg:eventRefresh-ReservationTable');
         }
 
@@ -79,7 +86,6 @@ class CreatePayment extends Component
         $invoice->save();
 
         $this->reset('payment_method', 'proof_image_path', 'transaction_id', 'amount');
-
         $this->dispatch('payment-added');
         $this->dispatch('pg:eventRefresh-InvoicePaymentTable');
         $this->toast('Success', 'success', 'Yay, payment added!');
@@ -90,8 +96,8 @@ class CreatePayment extends Component
         return <<<'HTML'
             <section x-data="{ payment_method: @entangle('payment_method'), checked: false }" x-on:payment-added.window="show = false" class="p-5 space-y-5 bg-white">
                 <hgroup>
-                    <h2 class="font-semibold text-center capitalize">Add Payment</h2>
-                    <p class="max-w-sm mx-auto text-sm text-center">Enter the payment details made by the guest.</p>
+                    <h2 class="text-lg font-semibold capitalize">Add Payment</h2>
+                    <p class="text-sm">Enter the payment details made by the guest.</p>
                 </hgroup>
 
                 <div class="space-y-3">
