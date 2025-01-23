@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\InvoiceStatus;
 use App\Enums\RoomStatus;
 use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
@@ -122,7 +123,22 @@ class ReservationService
             $room->save();
         }
 
+        $reservation->save();
+
+        // Detach the old and attach the new amenities to reservation
+
         // Update the invoice
+        $billing = new BillingService();
+        $breakdown = $billing->breakdown($reservation->fresh());
+        $invoice_data = [
+            'total_amount' => $breakdown['total_amount'],
+            'downpayment' => $reservation->invoice->downpayment,
+            'balance' => $breakdown['total_amount'] - $reservation->invoice->downpayment,
+        ];
+        $invoice_data['status'] = $invoice_data['balance'] > 0 ? InvoiceStatus::PARTIAL->value : InvoiceStatus::PAID->value;
+
+        // Create the invoice
+        $billing->update($reservation->invoice, $invoice_data);
 
         // Example: Notify user about the update
         // Notification::send($reservation->user, new ReservationUpdated($reservation));

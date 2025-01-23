@@ -11,6 +11,17 @@ use Carbon\Carbon;
 
 class BillingService
 {
+    public function update(Invoice $invoice, $data) {
+        $invoice->update([
+            'total_amount' => $data['total_amount'],
+            'downpayment' => $data['downpayment'],
+            'balance' => $data['balance'],
+            'status' => $data['status'],
+        ]);
+
+        return $invoice;
+    }
+
     public function breakdown(Reservation $reservation) {
         $total_amount = 0;
         $breakdown = [];
