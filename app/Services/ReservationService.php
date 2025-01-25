@@ -126,6 +126,15 @@ class ReservationService
         $reservation->save();
 
         // Detach the old and attach the new amenities to reservation
+        foreach ($reservation->amenities as $amenity) {
+            $reservation->amenities()->detach($amenity->id);
+        }
+        foreach ($data['selected_amenities'] as $amenity) {
+            $reservation->amenities()->attach($amenity->id, [
+                'price' => $amenity['price'],
+                'quantity' => 0,
+            ]);
+        }
 
         // Update the invoice
         $billing = new BillingService();

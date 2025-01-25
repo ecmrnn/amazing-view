@@ -122,7 +122,7 @@ class CreatePayment extends Component
                         <x-form.input-error field="downpayment" />
                         
                         <div x-show="payment_method != 'cash'">
-                            <x-form.input-text wire:model.live='transaction_id' label="Transaction ID" id="transaction_id" />
+                            <x-form.input-text wire:model.live='transaction_id' label="Reference No." id="transaction_id" />
                         </div>
                     </div>
                     <div x-show="payment_method != 'cash'">

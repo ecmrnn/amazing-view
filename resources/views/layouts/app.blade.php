@@ -31,7 +31,7 @@
         window.toast = function(message, options = {}){
             let description = '';
             let type = 'default';
-            let position = 'top-right';
+            let position = 'top-center';
             let html = '';
             if(typeof options.description != 'undefined') description = options.description;
             if(typeof options.type != 'undefined') type = options.type;
@@ -46,6 +46,9 @@
                 description: toast_details.description,
             })"
         >
+        {{-- Toast --}}
+        <x-toast />
+
         @stack('modals')
         
         <div class="flex flex-col bg-slate-50 sm:flex-row">
@@ -83,9 +86,6 @@
                 </main>
             </div>
         </div>
-    
-        {{-- Toast --}}
-        <x-toast />
 
         {{-- Settings Modal --}}
         <x-app.settings />

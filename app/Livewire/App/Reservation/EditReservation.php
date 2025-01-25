@@ -58,6 +58,12 @@ class EditReservation extends Component
     public $selected_type; 
     public $selected_building;
     public $additional_amenity;
+    // public $additional_amenity = [
+    //     'id' => null,
+    //     'quantity' => 0,
+    //     'price' => 0,
+    //     'total' => 0,
+    // ];
     public $available_amenities;
     public $additional_amenities;
     public $additional_amenity_total;
@@ -366,6 +372,7 @@ class EditReservation extends Component
         ]);
 
         $validated['selected_rooms'] = $this->selected_rooms;
+        dd($this->additional_amenities);
         
         $service = new ReservationService();
         $service->update($this->reservation, $validated);
