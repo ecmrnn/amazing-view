@@ -6,13 +6,13 @@ use App\Enums\ReservationStatus;
 use App\Models\Building;
 use App\Models\Reservation;
 use App\Models\Room;
-use App\Models\RoomReservation;
 use App\Models\RoomType;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Features\SupportConsoleCommands\Commands\Upgrade\ThirdPartyUpgradeNotice;
 
 class EditReservationDetails extends Component
 {
@@ -43,7 +43,7 @@ class EditReservationDetails extends Component
         $this->date_out = $reservation->date_out;
         $this->adult_count = $reservation->adult_count;
         $this->children_count = $reservation->children_count;
-        $this->selected_rooms = $reservation->rooms->pluck('id')->toArray();
+        $this->selected_rooms = $reservation->rooms;
         $this->reservation = $reservation;
         $this->rooms = collect();
 
@@ -83,7 +83,7 @@ class EditReservationDetails extends Component
         })->flatten()->toArray();
 
         // 4. Check whether the existing rooms is currently reserved by another reservation
-        $this->conflict_rooms = array_intersect($this->selected_rooms, $reserved_rooms);
+        $this->conflict_rooms = array_intersect($this->selected_rooms->pluck('id')->toArray(), $reserved_rooms);
         if (!empty($this->conflict_rooms)) {
             // 4.1. Reserved: Choose another room
             $this->toast('Update failed', 'danger', 'The selected rooms is already reserved on the selected dates');
@@ -95,11 +95,8 @@ class EditReservationDetails extends Component
         }
 
         // Initialize the buildings and rooms
-        $this->buildings = Building::all();
+        $this->buildings = Building::with('rooms')->withCount('rooms')->get();
         $this->rooms = RoomType::all();
-        $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
-        // $this->available_rooms = Room::whereNotIn('id', $reserved_rooms)->get();
-        // dd($this->rooms);
 
         // 5. Send notification about the changes
     }
@@ -112,6 +109,27 @@ class EditReservationDetails extends Component
 
     public function goToStep($step) {
         $this->step = $step;
+    }
+
+    #[On('select-room')]
+    public function toggleRoom(Room $room)
+    {
+        if ($room && !$this->selected_rooms->contains('id', $room->id)) {
+            $this->selected_rooms->push($room);
+        } else {
+            $this->selected_rooms = $this->selected_rooms->reject(function ($room_loc) use ($room) {
+                return $room_loc->id == $room->id;
+            });
+        }
+    }
+
+    public function removeRoom(Room $room) {
+        $this->toggleRoom($room);
+    }
+
+    public function viewBuilding($building) {
+        // dd($building, $this->selected_rooms);
+        $this->dispatch('select-building', ['building' => $building, 'selected_rooms' => $this->selected_rooms]);
     }
 
     public function edit() {
@@ -135,6 +153,7 @@ class EditReservationDetails extends Component
         return <<<'HTML'
         <div class="space-y-5" 
             x-data="{
+                hide: true,
                 date_in: @entangle('date_in'),
                 date_out: @entangle('date_out'),
                 adult_count: @entangle('adult_count'),
@@ -211,7 +230,7 @@ class EditReservationDetails extends Component
                             <div>
                                 <x-secondary-button x-on:click="is_map_view = !is_map_view"
                                     x-show="!is_map_view" class="flex w-full gap-2 m-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse"><path d="m3 10 2.5-2.5L3 5" /><path d="m3 19 2.5-2.5L3 14" /><path d="M10 6h11" /><path d="M10 12h11" /><path d="M10 18h11" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
                                     <p class="text-xs font-semibold">Map View</p>
                                 </x-secondary-button>
                                 <x-primary-button x-show="is_map_view" class="flex w-full gap-2 m-1">
@@ -227,7 +246,7 @@ class EditReservationDetails extends Component
                                 </x-primary-button>
                                 <x-secondary-button x-on:click="is_map_view = !is_map_view"
                                     x-show="is_map_view" class="flex w-full gap-2 m-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse"><path d="m3 10 2.5-2.5L3 5" /><path d="m3 19 2.5-2.5L3 14" /><path d="M10 6h11" /><path d="M10 12h11" /><path d="M10 18h11" /></svg>
                                     <p class="text-xs font-semibold">List View</p>
                                 </x-secondary-button>
                             </div>
@@ -265,7 +284,7 @@ class EditReservationDetails extends Component
                             <div class="grid grid-cols-3 gap-1 p-3 rounded-lg place-items-start min-h-80 bg-gradient-to-tr from-teal-500/20 to-teal-600/20">
                                 @forelse ($buildings as $building)
                                     <button type="button" key="{{ $building->id }}" class="w-full"
-                                        wire:click="selectBuilding({{ $building->id }})">
+                                        wire:click="viewBuilding({{ $building->id }})">
                                         <div
                                             class="relative grid w-full font-semibold bg-white border rounded-lg aspect-square place-items-center">
                                             <div class="text-center">
@@ -286,9 +305,40 @@ class EditReservationDetails extends Component
                             </div>
                         </template>
 
-                        {{-- View Selected Rooms --}}
-                        <x-secondary-button x-on:click="$dispatch('open-modal', 'show-selected-rooms')">View Selected Rooms</x-secondary-button>
-                        <p class="max-w-xs text-xs">If you wish to <strong class="font-semibold text-red-500">remove</strong> or view all the selected rooms, click the button above.</p>
+                        @if ($selected_rooms->count() > 0)
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-semibold">Selected Rooms</h3>
+                                <button type="button" x-on:click="hide = false" x-show="hide" class="text-xs font-semibold text-blue-500">Hide Rooms</button>
+                                <button type="button" x-on:click="hide = true" x-show="!hide" class="text-xs font-semibold text-blue-500">Show Rooms</button>
+                            </div>
+        
+                            <div x-show="hide" class="grid gap-1">
+                                @forelse ($selected_rooms as $room)
+                                <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
+                                    {{-- Room Details --}}
+                                    <div>
+                                        <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->roomType->name }}</p>
+                                        <p class="text-sm">
+                                            <span class="uppercase">{{ $room->building->prefix }}</span>
+                                            {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
+                                        <p class="text-xs text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
+                                    </div>
+                                    {{-- Remove Room button --}}
+                                    <button
+                                        type="button"
+                                        class="absolute text-xs font-semibold text-red-500 top-2 right-3"
+                                        wire:click="removeRoom({{ $room->id }})">
+                                        <span wire:loading.remove wire:target="removeRoom({{ $room->id }})">Remove</span>
+                                        <span wire:loading wire:target="removeRoom({{ $room->id }})">Removing</span>
+                                    </button>
+                                </div>
+                                @empty
+                                    <div class="border rounded-lg">
+                                        <x-table-no-data.rooms />
+                                    </div>
+                                @endforelse
+                            </div>
+                        @endif
                     </div>
                     
                     <div class="flex gap-1">

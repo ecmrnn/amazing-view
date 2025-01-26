@@ -13,6 +13,7 @@ use App\Models\RoomType;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -58,12 +59,6 @@ class EditReservation extends Component
     public $selected_type; 
     public $selected_building;
     public $additional_amenity;
-    // public $additional_amenity = [
-    //     'id' => null,
-    //     'quantity' => 0,
-    //     'price' => 0,
-    //     'total' => 0,
-    // ];
     public $available_amenities;
     public $additional_amenities;
     public $additional_amenity_total;
@@ -162,6 +157,29 @@ class EditReservation extends Component
         }
     }
 
+    #[On('select-building')]
+    public function selectBuilding($data)
+    {
+        foreach ($data['selected_rooms'] as $room) {
+            $room = Room::where('id', $room)->first();
+            $this->toggleRoom($room);
+        }
+        
+        $this->floor_number = 1;
+        $this->selected_building = Building::where('id', $data['building'])->first();
+        $this->floor_count = $this->selected_building->floor_count;
+        $this->column_count = $this->selected_building->room_col_count;
+
+        $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
+
+        // Get the rooms in the building
+        $this->available_rooms = Room::where('building_id', $this->selected_building->id)
+            ->where('floor_number', $this->floor_number)
+            ->get();
+
+        $this->dispatch('open-modal', 'show-building-rooms');
+    }
+
     public function computeBreakdown()
     {
         $this->vatable_sales = $this->sub_total / 1.12;
@@ -244,23 +262,6 @@ class EditReservation extends Component
         if ($this->additional_amenity_id && $this->additional_amenity_quantity) {
             $this->additional_amenity_total = $this->additional_amenity->price * $this->additional_amenity_quantity;
         }
-    }
-
-    public function selectBuilding(Building $id)
-    {
-        $this->floor_number = 1;
-        $this->selected_building = $id;
-        $this->floor_count = $this->selected_building->floor_count;
-        $this->column_count = $this->selected_building->room_col_count;
-
-        $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
-
-        // Get the rooms in the building
-        $this->available_rooms = Room::where('building_id', $this->selected_building->id)
-            ->where('floor_number', $this->floor_number)
-            ->get();
-
-        $this->dispatch('open-modal', 'show-building-rooms');
     }
 
     public function upFloor()

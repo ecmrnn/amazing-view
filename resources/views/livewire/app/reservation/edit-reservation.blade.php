@@ -30,8 +30,8 @@
 }" wire:submit="submit()">
 @csrf
 
-<section class="w-full max-w-screen-lg p-5 mx-auto space-y-5 bg-white rounded-lg shadow-md">
-    <div class="flex items-center gap-3 sm:gap-5">
+<section class="w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
+    <div class="flex items-center gap-5 p-5 bg-white border rounded-lg border-slate-200">
         <x-tooltip text="Back" dir="bottom">
             <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>
                 <x-icon-button>
@@ -47,14 +47,14 @@
     </div>
     
     {{-- Reservation Details --}}
-    <section class="p-3 space-y-5 border rounded-lg sm:p-5">
+    <section class="p-5 space-y-5 bg-white border rounded-lg">
         <div class="flex items-start justify-between">
             <hgroup>
                 <h3 class="font-semibold">Reservation Details</h3>
                 <p class="max-w-sm text-xs">Click the <strong class="text-blue-500">Edit</strong> button on the right of the reservation id to edit the details of this reservation.</p>
             </hgroup>
 
-            <div>
+            <div class="flex-shrink-0">
                 <x-status :status="$reservation->status" type="reservation" />
             </div>
         </div>
@@ -70,7 +70,7 @@
                 </div>
                 {{-- Reservation Details --}}
                 <div class="grid grid-cols-2 gap-5">
-                    <div class="grid grid-cols-2 gap-5 p-5 border rounded-md border-slate-200">
+                    <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
                         <div>
                             <p class="font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
                             <p class="text-xs">Check-in Date</p>
@@ -80,7 +80,7 @@
                             <p class="text-xs">Check-out Date</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-5 p-5 border rounded-md border-slate-200">
+                    <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
                         <div>
                             <p class="font-semibold">{{ $reservation->adult_count }}</p>
                             <p class="text-xs">Number of Adults</p>
@@ -109,7 +109,7 @@
             <div class="space-y-5">
                 <p class="font-semibold">Rooms</p>
                 
-                <div class="grid grid-cols-2 gap-5">
+                <div class="grid grid-cols-2 gap-5 sm:">
                     @forelse ($reservation->rooms as $room)
                         <div class="grid grid-cols-2 gap-5 p-5 border rounded-md border-slate-200">
                             <div>
@@ -133,14 +133,14 @@
     </section>
 
     {{-- Guest Details --}}
-    <section class="p-3 space-y-5 border rounded-lg sm:p-5">
+    <section class="p-5 space-y-5 bg-white border rounded-lg">
         <hgroup>
             <h3 class="font-semibold">Guest Details</h3>
             <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
         </hgroup>
 
         {{-- First & Last name --}}
-        <div class="grid items-start gap-3 sm:grid-cols-2">
+        <div class="grid items-start gap-5 sm:grid-cols-2">
             <div class="space-y-1">
                 <x-form.input-text class="capitalize" wire:model.live='first_name' x-model="first_name"
                     id="first_name" label="First Name" />
@@ -167,13 +167,13 @@
     </section>
 
     {{-- Additional Details (Optional) --}}
-    <section class="p-3 space-y-5 border rounded-lg sm:p-5">
+    <section class="p-5 space-y-5 bg-white border rounded-lg">
         <hgroup>
             <h3 class="font-semibold">Additional Fees</h3>
             <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
         </hgroup>   
 
-        <div class="grid gap-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             @forelse ($addons as $addon)
                 @php
                     $checked = false;
@@ -384,102 +384,10 @@
         </div>
     </x-modal.drawer>
 
-    {{-- Modal for showing building's rooms --}}
-    <x-modal.full name="show-building-rooms" maxWidth="lg">
-        @if (!empty($selected_building))
-            <div x-data="{ floor_number: $wire.entangle('floor_number'),
-                floor_count: $wire.entangle('floor_count'),
-                column_count: $wire.entangle('column_count'),
-                }">
-                <header class="flex items-center gap-3 p-5 border-b">
-                    <x-tooltip text="Back" dir="bottom">
-                        <x-icon-button x-ref="content" x-on:click="show = false">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                        </x-icon-button>
-                    </x-tooltip>
-                    <hgroup>
-                        <h2 class="text-sm font-semibold capitalize">{{ $selected_building->name }} Building</h2>
-                        <p class="text-xs text-zinc-800">Click a room to reserve</p>
-                    </hgroup>
-                </header>
-                
-                {{-- Room List --}}
-                <section class="grid p-5 overflow-auto max-h-80 bg-slate-100/50 gap-x-1 gap-y-5"
-                    @if ($available_rooms->isNotEmpty())
-                        style="grid-template-columns: repeat({{ $column_count }}, 1fr)"
-                    @endif
-                    @can('update room')
-                        x-sort
-                    @endcan>
-
-                    <div wire:loading.delay wire:target='selectBuilding' class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
-                        Amazing rooms incoming!
-                    </div>
-
-                    @forelse ($available_rooms as $room)
-                        @php
-                            $checked = false;
-                            $disabled = false;
-                            $reserved = false;
-                            if ($selected_rooms->contains('id', $room->id)) {
-                                $checked = true;
-                            }
-                            if ($room->status == \App\Enums\RoomStatus::UNAVAILABLE) {
-                                $disabled = true;
-                            }
-                            if (in_array($room->id, $reserved_rooms)) {
-                                $reserved = true;
-                            }
-                        @endphp
-                        <x-form.checkbox-toggle
-                            :reserved="$reserved"
-                            :disabled="$disabled"
-                            :checked="$checked"
-                            id="room-{{ $room->id }}"
-                            x-on:click="$wire.toggleRoom({{ $room->id }})"
-                            class="select-none"
-                            >
-                            <div class="grid w-full rounded-lg select-none min-w-28 place-items-center aspect-square">
-                                <div>
-                                    <p class="text-xs font-semibold text-center">{{ $room->building->prefix }}</p>
-                                    <p class="text-lg font-semibold text-center">{{ $room->room_number }}</p>
-                                </div>
-                            </div>
-                        </x-form.checkbox-toggle>
-                    @empty
-                        <div class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
-                            No rooms assigned to this floor
-                        </div>
-                    @endforelse
-                </section>
-                
-                {{-- Floor Navigation --}}
-                <footer class="flex gap-1 p-5 border-t">
-                    <x-tooltip text="Up">
-                        <x-icon-button x-ref="content" x-on:click="$wire.upFloor()" x-bind:disabled="floor_number == floor_count">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-from-dot"><path d="m5 9 7-7 7 7"/><path d="M12 16V2"/><circle cx="12" cy="21" r="1"/></svg>
-                        </x-icon-button>
-                    </x-tooltip>
-                    <x-tooltip text="Down">
-                        <x-icon-button x-ref="content" x-on:click="$wire.downFloor()" x-bind:disabled="floor_number == 1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-to-dot"><path d="M12 2v14"/><path d="m19 9-7 7-7-7"/><circle cx="12" cy="21" r="1"/></svg>
-                        </x-icon-button>
-                    </x-tooltip>
-                    <div class="grid px-3 text-xs font-semibold border rounded-lg place-items-center">
-                        <div><span x-text="floor_number"></span>F &#47; <span x-text="floor_count"></span>F</div>
-                    </div>
-                </footer>
-            </div>
-        @endif
-    </x-modal.full>
-
     {{-- Modal for viewing rooms --}}
     <x-modal.full name="show-typed-rooms" maxWidth="lg">
         @if (!empty($selected_type))
-            <div x-data="{ floor_number: $wire.entangle('floor_number'),
-                floor_count: $wire.entangle('floor_count'),
-                column_count: $wire.entangle('column_count'),
-                }">
+            <div>
                 <header class="flex items-center gap-3 p-5 border-b">
                     <x-tooltip text="Back" dir="bottom">
                         <x-icon-button x-ref="content" x-on:click="show = false">
@@ -561,10 +469,7 @@
     {{-- Modal for viewing selected rooms --}}
     <x-modal.full name="show-selected-rooms" maxWidth="lg">
         @if (!empty($selected_rooms))
-            <div x-data="{ floor_number: $wire.entangle('floor_number'),
-                floor_count: $wire.entangle('floor_count'),
-                column_count: $wire.entangle('column_count'),
-                }">
+            <div>
                 <header class="flex items-center gap-3 p-5 border-b">
                     <x-tooltip text="Back" dir="bottom">
                         <x-icon-button x-ref="content" x-on:click="show = false">
@@ -621,5 +526,95 @@
         </div>
     </x-modal.full> 
 @endpush
+
+    {{-- Modal for showing building's rooms --}}
+    <x-modal.full name="show-building-rooms" maxWidth="lg">
+        @if (!empty($selected_building))
+            <div x-data="{ floor_number: $wire.entangle('floor_number'),
+                floor_count: $wire.entangle('floor_count'),
+                column_count: $wire.entangle('column_count'),
+                }">
+                <header class="flex items-center gap-3 p-5 border-b">
+                    <x-tooltip text="Back" dir="bottom">
+                        <x-icon-button x-ref="content" x-on:click="show = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                        </x-icon-button>
+                    </x-tooltip>
+                    
+                    <hgroup>
+                        <h2 class="text-lg font-semibold capitalize">{{ $selected_building->name }} Building</h2>
+                        <p class="text-xs text-zinc-800">Click a room to reserve</p>
+                    </hgroup>
+                </header>
+                
+                {{-- Room List --}}
+                <section class="grid p-5 overflow-auto max-h-80 bg-slate-100/50 gap-x-1 gap-y-5"
+                    @if ($available_rooms->isNotEmpty())
+                        style="grid-template-columns: repeat({{ $column_count }}, 1fr)"
+                    @endif
+                    @can('update room')
+                        x-sort
+                    @endcan>
+
+                    <div wire:loading.delay wire:target='selectBuilding' class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
+                        Amazing rooms incoming!
+                    </div>
+
+                    @forelse ($available_rooms as $room)
+                        @php
+                            $checked = false;
+                            $disabled = false;
+                            $reserved = false;
+                            if ($selected_rooms->contains('id', $room->id)) {
+                                $checked = true;
+                            }
+                            if ($room->status == \App\Enums\RoomStatus::UNAVAILABLE) {
+                                $disabled = true;
+                            }
+                            if (in_array($room->id, $reserved_rooms)) {
+                                $reserved = true;
+                            }
+                        @endphp
+                        <x-form.checkbox-toggle
+                            :reserved="$reserved"
+                            :disabled="$disabled"
+                            :checked="$checked"
+                            id="room-{{ $room->id }}"
+                            x-on:click="$dispatch('select-room', { room: {{ $room->id }} })"
+                            class="select-none"
+                            >
+                            <div class="grid w-full rounded-lg select-none min-w-28 place-items-center aspect-square">
+                                <div>
+                                    <p class="text-xs font-semibold text-center">{{ $room->building->prefix }}</p>
+                                    <p class="text-lg font-semibold text-center">{{ $room->room_number }}</p>
+                                </div>
+                            </div>
+                        </x-form.checkbox-toggle>
+                    @empty
+                        <div class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
+                            No rooms assigned to this floor
+                        </div>
+                    @endforelse
+                </section>
+                
+                {{-- Floor Navigation --}}
+                <footer class="flex gap-1 p-5 border-t">
+                    <x-tooltip text="Up">
+                        <x-icon-button x-ref="content" x-on:click="$wire.upFloor()" x-bind:disabled="floor_number == floor_count">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-from-dot"><path d="m5 9 7-7 7 7"/><path d="M12 16V2"/><circle cx="12" cy="21" r="1"/></svg>
+                        </x-icon-button>
+                    </x-tooltip>
+                    <x-tooltip text="Down">
+                        <x-icon-button x-ref="content" x-on:click="$wire.downFloor()" x-bind:disabled="floor_number == 1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-to-dot"><path d="M12 2v14"/><path d="m19 9-7 7-7-7"/><circle cx="12" cy="21" r="1"/></svg>
+                        </x-icon-button>
+                    </x-tooltip>
+                    <div class="grid px-3 text-xs font-semibold border rounded-lg place-items-center">
+                        <div><span x-text="floor_number"></span>F &#47; <span x-text="floor_count"></span>F</div>
+                    </div>
+                </footer>
+            </div>
+        @endif
+    </x-modal.full>
 </form>
 
