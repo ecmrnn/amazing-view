@@ -58,6 +58,7 @@ class EditReservation extends Component
     public $baranggays = [];
 
     // Operations
+    public $modal_key;
     public $is_map_view = true; /* Must be set to true */
     public $selected_type; 
     public $selected_building;
@@ -164,11 +165,12 @@ class EditReservation extends Component
     #[On('select-building')]
     public function selectBuilding($data)
     {
+        $this->modal_key = uniqid();
         $this->selected_rooms = collect();
         
         if ($data['selected_rooms']) {
             foreach ($data['selected_rooms'] as $room) {
-                $room = Room::where('id', $room)->first();
+                $room = Room::find($room);
     
                 if ($room) {
                     $this->toggleRoom($room);
@@ -197,7 +199,7 @@ class EditReservation extends Component
             ->get();
 
         $this->dispatch('open-modal', 'show-building-rooms');
-        $this->dispatch('$refresh');
+        // $this->dispatch('$refresh');
     }
 
     public function computeBreakdown()

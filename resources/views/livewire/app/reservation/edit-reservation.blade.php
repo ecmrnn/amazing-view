@@ -533,7 +533,7 @@
             <div x-data="{ floor_number: $wire.entangle('floor_number'),
                 floor_count: $wire.entangle('floor_count'),
                 column_count: $wire.entangle('column_count'),
-                }">
+                }" wire:key="modal-{{ $modal_key }}">
                 <header class="flex items-center gap-3 p-5 border-b">
                     <x-tooltip text="Back" dir="bottom">
                         <x-icon-button x-ref="content" x-on:click="show = false">
