@@ -568,10 +568,10 @@
                             if ($selected_rooms->contains('id', $room->id)) {
                                 $checked = true;
                             }
-                            if ($room->status == \App\Enums\RoomStatus::UNAVAILABLE) {
+                            elseif ($room->status == \App\Enums\RoomStatus::UNAVAILABLE) {
                                 $disabled = true;
                             }
-                            if (in_array($room->id, $reserved_rooms)) {
+                            elseif (in_array($room->id, $reserved_rooms)) {
                                 $reserved = true;
                             }
                         @endphp

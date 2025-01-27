@@ -10,6 +10,7 @@ use App\Models\RoomType;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\Features\SupportConsoleCommands\Commands\Upgrade\ThirdPartyUpgradeNotice;
@@ -96,7 +97,7 @@ class EditReservationDetails extends Component
 
         // Initialize the buildings and rooms
         $this->buildings = Building::with('rooms')->withCount('rooms')->get();
-        $this->rooms = RoomType::all();
+        $this->rooms = RoomType::with('rooms')->get();
 
         // 5. Send notification about the changes
     }
@@ -128,8 +129,12 @@ class EditReservationDetails extends Component
     }
 
     public function viewBuilding($building) {
-        // dd($building, $this->selected_rooms);
-        $this->dispatch('select-building', ['building' => $building, 'selected_rooms' => $this->selected_rooms]);
+        $this->dispatch("select-building", [
+                'date_in' => $this->date_in,
+                'date_out' => $this->date_out,
+                'building' => $building,
+                'selected_rooms' => $this->selected_rooms->pluck('id')->toArray(),
+        ])->to(EditReservation::class);
     }
 
     public function edit() {
@@ -327,9 +332,9 @@ class EditReservationDetails extends Component
                                     <button
                                         type="button"
                                         class="absolute text-xs font-semibold text-red-500 top-2 right-3"
-                                        wire:click="removeRoom({{ $room->id }})">
-                                        <span wire:loading.remove wire:target="removeRoom({{ $room->id }})">Remove</span>
-                                        <span wire:loading wire:target="removeRoom({{ $room->id }})">Removing</span>
+                                        wire:click="removeRoom({{ $room }})">
+                                        <span wire:loading.remove wire:target="removeRoom({{ $room }})">Remove</span>
+                                        <span wire:loading wire:target="removeRoom({{ $room }})">Removing</span>
                                     </button>
                                 </div>
                                 @empty

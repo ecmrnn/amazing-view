@@ -2,6 +2,8 @@
 
 namespace App\Livewire\App\Reservation;
 
+use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
 use App\Http\Controllers\AddressController;
 use App\Models\Amenity;
 use App\Models\Building;
@@ -16,6 +18,7 @@ use Illuminate\Support\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use phpDocumentor\Reflection\Types\This;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class EditReservation extends Component
@@ -70,6 +73,7 @@ class EditReservation extends Component
     public $reserved_rooms;
     public $capacity;
     public $min_date;
+    public Building $building;
     public $buildings;
     public $floor_number = 1;
     public $floor_count = 1;
@@ -89,7 +93,7 @@ class EditReservation extends Component
         $this->reservation = $reservation;
         $this->min_date = Carbon::now()->format('Y-m-d');
         
-        $this->selected_rooms = $reservation->rooms;
+        $this->selected_rooms = collect();
         $this->selected_amenities = $reservation->amenities;
         $this->additional_amenities = collect();
         $this->additional_amenity_quantities = collect();
@@ -97,8 +101,8 @@ class EditReservation extends Component
 
         $this->setProperties();
 
-        $this->buildings = Building::all();
-        $this->rooms = RoomType::all();
+        $this->buildings = Building::with('rooms')->withCount('rooms')->get();
+        $this->rooms = RoomType::with('rooms')->get();
     }
 
     public function rules()
@@ -160,17 +164,32 @@ class EditReservation extends Component
     #[On('select-building')]
     public function selectBuilding($data)
     {
-        foreach ($data['selected_rooms'] as $room) {
-            $room = Room::where('id', $room)->first();
-            $this->toggleRoom($room);
-        }
+        $this->selected_rooms = collect();
+        
+        if ($data['selected_rooms']) {
+            foreach ($data['selected_rooms'] as $room) {
+                $room = Room::where('id', $room)->first();
+    
+                if ($room) {
+                    $this->toggleRoom($room);
+                }
+            }
+        } 
+
+        $this->date_in = $data['date_in'];
+        $this->date_out = $data['date_out'];
         
         $this->floor_number = 1;
         $this->selected_building = Building::where('id', $data['building'])->first();
         $this->floor_count = $this->selected_building->floor_count;
         $this->column_count = $this->selected_building->room_col_count;
 
-        $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
+        $this->reserved_rooms = Room::whereHas('reservations', function ($query) {
+            return $query->where('reservations.id', '!=', $this->reservation->id)
+                ->where('date_in', '<=', $this->date_out)
+                ->where('date_out', '>=', $this->date_in)
+                ->whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value]);
+        })->pluck('id')->toArray();
 
         // Get the rooms in the building
         $this->available_rooms = Room::where('building_id', $this->selected_building->id)
@@ -178,6 +197,7 @@ class EditReservation extends Component
             ->get();
 
         $this->dispatch('open-modal', 'show-building-rooms');
+        $this->dispatch('$refresh');
     }
 
     public function computeBreakdown()
@@ -377,51 +397,6 @@ class EditReservation extends Component
         
         $service = new ReservationService();
         $service->update($this->reservation, $validated);
-        // if (!empty($this->selected_rooms)) {
-        //     // Removes old and non existing amenity
-        //     foreach ($this->reservation->rooms as $room) {
-        //         if (!$this->selected_rooms->contains('id', $room->id)) {
-        //             $this->reservation->rooms()->detach($room->id);
-        //         }
-        //     }
-        //     foreach ($this->selected_rooms as $room) {
-        //         if (!$this->reservation->rooms->contains('id', $room->id)) {
-        //             $this->reservation->rooms()->attach($room->id);
-        //         }
-        //     }
-        // }
-
-        // if (!empty($this->selected_amenities)) {
-        //     // Removes old and non existing amenity
-        //     foreach ($this->reservation->amenities as $amenity) {
-        //         if (!$this->selected_amenities->contains('id', $amenity->id)) {
-        //             $this->reservation->amenities()->detach($amenity->id);
-        //         }
-        //     }
-        //     foreach ($this->selected_amenities as $amenity) {
-        //         // If the newly selected amenities exists in the already selected amenities
-        //         // - updates the record
-        //         $quantity = 0;    
-                
-        //         foreach ($this->additional_amenity_quantities as $selected_amenity) {
-        //             if ($selected_amenity['amenity_id'] == $amenity->id) {
-        //                 $quantity = $selected_amenity['quantity'];
-        //                 break;
-        //             }
-        //         }
-
-        //         if ($this->reservation->amenities->contains('id', $amenity->id)) {
-        //             $this->reservation->amenities()->updateExistingPivot($amenity->id, ['quantity' => $quantity]);
-        //         } else {
-        //             $this->reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
-        //         }
-        //     }
-        // }
-
-        // $invoice = Invoice::whereIid($this->reservation->invoice->iid)->first();
-        // // dd($invoice);
-        // $invoice->balance = $this->net_total - $invoice->downpayment;
-        // $invoice->save();
 
         $this->toast('Success!', 'success', 'Yay, reservation updated!');
     }
@@ -435,6 +410,7 @@ class EditReservation extends Component
             'buildings' => $this->buildings,
             'addons' => $this->addons,
             'rooms' => $this->rooms,
+            'selected_rooms' => $this->selected_rooms
         ]);
     }
 }
