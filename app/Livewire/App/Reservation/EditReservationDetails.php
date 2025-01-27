@@ -10,10 +10,8 @@ use App\Models\RoomType;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Reactive;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use Livewire\Features\SupportConsoleCommands\Commands\Upgrade\ThirdPartyUpgradeNotice;
 
 class EditReservationDetails extends Component
 {
@@ -112,7 +110,7 @@ class EditReservationDetails extends Component
         $this->step = $step;
     }
 
-    #[On('select-room')]
+    #[On('add-room')]
     public function toggleRoom(Room $room)
     {
         if ($room && !$this->selected_rooms->contains('id', $room->id)) {
@@ -124,8 +122,29 @@ class EditReservationDetails extends Component
         }
     }
 
+    #[On('add-rooms')]
+    public function addRoom($rooms) {
+        foreach ($rooms as $room) {
+            // Check if the room is not yet selected
+            if (!$this->selected_rooms->contains('id', $room)) {
+                $room = Room::find($room);
+                $this->toggleRoom($room);
+                break;
+            }
+        }
+    }
+
     public function removeRoom(Room $room) {
         $this->toggleRoom($room);
+    }
+
+    public function viewRooms($roomType) {
+        $this->dispatch('view-rooms', [
+            'room_type' => $roomType,
+            'date_in' => $this->date_in,
+            'date_out' => $this->date_out,
+            'selected_rooms' => $this->selected_rooms->pluck('id')->toArray(),
+        ]);
     }
 
     public function viewBuilding($building) {
@@ -272,7 +291,7 @@ class EditReservationDetails extends Component
                                                 <p class="text-xs">Maximum rate: <x-currency /> {{ number_format($room->max_rate, 2) }}</p>
                                             </div>
                                         </div>
-                                        <x-secondary-button class="flex-shrink-0 text-xs" x-on:click="$dispatch('open-modal', 'show-typed-rooms')" wire:click="viewRooms({{ $room->id }})">
+                                        <x-secondary-button class="flex-shrink-0 text-xs" wire:click="viewRooms({{ $room->id }})">
                                             View Rooms
                                         </x-secondary-button>
                                     </div>

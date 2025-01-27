@@ -58,7 +58,7 @@ class EditReservation extends Component
     public $baranggays = [];
 
     // Operations
-    public $modal_key;
+    public $modal_key; /* Unique identifier for building modal */
     public $is_map_view = true; /* Must be set to true */
     public $selected_type; 
     public $selected_building;
@@ -180,7 +180,6 @@ class EditReservation extends Component
 
         $this->date_in = $data['date_in'];
         $this->date_out = $data['date_out'];
-        
         $this->floor_number = 1;
         $this->selected_building = Building::where('id', $data['building'])->first();
         $this->floor_count = $this->selected_building->floor_count;
@@ -327,6 +326,7 @@ class EditReservation extends Component
         $this->computeBreakdown();
     }
 
+    #[On('add-room')]
     public function toggleRoom(Room $room)
     {
         if ($room && !$this->selected_rooms->contains('id', $room->id)) {
@@ -347,18 +347,36 @@ class EditReservation extends Component
         $this->computeBreakdown();
     }
 
-    public function viewRooms(RoomType $roomType) {
-        $this->selected_type = $roomType;
+    #[On('view-rooms')]
+    public function viewRooms($data) {
+        $this->selected_type = RoomType::find($data['room_type']);
+        $this->date_in = $data['date_in'];
+        $this->date_out = $data['date_out'];
+        $this->selected_rooms = collect();
+
+        foreach ($data['selected_rooms'] as $room) {
+            $room = Room::find($room);
+            
+            if ($room) {
+                $this->toggleRoom($room);
+            }
+        }
         
-        $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
+        $this->reserved_rooms = Room::whereHas('reservations', function ($query) {
+            return $query->where('reservations.id', '!=', $this->reservation->id)
+                ->where('date_in', '<=', $this->date_out)
+                ->where('date_out', '>=', $this->date_in)
+                ->whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value]);
+        })->pluck('id')->toArray();
         
-        $room_by_capacity = Room::whereNotIn('id', $reserved_rooms)
-            ->where('room_type_id', $roomType->id)
+        $room_by_capacity = Room::whereNotIn('id', $this->reserved_rooms)
+            ->where('room_type_id', $this->selected_type->id)
             ->orderBy('max_capacity')
             ->get()
             ->toBase();
 
         $this->available_room_types = $room_by_capacity->groupBy('max_capacity');
+        $this->dispatch('open-modal', 'show-typed-rooms');
     }
 
     public function addRoom($room_ids) {
@@ -368,18 +386,17 @@ class EditReservation extends Component
             if (!$this->selected_rooms->contains('id', $room_id)) {
                 $room = Room::find($room_id);
                 $this->toggleRoom($room);
-
                 break;
             }
         }
+        $this->dispatch('add-rooms', $room_ids);
     }
 
-    public function removeRoom(Room $room) {
-        $this->toggleRoom($room);
-    }
+    // public function removeRoom(Room $room) {
+    //     $this->toggleRoom($room);
+    // }
 
     public function update() {
-        
         $validated = $this->validate([
             'date_in' => 'required|date|after_or_equal:today',
             'date_out' => Reservation::rules()['date_out'],
