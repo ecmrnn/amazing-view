@@ -126,9 +126,16 @@ class ReservationService
 
         $reservation->save();
 
-        $this->updateRooms($reservation, $data['selected_rooms']);
-        $this->updateAmenities($reservation, $data['selected_amenities']);
-
+        if (isset($data['selected_rooms'])) {
+            $this->updateRooms($reservation, $data['selected_rooms']);
+        }
+        if (isset($data['selected_services'])) {
+            $this->updateServices($reservation, $data['selected_services']);
+        }
+        if (isset($data['selected_amenities'])) {
+            $this->updateAmenities($reservation, $data['selected_amenities']);
+        }
+        
         // Update the invoice
         $billing = new BillingService();
         $breakdown = $billing->breakdown($reservation->fresh());
@@ -147,12 +154,12 @@ class ReservationService
         return $reservation;
     }
 
-    public function updateRooms(Reservation $reservation, $new_rooms) {
+    public function updateRooms(Reservation $reservation, $rooms) {
         // Detach the old and attach the new rooms to reservation
         foreach ($reservation->rooms as $room) {
             $reservation->rooms()->detach($room->id);
         }
-        foreach ($new_rooms as $room) {
+        foreach ($rooms as $room) {
             $reservation->rooms()->attach($room->id, [
                 'rate' => $room->rate,
             ]);
@@ -161,15 +168,27 @@ class ReservationService
         $reservation->save();
     }
 
-    public function updateAmenities(Reservation $reservation, $new_amenities) {
+    public function updateAmenities(Reservation $reservation, $amenities) {
         // Detach the old and attach the new amenities to reservation
         foreach ($reservation->amenities as $amenity) {
             $reservation->amenities()->detach($amenity->id);
         }
-        foreach ($new_amenities as $amenity) {
+        foreach ($amenities as $amenity) {
             $reservation->amenities()->attach($amenity->id, [
                 'price' => $amenity['price'],
                 'quantity' => 0,
+            ]);
+        }
+    }
+
+    public function updateServices(Reservation $reservation, $services) {
+        // Detach the old and attach the new services to reservation
+        foreach ($reservation->services as $service) {
+            $reservation->services()->detach($service->id);
+        }
+        foreach ($services as $service) {
+            $reservation->services()->attach($service->id, [
+                'price' => $service['price'],
             ]);
         }
     }

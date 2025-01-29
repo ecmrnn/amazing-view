@@ -5,6 +5,7 @@ namespace App\Livewire\App\Reservation;
 use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
 use App\Http\Controllers\AddressController;
+use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Building;
 use App\Models\Invoice;
@@ -12,6 +13,7 @@ use App\Models\Reservation;
 use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Services\AdditionalServiceHandler;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
@@ -35,6 +37,7 @@ class EditReservation extends Component
     #[Validate] public $senior_count = 0;
     #[Validate] public $pwd_count = 0;
     #[Validate] public $selected_rooms;
+    #[Validate] public $selected_services;
     #[Validate] public $selected_amenities;
     // Guest Details
     #[Validate] public $first_name;
@@ -82,7 +85,7 @@ class EditReservation extends Component
     public $floor_count = 1;
     public $column_count = 1;
     public $night_count = 1;
-    public $addons;
+    public $services;
     public $rooms;
     public $sub_total = 0;
     public $net_total = 0;
@@ -97,7 +100,7 @@ class EditReservation extends Component
         $this->min_date = Carbon::now()->format('Y-m-d');
         
         $this->selected_rooms = collect();
-        $this->selected_amenities = $reservation->amenities;
+        $this->selected_services = $reservation->services;
         $this->additional_amenities = collect();
         $this->additional_amenity_quantities = collect();
         $this->available_rooms = collect();
@@ -146,7 +149,7 @@ class EditReservation extends Component
             $this->sub_total += ($room->rate * $this->night_count);
         }
 
-        foreach ($this->selected_amenities as $amenity) {
+        foreach ($this->selected_services as $amenity) {
             $quantity = $amenity->pivot->quantity;
             
             // If quantity is 0, change it to 1
@@ -157,12 +160,14 @@ class EditReservation extends Component
 
         $this->computeBreakdown();
         // Attach selected amenities to additional_amenities
-        foreach ($this->selected_amenities as $amenity) {
-            $this->additional_amenities->push($amenity);
-            $this->additional_amenity_quantities->push([
-                'amenity_id' => $amenity->id,
-                'quantity' => $amenity->pivot->quantity
-            ]);
+        if (!empty($this->selected_amenities)) {
+            foreach ($this->selected_amenities as $amenity) {
+                $this->additional_amenities->push($amenity);
+                $this->additional_amenity_quantities->push([
+                    'amenity_id' => $amenity->id,
+                    'quantity' => $amenity->pivot->quantity
+                ]);
+            }
         }
     }
 
@@ -237,7 +242,7 @@ class EditReservation extends Component
             ]);
 
             // Push to amenities selected on reservation
-            $this->selected_amenities->push($amenity);
+            $this->selected_services->push($amenity);
 
             // Recomputes Breakdown
             $this->sub_total += ($amenity->price * $this->additional_amenity_quantity);
@@ -270,7 +275,7 @@ class EditReservation extends Component
             $this->additional_amenities = $this->additional_amenities->reject(function ($amenity_loc) use ($amenity) {
                 return $amenity_loc->id == $amenity->id;
             });
-            $this->selected_amenities = $this->selected_amenities->reject(function ($amenity_loc) use ($amenity) {
+            $this->selected_services = $this->selected_services->reject(function ($amenity_loc) use ($amenity) {
                 return $amenity_loc->id == $amenity->id;
             });
             $this->additional_amenity_quantities = $this->additional_amenity_quantities->reject(function ($amenity_loc) use ($amenity) {
@@ -313,21 +318,10 @@ class EditReservation extends Component
         }
     }
 
-    public function toggleAmenity(Amenity $amenity_clicked)
+    public function toggleService(AdditionalServices $service)
     {
-        // If: the amenity is already selected, remove it from the 'selected_amenities'
-        // Else: push it to the 'selected_amenities'
-        if ($this->selected_amenities->contains('id', $amenity_clicked->id)) {
-            $this->selected_amenities = $this->selected_amenities->reject(function ($amenity) use ($amenity_clicked) {
-                return $amenity->id == $amenity_clicked->id;
-            });
-            $this->sub_total -= $amenity_clicked->price;
-        } else {
-            $this->selected_amenities->push($amenity_clicked);
-            $this->sub_total += $amenity_clicked->price;
-        }
-
-        $this->computeBreakdown();
+        $handler = new AdditionalServiceHandler;
+        $this->selected_services = $handler->add($this->selected_services, $service);
     }
 
     #[On('add-room')]
@@ -425,17 +419,19 @@ class EditReservation extends Component
 
     public function update() {
         $validated = $this->validate([
+            'date_in' => Reservation::rules()['date_in'],
+            'date_out' => Reservation::rules()['date_out'],
+            'adult_count' => Reservation::rules()['adult_count'],
+            'children_count' => Reservation::rules()['children_count'],
             'first_name' => Reservation::rules()['first_name'],
             'last_name' => Reservation::rules()['last_name'],
             'email' => Reservation::rules()['email'],
             'phone' => Reservation::rules()['phone'],
             'address' => Reservation::rules()['address'],
-            // 'note' => Reservation::rules()['note'],
+            'note' => Reservation::rules()['note'],
         ]);
 
-        // $validated['selected_rooms'] = $this->selected_rooms;
-        $validated['selected_amenities'] = $this->additional_amenities;
-        dd($validated);
+        $validated['selected_services'] = $this->selected_services;
         
         $service = new ReservationService();
         $service->update($this->reservation, $validated);
@@ -446,11 +442,11 @@ class EditReservation extends Component
     public function render()
     {
         $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
-        $this->addons = Amenity::where('is_addons', 1)->get();
+        $this->services = AdditionalServices::where('is_active', true)->get();
 
         return view('livewire.app.reservation.edit-reservation', [
             'buildings' => $this->buildings,
-            'addons' => $this->addons,
+            'services' => $this->services,
             'rooms' => $this->rooms,
             'selected_rooms' => $this->selected_rooms
         ]);

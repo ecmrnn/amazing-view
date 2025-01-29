@@ -179,37 +179,41 @@
         {{-- Additional Details (Optional) --}}
         <section class="p-5 space-y-5 bg-white border rounded-lg">
             <hgroup>
-                <h3 class="font-semibold">Additional Fees</h3>
-                <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
+                <h3 class="font-semibold">Additional Services</h3>
+                <p class="max-w-sm text-xs">Select a service the guest wants to avail then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
             </hgroup>   
 
             <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                @forelse ($addons as $addon)
+                @forelse ($services as $service)
                     @php
                         $checked = false;
 
-                        if ($selected_amenities->contains('id', $addon->id)) {
+                        if ($selected_services->contains('id', $service->id)) {
                             $checked = true;
                         }
                     @endphp
-                    <div key="{{ $addon->id }}">
-                        <x-form.checkbox-toggle :checked="$checked" id="amenity{{ $addon->id }}" name="amenity" wire:click="toggleAmenity({{ $addon->id }})">
+                    
+                    <div key="{{ $service->id }}">
+                        <x-form.checkbox-toggle :checked="$checked" id="service-{{ $service->id }}" name="service" wire:click="toggleService({{ $service->id }})">
                             <div class="px-3 py-2 select-none">
                                 <div class="w-full font-semibold capitalize text-md">
-                                    {{ $addon->name }}
+                                    {{ $service->name }}
                                 </div>
-                                <div class="w-full text-xs">Standard Fee: &#8369;{{ $addon->price }}
+
+                                <div class="w-full text-xs">
+                                    Standard Fee: &#8369;{{ $service->price }}
                                 </div>
                             </div>
                         </x-form.checkbox-toggle>
                     </div>
                 @empty
-                    <div
-                        class="py-5 text-sm font-semibold text-center border rounded-lg sm:col-span-2 lg:col-span-4 text-zinc-800/50">
-                        No add ons yet...</div>
+                    <div class="py-5 text-sm font-semibold text-center border rounded-lg sm:col-span-2 lg:col-span-4 text-zinc-800/50">No services yet...</div>
                 @endforelse
             </div>
+        </section>
 
+
+        <section class="p-5 space-y-5 bg-white border rounded-lg">
             <hgroup>
                 <h3 class="font-semibold">Amenities</h3>
                 <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
@@ -286,7 +290,7 @@
                                         >
                                         <option value="">Select an Amenity</option>
                                         @foreach ($available_amenities as $amenity)
-                                            @if (!$additional_amenities->contains('id', $amenity->id) && !$selected_amenities->contains('id', $amenity->id))
+                                            @if (!$additional_amenities->contains('id', $amenity->id) && !$selected_services->contains('id', $amenity->id))
                                                 <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
                                             @endif
                                         @endforeach
@@ -370,7 +374,10 @@
         </section>
 
         {{-- Save Changes button --}}
-        <x-primary-button type="button" wire:click='update'>Save Changes</x-primary-button>
+        <div class="flex items-center gap-5">
+            <x-primary-button type="button" wire:click='update'>Save Changes</x-primary-button>
+            <x-loading wire:target='update' wire:loading.delay>Updating your reservation, please wait</x-loading>
+        </div>
 
         @if ($reservation->status != App\Enums\ReservationStatus::PENDING || $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT || $reservation->status == App\Enums\ReservationStatus::CONFIRMED)
             {{-- Cancel reservation --}}
