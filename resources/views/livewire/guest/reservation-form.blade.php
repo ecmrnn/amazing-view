@@ -35,19 +35,6 @@
             return new Date(date).toLocaleDateString('en-US', options)
         },
 
-        setMaxSeniorCount() {
-            if (this.pwd_count > 0) {
-                this.max_senior_count = this.adult_count;
-
-                if (this.pwd_count + this.senior_count > this.adult_count + this.children_count) {
-                    this.pwd_count--;
-                }
-
-            } else {
-                this.max_senior_count = this.adult_count - this.pwd_count;
-            }
-        },
-
         resetProperties() {
             localStorage.removeItem('_x_date_in');
             this.date_in = null;
@@ -77,7 +64,6 @@
         }
     }"
     x-ref="form" 
-    x-init="setMaxSeniorCount();"
     x-on:reservation-created.window="resetProperties()"
     x-on:reservation-reset.window="resetProperties()"
     class="max-w-screen-xl py-10 mx-auto space-y-5">
@@ -107,7 +93,7 @@
                         'selected_rooms' => $selected_rooms,
                         'available_rooms' => $available_rooms,
                         'additional_services' => $additional_services,
-                        'selected_amenities' => $selected_amenities,
+                        'selected_services' => $selected_services,
                         'room_type_name' => $room_type_name,
                     ])
                     @break
@@ -133,7 +119,7 @@
                         'adult_count' => $adult_count,
                         'children_count' => $children_count,
                         'selected_rooms' => $selected_rooms,
-                        'selected_amenities' => $selected_amenities,
+                        'selected_services' => $selected_services,
                         'first_name' => $first_name,
                         'last_name' => $last_name,
                         'email' => $email,
@@ -157,7 +143,7 @@
             <x-web.reservation.summary 
                 :step=$step
                 :selectedRooms="$selected_rooms"
-                :selectedAmenities="$selected_amenities"
+                :selectedAmenities="$selected_services"
             />
         @endif
     </article>

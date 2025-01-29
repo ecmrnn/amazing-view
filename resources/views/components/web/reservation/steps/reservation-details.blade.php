@@ -133,11 +133,15 @@
                                 <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
                             </div>
             
-                            <div class="flex gap-3">
-                                <p class="hidden max-w-xs text-xs text-right md:block">If you have a Senior or PWD fellow guest, click the button here</p>
-                                <x-secondary-button class="text-xs" x-on:click="$dispatch('open-modal', 'pwd-senior-modal');">
-                                    Add Senior or PWD
-                                </x-secondary-button>
+                            <div class="flex items-center gap-3">
+                                <div x-on:click="$dispatch('open-modal', 'show-discounts-modal')">
+                                    <p class="text-sm font-semibold text-right">Apply Discounts</p>
+                                    <p class="text-xs text-right">For Senior and PWD Guests</p>
+                                </div>
+
+                                <x-icon-button x-on:click="$dispatch('open-modal', 'show-discounts-modal')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>
+                                </x-icon-button>
                             </div>
                         </div>
                     </x-form.form-body>
@@ -306,13 +310,14 @@
                 <div x-show="can_select_a_room" x-collapse.duration.1000ms>
                     <x-form.form-body>
                         <div class="p-5 pt-0 space-y-3">
-                            <p class="text-sm">Enhance your stay by availing our additional services</p>
+                            <p class="text-sm">Enhance your stay by availing our additional services!</p>
             
                             <div class="grid gap-2 sm:grid-cols-2">
                                 @forelse ($additional_services as $service)
                                     @php
                                         $checked = false;
-                                        if ($selected_amenities->contains('id', $service->id)) {
+
+                                        if ($selected_services->contains('id', $service->id)) {
                                             $checked = true;
                                         }
                                     @endphp
@@ -320,9 +325,9 @@
                                     <div key="{{ $service->id }}">
                                         <x-form.checkbox-toggle
                                             :checked="$checked"
-                                            id="amenity{{ $service->id }}"
-                                            name="amenity"
-                                            wire:click="toggleAmenity({{ $service->id }})">
+                                            id="services-{{ $service->id }}"
+                                            name="services-"
+                                            wire:click="toggleService({{ $service->id }})">
                                             <div class="px-3 py-2 select-none">
                                                 <div class="w-full font-semibold capitalize text-md">{{ $service->name }}</div>
                                                 <div class="w-full text-xs">Standard Fee: &#8369;{{ $service->price }}</div>
@@ -330,7 +335,7 @@
                                         </x-form.checkbox-toggle>
                                     </div>
                                 @empty
-                                    <div class="col-span-2 text-center text-zinc-800/50">No reservable amenities...</div>
+                                    <div class="col-span-2 text-center text-zinc-800/50">No Additional Services...</div>
                                 @endforelse
                             </div>
                         </div>
@@ -424,53 +429,28 @@
     @endif
 </x-modal.full>
 
-<x-modal.full name='pwd-senior-modal' maxWidth='sm'>
-    <div class="p-5 space-y-5">
+<x-modal.full name='show-discounts-modal' maxWidth='sm'>
+    <div class="p-5 space-y-5" x-on:discount-applied.window="show = false">
         <hgroup>
-            <h3 class="font-bold">Add Senior or PWD</h3>
-            <p class="text-xs">If your fellow guest are senior or with disability</p>
+            <h2 class="text-lg font-semibold">Apply Discounts</h2>
+            <p class="text-xs">The number of seniors and PWDs are limited to the number of guests you have.</p>
         </hgroup>
 
-        <div class="space-y-3">
-            {{-- <x-note>The maximum number of senior and PWD is based on the number of adults and children you have entered respectively</x-note> --}}
-            <div class="grid grid-cols-2 gap-3">
-                <x-form.input-group>
-                    <x-form.input-label for="senior_count">Number of Seniors</x-form.input-label>
-                    <x-form.input-number 
-                        max="{{ $max_senior_count }}"
-                        x-model="senior_count" id="senior_count" 
-                        wire:model.live="senior_count"
-                        x-on:change.window="setMaxSeniorCount()"
-                        class="block w-full" />
-                    <x-form.input-error field="senior_count" />
-                </x-form.input-group>
+        <x-form.input-group>
+            <x-form.input-label for='senior_count'>Number of Seniors</x-form.input-label>
+            <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Seniors" />
+            <x-form.input-error field="senior_count" />
+        </x-form.input-group>
 
-                <x-form.input-group>
-                    <x-form.input-label for="pwd_count">Number of PWD</x-form.input-label>
-                    <x-form.input-number 
-                        max="{{ ($adult_count - $senior_count) + $children_count }}"
-                        x-model="pwd_count" 
-                        id="pwd_count"
-                        wire:model.live="pwd_count"
-                        x-on:change.window="setMaxSeniorCount()"
-                        class="block w-full" />
-                    <x-form.input-error field="pwd_count" />
-                </x-form.input-group>
-            </div>
-            
-            <div class="p-3 space-y-3 border border-gray-300 rounded-lg">
-                <h4 class="text-sm font-bold">Guest Summary</h4>
+        <x-form.input-group>
+            <x-form.input-label for='pwd_count'>Number of PWDs</x-form.input-label>
+            <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="PWD" />
+            <x-form.input-error field="pwd_count" />
+        </x-form.input-group>
 
-                <div>
-                    <p class="text-sm">
-                        Adults: <span x-text="adult_count"></span> Adult<span x-show="adult_count > 1">s</span>
-                        <span x-show="senior_count > 0">&lpar;<span x-text="senior_count"></span>  Senior<span x-show="senior_count > 1">s</span>&rpar;</span>
-                    </p>
-                    <p class="text-sm">Children: <span x-text="children_count"></span> Child<span s-how="children_count > 1">ren</span></p>
-                    <p class="text-sm">PWD: <span x-text="pwd_count"></span> PWD<span x-show="pwd_count > 1">s</span></p>
-                    <p class="text-sm"><strong class="text-blue-500">Total Guests: {{ $adult_count + $children_count }}</strong></p>
-                </div>
-            </div>
+        <div class="flex justify-end gap-1">
+            <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+            <x-primary-button type="button" wire:click='applyDiscount'>Save</x-primary-button>
         </div>
     </div>
 </x-modal.full>

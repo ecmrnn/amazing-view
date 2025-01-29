@@ -52,4 +52,8 @@ class BillingService
         ];
         
     }
+
+    public function breakdownRaw($reservation) {
+        dd($reservation);
+    }
 }

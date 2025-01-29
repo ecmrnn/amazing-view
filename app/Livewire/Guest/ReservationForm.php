@@ -4,20 +4,15 @@ namespace App\Livewire\Guest;
 
 use App\Enums\RoomStatus;
 use App\Http\Controllers\AddressController;
-use App\Mail\reservation\Received;
 use App\Models\AdditionalServices;
-use App\Models\Amenity;
-use App\Models\CarReservation;
-use App\Models\Invoice;
 use App\Models\Reservation;
-use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Services\AdditionalServiceHandler;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -40,7 +35,7 @@ class ReservationForm extends Component
     #[Validate] public $adult_count = 1;
     #[Validate] public $children_count = 0;
     #[Validate] public $selected_rooms;
-    #[Validate] public $selected_amenities;
+    #[Validate] public $selected_services;
     public $suggested_rooms;
     public $additional_services = [];
     public $room_type_name;
@@ -91,7 +86,7 @@ class ReservationForm extends Component
 
     public function mount() {
         $this->selected_rooms = new Collection;
-        $this->selected_amenities = new Collection;
+        $this->selected_services = new Collection;
         $this->available_room_types = new Collection;
         $this->cars = collect();
         $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
@@ -109,7 +104,7 @@ class ReservationForm extends Component
 
         $this->step = 1;
         $this->selected_rooms = new Collection;
-        $this->selected_amenities = new Collection;
+        $this->selected_services = new Collection;
         $this->available_room_types = new Collection;
         $this->cars = collect();
         $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
@@ -151,16 +146,24 @@ class ReservationForm extends Component
         return Reservation::validationAttributes(['downpayment', 'note']);
     }
 
-    // public function setMaxSeniorCount() {
-    //     if ($this->pwd_count > 0) {
-    //         $this->max_senior_count = $this->adult_count - $this->pwd_count + $this->children_count;
-    //     } else {
-    //         $this->max_senior_count = $this->adult_count - $this->pwd_count;
-    //     }
-    // }
-
     public function goToStep($step) {
         $this->step = $step;
+    }
+
+    public function applyDiscount() {
+        $this->validate([
+            'senior_count' => 'nullable|lte:adult_count|integer',
+            'pwd_count' => 'nullable|integer',
+        ]);
+
+        if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
+            $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
+            return;
+        }
+
+        $this->dispatch('discount-applied');
+
+        $this->toast('Success!', description: 'Senior and PWDs updated successfully!');
     }
 
     public function toggleRoom(Room $room)
@@ -169,18 +172,13 @@ class ReservationForm extends Component
             $this->selected_rooms->push($room);
 
             $this->capacity += $room->max_capacity;
-            $this->sub_total += ($room->rate * $this->night_count);
         } else {
             $this->capacity -= $room->max_capacity;
-
-            $this->sub_total -= ($room->rate * $this->night_count);
 
             $this->selected_rooms = $this->selected_rooms->reject(function ($room_loc) use ($room) {
                 return $room_loc->id == $room->id;
             });
         }
-
-        $this->computeBreakdown();
     }
 
     public function viewRooms(RoomType $roomType) {
@@ -247,20 +245,12 @@ class ReservationForm extends Component
 
     public function removeRoom(Room $room_to_delete) {
         $this->capacity -= $room_to_delete->max_capacity;
-
-        $this->sub_total -= ($room_to_delete->rate * $this->night_count);
         
         $this->selected_rooms = $this->selected_rooms->reject(function ($room) use ($room_to_delete) {
             return $room->id == $room_to_delete->id;
         });
 
         $this->toast('For Your Info.', 'info', 'Room removed');
-    }
-
-    public function computeBreakdown() {
-        $this->vatable_sales = $this->sub_total / 1.12;
-        $this->vat = ($this->sub_total) - $this->vatable_sales;
-        $this->net_total = $this->vatable_sales + $this->vat;
     }
 
     // Will be called when customer finished filling out the following properties
@@ -274,6 +264,11 @@ class ReservationForm extends Component
             'adult_count' => $this->rules()['adult_count'],
             'children_count' => $this->rules()['children_count'],
         ]);
+
+        if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
+            $this->addError('adult_count', 'Total Seniors and PWDs cannot exceed total guests');
+            return;
+        }
 
         // Get the number of nights between 'date_in' and 'date_out'
         $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));
@@ -328,20 +323,9 @@ class ReservationForm extends Component
     }
 
     // Selects and Deselect Amenity
-    public function toggleAmenity(Amenity $amenity_clicked) {
-        // If: the amenity is already selected, remove it from the 'selected_amenities'
-        // Else: push it to the 'selected_amenities'
-        if ($this->selected_amenities->contains('id', $amenity_clicked->id)) {
-            $this->selected_amenities = $this->selected_amenities->reject(function ($amenity) use ($amenity_clicked) {
-                return $amenity->id == $amenity_clicked->id;
-            });
-            $this->sub_total -= $amenity_clicked->price;
-        } else {
-            $this->selected_amenities->push($amenity_clicked);
-            $this->sub_total += $amenity_clicked->price;
-        } 
-
-        $this->computeBreakdown();
+    public function toggleService(AdditionalServices $service) {
+        $handler = new AdditionalServiceHandler;
+        $this->selected_services = $handler->add($this->selected_services, $service);
     }
 
     // Address Get Methods
@@ -397,7 +381,6 @@ class ReservationForm extends Component
                         'children_count' => $this->rules()['children_count'],
                         'selected_rooms' => $this->rules()['selected_rooms'],
                     ]);
-
 
                     if ($this->capacity < $this->adult_count + $this->children_count) {
                         $this->toast('Oops!', 'warning', 'Selected rooms cannot accommodate the number of guests.');
@@ -462,7 +445,7 @@ class ReservationForm extends Component
         ]);
 
         $validated['selected_rooms'] = $this->selected_rooms;
-        $validated['selected_amenities'] = $this->selected_amenities;
+        $validated['selected_services'] = $this->selected_services;
         $validated['cars'] = $this->cars;
         $validated['note'] = null;
 

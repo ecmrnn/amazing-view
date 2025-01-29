@@ -43,20 +43,33 @@ class ReservationService
         ]);
 
         // Attach the rooms to reservation
-        foreach ($data['selected_rooms'] as $room) {
-            $reservation->rooms()->attach($room['id'], [
-                'rate' => $room['rate'],
-            ]);
-            $room->status = RoomStatus::RESERVED;
-            $room->save();
+        if (isset($data['selected_rooms'])) {
+            foreach ($data['selected_rooms'] as $room) {
+                $reservation->rooms()->attach($room['id'], [
+                    'rate' => $room['rate'],
+                ]);
+                $room->status = RoomStatus::RESERVED;
+                $room->save();
+            }
         }
 
         // Attach amenities to reservation
-        foreach ($data['selected_amenities'] as $amenity) {
-            $reservation->amenities()->attach($amenity['id'], [
-                'price' => $amenity['price'],
-                'quantity' => 0,
-            ]);
+        if (isset($data['selected_amenities'])) {
+            foreach ($data['selected_amenities'] as $amenity) {
+                $reservation->amenities()->attach($amenity['id'], [
+                    'price' => $amenity['price'],
+                    'quantity' => 0,
+                ]);
+            }
+        }
+
+        // Attach services to reservation
+        if (isset($data['selected_services'])) {
+            foreach ($data['selected_services'] as $service) {
+                $reservation->services()->attach($service['id'], [
+                    'price' => $service['price'],
+                ]);
+            }
         }
 
         // Store cars for park reservation

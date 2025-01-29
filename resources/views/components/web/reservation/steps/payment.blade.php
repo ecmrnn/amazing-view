@@ -135,16 +135,16 @@
                                 @endforelse
                             </div>
                             <div class="space-y-1">
-                                @foreach ($selected_amenities as $amenity)
+                                @foreach ($selected_services as $service)
                                     @php
                                         $quantity = 1;
                                     @endphp
                                     <div class="grid grid-cols-2 text-sm">
-                                        <p class="uppercase">{{ $amenity->name }}</p>
+                                        <p class="uppercase">{{ $service->name }}</p>
                                         <div class="grid grid-cols-3 place-items-end">
                                             <p>{{ $quantity }}</p>
-                                            <p>{{ number_format($amenity->price, 2) }}</p>
-                                            <p>{{ number_format($amenity->price * $quantity, 2) }}</p>
+                                            <p>{{ number_format($service->price, 2) }}</p>
+                                            <p>{{ number_format($service->price * $quantity, 2) }}</p>
                                         </div>
                                     </div>
                                 @endforeach

@@ -126,6 +126,10 @@ class Reservation extends Model
         return $this->belongsToMany(Amenity::class, 'reservation_amenities')->withPivot('quantity', 'price');
     }
 
+    public function services(): BelongsToMany {
+        return $this->belongsToMany(AdditionalServices::class, 'additional_service_reservations')->withPivot('price');
+    }
+
     public function invoice(): HasOne {
         return $this->hasOne(Invoice::class);
     }
@@ -142,7 +146,7 @@ class Reservation extends Model
             $model->rid = IdGenerator::generate([
                 'table' => 'reservations',
                 'field' => 'rid',
-                'length' => 12,
+                'length' => 10,
                 'prefix' => date('Rymd'),
                 'reset_on_prefix_change' => true
             ]);
