@@ -5,6 +5,7 @@ namespace App\Livewire\Guest;
 use App\Enums\RoomStatus;
 use App\Http\Controllers\AddressController;
 use App\Mail\reservation\Received;
+use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\CarReservation;
 use App\Models\Invoice;
@@ -41,7 +42,7 @@ class ReservationForm extends Component
     #[Validate] public $selected_rooms;
     #[Validate] public $selected_amenities;
     public $suggested_rooms;
-    public $reservable_amenities = [];
+    public $additional_services = [];
     public $room_type_name;
     public $room_type_id;
     public $max_senior_count = 0;
@@ -96,7 +97,7 @@ class ReservationForm extends Component
         $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
         
         $this->room_types = RoomType::all();
-        $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
+        $this->additional_services = AdditionalServices::where('is_active', true)->get();
     }
 
     public function setMinDateOut($date_in) {
@@ -114,7 +115,7 @@ class ReservationForm extends Component
         $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
         
         $this->room_types = RoomType::all();
-        $this->reservable_amenities = Amenity::where('is_addons', 1)->get();
+        $this->additional_services = AdditionalServices::where('is_active', true)->get();
         $this->dispatch('reservation-reset');
         sleep(2);
     }
@@ -150,13 +151,13 @@ class ReservationForm extends Component
         return Reservation::validationAttributes(['downpayment', 'note']);
     }
 
-    public function setMaxSeniorCount() {
-        if ($this->pwd_count > 0) {
-            $this->max_senior_count = $this->adult_count - $this->pwd_count + $this->children_count;
-        } else {
-            $this->max_senior_count = $this->adult_count - $this->pwd_count;
-        }
-    }
+    // public function setMaxSeniorCount() {
+    //     if ($this->pwd_count > 0) {
+    //         $this->max_senior_count = $this->adult_count - $this->pwd_count + $this->children_count;
+    //     } else {
+    //         $this->max_senior_count = $this->adult_count - $this->pwd_count;
+    //     }
+    // }
 
     public function goToStep($step) {
         $this->step = $step;

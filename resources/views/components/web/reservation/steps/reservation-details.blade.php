@@ -309,23 +309,23 @@
                             <p class="text-sm">Enhance your stay by availing our additional services</p>
             
                             <div class="grid gap-2 sm:grid-cols-2">
-                                @forelse ($reservable_amenities as $amenity)
+                                @forelse ($additional_services as $service)
                                     @php
                                         $checked = false;
-                                        if ($selected_amenities->contains('id', $amenity->id)) {
+                                        if ($selected_amenities->contains('id', $service->id)) {
                                             $checked = true;
                                         }
                                     @endphp
             
-                                    <div key="{{ $amenity->id }}">
+                                    <div key="{{ $service->id }}">
                                         <x-form.checkbox-toggle
                                             :checked="$checked"
-                                            id="amenity{{ $amenity->id }}"
+                                            id="amenity{{ $service->id }}"
                                             name="amenity"
-                                            wire:click="toggleAmenity({{ $amenity->id }})">
+                                            wire:click="toggleAmenity({{ $service->id }})">
                                             <div class="px-3 py-2 select-none">
-                                                <div class="w-full font-semibold capitalize text-md">{{ $amenity->name }}</div>
-                                                <div class="w-full text-xs">Standard Fee: &#8369;{{ $amenity->price }}</div>
+                                                <div class="w-full font-semibold capitalize text-md">{{ $service->name }}</div>
+                                                <div class="w-full text-xs">Standard Fee: &#8369;{{ $service->price }}</div>
                                             </div>
                                         </x-form.checkbox-toggle>
                                     </div>

@@ -420,27 +420,22 @@ class EditReservation extends Component
             'pwd_count' => $this->pwd_count,
         ]);
 
-        $this->toast('Success!', description: 'ok!');
+        $this->toast('Success', description: 'Senior and PWDs updated successfully!');
     }
 
     public function update() {
         $validated = $this->validate([
-            'date_in' => 'required|date|after_or_equal:today',
-            'date_out' => Reservation::rules()['date_out'],
-            'adult_count' => Reservation::rules()['adult_count'],
-            'children_count' => Reservation::rules()['children_count'],
-            'selected_rooms' => Reservation::rules()['selected_rooms'],
             'first_name' => Reservation::rules()['first_name'],
             'last_name' => Reservation::rules()['last_name'],
             'email' => Reservation::rules()['email'],
             'phone' => Reservation::rules()['phone'],
             'address' => Reservation::rules()['address'],
-            'note' => Reservation::rules()['note'],
+            // 'note' => Reservation::rules()['note'],
         ]);
 
-        $validated['selected_rooms'] = $this->selected_rooms;
+        // $validated['selected_rooms'] = $this->selected_rooms;
         $validated['selected_amenities'] = $this->additional_amenities;
-        dd($this->additional_amenities);
+        dd($validated);
         
         $service = new ReservationService();
         $service->update($this->reservation, $validated);

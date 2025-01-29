@@ -106,7 +106,7 @@
                         'room_types' => $room_types,
                         'selected_rooms' => $selected_rooms,
                         'available_rooms' => $available_rooms,
-                        'reservable_amenities' => $reservable_amenities,
+                        'additional_services' => $additional_services,
                         'selected_amenities' => $selected_amenities,
                         'room_type_name' => $room_type_name,
                     ])

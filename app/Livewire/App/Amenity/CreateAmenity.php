@@ -14,7 +14,6 @@ class CreateAmenity extends Component
     #[Validate] public $name;
     #[Validate] public $quantity = 1;
     #[Validate] public $price = 1;
-    #[Validate] public $type = 'is_reservable';
 
     public function rules() {
         return [
@@ -28,22 +27,11 @@ class CreateAmenity extends Component
     public function submit() {
         $this->validate();
         
-        $is_reservable = 0;
-        $is_addons = 0;
-
-        if ($this->type == 'is_reservable') {
-            $is_reservable = 1;
-            $this->quantity = 1;
-        } else {
-            $is_addons = 1;
-        }
-
         Amenity::create([
             'name' => $this->name,
             'quantity' => $this->quantity,
             'price' => $this->price,
-            'is_reservable' => $is_reservable,
-            'is_addons' => $is_addons,
+            'is_active' => true,
         ]);
 
         $this->reset();
@@ -61,17 +49,10 @@ class CreateAmenity extends Component
                     price: @entangle('price')
                 }" wire:submit="submit" class="p-5 space-y-5" x-on:amenity-created.window="show = false">
                 <hgroup>
-                    <h2 class="font-semibold">Add Service or Amenity</h2>
+                    <h2 class="font-semibold">Add Amenity</h2>
                     <p class="text-xs">Fill up the form below to add an amenity</p>
                 </hgroup>
                 
-                <div class="grid gap-2 p-3 border border-gray-300 rounded-md">
-                    <x-form.input-label for="is_reservable">Choose an item you want to add</x-form.input-label>
-                    <x-form.input-radio id="is_reservable" value="is_reservable" name="type" label="Amenity" wire:model.live="type" />
-                    <x-form.input-radio id="is_addons" value="is_addons" name="type" label="Service" wire:model.live="type" />
-                    <x-form.input-error field="type" />
-                </div>
-
                 <div class="p-3 space-y-3 border border-gray-300 rounded-md">
                     <div class="space-y-3">
                         <div>
@@ -83,7 +64,7 @@ class CreateAmenity extends Component
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
-                        <div x-show="type == 'is_reservable'" class="space-y-3">
+                        <div class="space-y-3">
                             <x-form.input-label for="quantity">Quantity</x-form.input-label>
                             <x-form.input-number id="quantity" name="quantity" label="Quantity" x-model="quantity" wire:model.live="quantity" />
                             <x-form.input-error field="quantity" />

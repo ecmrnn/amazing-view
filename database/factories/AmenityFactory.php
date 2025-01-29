@@ -20,7 +20,7 @@ class AmenityFactory extends Factory
             'name' => fake()->word(),
             'quantity' => fake()->numberBetween(10, 20),
             'price' => fake()->randomElement([0, 50, 100]),
-            'is_reservable' => fake()->boolean(),
+            'is_active' => fake()->boolean(),
         ];
     }
 }

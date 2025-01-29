@@ -14,61 +14,38 @@ class AmenitySeeder extends Seeder
     public function run(): void
     {
         Amenity::create([
-            'name' => 'Corkage',
-            'price' => 250,
-            'quantity' => 1,
-            'is_addons' => 1,
-        ]);
-
-        Amenity::create([
-            'name' => 'Pet',
-            'price' => 250,
-            'quantity' => 1,
-            'is_addons' => 1,
-        ]);
-
-        Amenity::create([
-            'name' => 'Breakfast',
-            'price' => 250,
-            'quantity' => 1,
-            'is_addons' => 1,
-        ]);
-
-        // Amenity::create([
-        //     'name' => 'Dinner',
-        //     'price' => 500,
-        //     'quantity' => 1,
-        //     'is_addons' => 1,
-        // ]);
-
-        Amenity::create([
             'name' => 'Electric Fan',
             'price' => 100,
             'quantity' => 20,
+            'is_active' => true,
         ]);
 
         Amenity::create([
             'name' => 'Single Bed',
             'price' => 1250,
             'quantity' => 20,
+            'is_active' => true,
         ]);
 
         Amenity::create([
             'name' => 'Pillows',
             'price' => 100,
             'quantity' => 20,
+            'is_active' => true,
         ]);
 
         Amenity::create([
             'name' => 'Blanket',
             'price' => 150,
             'quantity' => 20,
+            'is_active' => true,
         ]);
 
         Amenity::create([
             'name' => 'Crib',
             'price' => 500,
             'quantity' => 20,
+            'is_active' => true,
         ]);
     }
 }
