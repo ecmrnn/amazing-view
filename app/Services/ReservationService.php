@@ -111,30 +111,10 @@ class ReservationService
             'note' => $data['note'],
         ]);
 
-        // Detach the old and attach the new rooms to reservation
-        foreach ($reservation->rooms as $room) {
-            $reservation->rooms()->detach($room->id);
-        }
-        foreach ($data['selected_rooms'] as $room) {
-            $reservation->rooms()->attach($room->id, [
-                'rate' => $room->rate,
-            ]);
-            $room->status = RoomStatus::RESERVED->value;
-            $room->save();
-        }
-
         $reservation->save();
 
-        // Detach the old and attach the new amenities to reservation
-        foreach ($reservation->amenities as $amenity) {
-            $reservation->amenities()->detach($amenity->id);
-        }
-        foreach ($data['selected_amenities'] as $amenity) {
-            $reservation->amenities()->attach($amenity->id, [
-                'price' => $amenity['price'],
-                'quantity' => 0,
-            ]);
-        }
+        $this->updateRooms($reservation, $data['selected_rooms']);
+        $this->updateAmenities($reservation, $data['selected_amenities']);
 
         // Update the invoice
         $billing = new BillingService();
@@ -152,5 +132,32 @@ class ReservationService
         // Example: Notify user about the update
         // Notification::send($reservation->user, new ReservationUpdated($reservation));
         return $reservation;
+    }
+
+    public function updateRooms(Reservation $reservation, $new_rooms) {
+        // Detach the old and attach the new rooms to reservation
+        foreach ($reservation->rooms as $room) {
+            $reservation->rooms()->detach($room->id);
+        }
+        foreach ($new_rooms as $room) {
+            $reservation->rooms()->attach($room->id, [
+                'rate' => $room->rate,
+            ]);
+        }
+
+        $reservation->save();
+    }
+
+    public function updateAmenities(Reservation $reservation, $new_amenities) {
+        // Detach the old and attach the new amenities to reservation
+        foreach ($reservation->amenities as $amenity) {
+            $reservation->amenities()->detach($amenity->id);
+        }
+        foreach ($new_amenities as $amenity) {
+            $reservation->amenities()->attach($amenity->id, [
+                'price' => $amenity['price'],
+                'quantity' => 0,
+            ]);
+        }
     }
 }

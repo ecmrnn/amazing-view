@@ -19,7 +19,7 @@
             'bg-gradient-to-b from-blue-500/20 to-blue-500/0' => $step == $currentStep,
             'bg-gradient-to-b from-emerald-500/20 to-emerald-500/0' => $step < $currentStep,
             ])>
-            <p @class(['text-xs font-semibold uppercase', 'opacity-50' => $step > $currentStep])>Step {{ $step }}</p>
+            <p @class(['text-xs uppercase', 'opacity-50' => $step > $currentStep])>Step {{ $step }}</p>
             <p class="font-semibold">{{ $name }}</p>
         </hgroup>
     </div>

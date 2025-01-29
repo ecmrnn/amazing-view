@@ -3,6 +3,8 @@
     date_in: $wire.entangle('date_in'),
     date_out: $wire.entangle('date_out'),
     adult_count: $wire.entangle('adult_count'),
+    senior_count: $wire.entangle('senior_count'),
+    pwd_count: $wire.entangle('pwd_count'),
     children_count: $wire.entangle('children_count'),
     capacity: $wire.entangle('capacity'),
 
@@ -30,7 +32,7 @@
 }" wire:submit="submit()">
 @csrf
 
-    <section class="w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
+    <section class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
         <div class="flex items-center gap-5 p-5 bg-white border rounded-lg border-slate-200">
             <x-tooltip text="Back" dir="bottom">
                 <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>
@@ -72,11 +74,19 @@
                     <div class="grid grid-cols-2 gap-5">
                         <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
                             <div>
-                                <p class="font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
+                                @if (!empty($reservation->resched_date_in))
+                                    <p class="font-semibold">{{ date_format(date_create($reservation->resched_date_in), 'F j, Y') }}</p>
+                                @else
+                                    <p class="font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
+                                @endif
                                 <p class="text-xs">Check-in Date</p>
                             </div>
                             <div>
-                                <p class="font-semibold">{{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
+                                @if (!empty($reservation->resched_date_out))
+                                    <p class="font-semibold">{{ date_format(date_create($reservation->resched_date_out), 'F j, Y') }}</p>
+                                @else
+                                    <p class="font-semibold">{{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
+                                @endif
                                 <p class="text-xs">Check-out Date</p>
                             </div>
                         </div>
@@ -89,16 +99,16 @@
                                 <p class="font-semibold">{{ $reservation->children_count }}</p>
                                 <p class="text-xs">Number of Children</p>
                             </div>
-                            @if ($reservation->pwd_count > 0)
-                                <div>
-                                    <p class="font-semibold">{{ $reservation->pwd_count }}</p>
-                                    <p class="text-xs">Number of PWD</p>
-                                </div>
-                            @endif
                             @if ($reservation->senior_count > 0)
                                 <div>
                                     <p class="font-semibold">{{ $reservation->senior_count }}</p>
                                     <p class="text-xs">Number of Senior</p>
+                                </div>
+                            @endif
+                            @if ($reservation->pwd_count > 0)
+                                <div>
+                                    <p class="font-semibold">{{ $reservation->pwd_count }}</p>
+                                    <p class="text-xs">Number of PWD</p>
                                 </div>
                             @endif
                         </div>
@@ -360,7 +370,7 @@
         </section>
 
         {{-- Save Changes button --}}
-        <x-primary-button type="button" wire:click='update()'>Save Changes</x-primary-button>
+        <x-primary-button type="button" wire:click='update'>Save Changes</x-primary-button>
 
         @if ($reservation->status != App\Enums\ReservationStatus::PENDING || $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT || $reservation->status == App\Enums\ReservationStatus::CONFIRMED)
             {{-- Cancel reservation --}}
@@ -378,7 +388,7 @@
     </section>
 
     <x-modal.drawer name='edit-reservation-details' maxWidth='xl'>
-        <div class="p-5 space-y-5">
+        <div class="p-5 space-y-5" x-on:reservation-details-updated.window="show = false">
             <livewire:app.reservation.edit-reservation-details :reservation="$reservation" />
         </div>
     </x-modal.drawer>
@@ -530,7 +540,7 @@
 
                                     <hgroup>
                                         <h3 class="font-semibold">For {{ $capacity }} Guests</h3>
-                                        <p class="text-xs text-zinc-800/50">
+                                        <p class="text-xs">
                                             @if ($rooms->count() > 1)
                                                 <span>Available Rooms: {{ $rooms->count() }}</span>
                                             @else
@@ -560,6 +570,32 @@
                 </section>
             </div>
         @endif
+    </x-modal.full>
+
+    <x-modal.full name='show-discounts-modal' maxWidth='sm'>
+        <div class="p-5 space-y-5" x-on:apply-discount.window="show = false">
+            <hgroup>
+                <h2 class="text-lg font-semibold">Apply Discounts</h2>
+                <p class="text-xs">The number of seniors and PWDs are limited to the number of guests you have.</p>
+            </hgroup>
+
+            <x-form.input-group>
+                <x-form.input-label for='senior_count'>Number of Seniors</x-form.input-label>
+                <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Seniors" />
+                <x-form.input-error field="senior_count" />
+            </x-form.input-group>
+
+            <x-form.input-group>
+                <x-form.input-label for='pwd_count'>Number of PWDs</x-form.input-label>
+                <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="PWD" />
+                <x-form.input-error field="pwd_count" />
+            </x-form.input-group>
+
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                <x-primary-button type="button" wire:click='applyDiscount'>Save</x-primary-button>
+            </div>
+        </div>
     </x-modal.full>
 </form>
 

@@ -25,6 +25,8 @@ class EditReservation extends Component
 {
     use WithFilePond, DispatchesToast;
 
+    protected $listeners = ['reservation-details-updated' => '$refresh'];
+
     // Reservation Details
     #[Validate] public $date_in;
     #[Validate] public $date_out;
@@ -127,6 +129,8 @@ class EditReservation extends Component
         $this->date_out = $this->reservation->date_out;
         $this->adult_count = $this->reservation->adult_count;
         $this->children_count = $this->reservation->children_count;
+        $this->senior_count = $this->reservation->senior_count;
+        $this->pwd_count = $this->reservation->pwd_count;
         // Guest Details
         $this->first_name = $this->reservation->first_name;
         $this->last_name = $this->reservation->last_name;
@@ -392,9 +396,32 @@ class EditReservation extends Component
         $this->dispatch('add-rooms', $room_ids);
     }
 
-    // public function removeRoom(Room $room) {
-    //     $this->toggleRoom($room);
-    // }
+    #[On('update-guests')]
+    public function updateGuests($data) {
+        $this->adult_count = $data['adult_count'];
+        $this->children_count = $data['children_count'];
+
+        $this->dispatch('open-modal', 'show-discounts-modal');
+    }
+
+    public function applyDiscount() {
+        $this->validate([
+            'senior_count' => 'nullable|lte:adult_count|integer',
+            'pwd_count' => 'nullable|integer',
+        ]);
+
+        if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
+            $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
+            return;
+        }
+
+        $this->dispatch('apply-discount', [
+            'senior_count' => $this->senior_count,
+            'pwd_count' => $this->pwd_count,
+        ]);
+
+        $this->toast('Success!', description: 'ok!');
+    }
 
     public function update() {
         $validated = $this->validate([
@@ -412,6 +439,7 @@ class EditReservation extends Component
         ]);
 
         $validated['selected_rooms'] = $this->selected_rooms;
+        $validated['selected_amenities'] = $this->additional_amenities;
         dd($this->additional_amenities);
         
         $service = new ReservationService();

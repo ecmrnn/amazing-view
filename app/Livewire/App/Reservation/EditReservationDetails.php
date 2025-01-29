@@ -22,6 +22,8 @@ class EditReservationDetails extends Component
     #[Validate] public $adult_count;
     #[Validate] public $children_count;
     #[Validate] public $selected_rooms;
+    public $senior_count;
+    public $pwd_count;
     public $reservation;
     public $conflict_rooms;
     public $disable_date = false;
@@ -32,6 +34,7 @@ class EditReservationDetails extends Component
     public $floor_count = 1;
     public $column_count = 1;
     public $is_map_view = false;
+    public $max_capacity = 0;
 
     public $min_date;
     public $step = 1;
@@ -42,6 +45,8 @@ class EditReservationDetails extends Component
         $this->date_out = $reservation->date_out;
         $this->adult_count = $reservation->adult_count;
         $this->children_count = $reservation->children_count;
+        $this->pwd_count = $reservation->pwd_count;
+        $this->senior_count = $reservation->senior_count;
         $this->selected_rooms = $reservation->rooms;
         $this->reservation = $reservation;
         $this->rooms = collect();
@@ -56,12 +61,23 @@ class EditReservationDetails extends Component
             $this->min_date = $reservation->date_in;
             $this->disable_date = true;
         }
+
+        // Initialize max capacity
+        foreach ($reservation->rooms as $room) {
+            $this->max_capacity += $room->max_capacity;
+        }
     }
 
     public function rules() {
         return [
             'date_in' => 'required|date|after_or_equal:min_date',
             'date_out' => 'required|date|after_or_equal:date_in',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'selected_rooms.required' => 'Please select a room first',
         ];
     }
 
@@ -115,10 +131,12 @@ class EditReservationDetails extends Component
     {
         if ($room && !$this->selected_rooms->contains('id', $room->id)) {
             $this->selected_rooms->push($room);
+            $this->max_capacity += (int) $room->max_capacity;
         } else {
             $this->selected_rooms = $this->selected_rooms->reject(function ($room_loc) use ($room) {
                 return $room_loc->id == $room->id;
             });
+            $this->max_capacity -= $room->max_capacity;
         }
     }
 
@@ -156,6 +174,19 @@ class EditReservationDetails extends Component
         ])->to(EditReservation::class);
     }
 
+    public function updateGuests() {
+        $this->dispatch('update-guests', [
+            'adult_count' => $this->adult_count,
+            'children_count' => $this->children_count,
+        ]);
+    }
+
+    #[On('apply-discount')] 
+    public function applyDiscount($data) {
+        $this->senior_count = $data['senior_count'];
+        $this->pwd_count = $data['pwd_count'];
+    }
+
     public function edit() {
         switch ($this->step) {
             case 1:
@@ -166,10 +197,60 @@ class EditReservationDetails extends Component
 
                 $this->validateReservationDetails();
                 break;
+            case 2:
+                $this->validate([
+                    'adult_count' => 'required|gte:1|integer',
+                    'children_count' => 'nullable|integer',
+                    'selected_rooms' => 'required',
+                ]);
+
+                if ($this->adult_count + $this->children_count > $this->max_capacity) {
+                    $this->addError('selected_rooms', 'Selected rooms cannot accommodate the total number of guests.');
+                    return;
+                }
+                if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
+                    $this->addError('adult_count', 'Total Seniors and PWDs cannot exceed total guests');
+                    return;
+                }
+
+                $this->update();
             default:
                 # code...
                 break;
         }
+    }
+
+    public function update() {
+        // 1. Update date and number of guests
+        $reservation = $this->reservation;
+        
+        if ($reservation->date_in != $this->date_in) {
+            $reservation->resched_date_in = $this->date_in;
+        }
+        if ($reservation->date_out != $this->date_out) {
+            $reservation->resched_date_out = $this->date_out;
+        }
+        
+        $reservation->adult_count = $this->adult_count;
+        $reservation->children_count = $this->children_count;
+        $reservation->senior_count = $this->senior_count;
+        $reservation->pwd_count = $this->pwd_count;
+
+        $reservation->save();
+        
+        // 2. Reassign rooms
+        foreach ($reservation->rooms as $room) {
+            $reservation->rooms()->detach($room->id);
+        }
+        foreach ($this->selected_rooms as $room) {
+            $reservation->rooms()->attach($room->id, [
+                'rate' => $room->rate,
+            ]);
+        }
+
+        // 3. Pop a toast
+        $this->toast('Edit Success!', description: 'Reservation details updated!');
+        $this->dispatch('reservation-details-updated');
     }
 
     public function render()
@@ -234,19 +315,6 @@ class EditReservationDetails extends Component
                     </div>
                     @break
                 @case(2)
-                    <div class="grid grid-cols-2 gap-5 p-5 border rounded-md border-slate-200">
-                        <x-form.input-group>
-                            <x-form.input-label for='adult_count'>Number of Adults</x-form.input-label>
-                            <x-form.input-number x-model="adult_count" wire:model.live='adult_count' id='adult_count' name='adult_count' class="w-full" />
-                            <x-form.input-error field="adult_count" />
-                        </x-form.input-group>
-                        <x-form.input-group>
-                            <x-form.input-label for='children_count'>Number of Children</x-form.input-label>
-                            <x-form.input-number x-model="children_count" wire:model.live='children_count' id='children_count' name='children_count' class="w-full" />
-                            <x-form.input-error field="children_count" />
-                        </x-form.input-group>
-                    </div>
-
                     <x-form.input-error field="selected_rooms" />
 
                     <div class="p-5 space-y-5 border rounded-md border-slate-200">
@@ -305,7 +373,7 @@ class EditReservationDetails extends Component
 
                         {{-- 2. Map View --}}
                         <template x-if="is_map_view">
-                            <div class="grid grid-cols-3 gap-1 p-3 rounded-lg place-items-start min-h-80 bg-gradient-to-tr from-teal-500/20 to-teal-600/20">
+                            <div class="grid grid-cols-3 gap-1 p-5 rounded-lg place-items-start min-h-80 bg-gradient-to-tr from-teal-500/20 to-teal-600/20">
                                 @forelse ($buildings as $building)
                                     <button type="button" key="{{ $building->id }}" class="w-full"
                                         wire:click="viewBuilding({{ $building->id }})">
@@ -331,22 +399,21 @@ class EditReservationDetails extends Component
 
                         @if ($selected_rooms->count() > 0)
                             <div class="flex items-center justify-between">
-                                <h3 class="font-semibold">Selected Rooms</h3>
+                                <h3 class="font-semibold">Selected Rooms &lpar;{{ $selected_rooms->count() }}&rpar;</h3>
                                 <button type="button" x-on:click="hide = false" x-show="hide" class="text-xs font-semibold text-blue-500">Hide Rooms</button>
                                 <button type="button" x-on:click="hide = true" x-show="!hide" class="text-xs font-semibold text-blue-500">Show Rooms</button>
                             </div>
         
-                            <div x-show="hide" class="grid gap-1">
+                            <div x-show="hide" class="space-y-5">
                                 @forelse ($selected_rooms as $room)
                                 <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
                                     {{-- Room Details --}}
                                     <div>
-                                        <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->roomType->name }}</p>
-                                        <p class="text-sm">
-                                            <span class="uppercase">{{ $room->building->prefix }}</span>
-                                            {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
-                                        <p class="text-xs text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
+                                        <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->building->prefix . ' ' . $room->room_number}}</p>
+                                        <p class="text-sm">Room Rate: <x-currency />{{ $room->rate }} &#47; night</p>
+                                        <p class="text-sm text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
                                     </div>
+
                                     {{-- Remove Room button --}}
                                     <button
                                         type="button"
@@ -363,6 +430,33 @@ class EditReservationDetails extends Component
                                 @endforelse
                             </div>
                         @endif
+                    </div>
+
+                    <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                        <div class="grid grid-cols-2 gap-5">
+                            <x-form.input-group>
+                                <x-form.input-label for='adult_count'>Number of Adults</x-form.input-label>
+                                <x-form.input-number x-model="adult_count" wire:model.live='adult_count' id='adult_count' name='adult_count' class="w-full" />
+                                <x-form.input-error field="adult_count" />
+                            </x-form.input-group>
+                            <x-form.input-group>
+                                <x-form.input-label for='children_count'>Number of Children</x-form.input-label>
+                                <x-form.input-number x-model="children_count" wire:model.live='children_count' id='children_count' name='children_count' class="w-full" />
+                                <x-form.input-error field="children_count" />
+                            </x-form.input-group>
+                            <x-form.input-error field="max_capacity" />
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            <x-icon-button wire:click="updateGuests">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>
+                            </x-icon-button>
+
+                            <div wire:click="updateGuests">
+                                <p class="text-sm font-semibold">Apply Discounts</p>
+                                <p class="text-sm">For Senior and PWD Guests</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="flex gap-1">
