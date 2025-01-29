@@ -41,8 +41,8 @@ class EditReservationDetails extends Component
 
     public function mount(Reservation $reservation)
     {
-        $this->date_in = $reservation->date_in;
-        $this->date_out = $reservation->date_out;
+        $this->date_in = $reservation->resched_date_in == null ? $reservation->date_in : $reservation->resched_date_in;
+        $this->date_out = $reservation->resched_date_out == null ? $reservation->date_out : $reservation->resched_date_out;
         $this->adult_count = $reservation->adult_count;
         $this->children_count = $reservation->children_count;
         $this->pwd_count = $reservation->pwd_count;
