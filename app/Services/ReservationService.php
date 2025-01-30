@@ -171,12 +171,12 @@ class ReservationService
     public function updateAmenities(Reservation $reservation, $amenities) {
         // Detach the old and attach the new amenities to reservation
         foreach ($reservation->amenities as $amenity) {
-            $reservation->amenities()->detach($amenity->id);
+            $reservation->amenities()->detach($amenity['id']);
         }
         foreach ($amenities as $amenity) {
-            $reservation->amenities()->attach($amenity->id, [
+            $reservation->amenities()->attach($amenity['id'], [
                 'price' => $amenity['price'],
-                'quantity' => 0,
+                'quantity' => $amenity['quantity'],
             ]);
         }
     }

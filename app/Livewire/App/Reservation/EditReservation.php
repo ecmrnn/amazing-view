@@ -3,24 +3,20 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Enums\ReservationStatus;
-use App\Enums\RoomStatus;
-use App\Http\Controllers\AddressController;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Building;
-use App\Models\Invoice;
 use App\Models\Reservation;
-use App\Models\ReservationAmenity;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Services\AdditionalServiceHandler;
+use App\Services\AmenityService;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use phpDocumentor\Reflection\Types\This;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class EditReservation extends Component
@@ -67,13 +63,16 @@ class EditReservation extends Component
     public $is_map_view = true; /* Must be set to true */
     public $selected_type; 
     public $selected_building;
-    public $additional_amenity;
     public $available_amenities;
-    public $additional_amenities;
-    public $additional_amenity_total;
-    public $additional_amenity_quantity = 1;
-    public $additional_amenity_quantities;
-    public $additional_amenity_id;
+    public $amenity;
+    public $quantity = 0;
+    public $max_quantity = 0;
+    // public $additional_amenity;
+    // public $additional_amenities;
+    // public $additional_amenity_total;
+    // public $additional_amenity_quantity = 1;
+    // public $additional_amenity_quantities;
+    // public $additional_amenity_id;
     public $available_room_types;
     public $available_rooms;
     public $reserved_rooms;
@@ -101,8 +100,9 @@ class EditReservation extends Component
         
         $this->selected_rooms = collect();
         $this->selected_services = $reservation->services;
-        $this->additional_amenities = collect();
-        $this->additional_amenity_quantities = collect();
+        $this->selected_amenities = collect();
+        // $this->additional_amenities = collect();
+        // $this->additional_amenity_quantities = collect();
         $this->available_rooms = collect();
 
         $this->setProperties();
@@ -140,32 +140,14 @@ class EditReservation extends Component
         $this->phone = $this->reservation->phone;
         $this->email = $this->reservation->email;
         $this->address = $this->reservation->address;
-        // Payment
-        $this->vat = 0;
-        $this->net_total = 0;
-        $this->sub_total = 0;
-
-        foreach ($this->selected_rooms as $room) {
-            $this->sub_total += ($room->rate * $this->night_count);
-        }
-
-        foreach ($this->selected_services as $amenity) {
-            $quantity = $amenity->pivot->quantity;
-            
-            // If quantity is 0, change it to 1
-            $quantity != 0 ?: $quantity = 1;
-
-            $this->sub_total += ($amenity->price * $quantity);
-        }
-
-        $this->computeBreakdown();
-        // Attach selected amenities to additional_amenities
-        if (!empty($this->selected_amenities)) {
-            foreach ($this->selected_amenities as $amenity) {
-                $this->additional_amenities->push($amenity);
-                $this->additional_amenity_quantities->push([
-                    'amenity_id' => $amenity->id,
-                    'quantity' => $amenity->pivot->quantity
+        
+        if (!empty($this->reservation->amenities)) {
+            foreach ($this->reservation->amenities as $amenity) {
+                $this->selected_amenities->push([
+                    'id' => $amenity->id,
+                    'name' => $amenity->name,
+                    'quantity' => $amenity->pivot->quantity,
+                    'price' => $amenity->pivot->price,
                 ]);
             }
         }
@@ -217,81 +199,36 @@ class EditReservation extends Component
         $this->net_total = $this->vatable_sales + $this->vat;
     }
 
-    public function selectAmenity($id) {
-        if (!empty($id)) {
-            $this->additional_amenity_id = $id;
-            $this->additional_amenity = Amenity::find($id);
-            $this->getTotal();
+    public function selectAmenity() {
+        $amenity = Amenity::find($this->amenity);
+
+        if ($amenity) {
+            $this->max_quantity = $amenity->quantity;
+        } else {
+            $this->max_quantity = 0;
+            $this->quantity = 0;
         }
     }
 
     public function addAmenity() {
         $this->validate([
-            'additional_amenity_quantity' => 'integer|min:1|required',
-            'additional_amenity' => 'required',
+            'amenity' => 'required',
+            'quantity' => 'required|lte:max_quantity',
         ]);
 
-        $amenity = $this->additional_amenity;
+        $amenity = Amenity::find($this->amenity);
 
-        if ($this->additional_amenity_quantity <= $amenity->quantity) {
-            $this->additional_amenities->push($amenity);
-    
-            $this->additional_amenity_quantities->push([
-                'amenity_id' => $amenity->id,
-                'quantity' => $this->additional_amenity_quantity
-            ]);
+        $service = new AmenityService;
+        $service->add($this->selected_amenities, $amenity, $this->quantity);
 
-            // Push to amenities selected on reservation
-            $this->selected_services->push($amenity);
-
-            // Recomputes Breakdown
-            $this->sub_total += ($amenity->price * $this->additional_amenity_quantity);
-            $this->computeBreakdown();
-
-            // Reset properties
-            $this->reset([
-                'additional_amenity_quantity',
-                'additional_amenity_total',
-                'additional_amenity_id',
-                'additional_amenity',
-            ]);
-        } else {
-            $this->toast('Oof, not enough item', 'warning', 'Item quantity is not enough');
-        }
+        $this->reset('amenity', 'quantity', 'max_quantity');
+        $this->dispatch('amenity-added');
+        $this->toast('Success!', description: 'Amenity added successfully!');
     }
 
     public function removeAmenity(Amenity $amenity) {
-        if ($amenity) {
-            // Get the quantity for this amenity
-            $quantity = 1;
-            foreach ($this->additional_amenity_quantities as $selected_amenity) {
-                if ($selected_amenity['amenity_id'] == $amenity->id) {
-                    $quantity = $selected_amenity['quantity'];
-                    break;
-                }
-            }
-
-            // Remove this amenity on these properties
-            $this->additional_amenities = $this->additional_amenities->reject(function ($amenity_loc) use ($amenity) {
-                return $amenity_loc->id == $amenity->id;
-            });
-            $this->selected_services = $this->selected_services->reject(function ($amenity_loc) use ($amenity) {
-                return $amenity_loc->id == $amenity->id;
-            });
-            $this->additional_amenity_quantities = $this->additional_amenity_quantities->reject(function ($amenity_loc) use ($amenity) {
-                return $amenity_loc['amenity_id'] == $amenity->id;
-            });
-
-            // Recompute breakdown
-            $this->sub_total -= ($amenity->price * $quantity);
-            $this->computeBreakdown();
-        }
-    }
-
-    public function getTotal() {
-        if ($this->additional_amenity_id && $this->additional_amenity_quantity) {
-            $this->additional_amenity_total = $this->additional_amenity->price * $this->additional_amenity_quantity;
-        }
+        $service = new AmenityService;
+        $this->selected_amenities = $service->remove($this->selected_amenities, $amenity);
     }
 
     public function upFloor()
@@ -432,6 +369,7 @@ class EditReservation extends Component
         ]);
 
         $validated['selected_services'] = $this->selected_services;
+        $validated['selected_amenities'] = $this->selected_amenities;
         
         $service = new ReservationService();
         $service->update($this->reservation, $validated);
