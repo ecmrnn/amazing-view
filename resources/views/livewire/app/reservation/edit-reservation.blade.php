@@ -47,6 +47,15 @@
                 <p class="max-w-sm text-xs">Update reservation details here</p>
             </div>
         </div>
+
+        {{-- For canceled resrvations --}}
+        @if (!empty($canceled_reservation))
+            <div class="p-5 text-red-500 border border-red-500 rounded-lg bg-red-50">
+                <h2 class="text-lg font-semibold">Reservation Canceled</h2>
+                <p class="text-sm">Canceled by: <span class="capitalize">{{ $canceled_reservation->canceled_by }}</span></p>
+                <p class="text-sm">Reason: {{ $canceled_reservation->reason }}</p>
+            </div>
+        @endif
         
         {{-- Reservation Details --}}
         <section class="p-5 space-y-5 bg-white border rounded-lg">
@@ -119,7 +128,7 @@
                 <div class="space-y-5">
                     <p class="font-semibold">Rooms</p>
                     
-                    <div class="grid grid-cols-2 gap-5 sm:">
+                    <div class="grid gap-5 sm:grid-cols-2">
                         @forelse ($reservation->rooms as $room)
                             <div class="grid grid-cols-2 gap-5 p-5 border rounded-md border-slate-200">
                                 <div>
@@ -133,7 +142,7 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="py-5 text-sm font-semibold text-center border rounded-lg">
+                            <div class="py-5 text-sm font-semibold text-center border rounded-lg sm:col-span-2">
                                 No rooms yet...
                             </div>
                         @endforelse
@@ -217,7 +226,7 @@
             <div class="flex items-start justify-between">
                 <hgroup>
                     <h3 class="font-semibold">Amenities</h3>
-                    <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong class="text-blue-500">Save Button</strong> to save your changes.</p>
+                    <p class="max-w-sm text-xs">Click the <strong class="text-blue-500">Add Amenity</strong> button on the right to select an amenity you want to add.</p>
                 </hgroup>
 
                 <button type="button" class="text-xs font-semibold text-blue-500" x-on:click="$dispatch('open-modal', 'add-amenity-modal')">Add Amenity</button>
@@ -234,8 +243,8 @@
                             </div>
 
                             <x-tooltip text="Remove Amenity" dir="top">
-                                <button x-ref="content" type="button" class="px-2 group" x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $amenity['id'] }}')">
-                                    <svg class="transition-all duration-200 ease-in-out opacity-50 group-hover:opacity-100" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                <button x-ref="content" type="button" class="p-3 group" x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $amenity['id'] }}')">
+                                    <svg class="transition-all duration-200 ease-in-out opacity-50 group-hover:opacity-100" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                 </button>
                             </x-tooltip>
                         </div>
@@ -274,9 +283,13 @@
             <x-loading wire:target='update' wire:loading.delay>Updating your reservation, please wait</x-loading>
         </div>
 
-        @if ($reservation->status != App\Enums\ReservationStatus::PENDING || $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT || $reservation->status == App\Enums\ReservationStatus::CONFIRMED)
+        @if (
+                $reservation->status == App\Enums\ReservationStatus::PENDING->value ||
+                $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT->value ||
+                $reservation->status == App\Enums\ReservationStatus::CONFIRMED->value
+            )
             {{-- Cancel reservation --}}
-            <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
+            <section class="p-3 space-y-5 border border-red-500 rounded-lg bg-red-200/50 sm:p-5">
                 <hgroup>
                     <h3 class="font-semibold text-red-500">Cancel Reservation</h3>
                     <p class="max-w-sm text-xs">If you need to cancel the reservation, click the button below.</p>

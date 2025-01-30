@@ -138,6 +138,10 @@ class Reservation extends Model
         return $this->hasMany(CarReservation::class);
     }
 
+    public function cancelled(): HasOne {
+        return $this->hasOne(CancelledReservation::class);
+    }
+
     public static function boot()
     {
         // Generate custom ID: https://laravelarticle.com/laravel-custom-id-generator

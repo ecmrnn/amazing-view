@@ -7,9 +7,11 @@ use App\Enums\RoomStatus;
 use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
 use App\Models\Amenity;
+use App\Models\CancelledReservation;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ReservationService
 {
@@ -128,7 +130,8 @@ class ReservationService
         $reservation->save();
 
         if (isset($data['selected_rooms'])) {
-            $this->updateRooms($reservation, $data['selected_rooms']);
+            $room_service = new RoomService;
+            $room_service->sync($reservation, $data['selected_rooms']);
         }
         if (isset($data['selected_services'])) {
             $this->updateServices($reservation, $data['selected_services']);
@@ -155,20 +158,6 @@ class ReservationService
         return $reservation;
     }
 
-    public function updateRooms(Reservation $reservation, $rooms) {
-        // Detach the old and attach the new rooms to reservation
-        foreach ($reservation->rooms as $room) {
-            $reservation->rooms()->detach($room->id);
-        }
-        foreach ($rooms as $room) {
-            $reservation->rooms()->attach($room->id, [
-                'rate' => $room->rate,
-            ]);
-        }
-
-        $reservation->save();
-    }
-
     public function updateAmenities(Reservation $reservation, $amenities) {
         // Detach the old and attach the new amenities to reservation
         foreach ($reservation->amenities as $amenity) {
@@ -179,16 +168,18 @@ class ReservationService
             $_amenity->quantity += (int) $amenity->pivot->quantity;
             $_amenity->save();
         }
-        foreach ($amenities as $amenity) {
-            $_amenity = Amenity::find($amenity['id']);
-
-            $reservation->amenities()->attach($amenity['id'], [
-                'price' => $amenity['price'],
-                'quantity' => $amenity['quantity'],
-            ]);
-
-            $_amenity->quantity -= (int) $amenity['quantity'];
-            $_amenity->save();
+        if (!empty($amenities)) {
+            foreach ($amenities as $amenity) {
+                $_amenity = Amenity::find($amenity['id']);
+    
+                $reservation->amenities()->attach($amenity['id'], [
+                    'price' => $amenity['price'],
+                    'quantity' => $amenity['quantity'],
+                ]);
+    
+                $_amenity->quantity -= (int) $amenity['quantity'];
+                $_amenity->save();
+            }
         }
     }
 
@@ -197,10 +188,31 @@ class ReservationService
         foreach ($reservation->services as $service) {
             $reservation->services()->detach($service->id);
         }
-        foreach ($services as $service) {
-            $reservation->services()->attach($service->id, [
-                'price' => $service['price'],
-            ]);
+        if (!empty($services)) {
+            foreach ($services as $service) {
+                $reservation->services()->attach($service->id, [
+                    'price' => $service['price'],
+                ]);
+            }
         }
+    }
+
+    public function cancel(Reservation $reservation, $data) {
+        $reservation->canceled_at = now();
+        $reservation->status = ReservationStatus::CANCELED;
+        $reservation->save();
+
+        CancelledReservation::create([
+            'reservation_id' => $reservation->id,
+            'reason' => $data['reason'],
+            'canceled_by' => $data['canceled_by'],
+            'canceled_at' => now(),
+        ]);
+
+        // Update amenities and rooms pivot tables
+        $this->updateAmenities($reservation, null);
+        
+        $room_service = new RoomService;
+        $room_service->sync($reservation, null);
     }
 }

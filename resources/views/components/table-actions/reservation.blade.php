@@ -55,8 +55,8 @@
     <x-modal.full name='delete-reservation-{{ $row->id }}' maxWidth='sm'>
         <form class="p-5 space-y-5 bg-white" x-on:submit.prevent="$dispatch('delete-reservation', { id: {{ $row->id  }}})">
             <hgroup>
-                <h2 class="text-base font-semibold text-red-500 capitalize">Delete Reservation</h2>
-                <p class="max-w-sm text-sm">You are about to delete this Reservation, this action cannot be undone</p>
+                <h2 class="text-lg font-semibold text-red-500 capitalize">Delete Reservation</h2>
+                <p class="max-w-sm text-sm">You are about to delete this reservation, this action cannot be undone</p>
             </hgroup>
     
             <div class="space-y-2">

@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Services\RoomService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Livewire\Attributes\On;
@@ -239,14 +240,8 @@ class EditReservationDetails extends Component
         $reservation->save();
         
         // 2. Reassign rooms
-        foreach ($reservation->rooms as $room) {
-            $reservation->rooms()->detach($room->id);
-        }
-        foreach ($this->selected_rooms as $room) {
-            $reservation->rooms()->attach($room->id, [
-                'rate' => $room->rate,
-            ]);
-        }
+        $room_service = new RoomService;
+        $room_service->sync($reservation, $this->selected_rooms);
 
         // 3. Pop a toast
         $this->toast('Edit Success!', description: 'Reservation details updated!');

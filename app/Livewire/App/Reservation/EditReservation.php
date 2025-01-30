@@ -23,7 +23,10 @@ class EditReservation extends Component
 {
     use WithFilePond, DispatchesToast;
 
-    protected $listeners = ['reservation-details-updated' => '$refresh'];
+    protected $listeners = [
+        'reservation-details-updated' => '$refresh',
+        'reservation-canceled' => '$refresh',
+    ];
 
     // Reservation Details
     #[Validate] public $date_in;
@@ -45,6 +48,8 @@ class EditReservation extends Component
     #[Validate] public $note;
     #[Validate] public $proof_image_path;
     #[Validate] public $cash_payment = 500;
+    // Canceled Reservation
+    public $canceled_reservation;
     // Address
     public $region;
     public $province;
@@ -109,6 +114,10 @@ class EditReservation extends Component
 
         $this->buildings = Building::with('rooms')->withCount('rooms')->get();
         $this->rooms = RoomType::with('rooms')->get();
+
+        if (!empty($reservation->canceled_at)) {
+            $this->canceled_reservation = $reservation->cancelled;
+        }
     }
 
     public function rules()

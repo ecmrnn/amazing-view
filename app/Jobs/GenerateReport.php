@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\ReservationStatus;
 use App\Events\ReportDeleted;
 use App\Events\ReportGenerated;
 use App\Exports\DailyReservationExports;
@@ -98,11 +99,11 @@ class GenerateReport implements ShouldQueue
 
     public function generateDailyReservations(Report $report, $size) {
         $reservations = Reservation::whereDate('date_in', $report->start_date)
-            ->whereStatus(Reservation::STATUS_CONFIRMED)
+            ->whereStatus(ReservationStatus::CONFIRMED->value)
             ->get();
         $guest_count = Reservation::selectRaw('sum(adult_count) as total_adults, sum(children_count) as total_children')
             ->whereDate('date_in', $report->start_date)
-            ->whereStatus(Reservation::STATUS_CONFIRMED)
+            ->whereStatus(ReservationStatus::CONFIRMED->value)
             ->first();
         
         if ($report->format == 'pdf') {

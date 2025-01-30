@@ -21,21 +21,21 @@ return new class extends Migration
             $table->date('date_out');
             $table->date('resched_date_in')->nullable();
             $table->date('resched_date_out')->nullable();
-            $table->date('cancel_date')->nullable();
-            $table->timestamp('expires_at')->nullable();
             $table->integer('senior_count')->nullable();
             $table->integer('pwd_count')->nullable();
             $table->integer('adult_count');
             $table->integer('children_count');
             $table->smallInteger('status');
             $table->text('note')->nullable();
-
+            
             // Optional parameter for reservation records
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('email')->nullable();
+            $table->timestamp('canceled_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->softDeletes();
 
             $table->timestamps();
