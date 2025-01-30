@@ -6,6 +6,7 @@ use App\Enums\InvoiceStatus;
 use App\Enums\RoomStatus;
 use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
+use App\Models\Amenity;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use Carbon\Carbon;
@@ -171,13 +172,23 @@ class ReservationService
     public function updateAmenities(Reservation $reservation, $amenities) {
         // Detach the old and attach the new amenities to reservation
         foreach ($reservation->amenities as $amenity) {
+            $_amenity = Amenity::find($amenity['id']);
+
             $reservation->amenities()->detach($amenity['id']);
+
+            $_amenity->quantity += (int) $amenity->pivot->quantity;
+            $_amenity->save();
         }
         foreach ($amenities as $amenity) {
+            $_amenity = Amenity::find($amenity['id']);
+
             $reservation->amenities()->attach($amenity['id'], [
                 'price' => $amenity['price'],
                 'quantity' => $amenity['quantity'],
             ]);
+
+            $_amenity->quantity -= (int) $amenity['quantity'];
+            $_amenity->save();
         }
     }
 

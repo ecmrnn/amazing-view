@@ -241,7 +241,7 @@
                         </div>
 
                         <x-modal.full name="remove-amenity-modal-{{ $amenity['id'] }}" maxWidth='sm'>
-                            <div class="p-5 space-y-5">
+                            <div class="p-5 space-y-5" x-on:amenity-removed.window="show = false">
                                 <div>
                                     <h2 class="text-lg font-semibold text-red-500">Remove Amenity</h2>
                                     <p class="text-xs">Are you sure you really want to remove <strong>{{ $amenity['name'] }}</strong> as an amenity?</p>
@@ -523,7 +523,7 @@
                     <x-form.input-error field="quantity" />
                 </x-form.input-group>
 
-                <p x-show="max_quantity > 0" class="text-xs font-semibold">Remaining stock: <span x-text="max_quantity"></span></p>
+                <p x-show="max_quantity > 0" class="text-xs">Remaining stock: <span x-text="max_quantity"></span></p>
             </div>
 
             <div class="flex gap-1">

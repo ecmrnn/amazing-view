@@ -229,6 +229,9 @@ class EditReservation extends Component
     public function removeAmenity(Amenity $amenity) {
         $service = new AmenityService;
         $this->selected_amenities = $service->remove($this->selected_amenities, $amenity);
+
+        $this->dispatch('amenity-removed');
+        $this->toast('Amenity Removed', 'info', ucwords($amenity->name) . ' is removed successfully!');
     }
 
     public function upFloor()

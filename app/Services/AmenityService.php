@@ -23,8 +23,8 @@ class AmenityService
     }
 
     public function remove($amenities, Amenity $amenity) {
-        $amenities = $amenities->reject(function ($a) use ($amenity) {
-            return $a['id'] == $amenity->id;
+        $amenities = $amenities->reject(function ($_amenity) use ($amenity) {
+            return $_amenity['id'] == $amenity->id;
         });
 
         return $amenities;
