@@ -72,12 +72,6 @@ class EditReservation extends Component
     public $amenity;
     public $quantity = 0;
     public $max_quantity = 0;
-    // public $additional_amenity;
-    // public $additional_amenities;
-    // public $additional_amenity_total;
-    // public $additional_amenity_quantity = 1;
-    // public $additional_amenity_quantities;
-    // public $additional_amenity_id;
     public $available_room_types;
     public $available_rooms;
     public $reserved_rooms;
@@ -106,8 +100,6 @@ class EditReservation extends Component
         $this->selected_rooms = collect();
         $this->selected_services = $reservation->services;
         $this->selected_amenities = collect();
-        // $this->additional_amenities = collect();
-        // $this->additional_amenity_quantities = collect();
         $this->available_rooms = collect();
 
         $this->setProperties();

@@ -7,6 +7,34 @@ use App\Models\Reservation;
 
 class AdditionalServiceHandler
 {
+    // For attaching selected services on the reservation, to be stored on additional_service_reservations pivot table
+    // Accepts the following arguments:
+    // - Reservation instance
+    // - Services to attach
+    public function attach(Reservation $reservation, $services) {
+        foreach ($services as $service) {
+            $reservation->services()->attach($service->id, [
+                'price' => $service->price,
+            ]);
+        }
+    }
+    // For syncing additional services records on additonal_service_reservations pivot table
+    // Accepets the following arguments:
+    // - Reservation instance
+    // - Collection of services to attach
+    public function sync(Reservation $reservation, $services) {
+        foreach ($reservation->services as $service) {
+            $reservation->services()->detach($service->id);
+        }
+        if (!empty($services)) {
+            foreach ($services as $service) {
+                $reservation->services()->attach($service->id, [
+                    'price' => $service['price'],
+                ]);
+            }
+        }
+    }
+
     public function add($services, AdditionalServices $service)
     {
         if ($services->contains('id', $service->id)) {

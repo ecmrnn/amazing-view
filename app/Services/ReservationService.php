@@ -3,18 +3,27 @@
 namespace App\Services;
 
 use App\Enums\InvoiceStatus;
-use App\Enums\RoomStatus;
 use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
-use App\Models\Amenity;
 use App\Models\CancelledReservation;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class ReservationService
 {
+    public $handlers;
+
+    public function __construct() {
+        $this->handlers =collect([
+            'amenity' => new AmenityService,
+            'room' => new RoomService,
+            'service' => new AdditionalServiceHandler,
+            'billing' => new BillingService,
+        ]);
+    }
+
     public function create($data) {
         // Assuming the $data is already validated prior to this point
         $expires_at = Carbon::now()->addHour();
@@ -29,50 +38,35 @@ class ReservationService
 
         // Create the reservation
         $reservation = Reservation::create([
-            'date_in' => $data['date_in'],
-            'date_out' => $data['date_out'],
-            'senior_count' => $data['senior_count'],
-            'pwd_count' => $data['pwd_count'],
-            'adult_count' => $data['adult_count'],
-            'children_count' => $data['children_count'],
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'address' => trim(implode($data['address']), ', '),
-            'note' => $data['note'],
+            'date_in' => Arr::get($data, 'date_in'),
+            'date_out' => Arr::get($data, 'date_out'),
+            'senior_count' => Arr::get($data, 'senior_count'),
+            'pwd_count' => Arr::get($data, 'pwd_count'),
+            'adult_count' => Arr::get($data, 'adult_count'),
+            'children_count' => Arr::get($data, 'children_count'),
+            'first_name' => Arr::get($data, 'first_name'),
+            'last_name' => Arr::get($data, 'last_name'),
+            'email' => Arr::get($data, 'email'),
+            'phone' => Arr::get($data, 'phone'),
+            'address' => trim(implode(', ', Arr::get($data, 'address'))),
+            'note' => Arr::get($data, 'note'),
             'expires_at' => $expires_at,
             'status' => $status,
         ]);
 
         // Attach the rooms to reservation
         if (isset($data['selected_rooms'])) {
-            foreach ($data['selected_rooms'] as $room) {
-                $reservation->rooms()->attach($room['id'], [
-                    'rate' => $room['rate'],
-                ]);
-                $room->status = RoomStatus::RESERVED;
-                $room->save();
-            }
+            $this->handlers->get('room')->attach($reservation, $data['selected_rooms']);
         }
 
         // Attach amenities to reservation
         if (isset($data['selected_amenities'])) {
-            foreach ($data['selected_amenities'] as $amenity) {
-                $reservation->amenities()->attach($amenity['id'], [
-                    'price' => $amenity['price'],
-                    'quantity' => 0,
-                ]);
-            }
+            $this->handlers->get('amenity')->attach($reservation, $data['selected_amenities']);
         }
 
         // Attach services to reservation
         if (isset($data['selected_services'])) {
-            foreach ($data['selected_services'] as $service) {
-                $reservation->services()->attach($service['id'], [
-                    'price' => $service['price'],
-                ]);
-            }
+            $this->handlers->get('service')->attach($reservation, $data['selected_services']);
         }
 
         // Store cars for park reservation
@@ -86,8 +80,7 @@ class ReservationService
         }
 
         // Compute breakdown
-        $billing = new BillingService();
-        $breakdown = $billing->breakdown($reservation);
+        $breakdown = $this->handlers->get('billing')->breakdown($reservation);
 
         // Create the invoice
         $invoice = $reservation->invoice()->create([
@@ -112,37 +105,39 @@ class ReservationService
         return $reservation;
     }
 
-    public function update(Reservation $reservation, array $data)
+    public function update(Reservation $reservation, $data)
     {
         // Assuming the $data is already validated prior to this point
         $reservation->update([
-            'date_in' => $data['date_in'],
-            'date_out' => $data['date_out'],
-            'adult_count' => $data['adult_count'],
-            'children_count' => $data['children_count'],
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'phone' => $data['phone'],
-            'address' => $data['address'],
-            'note' => $data['note'],
+            'date_in' => Arr::get($data, 'date_in'),
+            'date_out' => Arr::get($data, 'date_out'),
+            'resched_date_in' => Arr::get($data, 'resched_date_in', $reservation->resched_date_in),
+            'resched_date_out' => Arr::get($data, 'resched_date_out', $reservation->resched_date_out),
+            'adult_count' => Arr::get($data, 'adult_count'),
+            'children_count' => Arr::get($data, 'children_count'),
+            'senior_count' => Arr::get($data, 'senior_count', $reservation->senior_count),
+            'pwd_count' => Arr::get($data, 'pwd_count', $reservation->pwd_count),
+            'first_name' => Arr::get($data, 'first_name'),
+            'last_name' => Arr::get($data, 'last_name'),
+            'phone' => Arr::get($data, 'phone'),
+            'address' => Arr::get($data, 'address'),
+            'note' => Arr::get($data, 'note'),
         ]);
 
         $reservation->save();
 
         if (isset($data['selected_rooms'])) {
-            $room_service = new RoomService;
-            $room_service->sync($reservation, $data['selected_rooms']);
+            $this->handlers->get('room')->sync($reservation, $data['selected_rooms']);
         }
         if (isset($data['selected_services'])) {
-            $this->updateServices($reservation, $data['selected_services']);
+            $this->handlers->get('service')->sync($reservation, $data['selected_services']);
         }
         if (isset($data['selected_amenities'])) {
-            $this->updateAmenities($reservation, $data['selected_amenities']);
+            $this->handlers->get('amenity')->sync($reservation, $data['selected_amenities']);
         }
         
         // Update the invoice
-        $billing = new BillingService();
-        $breakdown = $billing->breakdown($reservation->fresh());
+        $breakdown = $this->handlers->get('billing')->breakdown($reservation->fresh());
         $invoice_data = [
             'total_amount' => $breakdown['total_amount'],
             'downpayment' => $reservation->invoice->downpayment,
@@ -151,50 +146,11 @@ class ReservationService
         $invoice_data['status'] = $invoice_data['balance'] > 0 ? InvoiceStatus::PARTIAL->value : InvoiceStatus::PAID->value;
 
         // Create the invoice
-        $billing->update($reservation->invoice, $invoice_data);
+        $this->handlers->get('billing')->update($reservation->invoice, $invoice_data);
 
         // Example: Notify user about the update
         // Notification::send($reservation->user, new ReservationUpdated($reservation));
         return $reservation;
-    }
-
-    public function updateAmenities(Reservation $reservation, $amenities) {
-        // Detach the old and attach the new amenities to reservation
-        foreach ($reservation->amenities as $amenity) {
-            $_amenity = Amenity::find($amenity['id']);
-
-            $reservation->amenities()->detach($amenity['id']);
-
-            $_amenity->quantity += (int) $amenity->pivot->quantity;
-            $_amenity->save();
-        }
-        if (!empty($amenities)) {
-            foreach ($amenities as $amenity) {
-                $_amenity = Amenity::find($amenity['id']);
-    
-                $reservation->amenities()->attach($amenity['id'], [
-                    'price' => $amenity['price'],
-                    'quantity' => $amenity['quantity'],
-                ]);
-    
-                $_amenity->quantity -= (int) $amenity['quantity'];
-                $_amenity->save();
-            }
-        }
-    }
-
-    public function updateServices(Reservation $reservation, $services) {
-        // Detach the old and attach the new services to reservation
-        foreach ($reservation->services as $service) {
-            $reservation->services()->detach($service->id);
-        }
-        if (!empty($services)) {
-            foreach ($services as $service) {
-                $reservation->services()->attach($service->id, [
-                    'price' => $service['price'],
-                ]);
-            }
-        }
     }
 
     public function cancel(Reservation $reservation, $data) {
@@ -210,9 +166,7 @@ class ReservationService
         ]);
 
         // Update amenities and rooms pivot tables
-        $this->updateAmenities($reservation, null);
-        
-        $room_service = new RoomService;
-        $room_service->sync($reservation, null);
+        $this->handlers->get('amenity')->sync($reservation, null);
+        $this->handlers->get('room')->sync($reservation, null);
     }
 }

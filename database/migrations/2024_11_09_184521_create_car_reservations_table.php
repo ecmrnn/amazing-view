@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('car_reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Reservation::class);
+            $table->foreignIdFor(Reservation::class)->constrained()->cascadeOnDelete();
             $table->string('plate_number');
             $table->string('make');
             $table->string('model');

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Guest;
 
+use App\Enums\ReservationStatus;
 use App\Http\Controllers\OTP\MailOtp;
 use App\Models\Reservation;
 use App\Models\RoomReservation;
@@ -156,10 +157,12 @@ class FindReservation extends Component
         ]);
 
         $this->reservation->update([
-            'status' => Reservation::STATUS_PENDING,
+            'status' => ReservationStatus::PENDING->value,
             'expires_at' => null,
-            'proof_image_path' => $this->proof_image_path->store('downpayments', 'public'),
+            // 'proof_image_path' => $this->proof_image_path->store('downpayments', 'public'),
         ]);
+
+        // Update billing here!!!
 
         $this->toast('Success!', 'success', 'Payment submitted successfully.');
         $this->reset('proof_image_path');

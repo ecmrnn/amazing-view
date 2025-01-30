@@ -8,6 +8,20 @@ use App\Models\Room;
 
 class RoomService
 {
+    // For attaching selected rooms on the reservation, to be stored on room_reservations pivot table
+    // Accepts the following arguments:
+    // - Reservation instance
+    // - Rooms to attach
+    public function attach(Reservation $reservation, $rooms) {
+        foreach ($rooms as $room) {
+            $reservation->rooms()->attach($room->id, [
+                'rate' => $room->rate,
+            ]);
+            
+            $room->status = RoomStatus::RESERVED;
+            $room->save();
+        }
+    }
     // For syncing room records on room_reservations pivot table
     // Accepets the following arguments:
     // - Reservation instance
