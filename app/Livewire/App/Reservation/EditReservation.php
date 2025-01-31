@@ -11,12 +11,15 @@ use App\Models\Room;
 use App\Models\RoomType;
 use App\Services\AdditionalServiceHandler;
 use App\Services\AmenityService;
+use App\Services\CarService;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use phpDocumentor\Reflection\Types\This;
+use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class EditReservation extends Component
@@ -44,25 +47,17 @@ class EditReservation extends Component
     #[Validate] public $email;
     #[Validate] public $phone;
     #[Validate] public $address;
+    #[Validate] public $cars;
+    public $plate_number; 
+    public $make; 
+    public $model; 
+    public $color; 
     // Payment
     #[Validate] public $note;
     #[Validate] public $proof_image_path;
     #[Validate] public $cash_payment = 500;
     // Canceled Reservation
     public $canceled_reservation;
-    // Address
-    public $region;
-    public $province;
-    public $city;
-    public $district;
-    public $baranggay;
-    public $street;
-    public $regions = [];
-    public $provinces = [];
-    public $cities = [];
-    public $districts = [];
-    public $baranggays = [];
-
     // Operations
     public $modal_key; /* Unique identifier for building modal */
     public $is_map_view = true; /* Must be set to true */
@@ -85,11 +80,6 @@ class EditReservation extends Component
     public $night_count = 1;
     public $services;
     public $rooms;
-    public $sub_total = 0;
-    public $net_total = 0;
-    public $vat = 0;
-    public $vatable_sales = 0;
-    public $payment_method = 'online';
     public $reservation;
 
     public function mount(Reservation $reservation = null)
@@ -141,6 +131,18 @@ class EditReservation extends Component
         $this->phone = $this->reservation->phone;
         $this->email = $this->reservation->email;
         $this->address = $this->reservation->address;
+        $this->cars = collect();
+
+        if (!empty($this->reservation->cars)) {
+            foreach ($this->reservation->cars as $car) {
+                $this->cars->push([
+                    'plate_number' => $car->plate_number,
+                    'make' => $car->make,
+                    'model' => $car->model,
+                    'color' => $car->color,
+                ]);
+            }   
+        }
         
         if (!empty($this->reservation->amenities)) {
             foreach ($this->reservation->amenities as $amenity) {
@@ -152,6 +154,11 @@ class EditReservation extends Component
                 ]);
             }
         }
+    }
+    
+    #[On('reservation-canceled')]
+    public function reservationCanceled() {
+        $this->canceled_reservation = $this->reservation->cancelled;
     }
 
     #[On('select-building')]
@@ -193,13 +200,6 @@ class EditReservation extends Component
         // $this->dispatch('$refresh');
     }
 
-    public function computeBreakdown()
-    {
-        $this->vatable_sales = $this->sub_total / 1.12;
-        $this->vat = ($this->sub_total) - $this->vatable_sales;
-        $this->net_total = $this->vatable_sales + $this->vat;
-    }
-
     public function selectAmenity() {
         $amenity = Amenity::find($this->amenity);
 
@@ -209,6 +209,34 @@ class EditReservation extends Component
             $this->max_quantity = 0;
             $this->quantity = 0;
         }
+    }
+
+    public function addCar() {
+        $validated = $this->validate([
+            'plate_number' => 'required',
+            'make' => 'required',
+            'model' => 'required',
+            'color' => 'required',
+        ]);
+
+        $car_service = new CarService;
+        $this->cars = $car_service->add($this->cars, $validated);
+
+        if ($this->cars) {
+            $this->reset('plate_number', 'make', 'model', 'color');
+            $this->toast('Success!', description: 'Car added successfully!');
+            $this->dispatch('car-added');
+        } else {
+            $this->toast('Car Exists!', 'warning', 'Plate number ' . $this->plate_number . ' already exists.');
+        }
+    }
+
+    public function removeCar($plate_number) {
+        $car_service = new CarService;
+        $this->cars = $car_service->remove($this->cars, $plate_number);
+
+        $this->toast('Success!', description: 'Car removed successfully!');
+        $this->dispatch('car-removed');
     }
 
     public function addAmenity() {
@@ -272,11 +300,8 @@ class EditReservation extends Component
             $this->selected_rooms->push($room);
 
             $this->capacity += $room->max_capacity;
-            $this->sub_total += ($room->rate * $this->night_count);
         } else {
             $this->capacity -= $room->max_capacity;
-
-            $this->sub_total -= ($room->rate * $this->night_count);
 
             $this->selected_rooms = $this->selected_rooms->reject(function ($room_loc) use ($room) {
                 return $room_loc->id == $room->id;
@@ -374,6 +399,7 @@ class EditReservation extends Component
 
         $validated['selected_services'] = $this->selected_services;
         $validated['selected_amenities'] = $this->selected_amenities;
+        $validated['cars'] = $this->cars;
         
         $service = new ReservationService();
         $service->update($this->reservation, $validated);

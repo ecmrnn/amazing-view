@@ -21,6 +21,7 @@ class ReservationService
             'room' => new RoomService,
             'service' => new AdditionalServiceHandler,
             'billing' => new BillingService,
+            'car' => new CarService,
         ]);
     }
 
@@ -70,13 +71,8 @@ class ReservationService
         }
 
         // Store cars for park reservation
-        foreach ($data['cars'] as $car) {
-            $reservation->cars()->create([
-                'plate_number' => $car['plate_number'], 
-                'make' => $car['make'],
-                'model' => $car['model'],
-                'color' => $car['color'],
-            ]);
+        if (isset($data['cars'])) {
+            $this->handlers->get('car')->create($reservation, $data['cars']);
         }
 
         // Compute breakdown
@@ -96,7 +92,7 @@ class ReservationService
                 'proof_image_path' => $proof_image_path,
                 'amount' => 0,
                 'purpose' => PaymentPurpose::DOWNPAYMENT,
-                'payment_date' => Carbon::now()->format('Y-m-d'),
+                'payment_date' => now(),
             ]);
         }
 
@@ -135,6 +131,11 @@ class ReservationService
         if (isset($data['selected_amenities'])) {
             $this->handlers->get('amenity')->sync($reservation, $data['selected_amenities']);
         }
+        if (isset($data['cars'])) {
+            $this->handlers->get('car')->update($reservation, $data['cars']);
+        }
+
+        
         
         // Update the invoice
         $breakdown = $this->handlers->get('billing')->breakdown($reservation->fresh());
