@@ -34,17 +34,16 @@ class UpdateNote extends Component
 
             $this->reservation->note = htmlentities(str_replace('"', "'", $this->note));
             $this->reservation->save();
-            $this->toast('Success!', 'success', 'Yay, note updated!');
+            $this->toast('Success!', description: 'Yay, note updated!');
+        } else {
+            $this->toast('Oof, empty note!', 'warning', 'Write something on the textbox');
         }
     }
 
     public function render()
     {
         return <<<'HTML'
-            <div  class="space-y-1" method="POST">
-                @csrf
-                @method('PATCH')
-
+            <div  class="space-y-5" method="POST">
                 <x-form.input-label for="note">Reservation Note</x-form.input-label>
                 <x-form.textarea wire:model.live="note" name="note" rows="3" class="w-full" id="note">
                     {{ $note }}

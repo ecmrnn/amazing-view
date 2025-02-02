@@ -81,7 +81,7 @@
                 @endisset
 
                 <!-- Page Content -->
-                <main class="relative p-5 space-y-3 grow sm:space-y-5">
+                <main class="relative p-5 grow sm:space-y-5">
                     {{ $slot }}
                 </main>
             </div>

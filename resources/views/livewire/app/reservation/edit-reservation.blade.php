@@ -81,8 +81,9 @@
                             <button x-on:click="$dispatch('open-modal', 'edit-reservation-details')" type="button" class="text-xs font-semibold text-blue-500">Edit</button>
                         @endif
                     </div>
+
                     {{-- Reservation Details --}}
-                    <div class="grid grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                         <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
                             <div>
                                 @if (!empty($reservation->resched_date_in))
