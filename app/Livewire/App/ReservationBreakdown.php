@@ -35,6 +35,8 @@ class ReservationBreakdown extends Component
     {
         return <<<'HTML'
         <div class="space-y-5">
+            <x-note>Quantity on notes are the total nights the guest will stay.</x-note>
+
             <!-- Table -->
             <div class="overflow-auto border rounded-md border-slate-200">
                 <div class="min-w-[600px]">
@@ -119,7 +121,7 @@ class ReservationBreakdown extends Component
                         </tr>
                     @endif
                     <tr>
-                        <td class="pr-5 text-right">Vat</td>
+                        <td class="pr-5 text-right">VAT</td>
                         <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['vat'], 2) }}</td>
                     </tr>
                     @if ($breakdown['taxes']['discount'] > 0)
