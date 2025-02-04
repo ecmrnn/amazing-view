@@ -39,13 +39,8 @@ class ReservationController extends Controller
      */
     public function show(string $reservation)
     {
-        $billing_service = new BillingService;
-
         $reservation = Reservation::where('rid', $reservation)->first();
         $downpayment = $reservation->invoice->payments->first() == null ? null : $reservation->invoice->payments->first()->proof_image_path;
-        
-        $created_at_time = Carbon::parse($reservation->created_at)->format('H:i');
-        $created_at_time_formatted = Carbon::parse($reservation->created_at)->format('g:i A');
 
         return view('app.reservations.show', [
             'reservation' => $reservation,

@@ -80,9 +80,9 @@ class ReservationService
 
         // Create the invoice
         $invoice = $reservation->invoice()->create([
-            'total_amount' => $breakdown['total_amount'],
+            'total_amount' => $breakdown['sub_total'],
             'downpayment' => 0,
-            'balance' => $breakdown['total_amount'],
+            'balance' => $breakdown['sub_total'],
             'status' => Invoice::STATUS_PENDING,
         ]);
 
@@ -140,9 +140,9 @@ class ReservationService
         // Update the invoice
         $breakdown = $this->handlers->get('billing')->breakdown($reservation->fresh());
         $invoice_data = [
-            'total_amount' => $breakdown['total_amount'],
+            'total_amount' => $breakdown['sub_total'],
             'downpayment' => $reservation->invoice->downpayment,
-            'balance' => $breakdown['total_amount'] - $reservation->invoice->downpayment,
+            'balance' => $breakdown['sub_total'] - $reservation->invoice->downpayment,
         ];
         $invoice_data['status'] = $invoice_data['balance'] > 0 ? InvoiceStatus::PARTIAL->value : InvoiceStatus::PAID->value;
 
