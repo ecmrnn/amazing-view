@@ -268,7 +268,7 @@ class EditReservationDetails extends Component
             </hgroup>
 
             {{-- Reservation steps --}}
-            <div class="flex items-start mb-10">
+            <div class="flex items-start gap-5 mb-10">
                 <x-web.reservation.steps step="1" currentStep="{{ $step }}" icon="bed" name="Reservation Details" />
                 <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Select a Room" />
             </div>

@@ -54,17 +54,28 @@
 }" x-init="setMaxSeniorCount()" wire:submit="submit()">
 @csrf
 
-<div class="relative flex flex-col gap-5 lg:flex-row">
-    <section class="w-full">
+<div class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
+    <div class="flex items-center gap-5 p-5 bg-white border rounded-lg border-slate-200">
+        <x-tooltip text="Back" dir="bottom">
+            <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>
+                <x-icon-button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </x-icon-button>
+            </a>
+        </x-tooltip>
+        
+        <div>
+            <h2 class="text-lg font-semibold">Create Reservation</h2>
+            <p class="max-w-sm text-xs">Create reservation for guests here.</p>
+        </div>
+    </div>
+    
+    <section class="w-full space-y-5">
         {{-- Step 1: Reservation Details --}}
         @include('components.app.reservation.reservation_details')
 
-        <x-line-vertical />
-
         {{-- Step 2: Guest Details --}}
         @include('components.app.reservation.guest_details')
-
-        <x-line-vertical />
 
         {{-- Step 3: Room & Additional Details --}}
         @include('components.app.reservation.room_add_details', [
@@ -79,24 +90,14 @@
             'rooms' => $rooms,
         ])
 
-        <x-line-vertical />
-        
+    
         {{-- Step 4: Additional Details (Optional) --}}
         @include('components.app.reservation.add_details', [
             'addons' => $addons,
         ])
 
-        <x-line-vertical />
-
         {{-- Step 5: Payment --}}
         @include('components.app.reservation.payment')
-    </section>
-
-    <section class="sticky self-start w-full overflow-auto border rounded-lg top-5">
-        @include('components.app.reservation.summary', [
-            'selected_amenities' => $selected_amenities,
-            'selected_rooms' => $selected_rooms,
-        ])
     </section>
 </div>
 
