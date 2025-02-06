@@ -14,16 +14,16 @@
     {{-- Select Room --}}
     <x-form.form-header step="3" title="Select a Room" />
 
-    <div x-show="can_select_room && !can_submit_payment" x-collapse.duration.1000ms>
+    <div x-show="can_select_room" x-collapse.duration.1000ms>
         <x-form.form-body>
-            <div class="p-5 space-y-3">
+            <div class="p-5 pt-0 space-y-5">
                 <div>
                     {{-- header --}}
                     <div class="flex flex-col items-start justify-between gap-5 sm:flex-row">
                         <hgroup>
                             <h2 class="text-sm font-semibold">Available Rooms</h2>
                             <p class="max-w-xs text-xs">Below are the list of available rooms between
-                                <strong x-text="formatDate(date_in)"></strong> and <strong x-text="formatDate(date_out)"></strong>.
+                                {{ date_format(date_create($date_in), 'F j, Y') }} and {{ date_format(date_create($date_out), 'F j, Y') }}.
                             </p>
                         </hgroup>
 
@@ -121,12 +121,6 @@
                 {{-- View Selected Rooms --}}
                 <x-secondary-button x-on:click="$dispatch('open-modal', 'show-selected-rooms')">View Selected Rooms</x-secondary-button>
                 <p class="max-w-xs text-xs">If you wish to <strong class="font-semibold text-red-500">remove</strong> or view all the selected rooms, click the button above.</p>
-
-                <div class="flex items-center gap-1">
-                    <x-secondary-button type="button" x-on:click="can_enter_guest_details = true; can_select_room = false">Edit Guest Details</x-secondary-button>
-                    <x-primary-button type="button" x-on:click="$wire.selectedRoom()">Additional Details</x-primary-button>
-                    <p class="max-w-xs text-xs font-semibold" wire:loading.delay wire:target="sendPayment()">Please wait while we load the next form.</p>
-                </div>
             </div>
         </x-form.form-body>
     </div>

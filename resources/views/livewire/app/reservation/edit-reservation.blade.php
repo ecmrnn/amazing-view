@@ -237,7 +237,7 @@
     
                 <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     @forelse ($selected_amenities as $amenity)
-                        <div>
+                        <div wire:key='{{ $amenity['id'] }}'>
                             <div class="flex items-center justify-between w-full px-3 py-2 border rounded-md select-none border-slate-200">
                                 <div>
                                     <p class="font-semibold">{{ $amenity['name'] }}</p>
@@ -292,7 +292,7 @@
     
                 <div class="grid gap-5 sm:grid-cols-2">
                     @forelse ($cars as $car)
-                        <div>
+                        <div wire:key='{{ $car['plate_number'] }}'>
                             <div class="flex items-center justify-between w-full px-3 py-2 border rounded-md select-none border-slate-200">
                                 <div>
                                     <p class="font-semibold">{{ $car['plate_number'] }}</p>

@@ -32,26 +32,7 @@
     can_add_amenity: $wire.entangle('can_add_amenity'),
     can_select_room: $wire.entangle('can_select_room'),
     can_submit_payment: $wire.entangle('can_submit_payment'),
-    additional_amenity_quantity: $wire.entangle('additional_amenity_quantity'),
-
-    formatDate(date) {
-        let options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(date).toLocaleDateString('en-US', options)
-    },
-
-    setMaxSeniorCount() {
-        if (this.pwd_count > 0) {
-            this.max_senior_count = this.adult_count;
-
-            if (this.pwd_count + this.senior_count > this.adult_count + this.children_count) {
-                this.pwd_count--;
-            }
-
-        } else {
-            this.max_senior_count = this.adult_count - this.pwd_count;
-        }
-    },
-}" x-init="setMaxSeniorCount()" wire:submit="submit()">
+}">
 @csrf
 
 <div class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
@@ -71,33 +52,45 @@
     </div>
     
     <section class="w-full space-y-5">
-        {{-- Step 1: Reservation Details --}}
-        @include('components.app.reservation.reservation_details')
+        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-start justify-between gap-5">
+                <hgroup>
+                    <h2 class="font-semibold">Reservation Details</h2>
+                    <p class="max-w-sm text-xs">Enter reservation date, number of guests, and then select a room you want to reserve.</p>
+                </hgroup>
 
-        {{-- Step 2: Guest Details --}}
+                <button x-on:click="$wire.set('can_select_room', false)" type="button" @class(['text-xs font-semibold text-blue-500 transition-all duration-200 ease-in-out', 'scale-0' => !$can_select_room, 'scale-100' => $can_select_room])>
+                    Edit
+                </button>
+            </div>
+
+            {{-- Step 1: Reservation Details --}}
+            @include('components.app.reservation.reservation_details')
+
+            {{-- Step 2: Room & Additional Details --}}
+            @include('components.app.reservation.room_add_details', [
+                'available_rooms' => $available_rooms,
+                'available_room_types' => $available_room_types,
+                'buildings' => $buildings,
+                'column_count' => $column_count,
+                'selected_building' => $selected_building,
+                'selected_rooms' => $selected_rooms,
+                'reserved_rooms' => $reserved_rooms,
+                'rooms' => $rooms,
+            ])
+        </div>
+        {{-- Step 3: Guest Details --}}
         @include('components.app.reservation.guest_details')
 
-        {{-- Step 3: Room & Additional Details --}}
-        @include('components.app.reservation.room_add_details', [
-            'addons' => $addons,
-            'available_rooms' => $available_rooms,
-            'available_room_types' => $available_room_types,
-            'buildings' => $buildings,
-            'column_count' => $column_count,
-            'selected_building' => $selected_building,
-            'selected_rooms' => $selected_rooms,
-            'reserved_rooms' => $reserved_rooms,
-            'rooms' => $rooms,
-        ])
-
-    
         {{-- Step 4: Additional Details (Optional) --}}
         @include('components.app.reservation.add_details', [
-            'addons' => $addons,
+            'services' => $services,
         ])
 
         {{-- Step 5: Payment --}}
         @include('components.app.reservation.payment')
+
+        <x-primary-button wire:click='submit'>Create Reservation</x-primary-button>
     </section>
 </div>
 

@@ -269,6 +269,10 @@ class ReservationForm extends Component
             $this->addError('adult_count', 'Total Seniors and PWDs cannot exceed total guests');
             return;
         }
+        if ($this->senior_count > $this->adult_count) {
+            $this->addError('adult_count', 'Total seniors cannot exceed total adults');
+            return;
+        }
 
         // Get the number of nights between 'date_in' and 'date_out'
         $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));

@@ -2,7 +2,10 @@
 
 namespace App\Livewire\App\Reservation;
 
+use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
 use App\Http\Controllers\AddressController;
+use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Building;
 use App\Models\Invoice;
@@ -10,6 +13,9 @@ use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Services\AdditionalServiceHandler;
+use App\Services\AmenityService;
+use App\Services\CarService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Validate;
@@ -65,12 +71,16 @@ class CreateReservation extends Component
     public $selected_type; 
     public $max_senior_count;
     public $selected_building;
-    public $additional_amenity;
+    #[Validate] public $amenity;
+    public $quantity = 0;
+    public $max_quantity = 0;
+    // public $additional_amenity;
+    // public $available_amenities;
+    // public $additional_amenity_total;
+    // public $additional_amenity_quantity = 1;
+    // public $additional_amenity_quantities;
+    // public $additional_amenity_id;
     public $available_amenities;
-    public $additional_amenity_total;
-    public $additional_amenity_quantity = 1;
-    public $additional_amenity_quantities;
-    public $additional_amenity_id;
     public $available_room_types;
     public $available_rooms;
     public $reserved_rooms;
@@ -81,23 +91,32 @@ class CreateReservation extends Component
     public $floor_count = 1;
     public $column_count = 1;
     public $night_count = 1;
-    public $addons;
     public $rooms;
     public $sub_total = 0;
     public $net_total = 0;
     public $vat = 0;
     public $vatable_sales = 0;
     public $payment_online = false;
+    public $services;
+    public $selected_services;
+    #[Validate] public $cars;
+    public $plate_number; 
+    public $make; 
+    public $model; 
+    public $color; 
 
     public function mount()
     {
         $this->min_date = Carbon::now()->format('Y-m-d');
         $this->selected_rooms = collect();
         $this->selected_amenities = collect();
-        $this->additional_amenity_quantities = collect();
+        // $this->additional_amenity_quantities = collect();
+        $this->selected_services = collect();
+        $this->cars = collect();
 
         $this->buildings = Building::all();
         $this->rooms = RoomType::all();
+        $this->services = AdditionalServices::all();
     }
 
     public function rules()
@@ -113,6 +132,12 @@ class CreateReservation extends Component
     public function validationAttributes()
     {
         return Reservation::validationAttributes();
+    }
+
+    public function toggleService(AdditionalServices $service)
+    {
+        $handler = new AdditionalServiceHandler;
+        $this->selected_services = $handler->add($this->selected_services, $service);
     }
 
     // Address Get Methods
@@ -159,74 +184,67 @@ class CreateReservation extends Component
 
     public function addAmenity() {
         $this->validate([
-            'additional_amenity_quantity' => 'integer|min:1|required',
-            'additional_amenity' => 'required',
+            'amenity' => 'required',
+            'quantity' => 'required|lte:max_quantity|gt:0',
         ]);
 
-        $amenity = $this->additional_amenity;
+        $amenity = Amenity::find($this->amenity);
 
-        if ($this->additional_amenity_quantity <= $amenity->quantity) {
-            $this->additional_amenity_quantities->push([
-                'amenity_id' => $amenity->id,
-                'quantity' => $this->additional_amenity_quantity
-            ]);
-            
-            // Push to amenities selected on reservation
-            $this->selected_amenities->push($amenity);
+        $service = new AmenityService;
+        $service->add($this->selected_amenities, $amenity, $this->quantity);
 
-            // Recomputes Breakdown
-            $this->sub_total += ($amenity->price * $this->additional_amenity_quantity);
-            $this->computeBreakdown();
-
-            // Reset properties
-            $this->reset([
-                'additional_amenity_quantity',
-                'additional_amenity_total',
-                'additional_amenity_id',
-                'additional_amenity',
-            ]);
-        } else {
-            $this->toast('Oof, not enough item', 'warning', 'Item quantity is not enough');
-        }
+        $this->reset('amenity', 'quantity', 'max_quantity');
+        $this->dispatch('amenity-added');
+        $this->toast('Success!', description: 'Amenity added successfully!');
     }
 
     public function removeAmenity(Amenity $amenity) {
+        $service = new AmenityService;
+        $this->selected_amenities = $service->remove($this->selected_amenities, $amenity);
+
+        $this->dispatch('amenity-removed');
+        $this->toast('Amenity Removed', 'info', ucwords($amenity->name) . ' is removed successfully!');
+    }
+
+    public function selectAmenity() {
+        $amenity = Amenity::find($this->amenity);
+
         if ($amenity) {
-            // Get the quantity for this amenity
-            $quantity = 1;
-            foreach ($this->additional_amenity_quantities as $selected_amenity) {
-                if ($selected_amenity['amenity_id'] == $amenity->id) {
-                    $quantity = $selected_amenity['quantity'];
-                    break;
-                }
+            $this->max_quantity = $amenity->quantity;
+        } else {
+            $this->max_quantity = 0;
+            $this->quantity = 0;
+        }
+    }
+
+    public function addCar() {
+        $validated = $this->validate([
+            'plate_number' => 'required',
+            'make' => 'required',
+            'model' => 'required',
+            'color' => 'required',
+        ]);
+
+        if (!$this->cars->contains('plate_number', strtoupper($this->plate_number))) {
+            $car_service = new CarService;
+            $this->cars = $car_service->add($this->cars, $validated);
+    
+            if ($this->cars) {
+                $this->reset('plate_number', 'make', 'model', 'color');
+                $this->toast('Success!', description: 'Car added successfully!');
+                $this->dispatch('car-added');
             }
-
-            // Remove this amenity on these properties
-            $this->selected_amenities = $this->selected_amenities->reject(function ($amenity_loc) use ($amenity) {
-                return $amenity_loc->id == $amenity->id;
-            });
-            $this->additional_amenity_quantities = $this->additional_amenity_quantities->reject(function ($amenity_loc) use ($amenity) {
-                return $amenity_loc['amenity_id'] == $amenity->id;
-            });
-
-            // Recompute breakdown
-            $this->sub_total -= ($amenity->price * $quantity);
-            $this->computeBreakdown();
+        } else {
+            $this->toast('Car Exists!', 'warning', 'Plate number ' . strtoupper($this->plate_number) . ' already exists.');
         }
     }
 
-    public function selectAmenity($id) {
-        if (!empty($id)) {
-            $this->additional_amenity_id = $id;
-            $this->additional_amenity = Amenity::find($id);
-            $this->getTotal();
-        }
-    }
+    public function removeCar($plate_number) {
+        $car_service = new CarService;
+        $this->cars = $car_service->remove($this->cars, $plate_number);
 
-    public function getTotal() {
-        if ($this->additional_amenity_id && $this->additional_amenity_quantity) {
-            $this->additional_amenity_total = $this->additional_amenity->price * $this->additional_amenity_quantity;
-        }
+        $this->toast('Success!', description: 'Car removed successfully!');
+        $this->dispatch('car-removed');
     }
 
     public function selectBuilding(Building $id)
@@ -329,6 +347,22 @@ class CreateReservation extends Component
         }
     }
 
+    public function applyDiscount() {
+        $this->validate([
+            'senior_count' => 'nullable|lte:adult_count|integer',
+            'pwd_count' => 'nullable|integer',
+        ]);
+
+        if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
+            $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
+            return;
+        }
+
+        $this->dispatch('discount-applied');
+
+        $this->toast('Success!', description: 'Senior and PWDs updated successfully!');
+    }
+
     public function selectRoom()
     {
         $this->validate([
@@ -336,43 +370,23 @@ class CreateReservation extends Component
             'date_out' => $this->rules()['date_out'],
             'adult_count' => $this->rules()['adult_count'],
             'children_count' => $this->rules()['children_count'],
-            'first_name' => $this->rules()['first_name'],
-            'last_name' => $this->rules()['last_name'],
-            'email' => $this->rules()['email'],
-            'phone' => $this->rules()['phone'],
-            'address' => $this->rules()['address'],
         ]);
-        
+
+        if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
+            $this->addError('adult_count', 'Total Seniors and PWDs cannot exceed total guests');
+            return;
+        }
+        if ($this->senior_count > $this->adult_count) {
+            $this->addError('adult_count', 'Total seniors cannot exceed total adults');
+            return;
+        }
+
         $this->can_select_room = true;
+
         if ($this->buildings->count() > 0 || $this->rooms->count() > 0) {
             $this->buildings = Building::all();
             $this->rooms = RoomType::all();
         }
-
-        $this->addons = Amenity::where('is_addons', 1)->get();
-        $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
-
-        // Get the number of nights between 'date_in' and 'date_out'
-        $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));
-
-        // If 'date_in' == 'date_out', 'night_count' = 1
-        $this->night_count != 0 ?: $this->night_count = 1;
-
-        // Get all the reserved rooms
-        $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
-
-        // Recomputes the total amount due
-        $this->vatable_sales = 0;
-        $this->sub_total = 0;
-        $this->vat = 0;
-        $this->net_total = 0;
-        foreach ($this->selected_rooms as $room) {
-            $this->sub_total += ($room->rate * $this->night_count);
-        }
-        foreach ($this->selected_amenities as $amenity) {
-            $this->sub_total += $amenity->price;
-        }
-        $this->computeBreakdown();
     }
 
     public function viewRooms(RoomType $roomType) {
@@ -408,23 +422,23 @@ class CreateReservation extends Component
 
     public function submit()
     {
-        $this->validate([
-            'proof_image_path' => $this->rules()['proof_image_path'],
-            'transaction_id' => $this->rules()['transaction_id'],
-            'downpayment' => $this->rules()['downpayment'],
-        ]);
+        // $this->validate([
+        //     'proof_image_path' => $this->rules()['proof_image_path'],
+        //     'transaction_id' => $this->rules()['transaction_id'],
+        //     'downpayment' => $this->rules()['downpayment'],
+        // ]);
 
         // Open success modal
         $this->dispatch('open-modal', 'show-reservation-confirmation');
     }
 
     public function store() {
-        $status = Reservation::STATUS_PENDING;
+        $status = ReservationStatus::PENDING;
 
         if ($this->reservation_type == 'walk-in-reservation' && $this->date_in == Carbon::now()->format('Y-m-d')) {
-            $status = Reservation::STATUS_CHECKED_IN;
+            $status = ReservationStatus::CHECKED_IN;
         } elseif ($this->downpayment > 0) {
-            $status = Reservation::STATUS_CONFIRMED;
+            $status = ReservationStatus::CONFIRMED;
         }
 
         $reservation = Reservation::create([
@@ -448,10 +462,10 @@ class CreateReservation extends Component
             foreach ($this->selected_rooms as $room) {
                 $room->reservations()->attach($reservation->id);
                 
-                if ($status == Reservation::STATUS_CHECKED_IN) {
-                    $room->status = Room::STATUS_OCCUPIED;
+                if ($status == ReservationStatus::CHECKED_IN) {
+                    $room->status = RoomStatus::OCCUPIED;
                 } else {
-                    $room->status = Room::STATUS_RESERVED;
+                    $room->status = RoomStatus::RESERVED;
                 }
                 $room->save();
             }
@@ -500,15 +514,15 @@ class CreateReservation extends Component
         $this->min_date = date_format(Carbon::now(), 'Y-m-d');
         $this->selected_rooms = collect();
         $this->selected_amenities = collect();
-        $this->additional_amenity_quantities = collect();
+        // $this->additional_amenity_quantities = collect();
     }
 
     public function render()
     {
+        $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
 
         return view('livewire.app.reservation.create-reservation', [
             'buildings' => $this->buildings,
-            'addons' => $this->addons,
             'rooms' => $this->rooms,
         ]);
     }

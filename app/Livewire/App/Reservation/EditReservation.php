@@ -374,6 +374,10 @@ class EditReservation extends Component
             $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
             return;
         }
+        if ($this->senior_count > $this->adult_count) {
+            $this->addError('adult_count', 'Total seniors cannot exceed total adults');
+            return;
+        }
 
         $this->dispatch('apply-discount', [
             'senior_count' => $this->senior_count,
