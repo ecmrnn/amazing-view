@@ -49,78 +49,83 @@
                 <h3 class="text-sm font-semibold">Home Address</h3>
                 <p class="text-xs">Select customer&apos;s home address</p>
             </hgroup>
-            <div>
-                <div class="space-y-5" x-init="$watch('region', value => {
-                    province = '';
-                    city = '';
-                    baranggay = '';
-                    $wire.cities = [];
-                    $wire.baranggays = [];
-                })
-                $watch('province', value => {
-                    city = '';
-                    baranggay = '';
-                    $wire.cities = [];
-                    $wire.baranggays = [];
-                })
-                $watch('city', value => { baranggay = ''; })">
-                    {{-- Regions & Provinces --}}
-                    <div class="flex gap-5">
-                        <div class="w-full">
-                            <x-address.region :regions="$regions" wire:model.live="region"
-                                x-on:change="$wire.getProvinces(region)" x-model="region" />
-                        </div>
-                        @if ($region != 'National Capital Region (NCR)')
+
+            @if (!empty($address))
+                <x-form.input-text id="address" name="address" label="Address" wire:model.live='address' />
+            @else
+                <div>
+                    <div class="space-y-5" x-init="$watch('region', value => {
+                        province = '';
+                        city = '';
+                        baranggay = '';
+                        $wire.cities = [];
+                        $wire.baranggays = [];
+                    })
+                    $watch('province', value => {
+                        city = '';
+                        baranggay = '';
+                        $wire.cities = [];
+                        $wire.baranggays = [];
+                    })
+                    $watch('city', value => { baranggay = ''; })">
+                        {{-- Regions & Provinces --}}
+                        <div class="flex gap-5">
                             <div class="w-full">
-                                <x-address.province :provinces="$provinces" wire:model.live="province"
-                                    x-on:change="$wire.getCities(province)" x-model="province" />
+                                <x-address.region :regions="$regions" wire:model.live="region"
+                                    x-on:change="$wire.getProvinces(region)" x-model="region" />
                             </div>
-                        @endif
-                    </div>
-                    {{-- Cities & Manila Districts & Baranggays --}}
-                    <div class="flex gap-5">
-                        @if ($region == 'National Capital Region (NCR)')
-                            <div class="w-full">
-                                <x-address.ncr.city wire:model.live="city"
-                                    x-on:change="$wire.getBaranggays(city)" x-model="city" />
-                            </div>
-                            @if ($city == 'City of Manila')
+                            @if ($region != 'National Capital Region (NCR)')
                                 <div class="w-full">
-                                    <x-address.ncr.district :districts="$districts" wire:model.live="district"
-                                        x-on:change="$wire.getDistrictBaranggays(district)"
-                                        x-model="district" />
+                                    <x-address.province :provinces="$provinces" wire:model.live="province"
+                                        x-on:change="$wire.getCities(province)" x-model="province" />
                                 </div>
                             @endif
-                        @else
-                            <div class="w-full">
-                                <x-address.city :cities="$cities" wire:model.live="city"
-                                    x-on:change="$wire.getBaranggays(city)" x-model="city" />
-                            </div>
-                        @endif
-                        <div class="w-full">
-                            <x-address.baranggay :baranggays="$baranggays" wire:model.live="baranggay"
-                                x-model="baranggay" x-on:change="$wire.setAddress()" />
                         </div>
+                        {{-- Cities & Manila Districts & Baranggays --}}
+                        <div class="flex gap-5">
+                            @if ($region == 'National Capital Region (NCR)')
+                                <div class="w-full">
+                                    <x-address.ncr.city wire:model.live="city"
+                                        x-on:change="$wire.getBaranggays(city)" x-model="city" />
+                                </div>
+                                @if ($city == 'City of Manila')
+                                    <div class="w-full">
+                                        <x-address.ncr.district :districts="$districts" wire:model.live="district"
+                                            x-on:change="$wire.getDistrictBaranggays(district)"
+                                            x-model="district" />
+                                    </div>
+                                @endif
+                            @else
+                                <div class="w-full">
+                                    <x-address.city :cities="$cities" wire:model.live="city"
+                                        x-on:change="$wire.getBaranggays(city)" x-model="city" />
+                                </div>
+                            @endif
+                            <div class="w-full">
+                                <x-address.baranggay :baranggays="$baranggays" wire:model.live="baranggay"
+                                    x-model="baranggay" x-on:change="$wire.setAddress()" />
+                            </div>
+                        </div>
+                        {{-- Street --}}
+                        <x-form.input-text wire:model.live="street" x-model="street"
+                            x-on:keyup="$wire.setAddress()" label="Street (Optional)" id="street" class="capitalize" />
+                        <x-form.input-error field="address" />
+                        {{-- Loaders --}}
+                        <div wire:loading wire:target="getProvinces" class="text-xs font-semibold">Loading
+                            <span
+                                x-text="region == 'National Capital Region (NCR)' ? 'Cities...' : 'Provinces...'"></span>
+                        </div>
+                        <div wire:loading wire:target="getCities" class="text-xs font-semibold">Loading
+                            Cities &amp; Municipalities...</div>
+                        <div wire:loading wire:target="getBaranggays" class="text-xs font-semibold">
+                            Loading
+                            Baranggay...</div>
+                        <div wire:loading wire:target="getDistrictBaranggays"
+                            class="text-xs font-semibold">
+                            Loading Baranggay...</div>
                     </div>
-                    {{-- Street --}}
-                    <x-form.input-text wire:model.live="street" x-model="street"
-                        x-on:keyup="$wire.setAddress()" label="Street (Optional)" id="street" class="capitalize" />
-                    <x-form.input-error field="address" />
-                    {{-- Loaders --}}
-                    <div wire:loading wire:target="getProvinces" class="text-xs font-semibold">Loading
-                        <span
-                            x-text="region == 'National Capital Region (NCR)' ? 'Cities...' : 'Provinces...'"></span>
-                    </div>
-                    <div wire:loading wire:target="getCities" class="text-xs font-semibold">Loading
-                        Cities &amp; Municipalities...</div>
-                    <div wire:loading wire:target="getBaranggays" class="text-xs font-semibold">
-                        Loading
-                        Baranggay...</div>
-                    <div wire:loading wire:target="getDistrictBaranggays"
-                        class="text-xs font-semibold">
-                        Loading Baranggay...</div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </div>

@@ -36,19 +36,34 @@
 @csrf
 
 <div class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
-    <div class="flex items-center gap-5 p-5 bg-white border rounded-lg border-slate-200">
-        <x-tooltip text="Back" dir="bottom">
-            <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>
-                <x-icon-button>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                </x-icon-button>
-            </a>
-        </x-tooltip>
+    <div class="flex items-start justify-between p-5 bg-white border rounded-lg border-slate-200">
+        <div class="flex items-center gap-5">
+            <x-tooltip text="Back" dir="bottom">
+                <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>
+                    <x-icon-button>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    </x-icon-button>
+                </a>
+            </x-tooltip>
         
-        <div>
-            <h2 class="text-lg font-semibold">Create Reservation</h2>
-            <p class="max-w-sm text-xs">Create reservation for guests here.</p>
+            <div>
+                <h2 class="text-lg font-semibold">Create Reservation</h2>
+                <p class="max-w-sm text-xs">Create reservation for guests here.</p>
+            </div>
         </div>
+        
+        <x-actions>
+            <div class="space-y-1">
+                <button type="button" x-on:click="$dispatch('open-modal', 'search-guest-modal')" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-search"><circle cx="10" cy="8" r="5"/><path d="M2 21a8 8 0 0 1 10.434-7.62"/><circle cx="18" cy="18" r="3"/><path d="m22 22-1.9-1.9"/></svg>
+                    <p>Search Guest</p>
+                </button>
+                <button type="button" x-on:click="$dispatch('open-modal', 'reset-reservation-modal')" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    <p>Reset</p>
+                </button>
+            </div>
+        </x-actions>
     </div>
     
     <section class="w-full space-y-5">
@@ -125,5 +140,24 @@
         </section>
     </div>
 </x-modal.full> 
+
+<x-modal.full name='search-guest-modal' maxWidth='sm'>
+    <livewire:app.guest.search-guest />
+</x-modal.full>
+
+<x-modal.full name='reset-reservation-modal' maxWidth='sm'>
+    <div class="p-5 space-y-5">
+        <hgroup>
+            <h3 class="text-lg font-semibold">Reset Reservation</h3>
+            <p class="text-sm">Are you sure you want to reset your reservation?</p>
+        </hgroup>
+
+        <div class="flex justify-end gap-1 mt-5">
+            <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+            <x-danger-button type="button" x-on:click="show = false; $wire.resetReservation()">Reset</x-danger-button>
+        </div>
+    </div>
+</x-modal.full>
+
 </form>
 

@@ -22,7 +22,7 @@
         </div>
 
         <div x-show="payment_method != 'cash'">
-            <x-form.input-text wire:model='transaction_id' label="Transaction ID" id="transaction_id" />
+            <x-form.input-text wire:model='transaction_id' label="Reference No." id="transaction_id" />
         </div>
 
         <x-form.input-error x-show="payment_method != 'cash'" field="transaction_id" />

@@ -18,6 +18,7 @@ use App\Services\AmenityService;
 use App\Services\CarService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -74,12 +75,6 @@ class CreateReservation extends Component
     #[Validate] public $amenity;
     public $quantity = 0;
     public $max_quantity = 0;
-    // public $additional_amenity;
-    // public $available_amenities;
-    // public $additional_amenity_total;
-    // public $additional_amenity_quantity = 1;
-    // public $additional_amenity_quantities;
-    // public $additional_amenity_id;
     public $available_amenities;
     public $available_room_types;
     public $available_rooms;
@@ -110,13 +105,17 @@ class CreateReservation extends Component
         $this->min_date = Carbon::now()->format('Y-m-d');
         $this->selected_rooms = collect();
         $this->selected_amenities = collect();
-        // $this->additional_amenity_quantities = collect();
         $this->selected_services = collect();
         $this->cars = collect();
 
         $this->buildings = Building::all();
         $this->rooms = RoomType::all();
         $this->services = AdditionalServices::all();
+
+        if (empty($this->regions) || empty($this->districts)) {
+            $this->regions = AddressController::getRegions();
+            $this->districts = AddressController::getDistricts();
+        }
     }
 
     public function rules()
@@ -173,13 +172,6 @@ class CreateReservation extends Component
         empty($this->district) ? $this->address[2] = null : $this->address[2] = trim($this->district) . ', ';
         empty($this->city) ? $this->address[3] = null : $this->address[3] = trim($this->city) . ', ';
         empty($this->province) ? $this->address[4] = null : $this->address[4] = trim($this->province);
-    }
-
-    public function computeBreakdown()
-    {
-        $this->vatable_sales = $this->sub_total / 1.12;
-        $this->vat = ($this->sub_total) - $this->vatable_sales;
-        $this->net_total = $this->vatable_sales + $this->vat;
     }
 
     public function addAmenity() {
@@ -331,22 +323,6 @@ class CreateReservation extends Component
         $this->computeBreakdown();
     }
 
-    public function guestDetails() {
-        $this->validate([
-            'date_in' => $this->rules()['date_in'],
-            'date_out' => $this->rules()['date_out'],
-            'adult_count' => $this->rules()['adult_count'],
-            'children_count' => $this->rules()['children_count'],
-        ]);
-
-        $this->can_enter_guest_details = true;
-
-        if (empty($this->regions) || empty($this->districts)) {
-            $this->regions = AddressController::getRegions();
-            $this->districts = AddressController::getDistricts();
-        }
-    }
-
     public function applyDiscount() {
         $this->validate([
             'senior_count' => 'nullable|lte:adult_count|integer',
@@ -416,8 +392,37 @@ class CreateReservation extends Component
         }
     }
 
+    #[On('guest-found')]
+    public function findGuest($guest_details) {
+        $this->first_name = $guest_details['first_name'];
+        $this->last_name = $guest_details['last_name'];
+        $this->email = $guest_details['email'];
+        $this->phone = $guest_details['phone'];
+        $this->address = $guest_details['address'];
+    }
+
     public function removeRoom(Room $room) {
         $this->toggleRoom($room);
+    }
+
+    public function resetReservation() {
+        $this->toast('Success!', description: 'Reservation fields resets successfully!');
+        $this->reset();
+        $this->resetErrorBag();
+
+        $this->min_date = Carbon::now()->format('Y-m-d');
+        $this->selected_rooms = collect();
+        $this->selected_amenities = collect();
+        $this->selected_services = collect();
+        $this->cars = collect();
+        $this->buildings = Building::all();
+        $this->rooms = RoomType::all();
+        $this->services = AdditionalServices::all();
+        
+        if (empty($this->regions) || empty($this->districts)) {
+            $this->regions = AddressController::getRegions();
+            $this->districts = AddressController::getDistricts();
+        }
     }
 
     public function submit()

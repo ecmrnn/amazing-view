@@ -29,7 +29,7 @@ class Reservation extends Model
             'selected_rooms' => 'required',
             'first_name' => 'required|min:2',
             'last_name' => 'required|min:2',
-            'email' => 'required|email:rfc,dns',
+            'email' => 'required|email',
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'required',
             'note' => 'nullable|max:200',
