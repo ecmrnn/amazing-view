@@ -3,13 +3,10 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Enums\ReservationStatus;
-use App\Enums\RoomStatus;
 use App\Http\Controllers\AddressController;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Building;
-use App\Models\Invoice;
-use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -22,10 +19,7 @@ use Illuminate\Support\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use Livewire\Features\SupportConsoleCommands\Commands\Upgrade\ThirdPartyUpgradeNotice;
 use Spatie\LivewireFilepond\WithFilePond;
-
-use function PHPSTORM_META\type;
 
 class CreateReservation extends Component
 {
@@ -69,6 +63,7 @@ class CreateReservation extends Component
     public $districts = [];
     public $baranggays = [];
     // Operations
+    public $modal_key;
     public $is_map_view = true; /* Must be set to true */
     public $can_select_room = false; /* Must be set to false */
     public $guest_found = false;
@@ -227,6 +222,8 @@ class CreateReservation extends Component
 
     public function selectBuilding(Building $id)
     {
+        logger($this->selected_rooms);
+        $this->modal_key = uniqid();
         $this->floor_number = 1;
         $this->selected_building = $id;
         $this->floor_count = $this->selected_building->floor_count;
@@ -296,7 +293,6 @@ class CreateReservation extends Component
             $this->capacity += $room->max_capacity;
         } else {
             $this->capacity -= $room->max_capacity;
-
 
             $this->selected_rooms = $this->selected_rooms->reject(function ($room_loc) use ($room) {
                 return $room_loc->id == $room->id;
@@ -438,6 +434,11 @@ class CreateReservation extends Component
 
         if ($this->downpayment > 0 && $this->downpayment < 500) {
             $this->addError('downpayment', 'The minimum amount for downpayment is 500.00');
+            return;
+        }
+
+        if ($this->adult_count + $this->children_count > $this->capacity) {
+            $this->addError('selected_rooms', 'The room capacity cannot accomodate the total number of guests');
             return;
         }
 

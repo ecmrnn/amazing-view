@@ -104,15 +104,6 @@ final class GuestTable extends PowerGridComponent
                 ', ['reservation' =>$reservation]);
             })
 
-            ->add('note')
-            ->add('note_formatted', function ($reservation) {
-                return Blade::render(
-                    '<x-tooltip :textWrap="false" text="' . $reservation->note . '" dir="top">
-                        <div x-ref="content" class="max-w-[250px] line-clamp-1">' . $reservation->note . '</div>
-                    </x-tooltip>'
-                );
-            })
-
             ->add('created_at')
             ;
     }
@@ -134,7 +125,7 @@ final class GuestTable extends PowerGridComponent
 
             Column::make('Check out', 'date_out_formatted', 'date_out'),
 
-            Column::make('Note', 'note_formatted', 'note'),
+            // Column::make('Note', 'note_formatted', 'note'),
 
             Column::action('')
         ];

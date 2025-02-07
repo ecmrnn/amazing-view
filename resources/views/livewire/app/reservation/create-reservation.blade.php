@@ -27,11 +27,8 @@
 
     {{-- Operations --}}
     is_map_view: $wire.entangle('is_map_view'),
-    can_enter_guest_details: $wire.entangle('can_enter_guest_details'),
-    can_add_amenity: $wire.entangle('can_add_amenity'),
     can_select_room: $wire.entangle('can_select_room'),
-    can_submit_payment: $wire.entangle('can_submit_payment'),
-}">
+}" x-ref="form">
 @csrf
 
 <div class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
@@ -104,7 +101,7 @@
         {{-- Step 5: Payment --}}
         @include('components.app.reservation.payment')
 
-        <x-primary-button type="button" wire:click='submit'>Create Reservation</x-primary-button>
+        <x-primary-button type="button" wire:click='submit' x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }">Create Reservation</x-primary-button>
     </section>
 </div>
 

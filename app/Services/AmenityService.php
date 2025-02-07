@@ -14,13 +14,15 @@ class AmenityService
     // - Amenities to attach
     public function attach(Reservation $reservation, $amenities) {
         foreach ($amenities as $amenity) {
+            $_amenity = Amenity::find($amenity['id']);
+
             $reservation->amenities()->attach($amenity['id'], [
                 'price' => $amenity['price'],
                 'quantity' => $amenity['quantity'],
             ]);
 
-            $amenity->quantity -= (int) $amenity['quantity'];
-            $amenity->save();
+            $_amenity->quantity -= (int) $amenity['quantity'];
+            $_amenity->save();
         }
     }
     

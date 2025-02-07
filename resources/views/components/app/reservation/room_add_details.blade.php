@@ -118,8 +118,42 @@
                 </template>
 
                 {{-- View Selected Rooms --}}
-                <x-secondary-button x-on:click="$dispatch('open-modal', 'show-selected-rooms')">View Selected Rooms</x-secondary-button>
-                <p class="max-w-xs text-xs">If you wish to <strong class="font-semibold text-red-500">remove</strong> or view all the selected rooms, click the button above.</p>
+                @if ($selected_rooms->count() > 0)
+                    <div x-data="{ hide: true }" class="space-y-5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold">Selected Rooms &lpar;{{ $selected_rooms->count() }}&rpar;</h3>
+                            <button type="button" x-on:click="hide = false" x-show="hide" class="text-xs font-semibold text-blue-500">Hide Rooms</button>
+                            <button type="button" x-on:click="hide = true" x-show="!hide" class="text-xs font-semibold text-blue-500">Show Rooms</button>
+                        </div>
+                        
+                        <div x-show="hide" class="grid gap-5 sm:grid-cols-2">
+                            @forelse ($selected_rooms as $room)
+                                <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
+                                    {{-- Room Details --}}
+                                    <div>
+                                        <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->building->prefix . ' ' . $room->room_number}}</p>
+                                        <p class="text-sm">Room Rate: <x-currency />{{ $room->rate }} &#47; night</p>
+                                        <p class="text-sm text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
+                                    </div>
+                                    {{-- Remove Room button --}}
+                                    <button
+                                        type="button"
+                                        class="absolute text-xs font-semibold text-red-500 top-2 right-3"
+                                        wire:click="removeRoom({{ $room }})">
+                                        <span wire:loading.remove wire:target="removeRoom({{ $room }})">Remove</span>
+                                        <span wire:loading wire:target="removeRoom({{ $room }})">Removing</span>
+                                    </button>
+                                </div>
+                            @empty
+                                <div class="border rounded-lg">
+                                    <x-table-no-data.rooms />
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                @endif
+                {{-- <x-secondary-button x-on:click="$dispatch('open-modal', 'show-selected-rooms')">View Selected Rooms</x-secondary-button>
+                <p class="max-w-xs text-xs">If you wish to <strong class="font-semibold text-red-500">remove</strong> or view all the selected rooms, click the button above.</p> --}}
             </div>
         </x-form.form-body>
     </div>
@@ -131,7 +165,7 @@
         <div x-data="{ floor_number: $wire.entangle('floor_number'),
             floor_count: $wire.entangle('floor_count'),
             column_count: $wire.entangle('column_count'),
-            }">
+            }" wire:key="modal-{{ $modal_key }}">
             <header class="flex items-center gap-3 p-5 border-b">
                 <x-tooltip text="Back" dir="bottom">
                     <x-icon-button x-ref="content" x-on:click="show = false">
@@ -165,10 +199,10 @@
                         if ($selected_rooms->contains('id', $room->id)) {
                             $checked = true;
                         }
-                        if ($room->status == \App\Enums\RoomStatus::UNAVAILABLE->value) {
+                        elseif ($room->status == \App\Enums\RoomStatus::UNAVAILABLE) {
                             $disabled = true;
                         }
-                        if (in_array($room->id, $reserved_rooms)) {
+                        elseif (in_array($room->id, $reserved_rooms)) {
                             $reserved = true;
                         }
                     @endphp
