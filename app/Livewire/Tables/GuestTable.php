@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use Carbon\Carbon as CarbonCarbon;
 use Illuminate\Contracts\View\View;
@@ -51,7 +52,7 @@ final class GuestTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return Reservation::query() 
-                        ->whereStatus(Reservation::STATUS_CHECKED_IN);
+                        ->whereStatus(ReservationStatus::CHECKED_IN);
     }
 
     public function relationSearch(): array
@@ -160,8 +161,8 @@ final class GuestTable extends PowerGridComponent
     {
         return view('components.table-actions.guest', [
             'row' => $row,
-            'edit_link' => 'app.guests.edit',
-            'view_link' => 'app.guests.show',
+            'edit_link' => 'app.reservations.edit',
+            'view_link' => 'app.reservations.show',
         ]);
     }
 

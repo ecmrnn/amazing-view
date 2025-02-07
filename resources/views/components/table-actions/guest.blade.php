@@ -7,7 +7,7 @@
 
 <div class="flex justify-end gap-1">
     <x-tooltip text="Edit" dir="top">
-        <a x-ref="content" href="{{ route($edit_link, ['guest' => $row->rid]) }}" wire:navigate.hover>
+        <a x-ref="content" href="{{ route($edit_link, ['reservation' => $row->rid]) }}" wire:navigate.hover>
             <x-icon-button>
                 <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -21,7 +21,7 @@
     </x-tooltip>
 
     <x-tooltip text="View" dir="top">
-        <a x-ref="content" href="{{ route($view_link, ['guest' => $row->rid]) }}" wire:navigate.hover>
+        <a x-ref="content" href="{{ route($view_link, ['reservation' => $row->rid]) }}" wire:navigate.hover>
             <x-icon-button>
                 <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

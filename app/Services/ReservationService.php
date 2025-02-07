@@ -105,7 +105,6 @@ class ReservationService
 
     public function update(Reservation $reservation, $data)
     {
-        dd(Arr::get($data, 'address'));
         // Assuming the $data is already validated prior to this point
         $reservation->update([
             'date_in' => Arr::get($data, 'date_in'),
@@ -170,7 +169,13 @@ class ReservationService
         ]);
 
         // Update amenities and rooms pivot tables
+        $this->handlers->get('service')->sync($reservation, null);
         $this->handlers->get('amenity')->sync($reservation, null);
         $this->handlers->get('room')->sync($reservation, null);
+    }
+
+    public function checkIn(Reservation $reservation) {
+        $reservation->status = ReservationStatus::CHECKED_IN;
+        $reservation->save();
     }
 }

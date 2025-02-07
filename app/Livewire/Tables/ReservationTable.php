@@ -93,12 +93,20 @@ final class ReservationTable extends PowerGridComponent
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
-                return Carbon::parse($reservation->date_in)->format('F j, Y'); //20/01/2024 10:05
+                if (empty($reservation->resched_date_in)) {
+                    return Carbon::parse($reservation->date_in)->format('F j, Y');
+                } else {
+                    return Carbon::parse($reservation->resched_date_in)->format('F j, Y');
+                }
             })
 
             ->add('date_out')
             ->add('date_out_formatted', function ($reservation) {
-                return Carbon::parse($reservation->date_out)->format('F j, Y'); //20/01/2024 10:05
+                if (empty($reservation->resched_date_out)) {
+                    return Carbon::parse($reservation->date_out)->format('F j, Y');
+                } else {
+                    return Carbon::parse($reservation->resched_date_out)->format('F j, Y');
+                }
             })
 
             ->add('status')

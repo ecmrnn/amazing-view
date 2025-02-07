@@ -227,9 +227,16 @@ class EditReservationDetails extends Component
         
         if ($reservation->date_in != $this->date_in) {
             $reservation->resched_date_in = $this->date_in;
+        } else {
+            $reservation->resched_date_in = null;
+            $reservation->date_in = $this->date_in;
         }
+        
         if ($reservation->date_out != $this->date_out) {
             $reservation->resched_date_out = $this->date_out;
+        } else {
+            $reservation->resched_date_out = null;
+            $reservation->date_out = $this->date_out;
         }
         
         $reservation->adult_count = $this->adult_count;
