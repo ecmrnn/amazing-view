@@ -308,8 +308,6 @@ class EditReservation extends Component
                 return $room_loc->id == $room->id;
             });
         }
-
-        $this->computeBreakdown();
     }
 
     #[On('view-rooms')]
@@ -390,10 +388,10 @@ class EditReservation extends Component
 
     public function update() {
         $validated = $this->validate([
-            'date_in' => Reservation::rules()['date_in'],
-            'date_out' => Reservation::rules()['date_out'],
-            'adult_count' => Reservation::rules()['adult_count'],
-            'children_count' => Reservation::rules()['children_count'],
+            // 'date_in' => Reservation::rules()['date_in'],
+            // 'date_out' => Reservation::rules()['date_out'],
+            // 'adult_count' => Reservation::rules()['adult_count'],
+            // 'children_count' => Reservation::rules()['children_count'],
             'first_name' => Reservation::rules()['first_name'],
             'last_name' => Reservation::rules()['last_name'],
             'email' => Reservation::rules()['email'],
@@ -405,6 +403,7 @@ class EditReservation extends Component
         $validated['selected_services'] = $this->selected_services;
         $validated['selected_amenities'] = $this->selected_amenities;
         $validated['cars'] = $this->cars;
+
         
         $service = new ReservationService();
         $service->update($this->reservation, $validated);

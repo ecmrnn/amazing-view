@@ -10,6 +10,7 @@ class ShowReservation extends Component
     protected $listeners = [
         'reservation-canceled' => '$refresh',
         'reservation-confirmed' => '$refresh',
+        'guest-checked-out' => '$refresh',
     ];
 
     public $reservation;

@@ -107,12 +107,12 @@ class ReservationService
     {
         // Assuming the $data is already validated prior to this point
         $reservation->update([
-            'date_in' => Arr::get($data, 'date_in'),
-            'date_out' => Arr::get($data, 'date_out'),
+            'date_in' => Arr::get($data, 'date_in', $reservation->date_in),
+            'date_out' => Arr::get($data, 'date_out', $reservation->date_out),
             'resched_date_in' => Arr::get($data, 'resched_date_in', $reservation->resched_date_in),
             'resched_date_out' => Arr::get($data, 'resched_date_out', $reservation->resched_date_out),
-            'adult_count' => Arr::get($data, 'adult_count'),
-            'children_count' => Arr::get($data, 'children_count'),
+            'adult_count' => Arr::get($data, 'adult_count', $reservation->adult_count),
+            'children_count' => Arr::get($data, 'children_count', $reservation->children_count),
             'senior_count' => Arr::get($data, 'senior_count', $reservation->senior_count),
             'pwd_count' => Arr::get($data, 'pwd_count', $reservation->pwd_count),
             'first_name' => Arr::get($data, 'first_name'),
@@ -137,8 +137,6 @@ class ReservationService
             $this->handlers->get('car')->update($reservation, $data['cars']);
         }
 
-        
-        
         // Update the invoice
         $breakdown = $this->handlers->get('billing')->breakdown($reservation->fresh());
         $invoice_data = [
@@ -151,8 +149,6 @@ class ReservationService
         // Create the invoice
         $this->handlers->get('billing')->update($reservation->invoice, $invoice_data);
 
-        // Example: Notify user about the update
-        // Notification::send($reservation->user, new ReservationUpdated($reservation));
         return $reservation;
     }
 
@@ -177,5 +173,12 @@ class ReservationService
     public function checkIn(Reservation $reservation) {
         $reservation->status = ReservationStatus::CHECKED_IN;
         $reservation->save();
+    }
+
+    public function checkOut(Reservation $reservation) {
+        $reservation->status = ReservationStatus::CHECKED_OUT;
+        $reservation->save();
+
+        $this->handlers->get('amenity')->release($reservation);
     }
 }

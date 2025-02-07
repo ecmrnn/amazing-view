@@ -2,10 +2,11 @@
 
 namespace App\Livewire\App\Guest;
 
+use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
 use App\Models\Reservation;
-use App\Models\Room;
+use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
-use Illuminate\Database\Eloquent\JsonEncodingException;
 use Livewire\Component;
 
 class CheckOutGuest extends Component
@@ -20,33 +21,39 @@ class CheckOutGuest extends Component
     }
 
     public function checkOut() {
-        $this->reservation->status = Reservation::STATUS_CHECKED_OUT;
-        $this->reservation->save();
-
-        // Update room status
-        foreach ($this->reservation->rooms as $room) {
-            $room->status = Room::STATUS_AVAILABLE;
-            $room->save();
-        }
-
-        // Update amenity quantities
-        foreach ($this->reservation->amenities as $amenity) {
-            $amenity->quantity += $amenity->pivot->quantity;
-            $amenity->save();
-        }
-        
-        $this->toast('Success!', 'success', 'Guest checked-out');
+        $service = new ReservationService;
+        $service->checkOut($this->reservation);
+        $this->toast('Success!', description: 'Guest checked-out');
+        $this->dispatch('guest-checked-out');
     }
 
     public function render()
     {
         return <<<'HTML'
-            <div class="space-y-2">
-                <div class="px-3 py-2 border rounded-md">
-                    <x-form.input-checkbox checked="{{ $send_invoice }}" id="sendInvoice" label="Send invoice to {{ $reservation->email }}" />
+            <div class="p-5 space-y-5" x-on:guest-checked-out.window="show = false">
+                <hgroup>
+                    <h2 class="text-lg font-semibold capitalize">Check-out Guest</h2>
+                    <p class="text-sm">Are you sure you really want to check-out this guest?</p>
+                </hgroup>
+
+                <div class="p-5 border rounded-md border-slate-200">
+                    <div>
+                        <h3 class="font-semibold">{{ $reservation->rid }}</h3>
+                        <p class="text-xs">Reservation ID</p>
+                    </div>
                 </div>
 
-                <x-primary-button type="button" class="text-xs" x-on:click="$wire.checkOut(); show = false">Check-out Guest</x-primary-button>
+                <div class="p-5 border rounded-md border-slate-200">
+                    <div>
+                        <h3 class="font-semibold capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name}}</h3>
+                        <p class="text-xs">Name</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-1">
+                    <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                    <x-primary-button type="button" wire:click="checkOut">Check-out</x-primary-button>
+                </div>
             </div>
         HTML;
     }

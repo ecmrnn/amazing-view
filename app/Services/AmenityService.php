@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ReservationStatus;
 use App\Models\Amenity;
 use App\Models\Reservation;
 
@@ -44,10 +45,17 @@ class AmenityService
                     'price' => $amenity['price'],
                     'quantity' => $amenity['quantity'],
                 ]);
+
+                if (in_array($reservation->status, [
+                    ReservationStatus::AWAITING_PAYMENT,
+                    ReservationStatus::PENDING,
+                    ReservationStatus::CONFIRMED,
+                    ReservationStatus::CHECKED_IN,
+                ])) {
+                    $_amenity->quantity -= (int) $amenity['quantity'];
+                }
     
-                $_amenity->quantity -= (int) $amenity['quantity'];
                 $_amenity->save();
-                logger('finished!');
             }
         }
     }
@@ -82,5 +90,14 @@ class AmenityService
         });
 
         return $amenities;
+    }
+
+    // For restocking amenities on reservation check-out
+    // Accepts a reservation instance
+    public function release(Reservation $reservation) {
+        foreach ($reservation->amenities as $amenity) {
+            $amenity->quantity += $amenity->pivot->quantity;
+            $amenity->save(); 
+        }
     }
 }

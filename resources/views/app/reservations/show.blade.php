@@ -24,5 +24,9 @@
                 <livewire:app.reservation.cancel-reservation :reservation="$reservation" />
             </div>
         </x-modal.full> 
+
+        <x-modal.full name='show-checkout-reservation' maxWidth='sm'>
+            <livewire:app.guest.check-out-guest :reservation="$reservation" />
+        </x-modal.full>
     @endpush
 </x-app-layout>  
