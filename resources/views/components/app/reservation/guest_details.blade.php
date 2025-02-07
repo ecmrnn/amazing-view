@@ -50,7 +50,7 @@
                 <p class="text-xs">Select customer&apos;s home address</p>
             </hgroup>
 
-            @if (!empty($address))
+            @if ($guest_found)
                 <x-form.input-text id="address" name="address" label="Address" wire:model.live='address' />
             @else
                 <div>
@@ -103,26 +103,18 @@
                             @endif
                             <div class="w-full">
                                 <x-address.baranggay :baranggays="$baranggays" wire:model.live="baranggay"
-                                    x-model="baranggay" x-on:change="$wire.setAddress()" />
+                                    x-model="baranggay" />
                             </div>
                         </div>
                         {{-- Street --}}
                         <x-form.input-text wire:model.live="street" x-model="street"
-                            x-on:keyup="$wire.setAddress()" label="Street (Optional)" id="street" class="capitalize" />
+                            label="Street (Optional)" id="street" class="capitalize" />
                         <x-form.input-error field="address" />
                         {{-- Loaders --}}
-                        <div wire:loading wire:target="getProvinces" class="text-xs font-semibold">Loading
-                            <span
-                                x-text="region == 'National Capital Region (NCR)' ? 'Cities...' : 'Provinces...'"></span>
-                        </div>
-                        <div wire:loading wire:target="getCities" class="text-xs font-semibold">Loading
-                            Cities &amp; Municipalities...</div>
-                        <div wire:loading wire:target="getBaranggays" class="text-xs font-semibold">
-                            Loading
-                            Baranggay...</div>
-                        <div wire:loading wire:target="getDistrictBaranggays"
-                            class="text-xs font-semibold">
-                            Loading Baranggay...</div>
+                        <x-loading wire:loading wire:target="getProvinces">Loading <span x-text="region == 'National Capital Region (NCR)' ? 'Cities...' : 'Provinces...'"></span></x-loading>
+                        <x-loading wire:loading wire:target="getCities">Loading Cities &amp; Municipalities...</x-loading>
+                        <x-loading wire:loading wire:target="getBaranggays">Loading Baranggay...</x-loading>
+                        <x-loading wire:loading wire:target="getDistrictBaranggays">Loading Baranggay...</x-loading>
                     </div>
                 </div>
             @endif

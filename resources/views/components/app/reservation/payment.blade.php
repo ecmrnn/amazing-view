@@ -8,7 +8,7 @@
         <p>Minimum of <x-currency />500.00 must be paid for the reservation to be processed and confirmed.</p>
     </x-note>
 
-    <div class="p-3 space-y-3 bg-white border rounded-lg">
+    <div class="p-5 space-y-3 bg-white border rounded-lg">
         <hgroup>
             <h3 class="text-sm font-semibold">Payment Methods</h3>
             <p class="text-xs text-zinc-800">Select how the customer wants to pay</p>
@@ -42,6 +42,6 @@
     {{-- Cash --}}
     <div class="space-y-3">
         <x-form.input-label for="downpayment">Enter the amount paid</x-form.input-label>
-        <x-form.input-currency x-model="downpayment" wire:model.live='downpayment' min="500" id="downpayment" class="w-min" />
+        <x-form.input-currency x-model="downpayment" wire:model.live='downpayment' id="downpayment" class="w-min" />
     </div>
 </div>

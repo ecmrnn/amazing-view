@@ -29,6 +29,7 @@ class EditReservation extends Component
     protected $listeners = [
         'reservation-details-updated' => '$refresh',
         'reservation-canceled' => '$refresh',
+        'reservation-confirmed' => '$refresh',
     ];
 
     // Reservation Details

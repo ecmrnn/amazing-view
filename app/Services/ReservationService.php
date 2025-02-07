@@ -31,10 +31,12 @@ class ReservationService
         $status = ReservationStatus::AWAITING_PAYMENT;
 
         // Store proof of payment to payments folder
-        if (!empty($data['proof_image_path'])) {
-            $proof_image_path = $data['proof_image_path']->store('payments', 'public');
-            $expires_at = null;
-            $status = ReservationStatus::PENDING;   
+        if ($data['downpayment'] > 0) {
+            if (!empty($data['proof_image_path'])) {
+                $proof_image_path = $data['proof_image_path']->store('payments', 'public');
+            }
+            $expires_at = null; 
+            $status = ReservationStatus::PENDING;
         }
 
         // Create the reservation
@@ -49,7 +51,7 @@ class ReservationService
             'last_name' => Arr::get($data, 'last_name'),
             'email' => Arr::get($data, 'email'),
             'phone' => Arr::get($data, 'phone'),
-            'address' => trim(implode(', ', Arr::get($data, 'address'))),
+            'address' => Arr::get($data, 'address'),
             'note' => Arr::get($data, 'note'),
             'expires_at' => $expires_at,
             'status' => $status,
@@ -80,9 +82,9 @@ class ReservationService
 
         // Create the invoice
         $invoice = $reservation->invoice()->create([
-            'total_amount' => $breakdown['sub_total'],
-            'downpayment' => 0,
-            'balance' => $breakdown['sub_total'],
+            'total_amount' => Arr::get($breakdown, 'sub_total', 0),
+            'downpayment' => Arr::get($data, 'downpayment', 0),
+            'balance' => Arr::get($breakdown, 'sub_total', 0),
             'status' => Invoice::STATUS_PENDING,
         ]);
 
@@ -90,7 +92,7 @@ class ReservationService
         if (!empty($proof_image_path)) {
             $invoice->payments()->create([
                 'proof_image_path' => $proof_image_path,
-                'amount' => 0,
+                'amount' => Arr::get($data, 'downpayment', 0),
                 'purpose' => PaymentPurpose::DOWNPAYMENT,
                 'payment_date' => now(),
             ]);
@@ -103,6 +105,7 @@ class ReservationService
 
     public function update(Reservation $reservation, $data)
     {
+        dd(Arr::get($data, 'address'));
         // Assuming the $data is already validated prior to this point
         $reservation->update([
             'date_in' => Arr::get($data, 'date_in'),

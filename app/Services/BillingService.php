@@ -14,7 +14,7 @@ class BillingService
 {
     public function update(Invoice $invoice, $data) {
         $invoice->update([
-            'sub_total' => $data['total_amount'],
+            'total_amount' => $data['total_amount'],
             'downpayment' => $data['downpayment'],
             'balance' => $data['balance'],
             'status' => $data['status'],
@@ -92,6 +92,10 @@ class BillingService
         }
 
         $night_count = Carbon::parse($date_in)->diffInDays($date_out);
+
+        if ($night_count == 0) {
+            $night_count = 1;
+        }
 
         // Compute room rates
         if (!empty($reservation->rooms)) {

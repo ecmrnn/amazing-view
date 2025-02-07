@@ -71,10 +71,6 @@ class Reservation extends Model
             'email.required' => 'Enter an :attribute',
             'email.email' => 'Enter a valid :attribute',
 
-            'proof_image_path.mimes' => 'Image format must be either of the following: JPG, JPEG, PNG',
-            'proof_image_path.max' => 'File size must be less than 1000KB',
-            'proof_image_path.required_unless' => 'Upload your payment slip',
-
             'downpayment.required_unless' => 'Enter the amount of cash paid',
             'downpayment.min' => 'Minimum cash amount is 500.',
             'transaction_id.required_unless' => 'Transaction ID is required when payment method is online',
@@ -101,7 +97,6 @@ class Reservation extends Model
             'last_name' => 'Last Name',
             'phone' => 'Contact Number',
             'email' => 'Email',
-            'proof_image_path' => 'Proof of Payment',
             'downpayment' => 'Cash',
         ];
 

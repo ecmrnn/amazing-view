@@ -28,6 +28,11 @@ class ReservationBreakdown extends Component
 
         $billing_service = new BillingService;
         $this->night_count = Carbon::parse($date_in)->diffInDays($date_out);
+
+        if ($this->night_count == 0) {
+            $this->night_count = 1;
+        }
+
         $this->breakdown = $billing_service->breakdown($reservation);
     }
 
@@ -63,7 +68,7 @@ class ReservationBreakdown extends Component
                                 <p class="text-right"><x-currency /> {{ number_format($room->pivot->rate * $night_count, 2) }}</p>
                             </div>
                         @empty
-                            <div class="col-span-6 text-xs font-semibold text-left">
+                            <div class="col-span-6 px-5 py-3 text-xs font-semibold text-left opacity-50">
                                 No rooms selected...
                             </div>
                         @endforelse
@@ -79,7 +84,7 @@ class ReservationBreakdown extends Component
                                 <p class="text-right"><x-currency /> {{ number_format($service->pivot->price, 2) }}</p>
                             </div>
                         @empty
-                            <div class="col-span-6 text-xs font-semibold text-left">
+                            <div class="col-span-6 px-5 py-3 text-xs font-semibold text-left opacity-50">
                                 No service selected...
                             </div>
                         @endforelse
@@ -95,7 +100,7 @@ class ReservationBreakdown extends Component
                                 <p class="text-right"><x-currency /> {{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</p>
                             </div>
                         @empty
-                            <div class="col-span-6 text-xs font-semibold text-left">
+                            <div class="col-span-6 px-5 py-3 text-xs font-semibold text-left opacity-50">
                                 No amenity selected...
                             </div>
                         @endforelse

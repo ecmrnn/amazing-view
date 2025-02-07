@@ -15,7 +15,6 @@
     last_name: $persist($wire.entangle('last_name')).using(sessionStorage),
     email: $persist($wire.entangle('email')).using(sessionStorage),
     phone: $persist($wire.entangle('phone')).using(sessionStorage),
-    address: $persist($wire.entangle('address')).using(sessionStorage),
     region: $wire.entangle('region'),
     province: $wire.entangle('province'),
     city: $wire.entangle('city'),
@@ -105,13 +104,13 @@
         {{-- Step 5: Payment --}}
         @include('components.app.reservation.payment')
 
-        <x-primary-button wire:click='submit'>Create Reservation</x-primary-button>
+        <x-primary-button type="button" wire:click='submit'>Create Reservation</x-primary-button>
     </section>
 </div>
 
 {{-- Modal for confirming reservation --}}
 <x-modal.full name="show-reservation-confirmation" maxWidth="sm">
-    <div x-data="{ checked: false }">
+    <div x-data="{ checked: false }" x-on:reservation-created.window="show = false">
         <section class="p-5 space-y-5 bg-white">
             <hgroup>
                 <h2 class="font-semibold text-center capitalize">Reservation Confirmation</h2>
@@ -135,7 +134,7 @@
             
             <div class="flex items-center justify-center gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" x-bind:disabled="!checked" x-on:click="$wire.store(); show = false; toast('Success', { type: 'success', description: 'Yay, Reservation Created!' })">Submit Reservation</x-primary-button>
+                <x-primary-button type="button" x-bind:disabled="!checked" wire:click="store">Submit Reservation</x-primary-button>
             </div>
         </section>
     </div>

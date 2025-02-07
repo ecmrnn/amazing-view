@@ -16,12 +16,16 @@ use App\Models\RoomType;
 use App\Services\AdditionalServiceHandler;
 use App\Services\AmenityService;
 use App\Services\CarService;
+use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Features\SupportConsoleCommands\Commands\Upgrade\ThirdPartyUpgradeNotice;
 use Spatie\LivewireFilepond\WithFilePond;
+
+use function PHPSTORM_META\type;
 
 class CreateReservation extends Component
 {
@@ -37,18 +41,20 @@ class CreateReservation extends Component
     #[Validate] public $selected_rooms;
     #[Validate] public $selected_amenities;
     #[Validate] public $reservation_type = 'walk-in-reservation';
+    #[Validate] public $amenity;
     // Guest Details
     #[Validate] public $first_name;
     #[Validate] public $last_name;
     #[Validate] public $email;
     #[Validate] public $phone;
     #[Validate] public $address = [];
+    #[Validate] public $cars;
     // Payment
     #[Validate] public $note;
     #[Validate] public $proof_image_path;
     // Invoice
     #[Validate] public $transaction_id;
-    #[Validate] public $downpayment = 500;
+    #[Validate] public $downpayment = 0;
     public $payment_method = 'cash';
     // Address
     public $region;
@@ -62,17 +68,13 @@ class CreateReservation extends Component
     public $cities = [];
     public $districts = [];
     public $baranggays = [];
-
     // Operations
     public $is_map_view = true; /* Must be set to true */
     public $can_select_room = false; /* Must be set to false */
-    public $can_enter_guest_details = false; /* Must be set to false */
-    public $can_submit_payment = false; /* Must be set to false */
-    public $can_add_amenity = false; /* Must be set to false */
-    public $selected_type; 
+    public $guest_found = false;
+    public $selected_type;
     public $max_senior_count;
     public $selected_building;
-    #[Validate] public $amenity;
     public $quantity = 0;
     public $max_quantity = 0;
     public $available_amenities;
@@ -87,14 +89,12 @@ class CreateReservation extends Component
     public $column_count = 1;
     public $night_count = 1;
     public $rooms;
-    public $sub_total = 0;
     public $net_total = 0;
     public $vat = 0;
     public $vatable_sales = 0;
     public $payment_online = false;
     public $services;
     public $selected_services;
-    #[Validate] public $cars;
     public $plate_number; 
     public $make; 
     public $model; 
@@ -143,35 +143,21 @@ class CreateReservation extends Component
     public function getProvinces($region)
     {
         $this->provinces = AddressController::getProvinces($region);
-        $this->setAddress();
     }
 
     public function getCities($province)
     {
         $this->cities = AddressController::getCities($province);
-        $this->setAddress();
     }
 
     public function getBaranggays($city)
     {
         $this->baranggays = AddressController::getBaranggays($city);
-        $this->setAddress();
     }
 
     public function getDistrictBaranggays($district)
     {
         $this->baranggays = AddressController::getDistrictBaranggays($district);
-        $this->setAddress();
-    }
-
-    // Concatenates the address altogether
-    public function setAddress()
-    {
-        empty($this->street) ? $this->address[0] = null : $this->address[0] = trim($this->street) . ', ';
-        empty($this->baranggay) ? $this->address[1] = null : $this->address[1] = trim($this->baranggay) . ', ';
-        empty($this->district) ? $this->address[2] = null : $this->address[2] = trim($this->district) . ', ';
-        empty($this->city) ? $this->address[3] = null : $this->address[3] = trim($this->city) . ', ';
-        empty($this->province) ? $this->address[4] = null : $this->address[4] = trim($this->province);
     }
 
     public function addAmenity() {
@@ -246,10 +232,14 @@ class CreateReservation extends Component
         $this->floor_count = $this->selected_building->floor_count;
         $this->column_count = $this->selected_building->room_col_count;
 
+        $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
+
         // Get the rooms in the building
         $this->available_rooms = Room::where('building_id', $this->selected_building->id)
             ->where('floor_number', $this->floor_number)
             ->get();
+
+        $this->dispatch('open-modal', 'show-building-rooms');
     }
 
     public function selectedRoom()
@@ -259,7 +249,6 @@ class CreateReservation extends Component
         ]);
 
         $this->can_select_room = false;
-        $this->can_add_amenity = true;
     }
 
     public function upFloor()
@@ -294,13 +283,9 @@ class CreateReservation extends Component
             $this->selected_amenities = $this->selected_amenities->reject(function ($amenity) use ($amenity_clicked) {
                 return $amenity->id == $amenity_clicked->id;
             });
-            $this->sub_total -= $amenity_clicked->price;
         } else {
             $this->selected_amenities->push($amenity_clicked);
-            $this->sub_total += $amenity_clicked->price;
         }
-
-        $this->computeBreakdown();
     }
 
     public function toggleRoom(Room $room)
@@ -309,18 +294,14 @@ class CreateReservation extends Component
             $this->selected_rooms->push($room);
 
             $this->capacity += $room->max_capacity;
-            $this->sub_total += ($room->rate * $this->night_count);
         } else {
             $this->capacity -= $room->max_capacity;
 
-            $this->sub_total -= ($room->rate * $this->night_count);
 
             $this->selected_rooms = $this->selected_rooms->reject(function ($room_loc) use ($room) {
                 return $room_loc->id == $room->id;
             });
         }
-
-        $this->computeBreakdown();
     }
 
     public function applyDiscount() {
@@ -399,6 +380,7 @@ class CreateReservation extends Component
         $this->email = $guest_details['email'];
         $this->phone = $guest_details['phone'];
         $this->address = $guest_details['address'];
+        $this->guest_found = true;
     }
 
     public function removeRoom(Room $room) {
@@ -427,99 +409,78 @@ class CreateReservation extends Component
 
     public function submit()
     {
-        // $this->validate([
-        //     'proof_image_path' => $this->rules()['proof_image_path'],
-        //     'transaction_id' => $this->rules()['transaction_id'],
-        //     'downpayment' => $this->rules()['downpayment'],
-        // ]);
+        if (empty($this->address)) {
+            $this->address = [
+                'street' => $this->street,
+                'baranggay' => $this->baranggay,
+                'district' => $this->district,
+                'city' => $this->city,
+                'province' => $this->province,
+            ];
+        }
+
+        $this->validate([
+            'date_in' => $this->rules()['date_in'],
+            'date_out' => $this->rules()['date_out'],
+            'senior_count' => $this->rules()['senior_count'],
+            'pwd_count' => $this->rules()['pwd_count'],
+            'selected_rooms' => 'required',
+            'adult_count' => $this->rules()['adult_count'],
+            'children_count' => $this->rules()['children_count'],
+            'first_name' => $this->rules()['first_name'],
+            'last_name' => $this->rules()['last_name'],
+            'email' => $this->rules()['email'],
+            'phone' => $this->rules()['phone'],
+            'address' => $this->rules()['address'],
+            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
+            'note' => $this->rules()['note'],
+        ]);
+
+        if ($this->downpayment > 0 && $this->downpayment < 500) {
+            $this->addError('downpayment', 'The minimum amount for downpayment is 500.00');
+            return;
+        }
 
         // Open success modal
         $this->dispatch('open-modal', 'show-reservation-confirmation');
     }
 
     public function store() {
-        $status = ReservationStatus::PENDING;
-
-        if ($this->reservation_type == 'walk-in-reservation' && $this->date_in == Carbon::now()->format('Y-m-d')) {
-            $status = ReservationStatus::CHECKED_IN;
-        } elseif ($this->downpayment > 0) {
-            $status = ReservationStatus::CONFIRMED;
-        }
-
-        $reservation = Reservation::create([
-            'date_in' => $this->date_in,
-            'date_out' => $this->date_out,
-            'senior_count' => $this->senior_count,
-            'pwd_count' => $this->pwd_count,
-            'adult_count' => $this->adult_count,
-            'children_count' => $this->children_count,
-            'status' => $status,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'phone' => $this->phone,
-            'address' => trim(implode($this->address), ', '),
-            'email' => $this->email,
-            'note' => $this->note,
+        $validated = $this->validate([
+            'date_in' => $this->rules()['date_in'],
+            'date_out' => $this->rules()['date_out'],
+            'senior_count' => $this->rules()['senior_count'],
+            'pwd_count' => $this->rules()['pwd_count'],
+            'adult_count' => $this->rules()['adult_count'],
+            'children_count' => $this->rules()['children_count'],
+            'first_name' => $this->rules()['first_name'],
+            'last_name' => $this->rules()['last_name'],
+            'email' => $this->rules()['email'],
+            'phone' => $this->rules()['phone'],
+            'address' => $this->rules()['address'],
+            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
+            'note' => $this->rules()['note'],
         ]);
 
-        if (!empty($this->selected_rooms)) {
-            // Store rooms
-            foreach ($this->selected_rooms as $room) {
-                $room->reservations()->attach($reservation->id);
-                
-                if ($status == ReservationStatus::CHECKED_IN) {
-                    $room->status = RoomStatus::OCCUPIED;
-                } else {
-                    $room->status = RoomStatus::RESERVED;
-                }
-                $room->save();
-            }
+        $validated['downpayment'] = $this->downpayment;
+        $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address'])) : $validated['address'];
+        $validated['selected_rooms'] = $this->selected_rooms;
+        $validated['selected_services'] = $this->selected_services;
+        $validated['selected_amenities'] = $this->selected_amenities;
+        $validated['cars'] = $this->cars;
+
+        $service = new ReservationService;
+        $reservation = $service->create($validated);
+
+        if ($this->reservation_type == 'walk-in-reservation') {
+            $reservation->status = ReservationStatus::CONFIRMED;
+            $reservation->save();
         }
 
-        if (!empty($this->selected_amenities)) {
-            // Store amenities
-            foreach ($this->selected_amenities as $amenity) {
-                $quantity = 1;
+        $this->resetReservation();
 
-                foreach ($this->additional_amenity_quantities as $selected_amenity) {
-                    if ($selected_amenity['amenity_id'] == $amenity->id) {
-                        $amenity->quantity -= $selected_amenity['quantity'];
-                        $quantity = $selected_amenity['quantity'];
-                        $amenity->save();
-                        break;
-                    }
-                }
-                
-                $reservation->amenities()->attach($amenity->id, ['quantity' => $quantity]);
-            }
-        }
-
-        // Create invoice to store downpayment
-        $this->downpayment != '' ?: $this->downpayment = 0;
-
-        $invoice = Invoice::create([
-            'reservation_id' => $reservation->id,
-            'total_amount' => $this->net_total,
-            'balance' => $this->net_total - $this->downpayment,
-            'downpayment' => $this->downpayment
-        ]);
-
-        InvoicePayment::create([
-            'invoice_id' => $invoice->id,
-            'transaction_id' => $this->transaction_id,
-            'amount' => $this->downpayment,
-            'payment_date' => Carbon::now(),
-            'payment_method' => $this->payment_method,
-            // Proof of image dapat meron dito
-        ]);
-
-        // Reset all properties
-        $this->reset();
-
-        $this->min_date = date_format(Carbon::now(), 'Y-m-d');
-        $this->selected_rooms = collect();
-        $this->selected_amenities = collect();
-        // $this->additional_amenity_quantities = collect();
+        $this->toast('Success!', description: 'Reservation created successfully!');
+        $this->dispatch('reservation-created');
     }
 
     public function render()

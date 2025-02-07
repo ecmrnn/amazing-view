@@ -96,8 +96,7 @@
                 <template x-if="is_map_view">
                     <div class="grid grid-cols-3 gap-1 p-3 rounded-lg place-items-start lg:grid-cols-5 min-h-80 bg-gradient-to-tr from-teal-500/20 to-teal-600/20">
                         @forelse ($buildings as $building)
-                            <button type="button" key="{{ $building->id }}" class="w-full" x-on:click.prevent="$dispatch('open-modal', 'show-building-rooms')"
-                                wire:click="selectBuilding({{ $building->id }})">
+                            <button type="button" key="{{ $building->id }}" class="w-full" wire:click="selectBuilding({{ $building->id }})">
                                 <div
                                     class="relative grid w-full font-semibold bg-white border rounded-lg aspect-square place-items-center">
                                     <div class="text-center">
@@ -166,7 +165,7 @@
                         if ($selected_rooms->contains('id', $room->id)) {
                             $checked = true;
                         }
-                        if ($room->status == \App\Models\Room::STATUS_UNAVAILABLE) {
+                        if ($room->status == \App\Enums\RoomStatus::UNAVAILABLE->value) {
                             $disabled = true;
                         }
                         if (in_array($room->id, $reserved_rooms)) {

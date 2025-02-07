@@ -24,12 +24,13 @@ class ConfirmReservation extends Component
         $this->reservation->status = ReservationStatus::CONFIRMED;
         $this->reservation->save();
         $this->toast('Success!', description: 'Reservation confirmed!');
+        $this->dispatch('reservation-confirmed');
     }
 
     public function render()
     {
         return <<<'HTML'
-        <div x-data="{ checked: false }">
+        <div x-data="{ checked: false }" x-on:reservation-confirmed.window="show = false">
             <section class="p-5 space-y-5 bg-white">
                 <hgroup>
                     <h2 class="font-semibold capitalize text">Payment upon Reservation</h2>
