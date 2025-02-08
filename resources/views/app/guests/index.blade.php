@@ -24,7 +24,13 @@
 
     <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         {{-- Guest Table --}}
-        <livewire:tables.guest-table />
+        @if ($reservation > 0)
+            <livewire:tables.guest-table />
+        @else
+            <div class="py-5 font-semibold text-center rounded-md">
+                <x-table-no-data.guest />
+            </div>
+        @endif
     </div>
 
     {{-- Modal for confirming reservation --}}

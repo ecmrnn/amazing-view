@@ -50,7 +50,7 @@
                 <p class="text-xs">Select customer&apos;s home address</p>
             </hgroup>
 
-            @if ($guest_found)
+            @if ($guest_found || empty($regions))
                 <x-form.input-text id="address" name="address" label="Address" wire:model.live='address' />
             @else
                 <div>

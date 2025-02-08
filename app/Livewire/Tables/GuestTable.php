@@ -4,6 +4,8 @@ namespace App\Livewire\Tables;
 
 use App\Enums\ReservationStatus;
 use App\Models\Reservation;
+use App\Services\ReservationService;
+use App\Traits\DispatchesToast;
 use Carbon\Carbon as CarbonCarbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
@@ -22,7 +24,7 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class GuestTable extends PowerGridComponent
 {
-    use WithExport;
+    use WithExport, DispatchesToast;
 
     public string $tableName = 'GuestTable';
 
@@ -84,12 +86,26 @@ final class GuestTable extends PowerGridComponent
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
-                return Carbon::parse($reservation->date_in)->format('F j, Y'); //20/01/2024 10:05
+                $date_in = empty($reservation->resched_date_in) ? $reservation->date_in : $reservation->resched_date_in;
+                $date_out = empty($reservation->resched_date_out) ? $reservation->date_out : $reservation->resched_date_out;
+
+                if ($date_in == $date_out) {
+                    return Carbon::parse($date_in)->format('F j, Y') . ' - ' . '8:00 AM';
+                } 
+
+                return Carbon::parse($date_in)->format('F j, Y') . ' - ' . '2:00 PM';
             })
 
             ->add('date_out')
             ->add('date_out_formatted', function ($reservation) {
-                return Carbon::parse($reservation->date_out)->format('F j, Y'); //20/01/2024 10:05
+                $date_in = empty($reservation->resched_date_in) ? $reservation->date_in : $reservation->resched_date_in;
+                $date_out = empty($reservation->resched_date_out) ? $reservation->date_out : $reservation->resched_date_out;
+
+                if ($date_in == $date_out) {
+                    return Carbon::parse($date_out)->format('F j, Y') . ' - ' . '6:00 PM';
+                } 
+
+                return Carbon::parse($date_out)->format('F j, Y') . ' - ' . '12:00 PM';
             })
 
             ->add('rooms', function ($reservation) {
@@ -121,11 +137,9 @@ final class GuestTable extends PowerGridComponent
 
             Column::make('Rooms', 'rooms'),
 
-            Column::make('Check in', 'date_in_formatted', 'date_in'),
+            Column::make('Check-in Date', 'date_in_formatted', 'date_in'),
 
-            Column::make('Check out', 'date_out_formatted', 'date_out'),
-
-            // Column::make('Note', 'note_formatted', 'note'),
+            Column::make('Check-out Date', 'date_out_formatted', 'date_out'),
 
             Column::action('')
         ];
@@ -157,15 +171,11 @@ final class GuestTable extends PowerGridComponent
         ]);
     }
 
-    /*
-    public function actionRules($row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
+    public function checkOut(Reservation $reservation) {
+        $service = new ReservationService;
+        $service->checkOut($reservation);
+        $this->toast('Success!', description: 'Guest checked-out');
+        $this->dispatch('guest-checked-out');
+        $this->dispatch('pg:eventRefresh-GuestTable');
     }
-    */
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class AddressController extends Controller
@@ -58,7 +57,6 @@ class AddressController extends Controller
         }
 
         $path = "https://psgc.cloud/api/sub-municipalities/" . $district_code . "/barangays";
-        // dd($path);
         $response = Http::get('https://psgc.cloud/api/sub-municipalities/' . $district_code . '/barangays');
 
         if ($response->successful()) {

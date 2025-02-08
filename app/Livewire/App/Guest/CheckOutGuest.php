@@ -13,7 +13,6 @@ class CheckOutGuest extends Component
 {
     use DispatchesToast;
 
-    public $send_invoice = true;
     public $reservation;
 
     public function mount(Reservation $reservation) {
@@ -25,6 +24,7 @@ class CheckOutGuest extends Component
         $service->checkOut($this->reservation);
         $this->toast('Success!', description: 'Guest checked-out');
         $this->dispatch('guest-checked-out');
+        $this->dispatch('pg:eventRefresh-GuestTable');
     }
 
     public function render()

@@ -108,8 +108,14 @@ class CreateReservation extends Component
         $this->services = AdditionalServices::all();
 
         if (empty($this->regions) || empty($this->districts)) {
-            $this->regions = AddressController::getRegions();
-            $this->districts = AddressController::getDistricts();
+            try {
+                $this->regions = AddressController::getRegions();
+                $this->districts = AddressController::getDistricts();
+            } catch (\Throwable $th) {
+                logger($th);
+                $this->regions = null;
+                $this->districts = null;
+            }
         }
     }
 
