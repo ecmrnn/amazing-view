@@ -13,7 +13,7 @@
     
         <main class="py-10 space-y-5">
             <div>
-                <h1 class="text-md"><span class="font-bold">Your reservation has been updated!</h1>
+                <h1 class="text-lg"><span class="font-bold">Your reservation has been updated!</h1>
                 <p class="text-xs">Updated at: {{ date_format(date_create($reservation->updated_at), 'F j, Y - h:i A') }}</p>
             </div>
 
@@ -55,18 +55,26 @@
                 <div>
                     <strong class="font-bold">Rooms Reserved:</strong> 
                     <div class="mt-5 overflow-hidden border rounded-md border-slate-200">
-                        <div class="grid grid-cols-3 px-3 py-2 bg-slate-50">
-                            <strong class="block font-bold">Room Number</strong>
-                            <strong class="block font-bold">Building</strong>
-                            <strong class="block font-bold">Floor</strong>
-                        </div>
-                        @foreach ($reservation->rooms as $room)
-                            <div class="grid grid-cols-3 px-3 py-2">
-                                <p>{{ $room->building->prefix . ' ' . $room->room_number }}</p>
-                                <p class="capitalize">{{ $room->building->name }}</p>
-                                <p>{{ $room->floor_number }}</p>
-                            </div>
-                        @endforeach
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-slate-200">
+                                    <th class="px-3 py-2 font-bold text-left bg-slate-200">Room</th>
+                                    <th class="px-3 py-2 font-bold text-left bg-slate-200">Building</th>
+                                    <th class="px-3 py-2 font-bold text-left bg-slate-200">Floor</th>
+                                    <th class="px-3 py-2 font-bold text-left bg-slate-200">Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($reservation->rooms as $room)
+                                    <tr class="border-b border-slate-200 last:border-b-0">
+                                        <td class="px-3 py-2">{{ $room->building->prefix . ' ' . $room->room_number }}</td>
+                                        <td class="px-3 py-2 capitalize">{{ $room->building->name }}</td>
+                                        <td class="px-3 py-2">{{ $room->floor_number }}</td>
+                                        <td class="px-3 py-2"><x-currency /> {{ number_format($room->pivot->rate, 2) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -74,22 +82,39 @@
             @if ($reservation->services->count() > 0 || $reservation->amenities->count() > 0)
                 <h2 class="font-bold">Additional Services or Amenities Added</h2>
 
-                <div>
-                    <div>
-                        @if ($reservation->services->count() > 0)
+                <div class="overflow-hidden border rounded-md border-slate-200">
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Name</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Type</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Qty</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Price</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach ($reservation->services as $service)
-                                <p><strong class="font-bold capitalize">{{ $service->name }}:</strong> <x-currency /> {{ $service->pivot->price }}</p>
+                                <tr class="border-t border-slate-200">
+                                    <td class="px-3 py-2 capitalize">{{ $service->name }}</td>
+                                    <td class="px-3 py-2 capitalize">Service</td>
+                                    <td class="px-3 py-2 capitalize">1</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($service->pivot->price, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($service->pivot->price, 2) }}</td>
+                                </tr>
                             @endforeach
-                        @endif
-                    </div>
-                    <div>
-                        @if ($reservation->amenities->count() > 0)
                             @foreach ($reservation->amenities as $amenity)
-                                <p><strong class="font-bold capitalize">{{ $amenity->name }}:</strong> <x-currency /> {{ $amenity->pivot->price }}</p>
+                                <tr class="border-t border-slate-200">
+                                    <td class="px-3 py-2 capitalize">{{ $amenity->name }}</td>
+                                    <td class="px-3 py-2 capitalize">Amenity</td>
+                                    <td class="px-3 py-2 capitalize">{{ $amenity->pivot->quantity }}</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($amenity->pivot->price, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</td>
+                                </tr>
                             @endforeach
-                        @endif
-                    </div>
-                </div>              
+                        </tbody>
+                    </table>
+                </div>
             @endif
 
             <div>

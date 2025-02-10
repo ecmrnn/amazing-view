@@ -14,7 +14,7 @@
         <main class="py-10 space-y-5">
             <h1 class="text-md"><span class="font-bold">Reservation ID:</span> {{ $reservation->rid }}</h1>
 
-            <p>Good day, {{ $reservation->first_name . ' ' . $reservation->last_name }}! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
+            <p>Good day, <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
 
             <h2 class="font-bold">Guest Details</h2>
 
@@ -55,15 +55,15 @@
                     <table class="w-full">
                         <thead>
                             <tr class="border-b border-slate-200">
-                                <th class="px-3 py-2 font-bold text-left bg-slate-200">Room</th>
-                                <th class="px-3 py-2 font-bold text-left bg-slate-200">Rate</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Room</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Rate</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($reservation->rooms as $room)
                                 <tr class="border-b border-slate-200 last:border-b-0">
                                     <td class="px-3 py-2">{{ $room->building->prefix . ' ' . $room->room_number }}</td>
-                                    <td class="px-3 py-2"><x-currency /> {{ number_format($room->rate, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($room->pivot->rate, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -71,22 +71,43 @@
                 </div>
             </div>
 
-            @if (count($reservation->amenities) > 0)
-                <div class="mt-5">
-                    <h2 class="font-bold">Special Requests or Amenities</h2>
-                    
-                    <ul class="mt-5">
-                        @forelse ($reservation->amenities as $amenity)
-                            <li key="{{ $room->id }}" class="ml-3 list-disc">
-                                {{ $amenity->name }} - <x-currency /> {{ number_format($amenity->price, 2) }}
-                            </li>
-                        @empty
-                            <li class="text-xs opacity-50">No request or amenity selected</li>
-                        @endforelse
-                    </ul>
+            @if ($reservation->services->count() > 0 || $reservation->amenities->count() > 0)
+                <h2 class="font-bold">Additional Services or Amenities Added</h2>
+
+                <div class="overflow-hidden border rounded-md border-slate-200">
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Name</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Type</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Qty</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Price</th>
+                                <th class="px-3 py-2 font-bold text-left bg-slate-50">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($reservation->services as $service)
+                                <tr class="border-t border-slate-200">
+                                    <td class="px-3 py-2 capitalize">{{ $service->name }}</td>
+                                    <td class="px-3 py-2 capitalize">Service</td>
+                                    <td class="px-3 py-2 capitalize">1</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($service->pivot->price, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($service->pivot->price, 2) }}</td>
+                                </tr>
+                            @endforeach
+                            @foreach ($reservation->amenities as $amenity)
+                                <tr class="border-t border-slate-200">
+                                    <td class="px-3 py-2 capitalize">{{ $amenity->name }}</td>
+                                    <td class="px-3 py-2 capitalize">Amenity</td>
+                                    <td class="px-3 py-2 capitalize">{{ $amenity->pivot->quantity }}</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($amenity->pivot->price, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency /> {{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             @endif
-
 
             <h2 class="text-lg md:*:text-2xl font-bold text-blue-500">Total Amount Due: <x-currency /> {{ number_format($reservation->invoice->total_amount, 2) }}</h2>
 

@@ -53,8 +53,6 @@ class RoomService
     // - Reservation to access the rooms pivot table
     public function release(Reservation $reservation) {
         foreach ($reservation->rooms as $room) {
-            $reservation->rooms()->detach($room->id);
-
             $room->status = RoomStatus::AVAILABLE->value;
             $room->save();
         }

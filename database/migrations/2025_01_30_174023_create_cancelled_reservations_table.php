@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(Reservation::class)->constrained()->cascadeOnDelete();
             $table->text('reason');
             $table->enum('canceled_by', ['guest', 'management']);
+            $table->decimal('refund_amount')->default(0);
             $table->timestamp('canceled_at');
             $table->timestamps();
         });

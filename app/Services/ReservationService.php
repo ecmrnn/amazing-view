@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
+use App\Mail\Reservation\Cancelled;
+use App\Mail\reservation\Received;
 use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
 use App\Models\Invoice;
@@ -100,8 +102,9 @@ class ReservationService
             ]);
         }
 
-        // Example: Notify user about the reservation
-        // Notification::send($reservation->user, new ReservationCreated($reservation));
+        // Send confirmation email to the guest
+        Mail::to($reservation->email)->queue(new Received($reservation));
+        
         return $reservation;
     }
 
@@ -164,15 +167,18 @@ class ReservationService
 
         CancelledReservation::create([
             'reservation_id' => $reservation->id,
-            'reason' => $data['reason'],
-            'canceled_by' => $data['canceled_by'],
+            'reason' => Arr::get($data, 'reason'),
+            'canceled_by' => Arr::get($data, 'canceled_by'),
+            'refund_amount' => Arr::get($data, 'refund_amount', 0),
             'canceled_at' => now(),
         ]);
 
-        // Update amenities and rooms pivot tables
-        $this->handlers->get('service')->sync($reservation, null);
-        $this->handlers->get('amenity')->sync($reservation, null);
-        $this->handlers->get('room')->sync($reservation, null);
+        // Update amenity's quantity and room's availability tables
+        $this->handlers->get('amenity')->release($reservation);
+        $this->handlers->get('room')->release($reservation);
+
+        // Send cancellation email to the guests
+        Mail::to($reservation->email)->queue(new Cancelled($reservation));
     }
 
     public function checkIn(Reservation $reservation) {
@@ -184,6 +190,7 @@ class ReservationService
         $reservation->status = ReservationStatus::CHECKED_OUT;
         $reservation->save();
 
+        $this->handlers->get('room')->release($reservation);
         $this->handlers->get('amenity')->release($reservation);
     }
 }
