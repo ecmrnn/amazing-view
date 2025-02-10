@@ -14,7 +14,7 @@
         <main class="py-10 space-y-5">
             <h1 class="text-md"><span class="font-bold">Reservation ID:</span> {{ $reservation->rid }}</h1>
 
-            <p>Good day, John! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
+            <p>Good day, {{ $reservation->first_name . ' ' . $reservation->last_name }}! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
 
             <h2 class="font-bold">Guest Details</h2>
 

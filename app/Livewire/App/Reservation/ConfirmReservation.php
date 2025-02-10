@@ -3,8 +3,10 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Enums\ReservationStatus;
+use App\Mail\Reservation\Confirmed;
 use App\Models\Reservation;
 use App\Traits\DispatchesToast;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class ConfirmReservation extends Component
@@ -23,6 +25,10 @@ class ConfirmReservation extends Component
     public function confirmReservation() {
         $this->reservation->status = ReservationStatus::CONFIRMED;
         $this->reservation->save();
+
+        // Send email about confirmed reservation
+        Mail::to($this->reservation->email)->queue(new Confirmed($this->reservation));
+
         $this->toast('Success!', description: 'Reservation confirmed!');
         $this->dispatch('reservation-confirmed');
     }
