@@ -5,11 +5,13 @@ namespace App\Services;
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
+use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Mail;
 
 class ReservationService
 {
@@ -148,6 +150,9 @@ class ReservationService
 
         // Create the invoice
         $this->handlers->get('billing')->update($reservation->invoice, $invoice_data);
+
+        // Send update email
+        Mail::to($reservation->email)->queue(new Updated($reservation));
 
         return $reservation;
     }
