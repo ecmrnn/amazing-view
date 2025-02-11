@@ -6,9 +6,11 @@ use App\Models\Reservation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 
 class Confirmed extends Mailable
 {
@@ -49,6 +51,11 @@ class Confirmed extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        $filename = $this->reservation->rid . ' - ' . strtoupper($this->reservation->last_name) . '_' . strtoupper($this->reservation->first_name) . '.pdf';
+        $path = 'storage/app/public/pdf/reservation/' . $filename;
+
+        return [
+            Attachment::fromPath($path)
+        ];
     }
 }
