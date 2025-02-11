@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Guest;
 
+use App\Models\Reservation;
 use App\Models\User;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;

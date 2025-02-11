@@ -479,10 +479,10 @@ class CreateReservation extends Component
         $service = new ReservationService;
         $reservation = $service->create($validated);
 
-        if ($this->reservation_type == 'walk-in-reservation') {
-            $reservation->status = ReservationStatus::CONFIRMED;
-            $reservation->save();
-        }
+        // if ($this->reservation_type == 'walk-in-reservation') {
+        //     $reservation->status = ReservationStatus::CONFIRMED;
+        //     $reservation->save();
+        // }
 
         $this->resetReservation();
 

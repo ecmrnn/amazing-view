@@ -30,8 +30,8 @@ class GenerateReport implements ShouldQueue
         'right' => 48,
         'left' => 48,
     ];
-    public $headerView = 'report.pdf.header';
-    public $footerView = 'report.pdf.footer';
+    public $headerView = 'pdf.reports.header';
+    public $footerView = 'pdf.reports.footer';
     public $path = '';
     public $filename = '';
 
@@ -74,7 +74,7 @@ class GenerateReport implements ShouldQueue
             ->get();
 
         if ($report->format == 'pdf') {
-            Pdf::view('report.pdf.reservation_summary', [
+            Pdf::view('pdf.reports.reservation_summary', [
                 'reservations' => $reservations,
                 'report' => $report,
             ])
@@ -107,7 +107,7 @@ class GenerateReport implements ShouldQueue
             ->first();
         
         if ($report->format == 'pdf') {
-            Pdf::view('report.pdf.daily_reservations', [
+            Pdf::view('pdf.reports.daily_reservations', [
                 'reservations' => $reservations,
                 'report' => $report,
                 'guest_count' => $guest_count,
@@ -155,7 +155,7 @@ class GenerateReport implements ShouldQueue
         $total_room_nights_available = $days * $room_count;
             
         if ($report->format == 'pdf') {
-            Pdf::view('report.pdf.occupancy_report', [
+            Pdf::view('pdf.reports.occupancy_report', [
                 'report' => $report,
                 'reservations' => $reservations,
                 'room_type' => $report->roomType,
@@ -214,7 +214,7 @@ class GenerateReport implements ShouldQueue
         }
             
         if ($report->format == 'pdf') {
-            Pdf::view('report.pdf.revenue_performance', [
+            Pdf::view('pdf.reports.revenue_performance', [
                 'report' => $report,
                 'reservations' => $reservations,
                 'revenue' => $revenue,

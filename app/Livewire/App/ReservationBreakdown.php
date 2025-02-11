@@ -40,7 +40,7 @@ class ReservationBreakdown extends Component
     {
         return <<<'HTML'
         <div class="space-y-5">
-            <x-note>Quantity on notes are the total nights the guest will stay.</x-note>
+            <x-note>Quantity on rooms are the total nights the guest will stay.</x-note>
 
             <!-- Table -->
             <div class="overflow-auto border rounded-md border-slate-200">
@@ -56,54 +56,51 @@ class ReservationBreakdown extends Component
             
                     <div>
                         <?php $counter = 0; ?>
+
                         <!-- Rooms -->
-                        @forelse ($reservation->rooms as $room)
-                            <?php $counter++ ?>
-                            <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 border-slate-200">
-                                <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                <p>{{ $room->building->prefix . ' ' . $room->room_number}}</p>
-                                <p>Room</p>
-                                <p class="text-center">{{ $night_count }}</p>
-                                <p class="text-right"><x-currency /> {{ number_format($room->pivot->rate, 2) }}</p>
-                                <p class="text-right"><x-currency /> {{ number_format($room->pivot->rate * $night_count, 2) }}</p>
-                            </div>
-                        @empty
-                            <div class="col-span-6 px-5 py-3 text-xs font-semibold text-left opacity-50">
-                                No rooms selected...
-                            </div>
-                        @endforelse
+                        @if ($reservation->rooms->count() > 0)
+                            @foreach ($reservation->rooms as $room)
+                                <?php $counter++ ?>
+                                <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 border-slate-200">
+                                    <p class="font-semibold opacity-50">{{ $counter }}</p>
+                                    <p>{{ $room->building->prefix . ' ' . $room->room_number}}</p>
+                                    <p>Room</p>
+                                    <p class="text-center">{{ $night_count }}</p>
+                                    <p class="text-right"><x-currency /> {{ number_format($room->pivot->rate, 2) }}</p>
+                                    <p class="text-right"><x-currency /> {{ number_format($room->pivot->rate * $night_count, 2) }}</p>
+                                </div>
+                            @endforeach
+                        @endif
+
                         <!-- Services -->
-                        @forelse ($reservation->services as $service)
-                            <?php $counter++ ?>
-                            <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 border-slate-200">
-                                <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                <p>{{ $service->name }}</p>
-                                <p>Service</p>
-                                <p class="text-center">1</p>
-                                <p class="text-right"><x-currency /> {{ number_format($service->pivot->price, 2) }}</p>
-                                <p class="text-right"><x-currency /> {{ number_format($service->pivot->price, 2) }}</p>
-                            </div>
-                        @empty
-                            <div class="col-span-6 px-5 py-3 text-xs font-semibold text-left opacity-50">
-                                No service selected...
-                            </div>
-                        @endforelse
+                        @if ($reservation->services->count() > 0)
+                            @foreach ($reservation->services as $service)
+                                <?php $counter++ ?>
+                                <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 border-slate-200">
+                                    <p class="font-semibold opacity-50">{{ $counter }}</p>
+                                    <p>{{ $service->name }}</p>
+                                    <p>Service</p>
+                                    <p class="text-center">1</p>
+                                    <p class="text-right"><x-currency /> {{ number_format($service->pivot->price, 2) }}</p>
+                                    <p class="text-right"><x-currency /> {{ number_format($service->pivot->price, 2) }}</p>
+                                </div>
+                            @endforeach
+                        @endif
+
                         <!-- Amenities -->
-                        @forelse ($reservation->amenities as $amenity)
-                            <?php $counter++ ?>
-                            <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 last:border-b-0 border-slate-200">
-                                <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                <p>{{ $amenity->name }}</p>
-                                <p>Amenity</p>
-                                <p class="text-center">{{ $amenity->pivot->quantity }}</p>
-                                <p class="text-right"><x-currency /> {{ number_format($amenity->pivot->price, 2) }}</p>
-                                <p class="text-right"><x-currency /> {{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</p>
-                            </div>
-                        @empty
-                            <div class="col-span-6 px-5 py-3 text-xs font-semibold text-left opacity-50">
-                                No amenity selected...
-                            </div>
-                        @endforelse
+                        @if ($reservation->amenities->count() > 0)
+                            @foreach ($reservation->amenities as $amenity)
+                                <?php $counter++ ?>
+                                <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 last:border-b-0 border-slate-200">
+                                    <p class="font-semibold opacity-50">{{ $counter }}</p>
+                                    <p>{{ $amenity->name }}</p>
+                                    <p>Amenity</p>
+                                    <p class="text-center">{{ $amenity->pivot->quantity }}</p>
+                                    <p class="text-right"><x-currency /> {{ number_format($amenity->pivot->price, 2) }}</p>
+                                    <p class="text-right"><x-currency /> {{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</p>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             </div>

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
+use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
 use App\Mail\reservation\Received;
 use App\Mail\Reservation\Updated;
@@ -83,14 +84,10 @@ class ReservationService
 
         // Compute breakdown
         $breakdown = $this->handlers->get('billing')->breakdown($reservation);
+        $breakdown['downpayment'] = Arr::get($data, 'downpayment', 0);
 
         // Create the invoice
-        $invoice = $reservation->invoice()->create([
-            'total_amount' => Arr::get($breakdown, 'sub_total', 0),
-            'downpayment' => Arr::get($data, 'downpayment', 0),
-            'balance' => Arr::get($breakdown, 'sub_total', 0),
-            'status' => Invoice::STATUS_PENDING,
-        ]);
+        $invoice = $this->handlers->get('billing')->create($reservation, $breakdown);
 
         // Create the downpayment
         if (!empty($proof_image_path)) {
@@ -103,7 +100,10 @@ class ReservationService
         }
 
         // Send confirmation email to the guest
-        Mail::to($reservation->email)->queue(new Received($reservation));
+        // Mail::to($reservation->email)->queue(new Received($reservation));
+
+        // Generate PDF
+        GenerateReservationPDF::dispatch($reservation);
         
         return $reservation;
     }
