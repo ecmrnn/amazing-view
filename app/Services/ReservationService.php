@@ -15,6 +15,7 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class ReservationService
 {
@@ -99,11 +100,11 @@ class ReservationService
             ]);
         }
 
-        // Send confirmation email to the guest
-        // Mail::to($reservation->email)->queue(new Received($reservation));
-
         // Generate PDF
         GenerateReservationPDF::dispatch($reservation);
+
+        // Send confirmation email to the guest
+        // Mail::to($reservation->email)->queue(new Received($reservation));
         
         return $reservation;
     }
@@ -192,5 +193,16 @@ class ReservationService
 
         $this->handlers->get('room')->release($reservation);
         $this->handlers->get('amenity')->release($reservation);
+    }
+
+    public function downloadPdf(Reservation $reservation) {
+        $filename = $reservation->rid . ' - ' . strtoupper($reservation->last_name) . '_' . strtoupper($reservation->first_name) . '.pdf';
+        $path = 'public/pdf/reservation/' . $filename;
+
+        if (Storage::exists($path)) {
+            return Storage::download($path, $filename);
+        }
+
+        return null;
     }
 }
