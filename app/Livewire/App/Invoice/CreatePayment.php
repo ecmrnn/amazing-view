@@ -23,7 +23,7 @@ class CreatePayment extends Component
     #[Validate] public $payment_date;
     #[Validate] public $payment_method = 'cash';
     #[Validate] public $transaction_id;
-    #[Validate] public $amount;
+    #[Validate] public $amount = 0;
     
     public function mount(Invoice $invoice) {
         $this->invoice = $invoice;
@@ -107,7 +107,7 @@ class CreatePayment extends Component
                         <x-form.input-error field="payment_date" />
                     </div>
 
-                    <div class="p-3 space-y-3 bg-white border border-gray-300 rounded-lg">
+                    <div class="p-3 space-y-3 bg-white border rounded-lg border-slate-200">
                         <hgroup>
                             <h3 class="text-sm font-semibold">Payment Methods</h3>
                             <p class="text-xs text-zinc-800">Select how the customer wants to pay</p>
@@ -141,7 +141,7 @@ class CreatePayment extends Component
                         <x-form.input-error field="amount" />
                     </div>
 
-                    <div class="px-3 py-2 border border-gray-300 rounded-md">
+                    <div class="px-3 py-2 border rounded-md border-slate-200">
                         <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
                     </div>
                 </div>

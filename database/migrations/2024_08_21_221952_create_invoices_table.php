@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\InvoiceStatus;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use Illuminate\Database\Migrations\Migration;
@@ -18,13 +19,12 @@ return new class extends Migration
             $table->string('iid')->nullable();
             $table->foreignIdFor(Reservation::class)->constrained();
             
-            $table->decimal('total_amount')->default(0); /* added */
-            $table->decimal('downpayment')->default(0); /* added */
+            $table->decimal('total_amount')->default(0);
             $table->decimal('balance')->default(0);
 
             $table->date('issue_date')->nullable();
             $table->date('due_date')->nullable();
-            $table->smallInteger('status')->default(Invoice::STATUS_PARTIAL);
+            $table->smallInteger('status')->default(InvoiceStatus::PARTIAL);
             $table->timestamps();
         });
     }

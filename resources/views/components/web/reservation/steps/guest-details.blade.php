@@ -197,7 +197,6 @@
                                             :baranggays="$baranggays"
                                             wire:model.live="baranggay"
                                             x-model="baranggay"
-                                            x-on:change="$wire.setAddress()"
                                         />
                                     </div>
                                 </div>
@@ -205,7 +204,6 @@
                                 <x-form.input-text
                                     wire:model.live="street"
                                     x-model="street"
-                                    x-on:keyup="$wire.setAddress()"
                                     label="Street (Optional)"
                                     id="street"
                                 />

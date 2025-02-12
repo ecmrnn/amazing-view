@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\RoomStatus;
-use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
 use App\Models\Invoice;
 use App\Models\Reservation;
@@ -16,7 +15,6 @@ class BillingService
     public function create(Reservation $reservation, $breakdown) {
         $invoice = $reservation->invoice()->create([
             'total_amount' => Arr::get($breakdown, 'sub_total', 0),
-            'downpayment' => Arr::get($breakdown, 'downpayment', 0),
             'balance' => Arr::get($breakdown, 'sub_total', 0),
             'status' => Invoice::STATUS_PENDING,
         ]);    
@@ -27,7 +25,6 @@ class BillingService
     public function update(Invoice $invoice, $data) {
         $invoice->update([
             'total_amount' => $data['total_amount'],
-            'downpayment' => $data['downpayment'],
             'balance' => $data['balance'],
             'status' => $data['status'],
         ]);

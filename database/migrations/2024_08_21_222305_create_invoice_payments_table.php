@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\PaymentPurpose;
 use App\Models\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -21,7 +20,7 @@ return new class extends Migration
             $table->decimal('amount')->nullable();
             $table->string('payment_method')->nullable();
             $table->string('proof_image_path')->nullable();
-            $table->integer('purpose')->nullable();
+            $table->enum('purpose', ['downpayment', 'partial', 'full payment']);
             $table->date('payment_date');
             $table->timestamps();
         });

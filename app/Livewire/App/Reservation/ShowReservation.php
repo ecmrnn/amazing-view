@@ -24,7 +24,7 @@ class ShowReservation extends Component
         $image = $service->downloadPdf($this->reservation);
 
         if (!$image) {
-            $this->toast('Oops, download failed', 'warning', 'Reservation PDF not found!');
+            $this->toast('Generating PDF', 'info', 'Please wait for a few seconds, ');
         } else {
             $this->toast('Downloading PDF', description: 'Stay online while we download your file!');
             return $image;

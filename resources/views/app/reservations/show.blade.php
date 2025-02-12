@@ -15,7 +15,7 @@
     @push('modals')
         {{-- Proof of image modal --}}
         <x-modal.full name="show-downpayment-modal" maxWidth="sm">
-            <livewire:app.reservation.confirm-reservation :reservation="$reservation" :downpayment="$downpayment" />
+            <livewire:app.reservation.confirm-reservation :reservation="$reservation" />
         </x-modal.full> 
 
         {{-- Modal for canceling reservation --}}
@@ -27,6 +27,10 @@
 
         <x-modal.full name='show-checkout-reservation' maxWidth='sm'>
             <livewire:app.guest.check-out-guest :reservation="$reservation" />
+        </x-modal.full>
+
+        <x-modal.full name='show-payment-reservation' maxWidth='sm'>
+            <livewire:app.invoice.create-payment :invoice="$reservation->invoice" />
         </x-modal.full>
     @endpush
 </x-app-layout>  

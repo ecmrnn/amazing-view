@@ -411,7 +411,7 @@ class CreateReservation extends Component
 
     public function submit()
     {
-        if (empty($this->address)) {
+        if (is_array($this->address)) {
             $this->address = [
                 'street' => $this->street,
                 'baranggay' => $this->baranggay,
@@ -419,6 +419,7 @@ class CreateReservation extends Component
                 'city' => $this->city,
                 'province' => $this->province,
             ];
+            $this->address = array_filter($this->address);
         }
 
         $this->validate([
@@ -470,7 +471,7 @@ class CreateReservation extends Component
         ]);
 
         $validated['downpayment'] = $this->downpayment;
-        $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address'])) : $validated['address'];
+        $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address']), ',') : $validated['address'];
         $validated['selected_rooms'] = $this->selected_rooms;
         $validated['selected_services'] = $this->selected_services;
         $validated['selected_amenities'] = $this->selected_amenities;
@@ -478,11 +479,6 @@ class CreateReservation extends Component
 
         $service = new ReservationService;
         $reservation = $service->create($validated);
-
-        // if ($this->reservation_type == 'walk-in-reservation') {
-        //     $reservation->status = ReservationStatus::CONFIRMED;
-        //     $reservation->save();
-        // }
 
         $this->resetReservation();
 

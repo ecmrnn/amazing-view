@@ -335,31 +335,18 @@ class ReservationForm extends Component
     // Address Get Methods
     public function getProvinces($region) {
         $this->provinces = AddressController::getProvinces($region);
-        $this->setAddress();
     }   
 
     public function getCities($province) {
         $this->cities = AddressController::getCities($province);
-        $this->setAddress();
     }
 
     public function getBaranggays($city) {
         $this->baranggays = AddressController::getBaranggays($city);
-        $this->setAddress();
     }
 
     public function getDistrictBaranggays($district) {
         $this->baranggays = AddressController::getDistrictBaranggays($district);
-        $this->setAddress();
-    }
-
-    // Concatenates the address altogether
-    public function setAddress() {
-        empty($this->street) ? $this->address[0] = null: $this->address[0] = trim($this->street) . ', ';
-        empty($this->baranggay) ? $this->address[1] = null: $this->address[1] = trim($this->baranggay) . ', ';
-        empty($this->district) ? $this->address[2] = null: $this->address[2] = trim($this->district) . ', ';
-        empty($this->city) ? $this->address[3] = null: $this->address[3] = trim($this->city) . ', ';
-        empty($this->province) ? $this->address[4] = null: $this->address[4] = trim($this->province);
     }
 
     public function submit($previous = false)
@@ -406,6 +393,17 @@ class ReservationForm extends Component
                     $this->toast('Success!', 'success', 'Next, Guest Details');
                     break;
                 case 2:
+                    if (is_array($this->address)) {
+                        $this->address = [
+                            'street' => $this->street,
+                            'baranggay' => $this->baranggay,
+                            'district' => $this->district,
+                            'city' => $this->city,
+                            'province' => $this->province,
+                        ];
+                        $this->address = array_filter($this->address);
+                    }
+
                     $this->validate([
                         'first_name' => $this->rules()['first_name'],
                         'last_name' => $this->rules()['last_name'],
@@ -452,6 +450,7 @@ class ReservationForm extends Component
         $validated['selected_services'] = $this->selected_services;
         $validated['cars'] = $this->cars;
         $validated['note'] = null;
+        $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address']), ',') : $validated['address'];
 
         $service = new ReservationService();
         $reservation = $service->create($validated);

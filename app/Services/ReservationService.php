@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\InvoiceStatus;
-use App\Enums\PaymentPurpose;
 use App\Enums\ReservationStatus;
 use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
@@ -11,6 +10,7 @@ use App\Mail\reservation\Received;
 use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -35,12 +35,14 @@ class ReservationService
         // Assuming the $data is already validated prior to this point
         $expires_at = Carbon::now()->addHour();
         $status = ReservationStatus::AWAITING_PAYMENT;
+        $proof_image_path = null;
 
         // Store proof of payment to payments folder
-        if ($data['downpayment'] > 0) {
+        if ((int) Arr::get($data, 'downpayment', 0) > 0 || !empty($data['proof_image_path'])) {
             if (!empty($data['proof_image_path'])) {
                 $proof_image_path = $data['proof_image_path']->store('payments', 'public');
             }
+            
             $expires_at = null; 
             $status = ReservationStatus::PENDING;
         }
@@ -58,7 +60,7 @@ class ReservationService
             'email' => Arr::get($data, 'email'),
             'phone' => Arr::get($data, 'phone'),
             'address' => Arr::get($data, 'address'),
-            'note' => Arr::get($data, 'note'),
+            'note' => Arr::get($data, 'note', null),
             'expires_at' => $expires_at,
             'status' => $status,
         ]);
@@ -91,11 +93,11 @@ class ReservationService
         $invoice = $this->handlers->get('billing')->create($reservation, $breakdown);
 
         // Create the downpayment
-        if (!empty($proof_image_path)) {
+        if ((int) Arr::get($data, 'downpayment', 0) > 0 || !empty($data['proof_image_path'])) {
             $invoice->payments()->create([
                 'proof_image_path' => $proof_image_path,
                 'amount' => Arr::get($data, 'downpayment', 0),
-                'purpose' => PaymentPurpose::DOWNPAYMENT,
+                'purpose' => 'downpayment',
                 'payment_date' => now(),
             ]);
         }
@@ -203,6 +205,27 @@ class ReservationService
             return Storage::download($path, $filename);
         }
 
+        GenerateReservationPDF::dispatch($reservation);
         return null;
+    }
+
+    public function confirm(Reservation $reservation, $data) {
+        $reservation->status = ReservationStatus::CONFIRMED;
+        $reservation->save();
+
+        if ($data['amount'] > 0) {
+            $reservation->invoice->payments()->updateOrCreate(
+                ['orid' => $data['orid']],
+                [
+                    'invoice_id' => $reservation->invoice->id,
+                    'amount' => Arr::get($data, 'amount', 0),
+                    'transaction_id' => Arr::get($data, 'transaction_id', null),
+                    'payment_date' => Arr::get($data, 'payment_date', null),
+                    'purpose' => 'downpayment',
+                ]
+                );
+        }
+
+        return $reservation;
     }
 }

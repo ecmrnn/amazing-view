@@ -40,11 +40,9 @@ class ReservationController extends Controller
     public function show(string $reservation)
     {
         $reservation = Reservation::where('rid', $reservation)->first();
-        $downpayment = $reservation->invoice->payments->first() == null ? null : $reservation->invoice->payments->first()->proof_image_path;
 
         return view('app.reservations.show', [
             'reservation' => $reservation,
-            'downpayment' => $downpayment, 
         ]);
     }
 
