@@ -23,6 +23,7 @@ class CreatePayment extends Component
     #[Validate] public $payment_date;
     #[Validate] public $payment_method = 'cash';
     #[Validate] public $transaction_id;
+    #[Validate] public $purpose;
     #[Validate] public $amount = 0;
     
     public function mount(Invoice $invoice) {
@@ -58,32 +59,30 @@ class CreatePayment extends Component
         if ($this->reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
             $this->reservation->status = ReservationStatus::PENDING->value;
             $this->reservation->save();
+
             $this->dispatch('status-changed');
             $this->dispatch('pg:eventRefresh-ReservationTable');
         }
 
         if (!empty($this->proof_image_path)) {
             $this->proof_image_path = $this->proof_image_path->store('payments', 'public');
-        }
+        }  
         
-        $payment = InvoicePayment::create([
-            'invoice_id' => $this->invoice->id,
+        $this->invoice->payments()->create([
             'transaction_id' => $this->transaction_id,
             'amount' => $this->amount,
             'payment_date' => $this->payment_date,
             'payment_method' => $this->payment_method,
             'proof_image_path' => $this->proof_image_path,
         ]);
+        
+        $this->invoice->balance -= $this->amount;
 
-        $invoice = Invoice::whereId($this->invoice->id)->first();
-        $invoice->downpayment = $this->amount;
-        $invoice->balance -= $this->amount;
-
-        if ($invoice->balance == 0) {
-            $invoice->status = Invoice::STATUS_PAID;
+        if ($this->invoice->balance == 0) {
+            $this->invoice->status = Invoice::STATUS_PAID;
         }
 
-        $invoice->save();
+        $this->invoice->save();
 
         $this->reset('payment_method', 'proof_image_path', 'transaction_id', 'amount');
         $this->dispatch('payment-added');
@@ -135,11 +134,22 @@ class CreatePayment extends Component
                     
                     <x-form.input-error x-show="payment_method != 'cash'" field="proof_image_path" />
                     
-                    <div class="space-y-3">
+                    <x-form.input-group>
                         <x-form.input-label for="amount">Enter the amount paid</x-form.input-label>
                         <x-form.input-currency wire:model.live='amount' id="amount" class="w-full" />
                         <x-form.input-error field="amount" />
-                    </div>
+                    </x-form.input-group>
+
+                    <x-form.input-group>
+                        <x-form.input-label for='purpose'>Select purpose of payment</x-form.input-label>
+                        <x-form.select>
+                            <option value="downpayment">Down Payment</option>
+                            <option value="security deposit">Security Deposit</option>
+                            <option value="partial">Partial Payment</option>
+                            <option value="full payment">Full Payment</option>
+                        </x-form.select>
+                        <x-form.input-error field="purpose" />
+                    </x-form.input-group>
 
                     <div class="px-3 py-2 border rounded-md border-slate-200">
                         <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />

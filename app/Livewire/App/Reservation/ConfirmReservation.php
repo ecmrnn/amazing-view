@@ -15,6 +15,10 @@ class ConfirmReservation extends Component
 {
     use DispatchesToast;
 
+    protected $listeners = [
+        'payment-added' => '$refresh',
+    ];
+
     public $reservation;
     public $payment;
     #[Validate] public $amount = 0;
@@ -24,7 +28,7 @@ class ConfirmReservation extends Component
     public function rules() {
         return [
             'amount' => 'nullable|min:0|integer',
-            'transaction_id' => 'nullable',
+            'transaction_id' => 'nullable|:',
             'payment_date' => 'date|required',
         ];
     }
@@ -33,6 +37,11 @@ class ConfirmReservation extends Component
     {
         $this->reservation = $reservation;
         $this->payment = $reservation->invoice->payments()->wherePurpose('downpayment')->first();
+
+        if ($this->payment) {
+            $this->amount = (int) $this->payment->amount;
+            $this->payment_date = $this->payment->payment_date;
+        }
     }
 
     public function confirmReservation() {
@@ -64,8 +73,8 @@ class ConfirmReservation extends Component
                 </hgroup>
 
                 <div class="relative space-y-5">
-                    @if ($payment)
-                        @if ($payment->proof_image_path)
+                    @if (!empty($payment))
+                        @if (!empty($payment->proof_image_path))
                             <div class="w-full overflow-auto border rounded-md aspect-square border-slate-200">
                                 <img src="{{ asset($payment->proof_image_path) }}" alt="payment receipt" />
                             </div>
@@ -100,14 +109,16 @@ class ConfirmReservation extends Component
                         </div>
                     @endif
                         
-                    <div class="grid grid-cols-2 gap-5">
-                        <x-form.input-group>
-                            <x-form.input-label for='transaction_id'>Reference ID</x-form.input-label>
-                            <x-form.input-text wire:model.live='transaction_id' id="transaction_id" class="w-full" label="Reference ID" />
-                            <x-form.input-error field="transaction_id" />
-                        </x-form.input-group>
+                    <div class="flex gap-5">
+                        @if (!empty($payment->proof_image_path))
+                            <x-form.input-group class="w-full">
+                                <x-form.input-label for='transaction_id'>Reference ID</x-form.input-label>
+                                <x-form.input-text wire:model.live='transaction_id' id="transaction_id" class="w-full" label="Reference ID" />
+                                <x-form.input-error field="transaction_id" />
+                            </x-form.input-group>
+                        @endif
 
-                        <x-form.input-group>
+                        <x-form.input-group class="w-full">
                             <x-form.input-label for='payment_date'>Date of Payment</x-form.input-label>
                             <x-form.input-date wire:model.live='payment_date' id="payment_date" class="w-full" />
                             <x-form.input-error field="payment_date" />

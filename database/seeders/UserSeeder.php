@@ -65,20 +65,20 @@ class UserSeeder extends Seeder
         $admin->assignRole('admin');
         $admin2->assignRole('admin');
 
-        $users = User::factory(20)->create();
+        // $users = User::factory(20)->create();
 
-        foreach ($users as $user) {
-            switch ($user->role) {
-                case 0:
-                    $user->assignRole('guest');
-                    break;
-                case 1:
-                    $user->assignRole('frontdesk');
-                    break;
-                case 2:
-                    $user->assignRole('admin');
-                    break;
-            }
-        }
+        // foreach ($users as $user) {
+        //     switch ($user->role) {
+        //         case 0:
+        //             $user->assignRole('guest');
+        //             break;
+        //         case 1:
+        //             $user->assignRole('frontdesk');
+        //             break;
+        //         case 2:
+        //             $user->assignRole('admin');
+        //             break;
+        //     }
+        // }
     }
 }

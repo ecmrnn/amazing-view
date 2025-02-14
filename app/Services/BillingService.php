@@ -32,6 +32,10 @@ class BillingService
         return $invoice;
     }
 
+    public function addPayment(Invoice $invoice) {
+        // $invoice->payments()->create();
+    }
+
     public function breakdown(Reservation $reservation) {
         $sub_total = $this->subtotal($reservation);
         $breakdown = [];
@@ -57,13 +61,19 @@ class BillingService
         $discount = 0;
         
         // Compute for discounts
-        if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
-            $guest_count = $reservation->children_count + $reservation->adult_count;
-            $discountable_guests = $reservation->pwd_count + $reservation->senior_count;
-
-            $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
-            $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
-            $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+        if (in_array($reservation->status, [
+            ReservationStatus::AWAITING_PAYMENT->value,
+            ReservationStatus::PENDING->value,
+            ReservationStatus::CONFIRMED->value,
+        ])) {
+            if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
+                $guest_count = $reservation->children_count + $reservation->adult_count;
+                $discountable_guests = $reservation->pwd_count + $reservation->senior_count;
+    
+                $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
+                $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
+                $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+            }
         }
         
         $vat = $vatable_sales * .12;
