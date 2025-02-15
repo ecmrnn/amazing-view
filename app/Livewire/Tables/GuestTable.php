@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
+use Livewire\Attributes\Url;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -27,6 +28,7 @@ final class GuestTable extends PowerGridComponent
     use WithExport, DispatchesToast;
 
     public string $tableName = 'GuestTable';
+    #[Url] public $status;
 
     public function noDataLabel(): string|View
     { 
@@ -53,8 +55,16 @@ final class GuestTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Reservation::query() 
-                        ->whereStatus(ReservationStatus::CHECKED_IN);
+        if (isset($this->status)) {
+            return Reservation::query()
+                ->where('date_in', Carbon::now()->format('Y-m-d'))
+                ->whereStatus($this->status)
+                ->orderByDesc('rid');
+        }
+
+        return Reservation::query()->with('rooms')
+            ->where('date_in', Carbon::now()->format('Y-m-d'))
+            ->orderByDesc('rid');
     }
 
     public function relationSearch(): array

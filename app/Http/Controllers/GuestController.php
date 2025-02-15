@@ -14,10 +14,7 @@ class GuestController extends Controller
      */
     public function index()
     {
-        $reservation = Reservation::whereStatus(ReservationStatus::CHECKED_IN)->count();
-        return view('app.guests.index', [
-            'reservation' => $reservation
-        ]);
+        return view('app.guests.index');
     }
 
     /**

@@ -68,7 +68,7 @@ class ConfirmReservation extends Component
         <div x-data="{ checked: false, amount: @entangle('amount') }" x-on:reservation-confirmed.window="show = false">
             <section class="p-5 space-y-5 bg-white">
                 <hgroup>
-                    <h2 class="font-semibold capitalize text">Payment upon Reservation</h2>
+                    <h2 class="font-semibold capitalize text">Confirm Reservation</h2>
                     <p class="max-w-sm text-xs">Confirm that the payment made below are successful before confirming the reservation.</p>
                 </hgroup>
 
