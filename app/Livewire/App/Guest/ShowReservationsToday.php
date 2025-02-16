@@ -4,12 +4,15 @@ namespace App\Livewire\App\Guest;
 
 use App\Enums\ReservationStatus;
 use App\Models\Reservation;
+use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class ShowReservationsToday extends Component
 {
+    use DispatchesToast;
+
     public $reservations;
     public $reservation_by_status = [
         'all' => 0,
@@ -52,7 +55,9 @@ class ShowReservationsToday extends Component
         }
         
         $this->reservation_by_status['all'] = $counts->sum();
-        $this->reservation_count = $this->status == '' ? Reservation::count() : Reservation::whereStatus($this->status)->count();
+        $this->reservation_count = $this->status == '' 
+            ? Reservation::where('date_in', Carbon::now()->format('Y-m-d'))->count() 
+            : Reservation::where('date_in', Carbon::now()->format('Y-m-d'))->whereStatus($this->status)->count();
     }
 
     public function render()

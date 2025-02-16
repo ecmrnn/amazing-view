@@ -110,7 +110,7 @@
 
     <div class="self-start w-full p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         {{-- Guest Table --}}
-        @if ($reservation_count > 0)
+        @if (!empty($reservation_count))
             <livewire:tables.guest-table />
         @else
             <div class="py-5 font-semibold text-center rounded-md">
@@ -118,4 +118,8 @@
             </div>
         @endif
     </div>
+
+    <x-modal.full name='show-notif' maxWidth='sm'>
+        <div class="p-5">Hello!</div>
+    </x-modal.full>
 </div>

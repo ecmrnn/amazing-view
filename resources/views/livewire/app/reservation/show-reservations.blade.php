@@ -48,7 +48,7 @@
                 </x-side-nav-link>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Enums\ReservationStatus::CHECKED_IN->value" href="{{ route('app.guests.index') }}">
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::CHECKED_IN->value" href="{{ route('app.guests.index') }}?status={{ \App\Enums\ReservationStatus::CHECKED_IN->value }}">
                     <div class="flex items-center gap-1">
                         <span>Checked-in</span>
                         @if ($reservation_by_status['checked-in'] > 0)

@@ -130,6 +130,10 @@ final class GuestTable extends PowerGridComponent
                 ', ['reservation' =>$reservation]);
             })
 
+            ->add('status_formatted', function ($reservation) {
+                return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
+            })
+
             ->add('created_at')
             ;
     }
@@ -150,6 +154,8 @@ final class GuestTable extends PowerGridComponent
             Column::make('Check-in Date', 'date_in_formatted', 'date_in'),
 
             Column::make('Check-out Date', 'date_out_formatted', 'date_out'),
+
+            Column::make('status', 'status_formatted', 'status'),
 
             Column::action('')
         ];
