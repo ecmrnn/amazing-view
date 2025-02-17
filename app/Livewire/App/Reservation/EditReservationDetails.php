@@ -6,6 +6,7 @@ use App\Enums\ReservationStatus;
 use App\Models\Building;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\RoomReservation;
 use App\Models\RoomType;
 use App\Services\RoomService;
 use App\Traits\DispatchesToast;
@@ -82,14 +83,55 @@ class EditReservationDetails extends Component
         ];
     }
 
+    // public function validateReservationDetails() {
+    //     // Edit Reservation Details (Update Date Algo.)
+    //     // 1. User change date-in or date-out
+    //     // 2. Get all the rooms on the selected dates
+    //     $reservations = Reservation::
+    //         where('id', '!=', $this->reservation->id)
+    //         ->where('date_in', '<=', $this->date_out)
+    //         ->where('date_out', '>=', $this->date_in)
+    //         ->whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])
+    //         ->get();
+
+    //     // 3. Get all the reserved rooms from the reservations
+    //     $reserved_rooms = $reservations->map(function ($reservation) {
+    //         return $reservation->rooms->pluck('id')->toArray();
+    //     })->flatten()->toArray();
+
+    //     // 4. Check whether the existing rooms is currently reserved by another reservation
+    //     $this->conflict_rooms = array_intersect($this->selected_rooms->pluck('id')->toArray(), $reserved_rooms);
+    //     if (!empty($this->conflict_rooms)) {
+    //         // 4.1. Reserved: Choose another room
+    //         $this->toast('Update failed', 'danger', 'The selected rooms is already reserved on the selected dates');
+    //         $this->conflict_rooms = Room::whereIn('id', $this->conflict_rooms)->get();
+    //         return;
+    //     } else {
+    //         // 4.2. Not Reserved: Continue with the update
+    //         $this->step = 2;
+    //     }
+
+    //     // Initialize the buildings and rooms
+    //     $this->buildings = Building::with('rooms')->withCount('rooms')->get();
+    //     $this->rooms = RoomType::with('rooms')->get();
+    // }
+    
     public function validateReservationDetails() {
         // Edit Reservation Details (Update Date Algo.)
         // 1. User change date-in or date-out
         // 2. Get all the rooms on the selected dates
         $reservations = Reservation::
             where('id', '!=', $this->reservation->id)
-            ->where('date_in', '<=', $this->date_out)
-            ->where('date_out', '>=', $this->date_in)
+            ->where(function($query) {
+                return $query->whereNull('resched_date_in')
+                    ->whereBetween('date_in', [$this->date_in, $this->date_out]);
+            })
+            ->orWhereBetween('resched_date_in', [$this->date_in, $this->date_out])
+            ->orWhere(function($query) {
+                return $query->whereNull('resched_date_out')
+                    ->whereBetween('date_out', [$this->date_in, $this->date_out]);
+            })
+            ->orWhereBetween('resched_date_out', [$this->date_in, $this->date_out])
             ->whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])
             ->get();
 

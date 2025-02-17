@@ -56,6 +56,26 @@
                 <p class="text-sm">Reason: {{ $canceled_reservation->reason }}</p>
             </div>
         @endif
+
+        {{-- Exipred Reservation --}}
+        @if ($reservation->status == \App\Enums\ReservationStatus::EXPIRED->value)
+            <x-danger-message>
+                <div>
+                    <h2 class="font-semibold">This reservation has expired!</h2>
+                    <p class="text-xs">Expiration date: {{ date_format(date_create($reservation->expires_at), 'F j, Y \a\t h:i A') }}</p>
+                </div>
+            </x-danger-message>
+        @endif
+
+        {{-- Awaiting Payment Reservations --}}
+        @if ($reservation->status == \App\Enums\ReservationStatus::AWAITING_PAYMENT->value)
+            <x-warning-message>
+                <div>
+                    <h2 class="font-semibold">This reservation is awaiting payment!</h2>
+                    <p class="text-xs">Expiration date: {{ date_format(date_create($reservation->expires_at), 'F j, Y \a\t h:i A') }}</p>
+                </div>
+            </x-warning-message>
+        @endif
         
         {{-- Reservation Details --}}
         <section class="p-5 space-y-5 bg-white border rounded-lg">

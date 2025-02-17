@@ -86,6 +86,16 @@
             </div>
         </x-danger-message>
     @endif
+    
+    {{-- Awaiting Payment Reservations --}}
+    @if ($reservation->status == \App\Enums\ReservationStatus::AWAITING_PAYMENT->value)
+        <x-warning-message>
+            <div>
+                <h2 class="font-semibold">This reservation is awaiting payment!</h2>
+                <p class="text-xs">Expiration date: {{ date_format(date_create($reservation->expires_at), 'F j, Y \a\t h:i A') }}</p>
+            </div>
+        </x-warning-message>
+    @endif
 
     <section x-data="{ show: false }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center gap-5">
