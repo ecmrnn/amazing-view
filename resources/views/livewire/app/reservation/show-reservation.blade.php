@@ -86,6 +86,16 @@
             </div>
         </x-danger-message>
     @endif
+
+    {{-- Exipred Reservation --}}
+    @if ($reservation->status == \App\Enums\ReservationStatus::NO_SHOW->value)
+        <x-danger-message>
+            <div>
+                <h2 class="font-semibold">Missed Reservation!</h2>
+                <p class="text-xs">Check-in Date: {{ $reservation->resched_date_in == null ? date_format(date_create($reservation->date_in), 'F j, Y') : date_format(date_create($reservation->resched_date_in), 'F j, Y') }}</p>
+            </div>
+        </x-danger-message>
+    @endif
     
     {{-- Awaiting Payment Reservations --}}
     @if ($reservation->status == \App\Enums\ReservationStatus::AWAITING_PAYMENT->value)

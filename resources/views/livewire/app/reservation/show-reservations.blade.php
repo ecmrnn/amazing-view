@@ -105,6 +105,16 @@
                     </div>
                 </x-side-nav-link>
             </li>
+            <li>
+                <x-side-nav-link :status="\App\Enums\ReservationStatus::NO_SHOW->value" href="{{ route('app.reservations.index', ['status' => \App\Enums\ReservationStatus::NO_SHOW->value]) }}">
+                    <div class="flex items-center gap-1">
+                        <span>No-Show</span>
+                        @if ($reservation_by_status['no-show'] > 0)
+                            <div class="text-xs">( {{ $reservation_by_status['no-show'] }} )</div>
+                        @endif
+                    </div>
+                </x-side-nav-link>
+            </li>
         </ul>
     </aside>
 

@@ -6,4 +6,4 @@ Schedule::command('reservations:expire')
     ->everyMinute();
 
 Schedule::command('reservations:no-show')
-    ->everyMinute();
+    ->daily();
