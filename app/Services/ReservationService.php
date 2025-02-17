@@ -7,6 +7,7 @@ use App\Enums\ReservationStatus;
 use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
 use App\Mail\reservation\Expire;
+use App\Mail\Reservation\NoShow;
 use App\Mail\reservation\Received;
 use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
@@ -107,7 +108,7 @@ class ReservationService
         GenerateReservationPDF::dispatch($reservation);
 
         // Send confirmation email to the guest
-        // Mail::to($reservation->email)->queue(new Received($reservation));
+        Mail::to($reservation->email)->queue(new Received($reservation));
         
         return $reservation;
     }
@@ -159,7 +160,7 @@ class ReservationService
         $this->handlers->get('billing')->update($reservation->invoice, $invoice_data);
 
         // Send update email
-        // Mail::to($reservation->email)->queue(new Updated($reservation));
+        Mail::to($reservation->email)->queue(new Updated($reservation));
 
         return $reservation;
     }
@@ -236,7 +237,7 @@ class ReservationService
         $reservation->save();
 
         // Send email to guests with expired reservations
-        // Mail::to($reservation->email)->queue(new Expire($reservation));
+        Mail::to($reservation->email)->queue(new Expire($reservation));
 
         $this->handlers->get('room')->sync($reservation, null);
         $this->handlers->get('amenity')->sync($reservation, null);
@@ -248,6 +249,19 @@ class ReservationService
         $reservation->status = ReservationStatus::AWAITING_PAYMENT;
         $reservation->expires_at = Carbon::now()->addHour();
         $reservation->save();
+
+        return $reservation;
+    }
+
+    public function noShow(Reservation $reservation) {
+        $reservation->status = ReservationStatus::NO_SHOW;
+        $reservation->save();
+
+        // Send email to guests with no-show reservations
+        Mail::to($reservation->email)->queue(new NoShow($reservation));
+
+        $this->handlers->get('room')->sync($reservation, null);
+        $this->handlers->get('amenity')->sync($reservation, null);
 
         return $reservation;
     }

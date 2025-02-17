@@ -112,6 +112,8 @@ final class ReservationTable extends PowerGridComponent
             ->add('status')
             ->add('status_update', function ($reservation) {
                 if (in_array($reservation->status, [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])) {
+                    $date_in = $reservation->resched_date_in == null ? $reservation->date_in : $reservation->resched_date_in;
+
                     if ($reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
                         $reservation_statuses = [
                             '' => 'Update Status',
@@ -122,7 +124,7 @@ final class ReservationTable extends PowerGridComponent
                             '' => 'Update Status',
                             ReservationStatus::CONFIRMED->value => 'Confirm',
                         ];
-                    } elseif ($reservation->status == ReservationStatus::CONFIRMED->value) {
+                    } elseif ($reservation->status == ReservationStatus::CONFIRMED->value && $date_in == Carbon::now()->format('Y-m-d')) {
                         $reservation_statuses = [
                             '' => 'Update Status',
                             ReservationStatus::CHECKED_IN->value => 'Check-in',

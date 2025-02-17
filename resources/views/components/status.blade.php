@@ -93,8 +93,8 @@
             $class = 'text-white border-yellow-500 bg-yellow-500/75';
             break;
         case 9:
-            $label = 'Awaiting Payment';
-            $class = 'text-white border-rose-500 bg-rose-500/75';
+            $label = 'No Show';
+            $class = 'text-white border-stone-500 bg-stone-500/75';
             break;
         default:
             # code...
