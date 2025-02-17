@@ -158,7 +158,7 @@ class ReservationService
         $this->handlers->get('billing')->update($reservation->invoice, $invoice_data);
 
         // Send update email
-        Mail::to($reservation->email)->queue(new Updated($reservation));
+        // Mail::to($reservation->email)->queue(new Updated($reservation));
 
         return $reservation;
     }

@@ -46,7 +46,11 @@ class ShowReservationsToday extends Component
 
         $counts = Reservation::selectRaw('status, COUNT(*) as count')
             ->whereIn('status', $statuses)
-            ->where('date_in', Carbon::now()->format('Y-m-d'))
+            ->where(function($query) {
+                return $query->whereNull('resched_date_in')
+                    ->where('date_in', Carbon::now()->format('Y-m-d'));
+            })
+            ->orWhere('resched_date_in', Carbon::now()->format('Y-m-d'))
             ->groupBy('status')
             ->pluck('count', 'status');
 
@@ -56,8 +60,16 @@ class ShowReservationsToday extends Component
         
         $this->reservation_by_status['all'] = $counts->sum();
         $this->reservation_count = $this->status == '' 
-            ? Reservation::where('date_in', Carbon::now()->format('Y-m-d'))->count() 
-            : Reservation::where('date_in', Carbon::now()->format('Y-m-d'))->whereStatus($this->status)->count();
+            ? Reservation::where(function($query) {
+                return $query->whereNull('resched_date_in')
+                    ->where('date_in', Carbon::now()->format('Y-m-d'));
+            })->orWhere('resched_date_in', Carbon::now()->format('Y-m-d'))->count() 
+            : Reservation::where(function($query) {
+                return $query->whereNull('resched_date_in')
+                    ->where('date_in', Carbon::now()->format('Y-m-d'));
+            })->orWhere('resched_date_in', Carbon::now()->format('Y-m-d'))->whereStatus($this->status)->count();
+
+            // dd($this->reservation_count);
     }
 
     public function render()

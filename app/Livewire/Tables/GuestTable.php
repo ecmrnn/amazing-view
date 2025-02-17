@@ -56,15 +56,25 @@ final class GuestTable extends PowerGridComponent
     public function datasource(): Builder
     {
         if (isset($this->status)) {
-            return Reservation::query()
-                ->where('date_in', Carbon::now()->format('Y-m-d'))
+            $query = Reservation::query()
+                ->where(function($query) {
+                    return $query->whereNull('resched_date_in')
+                        ->where('date_in', Carbon::now()->format('Y-m-d'));
+                })
+                ->orWhere('resched_date_in', Carbon::now()->format('Y-m-d'))
                 ->whereStatus($this->status)
                 ->orderByDesc('rid');
         }
-
-        return Reservation::query()->with('rooms')
-            ->where('date_in', Carbon::now()->format('Y-m-d'))
+        
+        $query = Reservation::query()->with('rooms')
+            ->where(function($query) {
+                return $query->whereNull('resched_date_in')
+                    ->where('date_in', Carbon::now()->format('Y-m-d'));
+            })
+            ->orWhere('resched_date_in', Carbon::now()->format('Y-m-d'))
             ->orderByDesc('rid');
+
+        return $query;
     }
 
     public function relationSearch(): array
