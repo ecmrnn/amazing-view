@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Enums\ReservationStatus;
 use App\Mail\reservation\Expire;
 use App\Models\Reservation;
+use App\Services\ReservationService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -29,23 +30,16 @@ class UpdateExpiredReservations extends Command
      */
     public function handle()
     {
+        $service = new ReservationService;
         $expired_reservations = Reservation::where('status', ReservationStatus::AWAITING_PAYMENT)
             ->where('expires_at', '<', now())
             ->get();
 
-        foreach ($expired_reservations as $reservation) {
-            $reservation->update([
-                'status' => ReservationStatus::EXPIRED
-            ]);
-        }
-
-        // Send email to guests with expired reservations
         if ($expired_reservations->count() > 0) {
             foreach ($expired_reservations as $reservation) {
-                Mail::to($reservation->email)->queue(new Expire($reservation));
+                $service->expire($reservation);
             }
         }
 
-        logger($expired_reservations);
     }
 }

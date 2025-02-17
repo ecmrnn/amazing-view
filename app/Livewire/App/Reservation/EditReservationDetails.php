@@ -85,7 +85,7 @@ class EditReservationDetails extends Component
     public function validateReservationDetails() {
         // Edit Reservation Details (Update Date Algo.)
         // 1. User change date-in or date-out
-        // 2. Get all the reservations on the selected dates
+        // 2. Get all the rooms on the selected dates
         $reservations = Reservation::
             where('id', '!=', $this->reservation->id)
             ->where('date_in', '<=', $this->date_out)
@@ -113,8 +113,6 @@ class EditReservationDetails extends Component
         // Initialize the buildings and rooms
         $this->buildings = Building::with('rooms')->withCount('rooms')->get();
         $this->rooms = RoomType::with('rooms')->get();
-
-        // 5. Send notification about the changes
     }
 
     public function back() {

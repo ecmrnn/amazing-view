@@ -66,9 +66,26 @@
                         <p>Cancel</p>
                     </button>
                 @endif
+
+                @if ($reservation->status == \App\Enums\ReservationStatus::EXPIRED->value)
+                <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-reactivate-modal'); dropdown = false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    <p>Reactivate</p>
+                </button>
+                @endif
             </div>
         </x-actions>
     </div>
+
+    {{-- Exipred Reservation --}}
+    @if ($reservation->status == \App\Enums\ReservationStatus::EXPIRED->value)
+        <x-danger-message>
+            <div>
+                <h2 class="font-semibold">This reservation has expired!</h2>
+                <p class="text-xs">Expiration date: {{ date_format(date_create($reservation->expires_at), 'F j, Y \a\t h:i A') }}</p>
+            </div>
+        </x-danger-message>
+    @endif
 
     <section x-data="{ show: false }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center gap-5">

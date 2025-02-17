@@ -10,7 +10,7 @@
         </div>
     </x-slot:header>
 
-    <livewire:app.reservation.show-reservation :reservation="$reservation" />>
+    <livewire:app.reservation.show-reservation :reservation="$reservation" />
 
     @push('modals')
         {{-- Proof of image modal --}}
@@ -31,6 +31,10 @@
 
         <x-modal.full name='show-payment-reservation' maxWidth='sm'>
             <livewire:app.invoice.create-payment :invoice="$reservation->invoice" />
+        </x-modal.full>
+
+        <x-modal.full name='show-reactivate-modal' maxWidth='sm'>
+            <livewire:app.reservation.reactivate-reservation :reservation="$reservation" />
         </x-modal.full>
     @endpush
 </x-app-layout>  

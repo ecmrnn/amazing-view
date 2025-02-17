@@ -6,6 +6,7 @@ use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
+use App\Mail\reservation\Expire;
 use App\Mail\reservation\Received;
 use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
@@ -225,6 +226,28 @@ class ReservationService
                 ]
                 );
         }
+
+        return $reservation;
+    }
+
+    public function expire(Reservation $reservation) {
+        // Update the status of the reservation
+        $reservation->status = ReservationStatus::EXPIRED;
+        $reservation->save();
+
+        // Send email to guests with expired reservations
+        // Mail::to($reservation->email)->queue(new Expire($reservation));
+
+        $this->handlers->get('room')->sync($reservation, null);
+        $this->handlers->get('amenity')->sync($reservation, null);
+
+        return $reservation;
+    }
+
+    public function reactivate(Reservation $reservation) {
+        $reservation->status = ReservationStatus::AWAITING_PAYMENT;
+        $reservation->expires_at = Carbon::now()->addHour();
+        $reservation->save();
 
         return $reservation;
     }
