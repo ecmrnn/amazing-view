@@ -66,6 +66,7 @@ return [
     */
 
     'timezone' => 'Asia/Manila',
+    'schedule_timezone' => 'Asia/Manila',
 
     /*
     |--------------------------------------------------------------------------

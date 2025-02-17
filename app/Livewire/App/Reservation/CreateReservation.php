@@ -112,7 +112,6 @@ class CreateReservation extends Component
                 $this->regions = AddressController::getRegions();
                 $this->districts = AddressController::getDistricts();
             } catch (\Throwable $th) {
-                logger($th);
                 $this->regions = null;
                 $this->districts = null;
             }
