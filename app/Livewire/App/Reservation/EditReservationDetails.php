@@ -87,20 +87,41 @@ class EditReservationDetails extends Component
         // Edit Reservation Details (Update Date Algo.)
         // 1. User change date-in or date-out
         // 2. Get all the reservations on the selected dates
-        $reservations = Reservation::
-            whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])
-            ->where(function($query) {
-                return $query->whereNull('resched_date_in')
-                ->whereBetween('date_in', [$this->date_in, $this->date_out]);
-            })
-            ->orWhereBetween('resched_date_in', [$this->date_in, $this->date_out])
-            ->where(function($query) {
-                return $query->whereNull('resched_date_out')
-                ->whereBetween('date_out', [$this->date_in, $this->date_out]);
-            })
-            ->orWhereBetween('resched_date_out', [$this->date_in, $this->date_out])
-            ->where('id', '!=', $this->reservation->id)
-            ->get();
+        $reservations = Reservation::whereIn('status', [
+            ReservationStatus::AWAITING_PAYMENT->value, 
+            ReservationStatus::PENDING->value, 
+            ReservationStatus::CONFIRMED->value
+        ])
+        ->where('id', '!=', $this->reservation->id) // Exclude the current reservation
+        ->where(function ($query) {
+            $query->where(function ($q) {
+                // Case 1: Reservation is NOT rescheduled, use `date_in` and `date_out`
+                $q->whereNull('resched_date_in')
+                    ->whereNull('resched_date_out')
+                    ->where(function ($subQuery) {
+                        $subQuery->whereBetween('date_in', [$this->date_in, $this->date_out])
+                                 ->orWhereBetween('date_out', [$this->date_in, $this->date_out])
+                                 ->orWhere(function ($innerQuery) {
+                                     $innerQuery->where('date_in', '<=', $this->date_in)
+                                                ->where('date_out', '>=', $this->date_out);
+                                 });
+                    });
+            })->orWhere(function ($q) {
+                // Case 2: Reservation is rescheduled, use `resched_date_in` and `resched_date_out`
+                $q->whereNotNull('resched_date_in')
+                    ->whereNotNull('resched_date_out')
+                    ->where(function ($subQuery) {
+                        $subQuery->whereBetween('resched_date_in', [$this->date_in, $this->date_out])
+                                 ->orWhereBetween('resched_date_out', [$this->date_in, $this->date_out])
+                                 ->orWhere(function ($innerQuery) {
+                                     $innerQuery->where('resched_date_in', '<=', $this->date_in)
+                                                ->where('resched_date_out', '>=', $this->date_out);
+                                 });
+                    });
+            });
+        })
+        ->get();
+    
 
         // 3. Get all the reserved rooms from the reservations
         $reserved_rooms = $reservations->map(function ($reservation) {
