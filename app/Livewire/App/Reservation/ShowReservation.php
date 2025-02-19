@@ -21,7 +21,8 @@ class ShowReservation extends Component
 
     public $reservation;
 
-    public function downloadPdf() {
+    public function downloadPdf()
+    {
         $service = new ReservationService;
         $image = $service->downloadPdf($this->reservation);
 
@@ -33,8 +34,9 @@ class ShowReservation extends Component
         }
     }
 
-    public function mount(Reservation $reservation) {
-        $this->reservation = $reservation;    
+    public function mount(Reservation $reservation)
+    {
+        $this->reservation = $reservation;
     }
 
     public function render()
