@@ -30,7 +30,7 @@ class Confirmed extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Amazing View Mountain Resort | Reservation Confirmed',
+            subject: 'Reservation Confirmed | Amazing View Mountain Resort',
         );
     }
 

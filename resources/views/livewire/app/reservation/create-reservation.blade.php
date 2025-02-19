@@ -110,8 +110,8 @@
     <div x-data="{ checked: false }" x-on:reservation-created.window="show = false">
         <section class="p-5 space-y-5 bg-white">
             <hgroup>
-                <h2 class="font-semibold text-center capitalize">Reservation Confirmation</h2>
-                <p class="max-w-sm text-sm text-center">Confirm that the reservation details entered are correct.</p>
+                <h2 class="text-lg font-semibold capitalize">Reservation Confirmation</h2>
+                <p class="max-w-sm text-sm">Confirm that the reservation details entered are correct.</p>
             </hgroup>
 
             <div class="px-3 py-2 border border-gray-300 rounded-md">
@@ -128,8 +128,10 @@
                 <x-form.textarea id="note" wire:model.live="note" maxlength="255" class="w-full" rows="3" />
                 <x-form.input-error field="note" />
             </div>
+
+            <x-loading wire:loading wire:target='store'>Processing reservation, please wait...</x-loading>
             
-            <div class="flex items-center justify-center gap-1">
+            <div class="flex items-center justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
                 <x-primary-button type="button" x-bind:disabled="!checked" wire:click="store">Submit Reservation</x-primary-button>
             </div>

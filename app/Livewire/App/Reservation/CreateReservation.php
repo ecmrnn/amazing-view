@@ -227,7 +227,6 @@ class CreateReservation extends Component
 
     public function selectBuilding(Building $id)
     {
-        logger($this->selected_rooms);
         $this->modal_key = uniqid();
         $this->floor_number = 1;
         $this->selected_building = $id;

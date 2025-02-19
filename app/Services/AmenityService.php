@@ -31,13 +31,15 @@ class AmenityService
     // - Reservation instance
     // - Collection of amenities to attach
     public function sync(Reservation $reservation, $amenities) {
-        foreach ($reservation->amenities as $amenity) {
-            $_amenity = Amenity::find($amenity['id']);
-            
-            $reservation->amenities()->detach($amenity['id']);
-            
-            $_amenity->quantity += (int) $amenity->pivot->quantity;
-            $_amenity->save();
+        if ($reservation->amenities->count() > 0) {
+            foreach ($reservation->amenities as $amenity) {
+                $_amenity = Amenity::find($amenity['id']);
+                
+                $reservation->amenities()->detach($amenity['id']);
+                
+                $_amenity->quantity += (int) $amenity->pivot->quantity;
+                $_amenity->save();
+            }
         }
         if (!empty($amenities)) {
             foreach ($amenities as $amenity) {

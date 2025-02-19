@@ -23,8 +23,10 @@ class AdditionalServiceHandler
     // - Reservation instance
     // - Collection of services to attach
     public function sync(Reservation $reservation, $services) {
-        foreach ($reservation->services as $service) {
-            $reservation->services()->detach($service->id);
+        if ($reservation->services->count() > 0) {
+            foreach ($reservation->services as $service) {
+                $reservation->services()->detach($service->id);
+            }
         }
         if (!empty($services)) {
             foreach ($services as $service) {

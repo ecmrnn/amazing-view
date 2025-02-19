@@ -28,7 +28,7 @@ class Received extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Amazing View Mountain Resort | Reservation Received',
+            subject: 'Reservation Received | Amazing View Mountain Resort',
         );
     }
 

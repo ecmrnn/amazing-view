@@ -6,6 +6,7 @@ use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
+use App\Mail\Reservation\Confirmed;
 use App\Mail\reservation\Expire;
 use App\Mail\Reservation\NoShow;
 use App\Mail\reservation\Received;
@@ -215,6 +216,9 @@ class ReservationService
         $reservation->status = ReservationStatus::CONFIRMED;
         $reservation->save();
 
+        $filename = $reservation->rid . ' - ' . strtoupper($reservation->last_name) . '_' . strtoupper($reservation->first_name) . '.pdf';
+        $path = 'public/pdf/reservation/' . $filename;
+
         if ($data['amount'] > 0) {
             $reservation->invoice->payments()->updateOrCreate(
                 ['orid' => $data['orid']],
@@ -226,6 +230,10 @@ class ReservationService
                     'purpose' => 'downpayment',
                 ]
                 );
+        }
+
+        if (!Storage::exists($path)) {
+            GenerateReservationPDF::dispatch($reservation);
         }
 
         return $reservation;

@@ -27,11 +27,13 @@ class RoomService
     // - Reservation instance
     // - Collection of rooms to attach
     public function sync(Reservation $reservation, $rooms) {
-        foreach ($reservation->rooms as $room) {
-            $reservation->rooms()->detach($room->id);
-
-            $room->status = RoomStatus::AVAILABLE->value;
-            $room->save();
+        if ($reservation->rooms->count() > 0) {
+            foreach ($reservation->rooms as $room) {
+                $reservation->rooms()->detach($room->id);
+    
+                $room->status = RoomStatus::AVAILABLE->value;
+                $room->save();
+            }
         }
 
         if (!empty($rooms)) {

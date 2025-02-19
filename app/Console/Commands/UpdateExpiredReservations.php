@@ -40,6 +40,5 @@ class UpdateExpiredReservations extends Command
                 $service->expire($reservation);
             }
         }
-
     }
 }

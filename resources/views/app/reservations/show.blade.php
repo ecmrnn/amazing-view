@@ -36,5 +36,9 @@
         <x-modal.full name='show-reactivate-modal' maxWidth='sm'>
             <livewire:app.reservation.reactivate-reservation :reservation="$reservation" />
         </x-modal.full>
+
+        <x-modal.full name='show-delete-reservation-modal' maxWidth='sm'>
+            <livewire:app.reservation.reactivate-reservation :reservation="$reservation" />
+        </x-modal.full>
     @endpush
 </x-app-layout>  
