@@ -18,8 +18,8 @@
                 }
             @endphp
             
-            <div key="{{ $service->id }}">
-                <x-form.checkbox-toggle :checked="$checked" id="service-{{ $service->id }}" name="service" wire:click="toggleService({{ $service->id }})">
+            <div wire:key="{{ $service->id }}">
+                <x-form.checkbox-toggle :checked="$checked" id="service-{{ $service->id }}" name="service" wire:click="toggleService({{ $service->id }})" x-on:reset-reservation.window="$el.checked = false">
                     <div class="px-3 py-2 select-none">
                         <div class="w-full font-semibold capitalize text-md">
                             {{ $service->name }}

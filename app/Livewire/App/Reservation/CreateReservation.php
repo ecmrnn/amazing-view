@@ -405,6 +405,8 @@ class CreateReservation extends Component
             $this->regions = AddressController::getRegions();
             $this->districts = AddressController::getDistricts();
         }
+
+        $this->dispatch('reset-reservation');
     }
 
     public function submit()

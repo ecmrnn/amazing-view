@@ -70,7 +70,7 @@ $maxWidth = [
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-        <div class="absolute inset-0 bg-gradient-to-b from-zinc-800/50 to-zinc-800/80"></div>
+        <div class="absolute inset-0 bg-zinc-800/50"></div>
     </div>
 
     <div

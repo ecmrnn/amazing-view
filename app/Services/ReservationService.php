@@ -273,4 +273,12 @@ class ReservationService
 
         return $reservation;
     }
+
+    public function delete(Reservation $reservation) {
+        $this->handlers->get('room')->sync($reservation, null);
+        $this->handlers->get('amenity')->sync($reservation, null);
+        $this->handlers->get('service')->sync($reservation, null);
+
+        $reservation->delete();
+    }
 }
