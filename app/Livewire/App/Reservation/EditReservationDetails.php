@@ -88,18 +88,18 @@ class EditReservationDetails extends Component
         // 1. User change date-in or date-out
         // 2. Get all the reservations on the selected dates
         $reservations = Reservation::
-            where('id', '!=', $this->reservation->id)
+            whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])
             ->where(function($query) {
                 return $query->whereNull('resched_date_in')
-                    ->whereBetween('date_in', [$this->date_in, $this->date_out]);
+                ->whereBetween('date_in', [$this->date_in, $this->date_out]);
             })
             ->orWhereBetween('resched_date_in', [$this->date_in, $this->date_out])
-            ->orWhere(function($query) {
+            ->where(function($query) {
                 return $query->whereNull('resched_date_out')
-                    ->whereBetween('date_out', [$this->date_in, $this->date_out]);
+                ->whereBetween('date_out', [$this->date_in, $this->date_out]);
             })
             ->orWhereBetween('resched_date_out', [$this->date_in, $this->date_out])
-            ->whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])
+            ->where('id', '!=', $this->reservation->id)
             ->get();
 
         // 3. Get all the reserved rooms from the reservations

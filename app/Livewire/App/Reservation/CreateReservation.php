@@ -234,7 +234,7 @@ class CreateReservation extends Component
         $this->column_count = $this->selected_building->room_col_count;
 
         $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
-
+        
         // Get the rooms in the building
         $this->available_rooms = Room::where('building_id', $this->selected_building->id)
             ->where('floor_number', $this->floor_number)

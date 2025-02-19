@@ -28,7 +28,7 @@ class Expire extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Expired Reservation Notice | Amazing View Mountain Resort',
+            subject: 'Reservation Expired | Amazing View Mountain Resort',
         );
     }
 

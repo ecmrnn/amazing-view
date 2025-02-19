@@ -2,7 +2,6 @@
 
 namespace App\Mail\Reservation;
 
-use App\Models\Reservation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,14 +9,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NoShow extends Mailable
+class Reminder extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public Reservation $reservation)
+    public function __construct()
     {
         //
     }
@@ -28,7 +27,7 @@ class NoShow extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reservation Missed | Amazing View Mountain Resort',
+            subject: 'Reservation Reminder | Amazing View Mountain Resort',
         );
     }
 
@@ -38,7 +37,7 @@ class NoShow extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.reservation.no-show',
+            view: 'mail.reservation.reminder',
         );
     }
 

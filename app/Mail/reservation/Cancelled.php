@@ -28,7 +28,7 @@ class Cancelled extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Amazing View Mountain Resort | Reservation Cancelled',
+            subject: 'Reservation Cancelled | Amazing View Mountain Resort',
         );
     }
 

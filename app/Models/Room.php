@@ -57,12 +57,16 @@ class Room extends Model
     public function scopeReservedRooms($query, $date_in, $date_out) {
         return $query->whereHas('reservations', function ($query) use ($date_in, $date_out) {
             $query->where(function ($query) use ($date_in, $date_out) {
-                $query->whereBetween('date_in', [$date_in, $date_out])
-                    ->orWhereBetween('date_out', [$date_in, $date_out])
-                    ->orWhere(function ($query) use ($date_in, $date_out) {
-                        $query->where('date_in', '<', $date_in)
-                            ->where('date_out', '>', $date_out);
-                    });
+                $query->where(function($query) use ($date_in, $date_out) {
+                    return $query->whereNull('resched_date_in')
+                    ->whereBetween('date_in', [$date_in, $date_out]);
+                })
+                ->orWhereBetween('resched_date_in', [$date_in, $date_out])
+                ->where(function($query) use ($date_in, $date_out) {
+                    return $query->whereNull('resched_date_out')
+                    ->whereBetween('date_out', [$date_in, $date_out]);
+                })
+                ->orWhereBetween('resched_date_out', [$date_in, $date_out]);
             });
         });
     }
