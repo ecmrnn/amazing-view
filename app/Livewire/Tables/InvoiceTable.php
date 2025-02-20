@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Blade;
+use Livewire\Attributes\Url;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -21,6 +22,8 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 final class InvoiceTable extends PowerGridComponent
 {
     use WithExport;
+
+    #[Url] public $status;
 
     public function noDataLabel(): string|View
     { 
@@ -50,7 +53,13 @@ final class InvoiceTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Invoice::query()->with('reservation');
+        if (isset($this->status)) {
+            return Invoice::query()->where('status', $this->status)
+                ->with('reservation')
+                ->orderByDesc('created_at');
+        }
+        return Invoice::query()->with('reservation')
+            ->orderByDesc('created_at');;
     }
 
     public function relationSearch(): array

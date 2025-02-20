@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot:header>
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center justify-between w-full">
             <hgroup>
                 <h1 class="text-xl font-bold leading-tight text-gray-800">
                     {{ __('Billings') }}
@@ -9,20 +9,18 @@
             </hgroup>
 
             @can('create billing')
-                <a href="{{ route('app.billings.create') }}" wire:navigate.hover>
-                    <x-primary-button class="text-xs">
-                        <div class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                            <span>Create Invoice</span>
-                        </div>
-                    </x-primary-button>
-                </a>
+                <div class="flex items-center">
+                    <x-tooltip text="Create Invoice" dir="bottom">
+                        <a x-ref="content" href="{{ route('app.billings.create') }}" wire:navigate.hover class="grid w-10 my-1 rounded-md aspect-square place-items-center hover:bg-slate-50 focus:text-zinc-800 focus:border-blue-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+                        </a>
+                    </x-tooltip>
+
+                    <div class="w-[1px] h-1/2 bg-gray-300"></div>
+                </div>
             @endcan
         </div>
     </x-slot:header>
 
-    <div class="p-3 space-y-5 bg-white rounded-lg sm:p-5">
-        {{-- Invoice table --}}
-        <livewire:tables.invoice-table />
-    </div>
+    <livewire:app.invoice.show-invoices />
 </x-app-layout>

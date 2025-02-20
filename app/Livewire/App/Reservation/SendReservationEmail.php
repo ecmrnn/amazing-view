@@ -91,24 +91,32 @@ class SendReservationEmail extends Component
                             <option value="updated">Updated Reservation Email</option>
                             <option value="received">Welcome Email</option>
                         </optgroup>
-                        <option value=""></option>
-                        
+                            
                         @if($reservation->status == App\Enums\ReservationStatus::CHECKED_OUT->value)
                             <optgroup label="Finalized">
+                                <option value=""></option>
                                 <option value="thank you">Thank You Email</option>
                             </optgroup>
-                            <option value=""></option>
                         @endif
                     
-                        <optgroup label="Problematic">
-                            @if($reservation->status == App\Enums\ReservationStatus::EXPIRED->value)
-                                <option value="expired">Expired Reservation Email</option>
-                            @endif
-                            @if($reservation->status == App\Enums\ReservationStatus::NO_SHOW->value)
-                                <option value="no show">No Show Email</option>
-                            @endif
-                            <option value="cancelled">Cancellation Email</option>
-                        </optgroup>
+                        @if(in_array($reservation->status, [
+                                App\Enums\ReservationStatus::EXPIRED->value,
+                                App\Enums\ReservationStatus::NO_SHOW->value,
+                                App\Enums\ReservationStatus::CANCELED->value,
+                            ]))
+                            <optgroup label="Problematic">
+                                <option value=""></option>
+                                @if($reservation->status == App\Enums\ReservationStatus::EXPIRED->value)
+                                    <option value="expired">Expired Reservation Email</option>
+                                @endif
+                                @if($reservation->status == App\Enums\ReservationStatus::NO_SHOW->value)
+                                    <option value="no show">No Show Email</option>
+                                @endif
+                                @if($reservation->status == App\Enums\ReservationStatus::CANCELED->value)
+                                    <option value="cancelled">Cancellation Email</option>
+                                @endif
+                            </optgroup>
+                        @endif
                     </x-form.select>
                     <x-form.input-error field="email_type" />
                 </x-form.input-group>
