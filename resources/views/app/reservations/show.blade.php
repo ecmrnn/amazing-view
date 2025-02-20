@@ -40,5 +40,9 @@
         <x-modal.full name='show-delete-reservation-modal' maxWidth='sm'>
             <livewire:app.reservation.delete-reservation :reservation="$reservation" />
         </x-modal.full>
+
+        <x-modal.full name='show-send-email-modal' maxWidth='sm'>
+            <livewire:app.reservation.send-reservation-email :reservation="$reservation" />
+        </x-modal.full>
     @endpush
 </x-app-layout>  
