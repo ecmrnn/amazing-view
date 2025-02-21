@@ -40,7 +40,7 @@ class Invoice extends Model
             $model->iid = IdGenerator::generate([
                 'table' => 'invoices',
                 'field' => 'iid',
-                'length' => 12,
+                'length' => 10,
                 'prefix' => 'I' . date('ymd'),
                 'reset_on_prefix_change' => true
             ]);

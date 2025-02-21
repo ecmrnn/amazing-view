@@ -6,9 +6,9 @@
             <li>
                 <x-side-nav-link :status="null" href="{{ route('app.billings.index') }}">
                     <div class="flex items-center gap-1">
-                        <span>All Reservations</span>
-                        @if ($reservation_by_status['all'] > 0)
-                            <div class="text-xs">( {{ $reservation_by_status['all'] }} )</div>
+                        <span>All Invoices</span>
+                        @if ($invoice_by_status['all'] > 0)
+                            <div class="text-xs">( {{ $invoice_by_status['all'] }} )</div>
                         @endif
                     </div>
                 </x-side-nav-link>
@@ -21,8 +21,8 @@
                 <x-side-nav-link :status="\App\Enums\InvoiceStatus::PARTIAL->value" href="{{ route('app.billings.index', ['status' => \App\Enums\InvoiceStatus::PARTIAL->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Partial</span>
-                        @if ($reservation_by_status['partial'] > 0)
-                            <div class="text-xs">( {{ $reservation_by_status['partial'] }} )</div>
+                        @if ($invoice_by_status['partial'] > 0)
+                            <div class="text-xs">( {{ $invoice_by_status['partial'] }} )</div>
                         @endif
                     </div>
                 </x-side-nav-link>
@@ -31,8 +31,8 @@
                 <x-side-nav-link :status="\App\Enums\InvoiceStatus::PENDING->value" href="{{ route('app.billings.index', ['status' => \App\Enums\InvoiceStatus::PENDING->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Pending</span>
-                        @if ($reservation_by_status['pending'] > 0)
-                            <div class="text-xs">( {{ $reservation_by_status['pending'] }} )</div>
+                        @if ($invoice_by_status['pending'] > 0)
+                            <div class="text-xs">( {{ $invoice_by_status['pending'] }} )</div>
                         @endif
                     </div>
                 </x-side-nav-link>
@@ -45,8 +45,8 @@
                 <x-side-nav-link :status="\App\Enums\InvoiceStatus::PAID->value" href="{{ route('app.billings.index', ['status' => \App\Enums\InvoiceStatus::PAID->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Paid</span>
-                        @if ($reservation_by_status['paid'] > 0)
-                            <div class="text-xs">( {{ $reservation_by_status['paid'] }} )</div>
+                        @if ($invoice_by_status['paid'] > 0)
+                            <div class="text-xs">( {{ $invoice_by_status['paid'] }} )</div>
                         @endif
                     </div>
                 </x-side-nav-link>
@@ -59,8 +59,8 @@
                 <x-side-nav-link :status="\App\Enums\InvoiceStatus::DUE->value" href="{{ route('app.billings.index', ['status' => \App\Enums\InvoiceStatus::DUE->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Due</span>
-                        @if ($reservation_by_status['due'] > 0)
-                            <div class="text-xs">( {{ $reservation_by_status['due'] }} )</div>
+                        @if ($invoice_by_status['due'] > 0)
+                            <div class="text-xs">( {{ $invoice_by_status['due'] }} )</div>
                         @endif
                     </div>
                 </x-side-nav-link>

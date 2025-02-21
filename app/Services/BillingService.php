@@ -17,6 +17,7 @@ class BillingService
             'total_amount' => Arr::get($breakdown, 'sub_total', 0),
             'balance' => Arr::get($breakdown, 'sub_total', 0),
             'status' => Invoice::STATUS_PENDING,
+            'due_date' => Carbon::parse((string) $reservation->date_out)->addWeek(),
         ]);    
 
         return $invoice;
@@ -48,10 +49,6 @@ class BillingService
             'breakdown' => $breakdown,
         ];
         
-    }
-
-    public function breakdownRaw($reservation) {
-        // dd($reservation);
     }
 
     public function taxes(Reservation $reservation) {
@@ -88,6 +85,33 @@ class BillingService
         ];
     }
 
+    public function rawTaxes($items) {
+        $sub_total = 0;
+        
+        // Compute the subtotal
+        foreach ($items as $item) {
+            $sub_total += $item['price'] * $item['quantity'];
+        }
+
+        $vatable_sales = $sub_total / 1.12;
+        $vatable_exempt_sales = 0;
+        $discount = 0;
+        $vat = $vatable_sales * .12;
+        $net_total = ($vatable_sales + $vat + $vatable_exempt_sales) - $discount;
+        $taxes = [
+            'vatable_sales' => $vatable_sales,
+            'vatable_exempt_sales' => $vatable_exempt_sales,
+            'vat' => $vat,
+            'discount' => $discount,
+            'net_total' => $net_total,
+        ];
+
+        return [
+            'sub_total' => $sub_total,
+            'taxes' => $taxes,
+        ];
+    }
+
     public function discounts(Reservation $reservation) {
         $discountable_guests = $reservation->pwd_count + $reservation->senior_count;
         $vatable_exempt_sales = $this->taxes($reservation)['vatable_exempt_sales'];
@@ -110,7 +134,7 @@ class BillingService
             $date_out = $reservation->resched_date_out;
         }
 
-        $night_count = Carbon::parse($date_in)->diffInDays($date_out);
+        $night_count = Carbon::parse((string) $date_in)->diffInDays($date_out);
 
         if ($night_count == 0) {
             $night_count = 1;

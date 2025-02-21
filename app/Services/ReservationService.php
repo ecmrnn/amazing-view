@@ -230,6 +230,9 @@ class ReservationService
                     'purpose' => 'downpayment',
                 ]
                 );
+
+            $reservation->invoice->balance -= Arr::get($data, 'amount', 0);
+            $reservation->invoice->save();
         }
 
         if (!Storage::exists($path)) {

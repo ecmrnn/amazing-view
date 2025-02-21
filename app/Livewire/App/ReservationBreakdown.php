@@ -27,7 +27,7 @@ class ReservationBreakdown extends Component
         }
 
         $billing_service = new BillingService;
-        $this->night_count = Carbon::parse($date_in)->diffInDays($date_out);
+        $this->night_count = Carbon::parse((string) $date_in)->diffInDays($date_out);
 
         if ($this->night_count == 0) {
             $this->night_count = 1;
@@ -138,21 +138,6 @@ class ReservationBreakdown extends Component
                         <td class="pt-5 font-semibold text-right text-blue-500"><x-currency /> {{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
                     </tr>
                 </table>
-                <!-- <div class="flex gap-5 justify-self-end">
-                    <div class="text-right">
-                        <p class="font-semibold">Subtotal</p>
-                        <p>Vatable Sales</p>
-                        <p>Vat</p>
-                        <p class="font-semibold"><br />Net Total</p>
-                    </div>
-                    <div class="text-right">
-                        <p>{{ number_format($breakdown['sub_total'], 2) }}    </p>
-                        <p>{{ number_format($breakdown['taxes']['vatable_sales'], 2) }}</p>
-                        <p>{{ number_format($breakdown['taxes']['vat'], 2) }}</p>
-
-                        <p><br />{{ number_format($breakdown['taxes']['net_total'], 2) }}</p>
-                    </div>
-                </div> -->
             </div>
         </div>
         HTML;
