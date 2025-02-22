@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('orid')->nullable();
             $table->string('transaction_id')->nullable();
             $table->decimal('amount')->nullable();
-            $table->string('payment_method')->nullable();
+            $table->enum('payment_method', ['cash', 'gcash', 'bank transfer'])->nullable();
             $table->string('proof_image_path')->nullable();
             $table->enum('purpose', ['downpayment', 'security deposit', 'partial', 'full payment']);
             $table->date('payment_date');

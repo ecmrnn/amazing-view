@@ -471,6 +471,7 @@ class CreateReservation extends Component
         ]);
 
         $validated['downpayment'] = $this->downpayment;
+        $validated['payment_method'] = $this->payment_method;
         $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address']), ',') : $validated['address'];
         $validated['selected_rooms'] = $this->selected_rooms;
         $validated['selected_services'] = $this->selected_services;

@@ -100,6 +100,7 @@ class ReservationService
             $invoice->payments()->create([
                 'proof_image_path' => $proof_image_path,
                 'amount' => Arr::get($data, 'downpayment', 0),
+                'payment_method' => Arr::get($data, 'payment_method', 'gcash'),
                 'purpose' => 'downpayment',
                 'payment_date' => now(),
             ]);
