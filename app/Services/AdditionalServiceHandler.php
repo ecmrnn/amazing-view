@@ -26,6 +26,9 @@ class AdditionalServiceHandler
         if ($reservation->services->count() > 0) {
             foreach ($reservation->services as $service) {
                 $reservation->services()->detach($service->id);
+
+                $reservation->invoice->balance -= $service->price;
+                $reservation->save();
             }
         }
         if (!empty($services)) {
@@ -33,6 +36,9 @@ class AdditionalServiceHandler
                 $reservation->services()->attach($service->id, [
                     'price' => $service['price'],
                 ]);
+
+                $reservation->invoice->balance += $service->price;
+                $reservation->save();
             }
         }
     }

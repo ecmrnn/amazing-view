@@ -45,7 +45,7 @@ class ReservationBreakdown extends Component
                 <!-- Table -->
                 <div class="overflow-auto border rounded-md border-slate-200">
                     <div class="min-w-[600px]">
-                        <div class="grid grid-cols-6 px-5 py-3 text-sm font-semibold border-b bg-slate-50 text-zinc-800/60 border-slate-200">
+                        <div class="grid grid-cols-6 px-5 py-3 text-sm font-semibold bg-slate-50 text-zinc-800/60 border-slate-200">
                             <p>No.</p>
                             <p>Item</p>
                             <p>Type</p>
@@ -60,7 +60,7 @@ class ReservationBreakdown extends Component
                             @if ($reservation->rooms->count() > 0)
                                 @foreach ($reservation->rooms as $room)
                                     <?php $counter++ ?>
-                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 border-slate-200">
+                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
                                         <p class="font-semibold opacity-50">{{ $counter }}</p>
                                         <p>{{ $room->building->prefix . ' ' . $room->room_number}}</p>
                                         <p>Room</p>
@@ -74,7 +74,7 @@ class ReservationBreakdown extends Component
                             @if ($reservation->services->count() > 0)
                                 @foreach ($reservation->services as $service)
                                     <?php $counter++ ?>
-                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 border-slate-200">
+                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
                                         <p class="font-semibold opacity-50">{{ $counter }}</p>
                                         <p>{{ $service->name }}</p>
                                         <p>Service</p>
@@ -88,7 +88,7 @@ class ReservationBreakdown extends Component
                             @if ($reservation->amenities->count() > 0)
                                 @foreach ($reservation->amenities as $amenity)
                                     <?php $counter++ ?>
-                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-b border-dashed hover:bg-slate-50 last:border-b-0 border-slate-200">
+                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
                                         <p class="font-semibold opacity-50">{{ $counter }}</p>
                                         <p>{{ $amenity->name }}</p>
                                         <p>Amenity</p>
@@ -101,6 +101,28 @@ class ReservationBreakdown extends Component
                         </div>
                     </div>
                 </div>
+
+                @if ($reservation->invoice->items->count() > 0)
+                    <h2 class="text-xs font-semibold">Other Charges</h2>
+                    <div class="overflow-auto border rounded-md border-slate-200">
+                        <div class="min-w-[600px]">
+                            <div>
+                                <?php $counter = 0 ?>
+                                @foreach ($reservation->invoice->items as $item)
+                                    <?php $counter++ ?>
+                                    <div class="grid grid-cols-6 px-5 py-3 text-sm font-semibold text-zinc-800/60 last:border-b-0 border-slate-200">
+                                        <p class="font-semibold opacity-50">{{ $counter }}</p>
+                                        <p class="capitalize">{{ $item->name }}</p>
+                                        <p>Others</p>
+                                        <p class="text-center">{{ $item->quantity }}</p>
+                                        <p class="text-right"><x-currency /> {{ number_format($item->price, 2) }}</p>
+                                        <p class="text-right"><x-currency /> {{ number_format($item->quantity * $item->price, 2) }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
             
             <!-- Taxes -->
@@ -124,6 +146,12 @@ class ReservationBreakdown extends Component
                         <td class="pr-5 text-right">VAT</td>
                         <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['vat'], 2) }}</td>
                     </tr>
+                    @if ($breakdown['taxes']['other_charges'] > 0)
+                        <tr>
+                            <td class="pr-5 text-right">Other Charges</td>
+                            <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['other_charges'], 2) }}</td>
+                        </tr>
+                    @endif
                     @if ($breakdown['taxes']['discount'] > 0)
                         <tr>
                             <td class="pr-5 text-right">Discount</td>

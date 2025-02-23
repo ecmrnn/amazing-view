@@ -33,6 +33,9 @@ class RoomService
     
                 $room->status = RoomStatus::AVAILABLE->value;
                 $room->save();
+
+                $reservation->invoice->balance -= $room->rate;
+                $reservation->save();
             }
         }
 
@@ -46,6 +49,9 @@ class RoomService
 
                 $room->status = RoomStatus::RESERVED->value;
                 $room->save();
+
+                $reservation->invoice->balance += $room->rate;
+                $reservation->invoice->save();
             }
         }
     }

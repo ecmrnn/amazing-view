@@ -18,7 +18,7 @@
         </p>
         <div>
             @if ($items->count() > 0)
-                <div class="space-y-3">
+                <div class="space-y-2">
                     <div class="overflow-auto border rounded-md border-slate-200">
                         <div class="min-w-[600px]">
                             <div class="grid grid-cols-7 px-5 py-3 text-sm font-semibold border-b bg-slate-50 text-zinc-800/60 border-slate-200">

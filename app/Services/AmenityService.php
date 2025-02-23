@@ -39,6 +39,9 @@ class AmenityService
                 
                 $_amenity->quantity += (int) $amenity->pivot->quantity;
                 $_amenity->save();
+
+                $reservation->invoice->balance -= $amenity->price;
+                $reservation->save();
             }
         }
         if (!empty($amenities)) {
@@ -60,6 +63,9 @@ class AmenityService
                 }
     
                 $_amenity->save();
+
+                $reservation->invoice->balance += $amenity->price;
+                $reservation->save();
             }
         }
     }
