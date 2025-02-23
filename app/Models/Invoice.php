@@ -31,6 +31,10 @@ class Invoice extends Model
     public function discounts(): BelongsToMany {
         return $this->belongsToMany(Discount::class);
     }
+
+    public function items(): HasMany {
+        return $this->hasMany(InvoiceItem::class);
+    }
     
     public static function boot()
     {

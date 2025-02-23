@@ -41,7 +41,7 @@
         
                 <div>
                     <h2 class="text-lg font-semibold">{{ $invoice->iid }}</h2>
-                    <p class="max-w-sm text-xs">Confirm and view invoice.</p>
+                    <p class="max-w-sm text-xs">Confirm and view invoice</p>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
         <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
             <hgroup>
                 <h3 class="font-semibold">Payments</h3>
-                <p class="text-xs">Track all the payments made on this invoice.</p>
+                <p class="text-xs">Track all the payments made on this invoice</p>
             </hgroup>
             {{-- Payments Table --}}
             <livewire:tables.invoice-payment-table :invoice="$invoice" />
@@ -92,14 +92,20 @@
     </div>
 
     <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
-        <hgroup>
-            <h2 class="font-semibold">Invoice Details</h2>
-            <p class="text-xs">Confirm invoice details</p>
-        </hgroup>
+        <div class="flex items-start justify-between">
+            <hgroup>
+                <h2 class="font-semibold">Invoice Details</h2>
+                <p class="text-xs">Confirm invoice details here</p>
+            </hgroup>
+
+            <x-status type="invoice" :status="$invoice->status"></x-status>
+        </div>
 
         <div class="grid gap-5 p-5 border rounded-md border-slate-200 sm:grid-cols-3">
             <div>
-                <h2 class="font-semibold">{{ $invoice->reservation->rid }}</h2>
+                <a href="{{ route('app.reservations.show', ['reservation' => $invoice->reservation->rid]) }}" wire:navigate>
+                    <h2 class="font-semibold text-blue-500">{{ $invoice->reservation->rid }}</h2>
+                </a>
                 <p class="text-xs">Reservation ID</p>
             </div>
             <div>

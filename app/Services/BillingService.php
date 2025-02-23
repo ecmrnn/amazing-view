@@ -14,8 +14,8 @@ class BillingService
 {
     public function create(Reservation $reservation, $breakdown) {
         $invoice = $reservation->invoice()->create([
-            'total_amount' => Arr::get($breakdown, 'sub_total', 0),
-            'balance' => Arr::get($breakdown, 'sub_total', 0),
+            'total_amount' => Arr::get($breakdown, 'taxes.net_total', 0),
+            'balance' => Arr::get($breakdown, 'taxes.net_total', 0),
             'status' => Invoice::STATUS_PENDING,
             'due_date' => Carbon::parse((string) $reservation->date_out)->addWeek(),
         ]);    
@@ -56,12 +56,15 @@ class BillingService
         $vatable_sales = $sub_total / 1.12;
         $vatable_exempt_sales = 0;
         $discount = 0;
+        $other_charges = 0;
         
         // Compute for discounts
         if (in_array($reservation->status, [
             ReservationStatus::AWAITING_PAYMENT->value,
             ReservationStatus::PENDING->value,
             ReservationStatus::CONFIRMED->value,
+            ReservationStatus::CHECKED_OUT->value,
+            ReservationStatus::COMPLETED->value,
         ])) {
             if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
                 $guest_count = $reservation->children_count + $reservation->adult_count;
@@ -69,40 +72,76 @@ class BillingService
     
                 $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
                 $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
-                $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                $discount = ($vatable_exempt_sales * .2) * $discountable_guests;
+            }
+        }
+
+        // Add 'other charges'
+        if(!empty($reservation->invoice->items)) {
+            foreach ($reservation->invoice->items as $item) {
+                $other_charges = $item->price * $item->quantity;
             }
         }
         
         $vat = $vatable_sales * .12;
-        $net_total = ($vatable_sales + $vat + $vatable_exempt_sales) - $discount;
+        $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount) + $other_charges;
 
         return [
             'vatable_sales' => $vatable_sales,
             'vatable_exempt_sales' => $vatable_exempt_sales,
             'vat' => $vat,
+            'other_charges' => $other_charges,
             'discount' => $discount,
             'net_total' => $net_total,
         ];
     }
 
-    public function rawTaxes($items) {
+    public function rawTaxes($invoice = null, $items) {
         $sub_total = 0;
+        $other_charges = 0;
         
         // Compute the subtotal
         foreach ($items as $item) {
-            $sub_total += $item['price'] * $item['quantity'];
+            if ($item['type'] != 'others') {
+                $sub_total += $item['price'] * $item['quantity'];
+            } else {
+                $other_charges += $item['price'] * $item['quantity'];
+            }
         }
 
         $vatable_sales = $sub_total / 1.12;
         $vatable_exempt_sales = 0;
         $discount = 0;
+
+        if (!empty($invoice)) {
+            // Compute for discounts
+            if (in_array($invoice->reservation->status, [
+                ReservationStatus::AWAITING_PAYMENT->value,
+                ReservationStatus::PENDING->value,
+                ReservationStatus::CONFIRMED->value,
+                ReservationStatus::CHECKED_OUT->value,
+                ReservationStatus::COMPLETED->value,
+            ])) {
+                if ($invoice->reservation->senior_count > 0 || $invoice->reservation->pwd_count > 0) {
+                    $guest_count = $invoice->reservation->children_count + $invoice->reservation->adult_count;
+                    $discountable_guests = $invoice->reservation->pwd_count + $invoice->reservation->senior_count;
+        
+                    $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
+                    $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
+                    $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                }
+            }
+        }
+
         $vat = $vatable_sales * .12;
-        $net_total = ($vatable_sales + $vat + $vatable_exempt_sales) - $discount;
+        $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount) + $other_charges;
+
         $taxes = [
             'vatable_sales' => $vatable_sales,
             'vatable_exempt_sales' => $vatable_exempt_sales,
             'vat' => $vat,
             'discount' => $discount,
+            'other_charges' => $other_charges,
             'net_total' => $net_total,
         ];
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Invoice;
 
+use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Services\BillingService;
 use App\Traits\DispatchesToast;
@@ -9,21 +10,35 @@ use Carbon\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use phpDocumentor\Reflection\Types\This;
+
+use function PHPUnit\Framework\isNull;
 
 class AddItem extends Component
 {
     use DispatchesToast;
 
+    protected $listeners = [
+        'item-added' => '$refresh',
+        'item-removed' => '$refresh',
+    ];
+
     public $items;
     public $item_type;
     public $night_count;
     public $breakdown;
+    public $invoice;
     #[Validate] public $name;
     #[Validate] public $quantity = 1;
     #[Validate] public $price = 0;
 
-    public function mount() {
+    public function mount($invoice = null) {
         $this->items = collect();
+
+        if (!empty($invoice)) {
+            $this->invoice = Invoice::find($invoice);
+            $this->setItems($this->invoice->reservation);
+        }
     }
 
     public function rules() {
@@ -88,12 +103,24 @@ class AddItem extends Component
             ]);
         }
 
+        
+        foreach ($reservation->invoice->items as $item) {
+            // $other_charges += $item->quantity * $item->price;
+            $this->items->push([
+                'id' => $item->id,
+                'name' => $item->name,
+                'type' => 'others',
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+            ]);
+        }
+        
         $this->getTaxes();
     }
 
     public function getTaxes() {
         $billing_service = new BillingService;
-        $this->breakdown = $billing_service->rawTaxes($this->items);
+        $this->breakdown = $billing_service->rawTaxes($this->invoice, $this->items);
     }
 
     public function addItem() {
@@ -111,6 +138,23 @@ class AddItem extends Component
             'price' => $this->price,
         ]);
 
+        if (!empty($this->invoice)) {
+            // Add items to invoice when type is others
+            if ($this->item_type == 'others') {
+                $this->invoice->items()->create([
+                    'name' => $this->name,
+                    'item_type' => $this->item_type,
+                    'quantity' => $this->quantity,
+                    'price' => $this->price,
+                    'total' => $this->quantity * $this->price,
+                ]);
+            }
+
+            // Update invoice balance
+            $this->invoice->balance += $this->quantity * $this->price;
+            $this->invoice->save();
+        }
+
         $this->getTaxes();
 
         $this->dispatch('item-added');
@@ -121,6 +165,16 @@ class AddItem extends Component
         $this->items = $this->items->reject(function ($_item) use ($item) {
             return $_item == $item;
         });
+
+        if (!empty($this->invoice) && $item['type'] == 'others') {
+            $item_to_delete = $this->invoice->items()->find($item['id']);
+
+            if (!empty($item_to_delete)) {
+                $item_to_delete->delete();
+                $this->invoice->balance -= $item['price'] * $item['quantity'];
+                $this->invoice->save();
+            }
+        }
 
         $this->getTaxes();
         $this->toast('Success!', description: 'Item removed: ' . ucwords($item['name']));

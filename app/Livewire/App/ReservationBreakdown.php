@@ -41,7 +41,7 @@ class ReservationBreakdown extends Component
         return <<<'HTML'
         <div class="space-y-5">
             <div class="space-y-2">
-                <p class="text-xs italic">Note: Quantity on rooms are the total nights the guest will stay.</p>
+                <p class="text-xs"><strong>Note:</strong> Quantity on rooms are the total nights the guest will stay.</p>
                 <!-- Table -->
                 <div class="overflow-auto border rounded-md border-slate-200">
                     <div class="min-w-[600px]">

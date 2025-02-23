@@ -37,7 +37,7 @@ class ReservationService
     public function create($data) {
         // Assuming the $data is already validated prior to this point
         $expires_at = Carbon::now()->addHour();
-        $status = ReservationStatus::AWAITING_PAYMENT;
+        $status = ReservationStatus::AWAITING_PAYMENT->value;
         $proof_image_path = null;
 
         // Store proof of payment to payments folder
@@ -47,7 +47,7 @@ class ReservationService
             }
             
             $expires_at = null; 
-            $status = ReservationStatus::PENDING;
+            $status = ReservationStatus::PENDING->value;
         }
 
         // Create the reservation
@@ -233,6 +233,7 @@ class ReservationService
                 );
 
             $reservation->invoice->balance -= Arr::get($data, 'amount', 0);
+            $reservation->invoice->status = $reservation->invoice->balance > 0 ? InvoiceStatus::PARTIAL : InvoiceStatus::PAID;
             $reservation->invoice->save();
         }
 
@@ -258,7 +259,7 @@ class ReservationService
     }
 
     public function reactivate(Reservation $reservation) {
-        $reservation->status = ReservationStatus::AWAITING_PAYMENT;
+        $reservation->status = ReservationStatus::AWAITING_PAYMENT->value;
         $reservation->expires_at = Carbon::now()->addHour();
         $reservation->save();
 
