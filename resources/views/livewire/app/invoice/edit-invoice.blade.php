@@ -15,7 +15,7 @@
         
             <div>
                 <h2 class="text-lg font-semibold">{{ $invoice->iid }}</h2>
-                <p class="max-w-sm text-xs">Modify and update this invoice.</p>
+                <p class="max-w-sm text-xs">Modify and update this billing</p>
             </div>
         </div>
     </div>
@@ -63,8 +63,8 @@
     <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-start justify-between">
             <hgroup>
-                <h2 class="font-semibold">Invoice Details</h2>
-                <p class="text-xs">Edit invoice details here</p>
+                <h2 class="font-semibold">Billing Details</h2>
+                <p class="text-xs">Edit billing details here</p>
             </hgroup>
 
             <x-status type="invoice" :status="$invoice->status"></x-status>

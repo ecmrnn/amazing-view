@@ -1,27 +1,5 @@
 <div class="grid gap-3 md:grid-cols-2 lg:gap-5 lg:grid-cols-4">
     <x-app.card
-        label="Total Invoice Amount"
-        :hasLink="false"
-        >
-        <x-slot:data>
-            <x-currency /> {{ number_format($total_invoice_amount, 2) }}
-        </x-slot:data>
-        <x-slot:icon>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-piggy-bank"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1"/><path d="M16 11h.01"/></svg>
-        </x-slot:icon>
-    </x-app.card>
-    <x-app.card
-        label="Total Paid Amount"
-        :hasLink="false"
-        >
-        <x-slot:data>
-            <x-currency /> {{ number_format($total_paid_amount, 2) }}
-        </x-slot:data>
-        <x-slot:icon>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
-        </x-slot:icon>
-    </x-app.card>
-    <x-app.card
         label="Total Balance"
         :hasLink="false"
         >
@@ -33,8 +11,26 @@
         </x-slot:icon>
     </x-app.card>
     <x-app.card
-        :data="$overdue_invoices"
-        label="Overdue Invoices"
+        :data="$pending_billing"
+        label="Pending Billing"
+        :hasLink="false"
+        >
+        <x-slot:icon>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-clock"><path d="M16 22h2a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="8" cy="16" r="6"/><path d="M9.5 17.5 8 16.25V14"/></svg>
+        </x-slot:icon>
+    </x-app.card>
+    <x-app.card
+        :data="$partial_billing"
+        label="Partial Billing"
+        :hasLink="false"
+        >
+        <x-slot:icon>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
+        </x-slot:icon>
+    </x-app.card>
+    <x-app.card
+        :data="$overdue_billing"
+        label="Overdue Billings"
         :hasLink="false"
         >
         <x-slot:icon>

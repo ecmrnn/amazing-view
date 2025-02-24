@@ -185,7 +185,7 @@
                     Service
                     @break
                 @case('others')
-                    <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         <x-form.input-group>
                             <x-form.input-label for='name'>Enter Item Description</x-form.input-label>
                             <x-form.input-text wire:model.live='name' id="name" name="name" label="Item Name" />

@@ -52,7 +52,7 @@ $maxWidth = [
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()"
     x-show="show"
-    class="fixed inset-0 !z-50 overflow-y-auto"
+    class="fixed inset-0 !z-50 overflow-y-auto flex items-end sm:items-start"
     style="display: {{ $show ? 'block' : 'none' }};"
 >
     <div
@@ -75,7 +75,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="w-full sm:mt-5 overflow-hidden min-h-screen relative sm:min-h-0 transition-all transform bg-white sm:rounded-lg shadow-md sm:w-full {{ $maxWidth }} mx-auto"
+        class="w-full sm:mt-5 overflow-hidden min-h-1/2 relative sm:min-h-0 transition-all transform rounded-t-lg sm:rounded-lg sm:w-full {{ $maxWidth }} mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
@@ -83,6 +83,16 @@ $maxWidth = [
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-    {{ $slot }}
+        {{-- Close Button --}}
+        <div class="p-2 bg-white border-b border-slate-200">
+            <button class="flex items-center justify-end w-full gap-3 p-3" x-on:click="show = false">
+                <p class="text-sm">Close</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+    
+        <div class="bg-slate-50">
+            {{ $slot }}
+        </div>
     </div>
 </div>    

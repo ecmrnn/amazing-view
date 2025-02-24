@@ -41,7 +41,7 @@
         
                 <div>
                     <h2 class="text-lg font-semibold">{{ $invoice->iid }}</h2>
-                    <p class="max-w-sm text-xs">Confirm and view invoice</p>
+                    <p class="max-w-sm text-xs">Confirm and view billing</p>
                 </div>
             </div>
         </div>
@@ -54,6 +54,12 @@
                         <p>Edit</p>
                     </button>
                 </a>
+                @if ($invoice->balance == 0)
+                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-add-payment'); dropdown = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>
+                        <p>Issue Invoice</p>
+                    </button>
+                @endif
                 @if ($invoice->balance > 0)
                     <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-add-payment'); dropdown = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
@@ -94,8 +100,8 @@
     <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-start justify-between">
             <hgroup>
-                <h2 class="font-semibold">Invoice Details</h2>
-                <p class="text-xs">Confirm invoice details here</p>
+                <h2 class="font-semibold">Billing Details</h2>
+                <p class="text-xs">Confirm billing details here</p>
             </hgroup>
 
             <x-status type="invoice" :status="$invoice->status"></x-status>
@@ -110,7 +116,7 @@
             </div>
             <div>
                 <h2 class="font-semibold">{{ $invoice->reservation->email }}</h2>
-                <p class="text-xs">Invoice Recepient</p>
+                <p class="text-xs">Billing Recepient</p>
             </div>
             <div>
                 <h2 class="font-semibold">{{ date_format(date_create($invoice->due_date), 'F j, Y') }}</h2>

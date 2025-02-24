@@ -2,8 +2,8 @@
 
 <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
     <hgroup>
-        <h2 class="font-semibold">Invoice Details</h2>
-        <p class="text-xs">Enter the invoice details below.</p>
+        <h2 class="font-semibold">Billing Details</h2>
+        <p class="text-xs">Enter the billing details below</p>
     </hgroup>
 
     <div class="grid gap-5 p-5 border rounded-md md:grid-cols-2 border-slate-200">

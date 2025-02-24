@@ -10,8 +10,8 @@
             </x-tooltip>
         
             <div>
-                <h2 class="text-lg font-semibold">Create Invoice</h2>
-                <p class="max-w-sm text-xs">Create invoice for guests here.</p>
+                <h2 class="text-lg font-semibold">Generate Bill</h2>
+                <p class="max-w-sm text-xs">Create billing record for guests here</p>
             </div>
         </div>
 

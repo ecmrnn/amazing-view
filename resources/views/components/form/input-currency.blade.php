@@ -1,6 +1,7 @@
 @props([
     'number' => 0,
     'min' => 0,
+    'id' => null,
 ])
 
 @php
@@ -21,6 +22,6 @@
         {{-- Number input --}}
         <input
             {{ $attributes->merge(['class' => 'pl-8 bg-white peer transition-colors ease-in-out duration-200 w-full text-sm rounded-md border-slate-200 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 invalid:bg-red-50 invalid:border-red-500 focus:invalid:border-red-500']) }}
-            type="number" min="{{ $min }}" />
+            type="number" min="{{ $min }}" id="{{ $id }}" />
     </div>
 </div>

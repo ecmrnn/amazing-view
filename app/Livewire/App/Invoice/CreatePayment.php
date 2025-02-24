@@ -106,7 +106,7 @@ class CreatePayment extends Component
                         <x-form.input-error field="payment_date" />
                     </div>
 
-                    <div class="p-3 space-y-3 bg-white border rounded-lg border-slate-200">
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         <hgroup>
                             <h3 class="text-sm font-semibold">Payment Methods</h3>
                             <p class="text-xs text-zinc-800">Select how the customer wants to pay</p>
@@ -120,18 +120,17 @@ class CreatePayment extends Component
                         <x-form.input-error x-show="payment_method != 'cash'" field="transaction_id" />
                         <x-form.input-error field="downpayment" />
                         
-                        <div x-show="payment_method != 'cash'">
-                            <x-form.input-text wire:model.live='transaction_id' label="Reference No." id="transaction_id" />
-                        </div>
                     </div>
-                    <div x-show="payment_method != 'cash'">
+                    <div x-show="payment_method != 'cash'" class="space-y-3">
+                        <x-form.input-label for="transaction_id">Enter Reference No.</x-form.input-label>
+                        <x-form.input-text wire:model.live='transaction_id' label="Reference No." id="transaction_id" />
                         <x-filepond::upload
                         wire:model.live="proof_image_path"
                         placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
                         />
                         <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Maximum image size &lpar;<strong class="text-blue-500">1MB or 1024KB</strong>&rpar;</p>
                     </div>
-                    
+
                     <x-form.input-error x-show="payment_method != 'cash'" field="proof_image_path" />
                     
                     <x-form.input-group>
