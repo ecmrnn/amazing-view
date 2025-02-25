@@ -4,9 +4,11 @@ namespace App\Livewire\App\Invoice;
 
 use App\Models\Invoice;
 use App\Models\Reservation;
+use App\Services\AmenityService;
 use App\Services\BillingService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -77,7 +79,7 @@ class AddItem extends Component
 
         foreach ($reservation->rooms as $room) {
             $this->items->push([
-                'id' => uniqid(),
+                'id' => $room->id,
                 'name' => $room->building->prefix . ' ' .$room->room_number,
                 'type' => 'room',
                 'quantity' => $this->night_count,
@@ -86,7 +88,7 @@ class AddItem extends Component
         }
         foreach ($reservation->amenities as $amenity) {
             $this->items->push([
-                'id' => uniqid(),
+                'id' => $amenity->id,
                 'name' => $amenity->name,
                 'type' => 'amenity',
                 'quantity' => $amenity->pivot->quantity,
@@ -95,7 +97,7 @@ class AddItem extends Component
         }
         foreach ($reservation->services as $service) {
             $this->items->push([
-                'id' => uniqid(),
+                'id' => $service->id,
                 'name' => $service->name,
                 'type' => 'service',
                 'quantity' => 1,
@@ -179,6 +181,33 @@ class AddItem extends Component
         $this->getTaxes();
         $this->toast('Success!', description: 'Item removed: ' . ucwords($item['name']));
         $this->dispatch('item-removed');
+    }
+
+    public function updateAmenity($id, $quantity) {
+        $this->items = $this->items->map(function ($item) use ($id, $quantity) {
+            if ($item['type'] == 'amenity' && $item['id'] == $id) {
+                $item['quantity'] = $quantity;
+            }
+            return $item;
+        });
+
+        $item = $this->items->first(function ($item) use ($id) {
+            if ($item['type'] == 'amenity' && $item['id'] == $id) {
+                return $item;
+            }
+        });
+
+        // Update the database
+        if (!empty($this->invoice)) {
+            $service = new AmenityService;
+            $amenities = $this->items->filter(function ($item) {
+                return $item['type'] == 'amenity';
+            });
+            $service->sync($this->invoice->reservation, $amenities);
+        }
+
+        $this->getTaxes();
+        $this->toast('Success!', description: 'Updated quantity of ' . ucwords($item['name'] . '!'));
     }
 
     public function render()

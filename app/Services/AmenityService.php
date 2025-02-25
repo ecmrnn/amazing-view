@@ -39,9 +39,6 @@ class AmenityService
                 
                 $_amenity->quantity += (int) $amenity->pivot->quantity;
                 $_amenity->save();
-
-                $reservation->invoice->balance -= $amenity->price;
-                $reservation->save();
             }
         }
         if (!empty($amenities)) {
@@ -63,11 +60,17 @@ class AmenityService
                 }
     
                 $_amenity->save();
-
-                $reservation->invoice->balance += $amenity->price;
-                $reservation->save();
             }
         }
+
+        $billing = new BillingService;
+        $taxes = $billing->taxes($reservation->fresh());
+        $payments = $reservation->invoice->payments->sum('amount');
+
+        $reservation->invoice->total_amount = $taxes['net_total'];
+        $reservation->invoice->balance = $taxes['net_total'] - $payments;
+        $reservation->invoice->save();
+
     }
 
     // For adding amenities on edit and create reservations

@@ -36,11 +36,17 @@
                                 @foreach ($items as $key => $item)
                                     @if ($item['type'] != 'others')
                                         <?php $counter++ ?>
-                                        <div wire:key="{{ $item['id'] }}" class="grid items-center grid-cols-7 px-5 py-1 text-sm border-b border-dashed hover:bg-slate-50 last:border-b-0 border-slate-200">
+                                        <div x-data="{ quantity: @js($item['quantity']) }" wire:key="{{ $item['id'] }}"
+                                            x-init="$watch('quantity', (value) => { if (value > 0) { @this.call('updateAmenity', '{{ $item['id'] }}', quantity) } })"
+                                            class="grid items-center grid-cols-7 px-5 py-1 text-sm border-b border-dashed hover:bg-slate-50 last:border-b-0 border-slate-200">
                                             <p class="font-semibold opacity-50">{{ $counter }}</p>
                                             <p>{{ $item['name'] }}</p>
                                             <p class="capitalize">{{ $item['type'] }}</p>
-                                            <p class="text-center">{{ $item['quantity'] }}</p>
+                                            @if ($item['type'] == 'amenity')
+                                                <x-form.input-number x-model="quantity" min="1" id="quantity" name="quantity" class="text-center" />
+                                            @else
+                                                <p class="text-center">{{ $item['quantity'] }}</p>
+                                            @endif
                                             <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
                                             <p class="text-right"><x-currency />{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
                                             <div class="ml-auto text-right w-max">
@@ -83,7 +89,7 @@
                                             <?php $counter++ ?>
                                             <div wire:key="{{ $item['id'] }}" class="grid items-center grid-cols-7 px-5 py-1 text-sm border-b border-dashed hover:bg-slate-50 last:border-b-0 border-slate-200">
                                                 <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                                <p>{{ $item['name'] }}</p>
+                                                <p>{{ $item['name'] }} {{ $item['type'] }}</p>
                                                 <p class="capitalize">{{ $item['type'] }}</p>
                                                 <p class="text-center">{{ $item['quantity'] }}</p>
                                                 <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
@@ -95,6 +101,7 @@
                                                         </x-icon-button>
                                                     </x-tooltip>
                                                 </div>
+
                                                 <x-modal.full name='remove-item-modal-{{ $key }}' maxWidth='sm'>
                                                     <div class="p-5 space-y-5" x-on:item-removed.window="show = false">
                                                         <hgroup>
@@ -179,10 +186,14 @@
 
             @switch($item_type)
                 @case('amenity')
-                    Amenity
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
+                        Amenity
+                    </div>
                     @break
                 @case('service')
-                    Service
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
+
+                    </div>
                     @break
                 @case('others')
                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
