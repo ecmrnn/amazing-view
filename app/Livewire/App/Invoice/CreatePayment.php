@@ -71,7 +71,7 @@ class CreatePayment extends Component
     public function render()
     {
         return <<<'HTML'
-            <section x-data="{ payment_method: @entangle('payment_method') }" x-on:payment-added.window="show = false" class="p-5 space-y-5 bg-white">
+            <section x-data="{ payment_method: @entangle('payment_method') }" x-on:payment-added.window="show = false" class="p-5 space-y-5">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Add Payment</h2>
                     <p class="text-sm">Enter the payment details made by the guest.</p>

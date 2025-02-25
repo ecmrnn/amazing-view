@@ -51,13 +51,13 @@
 
         @stack('modals')
         
-        <div class="flex flex-col bg-slate-50 sm:flex-row">
+        <div class="flex flex-col h-screen bg-slate-50 sm:flex-row">
             @include('layouts.navigation')
 
-            <div class="relative flex flex-col w-full h-screen min-h-screen overflow-y-auto">
+            <div class="relative flex flex-col w-full overflow-hidden">
                 <!-- Page Heading -->
                 @isset($header)
-                    <header class="sticky top-0 z-10 flex items-center justify-between w-full max-h-full px-5 py-3 bg-white border-b border-slate-200">
+                    <header class="sticky top-0 z-10 flex items-center justify-between w-full px-5 py-3 bg-white border-b border-slate-200">
                         {{ $header }}
 
                         <div class="flex items-center">
@@ -81,7 +81,7 @@
                 @endisset
 
                 <!-- Page Content -->
-                <main class="relative p-5 grow sm:space-y-5">
+                <main class="relative max-h-full p-5 space-y-5 overflow-y-auto">
                     {{ $slot }}
                 </main>
             </div>
