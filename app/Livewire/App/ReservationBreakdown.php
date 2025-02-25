@@ -65,8 +65,8 @@ class ReservationBreakdown extends Component
                                         <p>{{ $room->building->prefix . ' ' . $room->room_number}}</p>
                                         <p>Room</p>
                                         <p class="text-center">{{ $night_count }}</p>
-                                        <p class="text-right"><x-currency /> {{ number_format($room->pivot->rate, 2) }}</p>
-                                        <p class="text-right"><x-currency /> {{ number_format($room->pivot->rate * $night_count, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($room->pivot->rate, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($room->pivot->rate * $night_count, 2) }}</p>
                                     </div>
                                 @endforeach
                             @endif
@@ -79,8 +79,8 @@ class ReservationBreakdown extends Component
                                         <p>{{ $service->name }}</p>
                                         <p>Service</p>
                                         <p class="text-center">1</p>
-                                        <p class="text-right"><x-currency /> {{ number_format($service->pivot->price, 2) }}</p>
-                                        <p class="text-right"><x-currency /> {{ number_format($service->pivot->price, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($service->pivot->price, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($service->pivot->price, 2) }}</p>
                                     </div>
                                 @endforeach
                             @endif
@@ -93,8 +93,8 @@ class ReservationBreakdown extends Component
                                         <p>{{ $amenity->name }}</p>
                                         <p>Amenity</p>
                                         <p class="text-center">{{ $amenity->pivot->quantity }}</p>
-                                        <p class="text-right"><x-currency /> {{ number_format($amenity->pivot->price, 2) }}</p>
-                                        <p class="text-right"><x-currency /> {{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($amenity->pivot->price, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</p>
                                     </div>
                                 @endforeach
                             @endif
@@ -115,8 +115,8 @@ class ReservationBreakdown extends Component
                                         <p class="capitalize">{{ $item->name }}</p>
                                         <p>Others</p>
                                         <p class="text-center">{{ $item->quantity }}</p>
-                                        <p class="text-right"><x-currency /> {{ number_format($item->price, 2) }}</p>
-                                        <p class="text-right"><x-currency /> {{ number_format($item->quantity * $item->price, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($item->price, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($item->quantity * $item->price, 2) }}</p>
                                     </div>
                                 @endforeach
                             </div>
@@ -130,38 +130,38 @@ class ReservationBreakdown extends Component
                 <table class="w-max">
                     <tr>
                         <td class="pr-5 font-semibold text-right">Subtotal</td>
-                        <td class="text-right"><x-currency /> {{ number_format($breakdown['sub_total'], 2) }}</td>
+                        <td class="text-right"><x-currency />{{ number_format($breakdown['sub_total'], 2) }}</td>
                     </tr>
                     <tr>
                         <td class="pr-5 text-right">Vatable Sales</td>
-                        <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['vatable_sales'], 2) }}</td>
+                        <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_sales'], 2) }}</td>
                     </tr>
                     @if ($breakdown['taxes']['vatable_exempt_sales'] > 0)
                         <tr>
                             <td class="pr-5 text-right">Vatable Exempt Sales</td>
-                            <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['vatable_exempt_sales'], 2) }}</td>
+                            <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_exempt_sales'], 2) }}</td>
                         </tr>
                     @endif
                     <tr>
                         <td class="pr-5 text-right">VAT</td>
-                        <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['vat'], 2) }}</td>
+                        <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vat'], 2) }}</td>
                     </tr>
                     @if ($breakdown['taxes']['other_charges'] > 0)
                         <tr>
                             <td class="pr-5 text-right">Other Charges</td>
-                            <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['other_charges'], 2) }}</td>
+                            <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['other_charges'], 2) }}</td>
                         </tr>
                     @endif
                     @if ($breakdown['taxes']['discount'] > 0)
                         <tr>
                             <td class="pr-5 text-right">Discount</td>
-                            <td class="text-right"><x-currency /> &lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
+                            <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
                         </tr>
                     @endif
 
                     <tr>
                         <td class="pt-5 pr-5 font-semibold text-right text-blue-500">Net Total</td>
-                        <td class="pt-5 font-semibold text-right text-blue-500"><x-currency /> {{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
+                        <td class="pt-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
                     </tr>
                 </table>
             </div>

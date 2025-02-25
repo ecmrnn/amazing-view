@@ -65,7 +65,6 @@ final class InvoicePaymentTable extends PowerGridComponent
             //     ->striped()
             //     ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()
-                ->showToggleColumns()
                 ->showSearchInput(),
             Footer::make()
                 ->showPerPage(),
@@ -90,7 +89,7 @@ final class InvoicePaymentTable extends PowerGridComponent
             ->add('transaction_id')
             ->add('transaction_id_formatted', function ($payment) {
                 if ($payment->payment_method === 'cash') {
-                    return Blade::render('<span class="text-xs text-zinc-800/50">Not Available</span>');
+                    return Blade::render('<span class="text-xs text-zinc-800/50">---</span>');
                 }
 
                 return Blade::render('<span>' . $payment->transaction_id . '</span>');
@@ -98,7 +97,7 @@ final class InvoicePaymentTable extends PowerGridComponent
             ->add('amount')
             ->add('amount_formatted', function ($payment) {
                 return Blade::render('
-                    <span><x-currency /> ' . number_format($payment->amount, 2) . '</span>
+                    <span><x-currency />' . number_format($payment->amount, 2) . '</span>
                 ');
             })
             ->add('payment_date_formatted', fn ($payment) => Carbon::parse($payment->payment_date)->format('F j, Y'))

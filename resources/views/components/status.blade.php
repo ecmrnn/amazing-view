@@ -73,12 +73,28 @@
             }
             break;
         case 4:
-            $label = 'Checked-out';
-            $class = 'text-white border-gray-500 bg-gray-500/75';
+            switch ($type) {
+                case 'reservation':
+                    $label = 'Checked-out';
+                    $class = 'text-white border-gray-500 bg-gray-500/75';
+                    break;
+                case 'invoice':
+                    $label = 'Canceled';
+                    $class = 'text-white border-stone-500 bg-stone-500/75';
+                    break;
+            }
             break;
         case 5:
-            $label = 'Completed';
-            $class = 'text-white border-lime-500 bg-lime-500/75';
+            switch ($type) {
+                case 'reservation':
+                    $label = 'Completed';
+                    $class = 'text-white border-lime-500 bg-lime-500/75';
+                    break;
+                case 'invoice':
+                    $label = 'Issued';
+                    $class = 'text-white border-green-500 bg-green-500/75';
+                    break;
+            }
             break;
         case 6:
             $label = 'Canceled';

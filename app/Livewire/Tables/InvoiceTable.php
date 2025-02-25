@@ -89,7 +89,7 @@ final class InvoiceTable extends PowerGridComponent
                 if (!empty($invoice->issue_date)) {
                     return Carbon::parse($invoice->issue_date)->format('F j, Y');
                 } else {
-                    return Blade::render('<span class="text-xs text-zinc-800/50">Not yet issued</span>');
+                    return Blade::render('<span class="text-xs text-zinc-800/50">---</span>');
                 }
             })
 

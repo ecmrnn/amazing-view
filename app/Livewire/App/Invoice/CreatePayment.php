@@ -6,6 +6,7 @@ use App\Enums\ReservationStatus;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Reservation;
+use App\Services\BillingService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -47,7 +48,7 @@ class CreatePayment extends Component
     }
 
     public function store() {
-        $this->validate([
+        $validated = $this->validate([
             'payment_date' => $this->rules()['payment_date'],
             'payment_method' => $this->rules()['payment_method'],
             'proof_image_path' => $this->rules()['proof_image_path'],
@@ -56,38 +57,15 @@ class CreatePayment extends Component
             'proof_image_path' => $this->rules()['proof_image_path'],
         ]);
 
-        if ($this->reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
-            $this->reservation->status = ReservationStatus::PENDING->value;
-            $this->reservation->save();
+        $billing = new BillingService;
+        $billing->addPayment($this->invoice, $validated);
 
-            $this->dispatch('status-changed');
-            $this->dispatch('pg:eventRefresh-ReservationTable');
-        }
-
-        if (!empty($this->proof_image_path)) {
-            $this->proof_image_path = $this->proof_image_path->store('payments', 'public');
-        }  
-        
-        $this->invoice->payments()->create([
-            'transaction_id' => $this->transaction_id,
-            'amount' => $this->amount,
-            'payment_date' => $this->payment_date,
-            'payment_method' => $this->payment_method,
-            'proof_image_path' => $this->proof_image_path,
-        ]);
-        
-        $this->invoice->balance -= $this->amount;
-
-        if ($this->invoice->balance == 0) {
-            $this->invoice->status = Invoice::STATUS_PAID;
-        }
-
-        $this->invoice->save();
-
-        $this->reset('payment_method', 'proof_image_path', 'transaction_id', 'amount');
         $this->dispatch('payment-added');
+        $this->dispatch('status-changed');
+        $this->dispatch('pg:eventRefresh-ReservationTable');
         $this->dispatch('pg:eventRefresh-InvoicePaymentTable');
         $this->toast('Success', 'success', 'Yay, payment added!');
+        $this->reset('payment_method', 'proof_image_path', 'transaction_id', 'amount');
     }
 
     public function render()

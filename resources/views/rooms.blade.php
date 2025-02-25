@@ -45,7 +45,7 @@
                     
                     <hgroup>
                         <h3 class="text-2xl font-semibold">{{ $room->name }}</h3>
-                        <span class="font-semibold"><x-currency /> {{ number_format($room->max_rate, 2) }} / night</span>
+                        <span class="font-semibold"><x-currency />{{ number_format($room->max_rate, 2) }} / night</span>
                     </hgroup>
                     
                     <p class="text-justify indent-8">{{ $room->description }}</p>

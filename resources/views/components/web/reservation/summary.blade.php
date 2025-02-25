@@ -78,7 +78,7 @@
                         <div key="{{ $amenity->id }}" class="flex justify-between text-sm capitalize">
                             <p>{{ $amenity->name }}</p>
                             <p>
-                                <x-currency /> <span>{{ $amenity->price }}</span>
+                                <x-currency />{{ $amenity->price }}
                             </p>
                         </div>
                     @endforeach

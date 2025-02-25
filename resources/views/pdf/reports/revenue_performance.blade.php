@@ -9,7 +9,7 @@
         <h2 class="font-semibold text-md">Summary</h2>
     
         <ul class="list-disc list-inside">
-            <li>Total revenue generated: <x-currency /> {{ number_format($revenue, 2) }}</li>
+            <li>Total revenue generated: <x-currency />{{ number_format($revenue, 2) }}</li>
             <li>Number of room types: {{ $room_type_count }}</li>
         </ul>
         
@@ -27,15 +27,15 @@
                     <tr class="border-b border-slate-200 last:border-b-0 odd:bg-slate-100">
                         <td class="px-4 py-3 text-xs font-semibold text-center border-x border-slate-200">{{ $reservation->room_type }}</td>
                         <td class="px-2 py-3 text-xs text-center border-r border-slate-200">{{ $reservation->reservation_count }}</td>
-                        <td class="px-2 py-3 text-xs text-center border-r border-slate-200"><x-currency /> {{ number_format($reservation->total_revenue, 2) }}</td>
-                        <td class="px-2 py-3 text-xs text-center border-r border-slate-200"><x-currency /> {{ number_format($reservation->average_revenue, 2) }}</td>
+                        <td class="px-2 py-3 text-xs text-center border-r border-slate-200"><x-currency />{{ number_format($reservation->total_revenue, 2) }}</td>
+                        <td class="px-2 py-3 text-xs text-center border-r border-slate-200"><x-currency />{{ number_format($reservation->average_revenue, 2) }}</td>
                     </tr>
                 @endforeach
                 <tr class="border-b border-slate-200 odd:bg-slate-100">
                     <td class="px-4 py-3 text-xs font-semibold text-center border-x border-slate-200">Grand Total</td>
                     <td class="px-2 py-3 text-xs font-semibold text-center border-r border-slate-200">{{ $grand_total['reservation_count'] }}</td>
-                    <td class="px-2 py-3 text-xs font-semibold text-center border-r border-slate-200"><x-currency /> {{ number_format($grand_total['total_revenue'], 2) }}</td>
-                    <td class="px-2 py-3 text-xs font-semibold text-center border-r border-slate-200"><x-currency /> {{ number_format($grand_total['average_revenue'], 2) }}</td>
+                    <td class="px-2 py-3 text-xs font-semibold text-center border-r border-slate-200"><x-currency />{{ number_format($grand_total['total_revenue'], 2) }}</td>
+                    <td class="px-2 py-3 text-xs font-semibold text-center border-r border-slate-200"><x-currency />{{ number_format($grand_total['average_revenue'], 2) }}</td>
                 </tr>
             </tbody>
         </table>

@@ -13,7 +13,7 @@
                 <ul class="list-disc list-inside">
                     <li>Total number of {{ $room_type->name }} rooms: {{ count($room_type->rooms) }}</li>
                     <li>Total reservations: {{ count($reservations) }}</li>
-                    <li>Revenue generated: <x-currency /> {{ number_format($revenue, 2) }}</li>
+                    <li>Revenue generated: <x-currency />{{ number_format($revenue, 2) }}</li>
                 </ul>
             </div>
 

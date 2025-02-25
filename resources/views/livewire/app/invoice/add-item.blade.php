@@ -41,8 +41,8 @@
                                             <p>{{ $item['name'] }}</p>
                                             <p class="capitalize">{{ $item['type'] }}</p>
                                             <p class="text-center">{{ $item['quantity'] }}</p>
-                                            <p class="text-right"><x-currency /> {{ number_format($item['price'], 2) }}</p>
-                                            <p class="text-right"><x-currency /> {{ number_format($item['price'] * $item['quantity'], 2) }}</p>
+                                            <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
+                                            <p class="text-right"><x-currency />{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
                                             <div class="ml-auto text-right w-max">
                                                 <x-tooltip text="Remove" dir="left">
                                                     <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'remove-item-modal-{{ $key }}')" type="button">
@@ -86,8 +86,8 @@
                                                 <p>{{ $item['name'] }}</p>
                                                 <p class="capitalize">{{ $item['type'] }}</p>
                                                 <p class="text-center">{{ $item['quantity'] }}</p>
-                                                <p class="text-right"><x-currency /> {{ number_format($item['price'], 2) }}</p>
-                                                <p class="text-right"><x-currency /> {{ number_format($item['price'] * $item['quantity'], 2) }}</p>
+                                                <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
+                                                <p class="text-right"><x-currency />{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
                                                 <div class="ml-auto text-right w-max">
                                                     <x-tooltip text="Remove" dir="left">
                                                         <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'remove-item-modal-{{ $key }}')" type="button">
@@ -119,37 +119,37 @@
                         <table class="w-max">
                             <tr>
                                 <td class="pr-5 font-semibold text-right">Subtotal</td>
-                                <td class="text-right"><x-currency /> {{ number_format($breakdown['sub_total'], 2) }}</td>
+                                <td class="text-right"><x-currency />{{ number_format($breakdown['sub_total'], 2) }}</td>
                             </tr>
                             <tr>
                                 <td class="pt-5 pr-5 text-right">Vatable Sales</td>
-                                <td class="pt-5 text-right"><x-currency /> {{ number_format($breakdown['taxes']['vatable_sales'], 2) }}</td>
+                                <td class="pt-5 text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_sales'], 2) }}</td>
                             </tr>
                             @if ($breakdown['taxes']['vatable_exempt_sales'] > 0)
                                 <tr>
                                     <td class="pr-5 text-right">Vatable Exempt Sales</td>
-                                    <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['vatable_exempt_sales'], 2) }}</td>
+                                    <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_exempt_sales'], 2) }}</td>
                                 </tr>
                             @endif
                             <tr>
                                 <td class="pr-5 text-right">VAT</td>
-                                <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['vat'], 2) }}</td>
+                                <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vat'], 2) }}</td>
                             </tr>
                             @if ($breakdown['taxes']['other_charges'] > 0)
                                 <tr>
                                     <td class="pr-5 text-right">Other Charges</td>
-                                    <td class="text-right"><x-currency /> {{ number_format($breakdown['taxes']['other_charges'], 2) }}</td>
+                                    <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['other_charges'], 2) }}</td>
                                 </tr>
                             @endif
                             @if ($breakdown['taxes']['discount'] > 0)
                                 <tr>
                                     <td class="pr-5 text-right">Discount</td>
-                                    <td class="text-right"><x-currency /> &lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
+                                    <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
                                 </tr>
                             @endif
                             <tr>
                                 <td class="pt-5 pr-5 font-semibold text-right text-blue-500">Net Total</td>
-                                <td class="pt-5 font-semibold text-right text-blue-500"><x-currency /> {{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
+                                <td class="pt-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
                             </tr>
                         </table>
                     </div>

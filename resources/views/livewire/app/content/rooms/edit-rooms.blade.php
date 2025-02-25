@@ -152,7 +152,7 @@
                                 
                                 <hgroup>
                                     <h3 class="text-sm font-semibold leading-none">{{ $room_type->name }}</h3>
-                                    <span class="text-sm font-semibold leading-none"><x-currency /> {{ number_format($room_type->max_rate, 2) }} / night</span>
+                                    <span class="text-sm font-semibold leading-none"><x-currency />{{ number_format($room_type->max_rate, 2) }} / night</span>
                                 </hgroup>
                                 
                                 <p class="text-xs text-justify indent-8 line-clamp-3">{{ $room_type->description }}</p>

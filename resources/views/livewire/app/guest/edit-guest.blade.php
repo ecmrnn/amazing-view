@@ -304,7 +304,7 @@
                                                 </div>
                                                 <p class="grid px-2 text-xs border rounded-lg place-items-center">
                                                     <span>
-                                                        <x-currency /> {{ number_format($amenity->price, 2) }}
+                                                        <x-currency />{{ number_format($amenity->price, 2) }}
                                                     </span>
                                                 </p>
                                             </div>
@@ -312,7 +312,7 @@
                                             <div class="flex gap-1">
                                                 <p class="grid w-full px-2 py-2 text-xs font-semibold text-blue-500 border border-blue-500 rounded-lg sm:py-0 place-items-center">
                                                     <span>
-                                                        <x-currency /> {{ number_format($amenity->price * $quantity, 2) }}
+                                                        <x-currency />{{ number_format($amenity->price * $quantity, 2) }}
                                                     </span>
                                                 </p>
                                                 <x-tooltip text="Remove Amenity" dir="left">
@@ -363,11 +363,11 @@
                                         <p class="grid px-2 py-2 text-xs border border-gray-300 rounded-lg sm:py-0 place-items-center">
                                             @if (!empty($additional_amenity_id))
                                                 <span>
-                                                    <x-currency /> {{ number_format($additional_amenity->price, 2) }}
+                                                    <x-currency />{{ number_format($additional_amenity->price, 2) }}
                                                 </span>
                                             @else
                                                 <span>
-                                                    <x-currency /> 0.00
+                                                    <x-currency />0.00
                                                 </span>
                                             @endif
                                         </p>
@@ -379,11 +379,11 @@
                                         <p class="grid w-full px-2 py-2 text-xs font-semibold text-blue-500 border border-blue-500 rounded-lg sm:py-0 place-items-center">
                                             @if (!empty($additional_amenity_id))
                                                 <span>
-                                                    <x-currency /> {{ number_format($additional_amenity_total, 2) }}
+                                                    <x-currency />{{ number_format($additional_amenity_total, 2) }}
                                                 </span>
                                             @else
                                                 <span>
-                                                    <x-currency /> 0.00
+                                                    <x-currency />0.00
                                                 </span>
                                             @endif
                                         </p>
@@ -582,7 +582,7 @@
                                             <span>Available Room: {{ $rooms->count() }}</span>
                                         @endif
                                     </p>
-                                    <p class="text-xs text-zinc-800/50">Average Rate: <x-currency />{{ number_format($average_rate, 2) }}</p>
+                                    <p class="text-xs text-zinc-800/50">Average Rate: <x-currency />{ number_format($average_rate, 2) }}</p>
                                 </hgroup>
                             </div>
                             
@@ -642,7 +642,7 @@
                                 </div>
                                 <hgroup>
                                     <h3 class="text-sm font-semibold">{{ $room->roomType->name }} {{ $room->room_number }}</h3>
-                                    <p class="text-xs"><x-currency />{{ number_format($room->rate, 2) }}</p>
+                                    <p class="text-xs"><x-currency />{ number_format($room->rate, 2) }}</p>
                                 </hgroup>
                             </div>
 

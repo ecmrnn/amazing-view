@@ -24,13 +24,13 @@ class ShowReservation extends Component
     public function downloadPdf()
     {
         $service = new ReservationService;
-        $image = $service->downloadPdf($this->reservation);
+        $pdf = $service->downloadPdf($this->reservation);
 
-        if (!$image) {
-            $this->toast('Generating PDF', 'info', 'Please wait for a few seconds, ');
+        if (!$pdf) {
+            $this->toast('Generating PDF', 'info', 'Please wait for a few seconds');
         } else {
             $this->toast('Downloading PDF', description: 'Stay online while we download your file!');
-            return $image;
+            return $pdf;
         }
     }
 

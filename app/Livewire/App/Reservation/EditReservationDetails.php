@@ -385,8 +385,8 @@ class EditReservationDetails extends Component
                                             </div>
                                             <div>
                                                 <h3 class="font-semibold text-md">{{ $room->name }}</h3>
-                                                <p class="text-xs">Minimum rate: <x-currency /> {{ number_format($room->min_rate, 2) }}</p>
-                                                <p class="text-xs">Maximum rate: <x-currency /> {{ number_format($room->max_rate, 2) }}</p>
+                                                <p class="text-xs">Minimum rate: <x-currency />{{ number_format($room->min_rate, 2) }}</p>
+                                                <p class="text-xs">Maximum rate: <x-currency />{{ number_format($room->max_rate, 2) }}</p>
                                             </div>
                                         </div>
                                         <x-secondary-button class="flex-shrink-0 text-xs" wire:click="viewRooms({{ $room->id }})">

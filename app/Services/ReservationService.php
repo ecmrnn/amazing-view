@@ -197,8 +197,14 @@ class ReservationService
         $reservation->status = ReservationStatus::CHECKED_OUT;
         $reservation->save();
 
+        // Generate invoice
+        $this->handlers->get('billing')->issueInvoice($reservation->invoice);
+
         $this->handlers->get('room')->release($reservation);
         $this->handlers->get('amenity')->release($reservation);
+
+        // Send 'Thank You' email to the guests
+        
     }
 
     public function downloadPdf(Reservation $reservation) {
@@ -254,6 +260,7 @@ class ReservationService
 
         $this->handlers->get('room')->sync($reservation, null);
         $this->handlers->get('amenity')->sync($reservation, null);
+        $this->handlers->get('billing')->cancel($reservation->invoice);
 
         return $reservation;
     }

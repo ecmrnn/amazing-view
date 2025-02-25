@@ -28,7 +28,7 @@
                 <p><strong class="font-bold">Reservation ID:</strong> {{ $reservation->rid }}</p>
                 <p><strong class="font-bold">Check-in Date:</strong> {{ $reservation->resched_date_in != null ? date_format(date_create($reservation->resched_date_in), 'F j, Y') : date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
                 <p><strong class="font-bold">Cancellation Date:</strong> {{ date_format(date_create($reservation->cancelled->canceled_at), 'F j, Y') }}</p>
-                <p><strong class="font-bold">Refund Amount:</strong> <x-currency /> {{ number_format($reservation->cancelled->refund_amount, 2) }}</p>
+                <p><strong class="font-bold">Refund Amount:</strong> <x-currency />{{ number_format($reservation->cancelled->refund_amount, 2) }}</p>
             </div>
 
             @if ($reservation->cancelled->refund_amount > 0)

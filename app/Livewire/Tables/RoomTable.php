@@ -93,7 +93,7 @@ final class RoomTable extends PowerGridComponent
             ->add('max_capacity')
             ->add('rate')
             ->add('rate_formatted', function ($room) {
-                return Blade::render('<x-currency /> ' . number_format($room->rate, 2));
+                return Blade::render('<x-currency />' . number_format($room->rate, 2));
             })
 
             ->add('status_update', function ($room) use ($room_statuses) {

@@ -101,7 +101,7 @@ class CancelReservation extends Component
 
             <x-note>The refund amount is automatically calculated based on the date of cancellation and check-in date.</x-note>
             @if ($max_amount > 0)
-                <x-note>The maximum refund amount is based on the confirmed payments made: <x-currency /> {{ number_format($max_amount, 2) }}</x-note>
+                <x-note>The maximum refund amount is based on the confirmed payments made: <x-currency />{{ number_format($max_amount, 2) }}</x-note>
             @endif
 
             <x-form.input-label for="canceled_by">Who wants to cancel?</x-form.input-label>

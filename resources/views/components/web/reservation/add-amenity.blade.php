@@ -41,7 +41,7 @@
                                     </div>
                                     <p class="grid px-2 text-xs border rounded-lg place-items-center">
                                         <span>
-                                            <x-currency /> {{ number_format($amenity->price, 2) }}
+                                            <x-currency />{{ number_format($amenity->price, 2) }}
                                         </span>
                                     </p>
                                 </div>
@@ -49,7 +49,7 @@
                                 <div class="flex gap-1">
                                     <p class="grid w-full px-2 py-2 text-xs font-semibold text-blue-500 border border-blue-500 rounded-lg sm:py-0 place-items-center">
                                         <span>
-                                            <x-currency /> {{ number_format($amenity->price * $quantity, 2) }}
+                                            <x-currency />{{ number_format($amenity->price * $quantity, 2) }}
                                         </span>
                                     </p>
                                     <x-tooltip text="Remove Amenity" dir="left">
@@ -100,11 +100,11 @@
                             <p class="grid px-2 py-2 text-xs border border-gray-300 rounded-lg sm:py-0 place-items-center">
                                 @if (!empty($additional_amenity_id))
                                     <span>
-                                        <x-currency /> {{ number_format($additional_amenity->price, 2) }}
+                                        <x-currency />{{ number_format($additional_amenity->price, 2) }}
                                     </span>
                                 @else
                                     <span>
-                                        <x-currency /> 0.00
+                                        <x-currency />0.00
                                     </span>
                                 @endif
                             </p>
@@ -116,11 +116,11 @@
                             <p class="grid w-full px-2 py-2 text-xs font-semibold text-blue-500 border border-blue-500 rounded-lg sm:py-0 place-items-center">
                                 @if (!empty($additional_amenity_id))
                                     <span>
-                                        <x-currency /> {{ number_format($additional_amenity_total, 2) }}
+                                        <x-currency />{{ number_format($additional_amenity_total, 2) }}
                                     </span>
                                 @else
                                     <span>
-                                        <x-currency /> 0.00
+                                        <x-currency />0.00
                                     </span>
                                 @endif
                             </p>

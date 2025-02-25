@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Enums\InvoiceStatus;
 use App\Enums\RoomStatus;
 use App\Enums\ReservationStatus;
+use App\Jobs\Invoice\GenerateInvoicePDF;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 
 class BillingService
@@ -33,8 +36,44 @@ class BillingService
         return $invoice;
     }
 
-    public function addPayment(Invoice $invoice) {
-        // $invoice->payments()->create();
+    public function addPayment(Invoice $invoice, $payment) {
+        if ($invoice->reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
+            $invoice->reservation->status = ReservationStatus::PENDING->value;
+            $invoice->reservation->save();
+        }
+
+        if (!empty($payment['proof_image_path'])) {
+            $payment['proof_image_path'] = $payment['proof_image_path']->store('payments', 'public');
+        }  
+        
+        $invoice->payments()->create([
+            'transaction_id' => $payment['transaction_id'],
+            'amount' => $payment['amount'],
+            'payment_date' => $payment['payment_date'],
+            'payment_method' => $payment['payment_method'],
+            'proof_image_path' => $payment['proof_image_path'],
+        ]);
+        
+        $invoice->balance -= $payment['amount'];
+
+        if ($invoice->balance == 0) {
+            $invoice->status = InvoiceStatus::PAID->value;
+        } else {
+            $invoice->status = InvoiceStatus::PARTIAL->value;
+        }
+
+        $invoice->save();
+
+        return $invoice;
+    }
+
+    public function issueInvoice(Invoice $invoice) {
+        // Generate Invoice PDF
+        GenerateInvoicePDF::dispatch($invoice);
+
+        $invoice->issue_date = Carbon::now()->format('Y-m-d');
+        $invoice->status = InvoiceStatus::ISSUED;
+        $invoice->save();
     }
 
     public function breakdown(Reservation $reservation) {
@@ -48,7 +87,6 @@ class BillingService
             'taxes' => $taxes,
             'breakdown' => $breakdown,
         ];
-        
     }
 
     public function taxes(Reservation $reservation) {
@@ -218,5 +256,22 @@ class BillingService
         }
 
         return $sub_total;
+    }
+
+    public function cancel(Invoice $invoice) {
+        $invoice->status = InvoiceStatus::CANCELED;
+        $invoice->save();
+    }
+
+    public function downloadPdf(Invoice $invoice) {
+        $filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->last_name) . '_' . strtoupper($invoice->reservation->first_name) . '.pdf';
+        $path = 'public/pdf/invoice/' . $filename;
+
+        if (Storage::exists($path)) {
+            return Storage::download($path, $filename);
+        }
+
+        GenerateInvoicePDF::dispatch($invoice);
+        return null;
     }
 }

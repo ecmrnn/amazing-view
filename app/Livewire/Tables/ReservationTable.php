@@ -202,7 +202,7 @@ final class ReservationTable extends PowerGridComponent
                 } elseif (in_array($reservation->status, [])) {
                     return Blade::render('<a wire:navigate class="text-xs text-zinc-800/50" href="{{ route(\'app.reservations.edit\', [\'reservation\' => \'' . $reservation->rid . '\']) }}">View Reservation to Edit</a>');
                 } else {
-                    return Blade::render('<span class="text-xs text-zinc-800/50">Not Available</span>');
+                    return Blade::render('<span class="text-xs text-zinc-800/50">---</span>');
                 }
             })
             ->add('status_formatted', function ($reservation) {

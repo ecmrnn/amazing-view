@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Jobs\Reservation;
+namespace App\Jobs\Invoice;
 
-use App\Models\Reservation;
+use App\Models\Invoice;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
 
-class GenerateReservationPDF implements ShouldQueue
+class GenerateInvoicePDF implements ShouldQueue
 {
     use Queueable;
 
@@ -21,16 +21,18 @@ class GenerateReservationPDF implements ShouldQueue
         'right' => 48,
         'left' => 48,
     ];
+    // public $headerView = 'pdf.invoices.header';
+    // public $footerView = 'pdf.invoices.footer';
     public $path = '';
     public $filename = '';
 
     /**
      * Create a new job instance.
      */
-    public function __construct(public Reservation $reservation)
+    public function __construct(public Invoice $invoice)
     {
-        $this->filename = $reservation->rid . ' - ' . strtoupper($reservation->last_name) . '_' . strtoupper($reservation->first_name) . '.pdf';
-        $this->path = 'storage/app/public/pdf/reservation/' . $this->filename;
+        $this->filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->last_name) . '_' . strtoupper($invoice->reservation->first_name) . '.pdf';
+        $this->path = 'storage/app/public/pdf/invoice/' . $this->filename;
     }
 
     /**
@@ -38,8 +40,8 @@ class GenerateReservationPDF implements ShouldQueue
      */
     public function handle(): void
     {
-        Pdf::view('pdf.reservations.reservation_pdf', [
-            'reservation' => $this->reservation
+        Pdf::view('pdf.invoices.invoice_pdf', [
+            'invoice' => $this->invoice
         ])
         ->format('letter')
         ->margins(

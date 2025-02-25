@@ -70,7 +70,7 @@
                                         <td class="px-3 py-2">{{ $room->building->prefix . ' ' . $room->room_number }}</td>
                                         <td class="px-3 py-2 capitalize">{{ $room->building->name }}</td>
                                         <td class="px-3 py-2">{{ $room->floor_number }}</td>
-                                        <td class="px-3 py-2"><x-currency /> {{ number_format($room->pivot->rate, 2) }}</td>
+                                        <td class="px-3 py-2"><x-currency />{{ number_format($room->pivot->rate, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -99,8 +99,8 @@
                                     <td class="px-3 py-2 capitalize">{{ $service->name }}</td>
                                     <td class="px-3 py-2 capitalize">Service</td>
                                     <td class="px-3 py-2 capitalize">1</td>
-                                    <td class="px-3 py-2"><x-currency /> {{ number_format($service->pivot->price, 2) }}</td>
-                                    <td class="px-3 py-2"><x-currency /> {{ number_format($service->pivot->price, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency />{{ number_format($service->pivot->price, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency />{{ number_format($service->pivot->price, 2) }}</td>
                                 </tr>
                             @endforeach
                             @foreach ($reservation->amenities as $amenity)
@@ -108,8 +108,8 @@
                                     <td class="px-3 py-2 capitalize">{{ $amenity->name }}</td>
                                     <td class="px-3 py-2 capitalize">Amenity</td>
                                     <td class="px-3 py-2 capitalize">{{ $amenity->pivot->quantity }}</td>
-                                    <td class="px-3 py-2"><x-currency /> {{ number_format($amenity->pivot->price, 2) }}</td>
-                                    <td class="px-3 py-2"><x-currency /> {{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency />{{ number_format($amenity->pivot->price, 2) }}</td>
+                                    <td class="px-3 py-2"><x-currency />{{ number_format($amenity->pivot->price * $amenity->pivot->quantity, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -118,7 +118,7 @@
             @endif
 
             <div>
-                <p class="text-lg font-bold text-blue-500">Total Amount Due: <x-currency /> {{ number_format($reservation->invoice->total_amount, 2) }}</p>
+                <p class="text-lg font-bold text-blue-500">Total Amount Due: <x-currency />{{ number_format($reservation->invoice->total_amount, 2) }}</p>
                 <p class="text-xs">Discounts are not yet applied</p>
             </div>
 

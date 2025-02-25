@@ -29,9 +29,11 @@
 
         {{-- Modal for confirming reservation --}}
         <x-modal.full name="show-add-payment" maxWidth="sm">
-            <div>
-                <livewire:app.invoice.create-payment :invoice="$invoice" />
-            </div>
+            <livewire:app.invoice.create-payment :invoice="$invoice" />
+        </x-modal.full> 
+
+        <x-modal.full name="issue-invoice" maxWidth="sm">
+            <livewire:app.invoice.issue-invoice :invoice="$invoice" />
         </x-modal.full> 
     </div>
 </x-app-layout>  

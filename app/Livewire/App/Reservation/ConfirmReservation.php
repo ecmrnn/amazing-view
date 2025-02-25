@@ -99,7 +99,7 @@ class ConfirmReservation extends Component
                         @endif
                         @if ($payment->amount > 0)
                             <div class="p-5 border rounded-md border-slate-200">
-                                <p class="text-base font-semibold"><x-currency /> {{ number_format($payment->amount, 2) }}</p>
+                                <p class="text-base font-semibold"><x-currency />{{ number_format($payment->amount, 2) }}</p>
                                 <p class="text-xs">Amount Paid</p>
                             </div>
                         @endif
