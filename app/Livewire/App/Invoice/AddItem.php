@@ -5,6 +5,7 @@ namespace App\Livewire\App\Invoice;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use App\Models\Reservation;
 use App\Services\AdditionalServiceHandler;
 use App\Services\AmenityService;
@@ -207,13 +208,14 @@ class AddItem extends Component
 
         if (!empty($this->invoice)) {
             if ($this->item_type == 'others') {
-                $this->invoice->items()->create([
+                $item = $this->invoice->items()->create([
                     'name' => $this->name,
                     'item_type' => $this->item_type,
                     'quantity' => $this->quantity,
                     'price' => $this->price,
                     'total' => $this->quantity * $this->price,
                 ]);
+                $id = $item->id;
             } else {
                 $service = null;
 
@@ -285,33 +287,73 @@ class AddItem extends Component
             }
         }
 
+        // Update invoice
+        $billing = new BillingService;
+        $taxes = $billing->taxes($this->invoice->reservation);
+        $payments = $this->invoice->payments->sum('amount');
+
+        $this->invoice->total_amount = $taxes['net_total'];
+        $this->invoice->balance = $taxes['net_total'] - $payments;
+        $this->invoice->save();
+
         $this->getTaxes();
         $this->toast('Success!', description: 'Item removed: ' . ucwords($item['name']));
         $this->dispatch('item-removed');
     }
 
-    public function updateAmenity($id, $quantity) {
-        $this->items = $this->items->map(function ($item) use ($id, $quantity) {
-            if ($item['type'] == 'amenity' && $item['id'] == $id) {
+    public function updateQuantity($id, $quantity, $item_type) {
+        $this->items = $this->items->map(function ($item) use ($id, $quantity, $item_type) {
+            if ($item['type'] == $item_type && $item['id'] == $id) {
                 $item['quantity'] = $quantity;
             }
             return $item;
         });
-
-        $item = $this->items->first(function ($item) use ($id) {
-            if ($item['type'] == 'amenity' && $item['id'] == $id) {
+        
+        $item = $this->items->first(function ($item) use ($id, $item_type) {
+            if ($item['type'] == $item_type && $item['id'] == $id) {
                 return $item;
             }
         });
-
+        $service = null;
+        
+        switch ($item_type) {
+            case 'amenity':
+                $service = new AmenityService;
+                break;
+            case 'others':
+                $service = new AdditionalServiceHandler;
+                break;
+        }
         // Update the database
         if (!empty($this->invoice)) {
-            $service = new AmenityService;
-            $amenities = $this->items->filter(function ($item) {
-                return $item['type'] == 'amenity';
+            $items = $this->items->filter(function ($item) use ($item_type) {
+                if ($item['type'] == $item_type) {
+                    return $item;
+                }
             });
-            $service->sync($this->invoice->reservation, $amenities);
+
+            if ($item_type == 'amenity') {
+                $service->sync($this->invoice->reservation, $items);
+            } else {
+                foreach ($items as $item) {
+                    $this->invoice->items()->updateOrCreate([
+                        'id' => $item['id']
+                    ],[
+                        'name' => $item['name'],
+                        'quantity' => $item['quantity'],
+                    ]);
+                }
+            }
         }
+
+        // Update invoice
+        $billing = new BillingService;
+        $taxes = $billing->taxes($this->invoice->reservation->fresh());
+        $payments = $this->invoice->payments->sum('amount');
+
+        $this->invoice->total_amount = $taxes['net_total'];
+        $this->invoice->balance = $taxes['net_total'] - $payments;
+        $this->invoice->save();
 
         $this->getTaxes();
         $this->toast('Success!', description: 'Updated quantity of ' . ucwords($item['name'] . '!'));

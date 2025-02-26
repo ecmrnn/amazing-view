@@ -56,7 +56,8 @@ class BillingService
         
         $invoice->balance -= $payment['amount'];
 
-        if ($invoice->balance == 0) {
+        if ($invoice->balance <= 0) {
+            $invoice->balance = 0;
             $invoice->status = InvoiceStatus::PAID->value;
         } else {
             $invoice->status = InvoiceStatus::PARTIAL->value;
@@ -117,7 +118,7 @@ class BillingService
         // Add 'other charges'
         if(!empty($reservation->invoice->items)) {
             foreach ($reservation->invoice->items as $item) {
-                $other_charges = $item->price * $item->quantity;
+                $other_charges += $item->price * $item->quantity;
             }
         }
         

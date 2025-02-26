@@ -34,12 +34,12 @@ class AdditionalServiceHandler
         }
         if (!empty($services)) {
             foreach ($services as $service) {
-                $reservation->services()->attach($service->id, [
+                $reservation->services()->attach($service['id'], [
                     'price' => $service['price'],
                 ]);
 
-                $reservation->invoice->balance += $service->price;
-                $reservation->invoice->total_amount += $service->price;
+                $reservation->invoice->balance += $service['price'];
+                $reservation->invoice->total_amount += $service['price'];
                 $reservation->save();
             }
         }

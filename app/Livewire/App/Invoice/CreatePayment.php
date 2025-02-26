@@ -36,7 +36,7 @@ class CreatePayment extends Component
     public function rules() {
         $rules = InvoicePayment::rules();
         $min = $this->invoice->balance > 500 ? 500 : 1;
-        $rules['amount'] = 'required|numeric|min:' . $min . '|max:' . $this->invoice->balance;
+        $rules['amount'] = 'required|numeric|min:' . $min . '|max:' . ceil($this->invoice->balance);
         return $rules;
     }
 

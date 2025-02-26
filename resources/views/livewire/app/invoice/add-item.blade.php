@@ -40,7 +40,7 @@
                                                     clearTimeout(timeout); // Cancel the previous request if another change happens quickly
                                                     timeout = setTimeout(() => { 
                                                         if (value > 0) {
-                                                            @this.call('updateAmenity', '{{ $item['id'] }}', value);
+                                                            @this.call('updateQuantity', '{{ $item['id'] }}', value, '{{ $item['type'] }}');
                                                         }
                                                     }, 300); // Adjust debounce delay (300ms is a good default)
                                                 })"
@@ -101,11 +101,22 @@
                                     @foreach ($items as $key => $item)
                                         @if ($item['type'] == 'others')
                                             <?php $counter++ ?>
-                                            <div wire:key="{{ $item['id'] }}" class="grid items-center grid-cols-7 px-5 py-1 text-sm border-b border-dashed hover:bg-slate-50 last:border-b-0 border-slate-200">
+                                            <div x-data="{ quantity: @js($item['quantity']) }" wire:key="{{ $item['id'] }}" class="grid items-center grid-cols-7 px-5 py-1 text-sm border-b border-dashed hover:bg-slate-50 last:border-b-0 border-slate-200"
+                                                x-init="
+                                                let timeout;
+                                                $watch('quantity', (value) => {
+                                                    clearTimeout(timeout); // Cancel the previous request if another change happens quickly
+                                                    timeout = setTimeout(() => { 
+                                                        if (value > 0) {
+                                                            @this.call('updateQuantity', '{{ $item['id'] }}', value, '{{ $item['type'] }}');
+                                                        }
+                                                    }, 300); // Adjust debounce delay (300ms is a good default)
+                                                })"
+                                                >
                                                 <p class="font-semibold opacity-50">{{ $counter }}</p>
                                                 <p>{{ $item['name'] }}</p>
                                                 <p class="capitalize">{{ $item['type'] }}</p>
-                                                <p class="text-center">{{ $item['quantity'] }}</p>
+                                                <x-form.input-number x-model="quantity" min="1" id="quantity" name="quantity" class="text-center" />
                                                 <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
                                                 <p class="text-right"><x-currency />{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
                                                 <div class="ml-auto text-right w-max">

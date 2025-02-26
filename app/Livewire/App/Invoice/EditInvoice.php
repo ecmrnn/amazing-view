@@ -53,7 +53,7 @@ class EditInvoice extends Component
             'due_date' => $this->due_date,
         ]);
 
-        $this->toast('Success!', description: 'Invoice updated successfully');
+        $this->toast('Success!', description: 'Billing updated successfully');
     }
 
     #[On('items-fetched')]
