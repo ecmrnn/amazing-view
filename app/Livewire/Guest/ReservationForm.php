@@ -9,6 +9,7 @@ use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Services\AdditionalServiceHandler;
+use App\Services\BillingService;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
+use phpDocumentor\Reflection\Types\This;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class ReservationForm extends Component
@@ -77,17 +79,14 @@ class ReservationForm extends Component
     public $available_room_types;
     public $room_types;
     public $selected_type;
-    public $sub_total = 0;
-    public $net_total = 0;
-    public $vat = 0;
-    public $vatable_sales = 0;
     public $reservation_rid;
     public $night_count;
+    public $breakdown;
 
     public function mount() {
-        $this->selected_rooms = new Collection;
-        $this->selected_services = new Collection;
-        $this->available_room_types = new Collection;
+        $this->selected_rooms = collect();
+        $this->selected_services = collect();
+        $this->available_room_types = collect();
         $this->cars = collect();
         $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
         
@@ -102,10 +101,9 @@ class ReservationForm extends Component
     public function resetReservation() {
         $this->reset();
 
-        $this->step = 1;
-        $this->selected_rooms = new Collection;
-        $this->selected_services = new Collection;
-        $this->available_room_types = new Collection;
+        $this->selected_rooms = collect();
+        $this->selected_services = collect();
+        $this->available_room_types = collect();
         $this->cars = collect();
         $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
         
@@ -211,7 +209,6 @@ class ReservationForm extends Component
                 'model' => ucwords(strtolower($this->model)),
                 'color' => ucwords(strtolower($this->color)),
             ]));
-            // $this->cars->push();
 
             $this->toast('Success!', 'success', 'Car added!');
             $this->reset('plate_number', 'make', 'model', 'color');
@@ -412,9 +409,28 @@ class ReservationForm extends Component
                         'address' => $this->rules()['address'],
                     ]);
 
-                    $this->step++;
-                    sleep(2);
+                    $items = collect();
 
+                    foreach ($this->selected_rooms as $room) {
+                        $items->push([
+                            'price' => $room->rate,
+                            'quantity' => $this->night_count,
+                            'type' => 'room',
+                        ]);
+                    }
+
+                    foreach ($this->selected_services as $service) {
+                        $items->push([
+                            'price' => $service->price,
+                            'quantity' => 1,
+                            'type' => 'service',
+                        ]);
+                    }
+
+                    $billing = new BillingService;
+                    $this->breakdown =  $billing->rawTaxes(null, $items);
+
+                    $this->step++;
                     $this->toast('Success!', 'success', 'Next, Payment');
                     break;
                 case 3:

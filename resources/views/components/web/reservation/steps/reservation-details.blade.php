@@ -33,14 +33,14 @@
             <x-form.form-header title='Choose a Reservation Type' />
         
             <x-form.form-body>
-                <div class="col-span-3 p-5 pt-0 space-y-5">
-                    <div class="grid grid-cols-2 gap-5">
-                        <button x-on:click="$wire.set('reservation_type', 'day_tour')" type='button' class="p-5 text-left transition-all duration-200 ease-in-out border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-500">
+                <div class="col-span-3 p-5 pt-0">
+                    <div class="grid gap-5 md:grid-cols-2">
+                        <button x-on:click="$wire.set('reservation_type', 'day_tour')" type='button' class="p-5 text-left transition-all duration-200 ease-in-out border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-medium"><circle cx="12" cy="12" r="4"/><path d="M12 3v1"/><path d="M12 20v1"/><path d="M3 12h1"/><path d="M20 12h1"/><path d="m18.364 5.636-.707.707"/><path d="m6.343 17.657-.707.707"/><path d="m5.636 5.636.707.707"/><path d="m17.657 17.657.707.707"/></svg>
                             <strong class="block mt-3">Day Tour</strong>
                             <p class="text-sm">Perfect for a quick staycation <br /> from <time datetime="8:00">8:00 AM</time> to <time datetime="18:00">6:00 PM</time></p>
                         </button>
-                        <button x-on:click="$wire.set('reservation_type', 'overnight')" type='button' class="p-5 text-left transition-all duration-200 ease-in-out border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-500"">
+                        <button x-on:click="$wire.set('reservation_type', 'overnight')" type='button' class="p-5 text-left transition-all duration-200 ease-in-out border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-800"">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
                             <strong class="block mt-3">Overnight</strong>
                             <p class="text-sm">Ideal for a relaxing overnight stay <br /> from <time datetime="14:00">2:00 PM</time> to <time datetime="12:00">12:00 PM</time></p>
@@ -67,76 +67,72 @@
                 </div>
             
                 <div x-show="!can_select_a_room" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
-                    <x-form.form-body class="grid p-0 lg:grid-cols-2 lg:col-span-2">
-                        <div class="px-5 border-b border-dashed lg:border-r lg:border-b-0">
-                            <div
-                                x-effect="date_in == '' ? date_out = '' : '';"
-                                class="grid gap-2"
-                                x-bind:class="{
-                                    'grid-cols-2': reservation_type == 'overnight',
-                                    'grid-cols-1': reservation_type == 'day_tour'
-                                }">
+                    <x-form.form-body class="grid gap-5 p-5 pt-0 lg:grid-cols-2 lg:col-span-2">
+                        <div
+                            x-effect="date_in == '' ? date_out = '' : '';"
+                            class="grid gap-5"
+                            x-bind:class="{
+                                'grid-cols-2': reservation_type == 'overnight',
+                                'grid-cols-1': reservation_type == 'day_tour'
+                            }">
+                            <x-form.input-group>
+                                <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
+                                <x-form.input-date
+                                    wire:model.live="date_in"
+                                    x-model="date_in"
+                                    x-bind:min="min_date_in"
+                                    name="date_in"
+                                    x-on:input="$wire.setMinDateOut($event.target.value); if (reservation_type == 'day_tour') date_out = date_in;"
+                                    id="date_in" class="block w-full" />
+                                <x-form.input-error field="date_in" />
+                            </x-form.input-group>
+                            <div x-show='reservation_type == "overnight"'>
                                 <x-form.input-group>
-                                    <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
-                                    <x-form.input-date
-                                        wire:model.live="date_in"
-                                        x-model="date_in"
-                                        x-bind:min="min_date_in"
-                                        name="date_in"
-                                        x-on:input="$wire.setMinDateOut($event.target.value); if (reservation_type == 'day_tour') date_out = date_in;"
-                                        id="date_in" class="block w-full" />
-                                    <x-form.input-error field="date_in" />
-                                </x-form.input-group>
-                                <div x-show='reservation_type == "overnight"'>
-                                    <x-form.input-group>
-                                        <x-form.input-label for="date_out">Check-Out Date</x-form.input-label>
-                                        <x-form.input-date x-bind:disabled="date_in == '' || date_in == null"
-                                            wire:model.live="date_out"
-                                            x-model="date_out"
-                                            x-bind:value="date_in == '' ? null : date_out"
-                                            x-bind:min="min_date_out"
-                                            name="date_out"
-                                            id="date_out" class="block w-full" />
-                                        <x-form.input-error field="date_out" />
-                                    </x-form.input-group>
-                                </div>
-                            </div>
-                        </div>
-            
-                        <div class="px-5">
-                            <div class="grid grid-cols-2 gap-2">
-                                <x-form.input-group>
-                                    <x-form.input-label for="adult_count">Number of Adults</x-form.input-label>
-                                    <x-form.input-number
-                                        wire:model.live="adult_count"
-                                        x-model="adult_count"
-                                        id="adult_count"
-                                        name="number_of_adults"
-                                        class="block w-full"
-                                        min="1" />
-                                    <x-form.input-error field="adult_count" />
-                                </x-form.input-group>
-            
-                                <x-form.input-group>
-                                    <x-form.input-label for="children_count">Number of Children</x-form.input-label>
-                                    <x-form.input-number x-model="children_count" id="children_count"
-                                        wire:model.live="children_count"
-                                        class="block w-full" />
-                                    <x-form.input-error field="children_count" />
+                                    <x-form.input-label for="date_out">Check-Out Date</x-form.input-label>
+                                    <x-form.input-date x-bind:disabled="date_in == '' || date_in == null"
+                                        wire:model.live="date_out"
+                                        x-model="date_out"
+                                        x-bind:value="date_in == '' ? null : date_out"
+                                        x-bind:min="min_date_out"
+                                        name="date_out"
+                                        id="date_out" class="block w-full" />
+                                    <x-form.input-error field="date_out" />
                                 </x-form.input-group>
                             </div>
                         </div>
             
-                        <div class="flex items-start justify-between p-5 pt-5 lg:col-span-2">
-                            <div class="flex items-start gap-5">
+                        <div class="grid grid-cols-2 gap-5">
+                            <x-form.input-group>
+                                <x-form.input-label for="adult_count">Number of Adults</x-form.input-label>
+                                <x-form.input-number
+                                    wire:model.live="adult_count"
+                                    x-model="adult_count"
+                                    id="adult_count"
+                                    name="number_of_adults"
+                                    class="block w-full"
+                                    min="1" />
+                                <x-form.input-error field="adult_count" />
+                            </x-form.input-group>
+        
+                            <x-form.input-group>
+                                <x-form.input-label for="children_count">Number of Children</x-form.input-label>
+                                <x-form.input-number x-model="children_count" id="children_count"
+                                    wire:model.live="children_count"
+                                    class="block w-full" />
+                                <x-form.input-error field="children_count" />
+                            </x-form.input-group>
+                        </div>
+            
+                        <div class="flex flex-col-reverse items-start justify-between gap-5 md:flex-row lg:col-span-2">
+                            <div class="flex flex-col items-start gap-5 md:flex-row">
                                 <x-primary-button type="button" class="block" wire:click="selectRoom()">Select a Room</x-primary-button>
-                                <div wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</div>
+                                <x-loading wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</x-loading>
                             </div>
             
-                            <div class="flex items-center gap-3">
+                            <div class="flex flex-row-reverse items-center gap-3 md:flex-row">
                                 <div x-on:click="$dispatch('open-modal', 'show-discounts-modal')">
-                                    <p class="text-sm font-semibold text-right">Apply Discounts</p>
-                                    <p class="text-xs text-right">For Senior and PWD Guests</p>
+                                    <p class="text-sm font-semibold md:text-right">Apply Discounts</p>
+                                    <p class="text-xs md:text-right">For Senior and PWD Guests</p>
                                 </div>
 
                                 <x-icon-button x-on:click="$dispatch('open-modal', 'show-discounts-modal')">
@@ -154,7 +150,7 @@
             
                 <div x-show="can_select_a_room" x-collapse.duration.1000ms>
                     <x-form.form-body>
-                        <div class="flex flex-col items-start justify-between gap-3 px-5 lg:flex-row">
+                        <div class="flex flex-col items-start justify-between gap-5 px-5 lg:flex-row">
                             <p class="max-w-sm text-sm">Browse our list of available rooms below or click the
                                 &quot;<span class="font-semibold text-blue-500">Find me a Room</span>&quot;
                                 button <span class="lg:hidden">below</span><span class="hidden lg:inline">on the
@@ -162,85 +158,85 @@
                             <x-primary-button class="text-xs" type="button" wire:click="suggestRooms">Find me a Room</x-primary-button>
                         </div>
             
-                        <div wire:loading.delay wire:target="suggestRooms" class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-lg">Amazing rooms incoming!</div>
+                        <x-loading wire:loading.delay wire:target="suggestRooms" class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-lg">Amazing rooms incoming!</x-loading>
             
                         @if (!empty($suggested_rooms))
-                        <div class="p-5 m-5 mb-0 space-y-5 bg-white border rounded-lg border-slate-200">
-                            <div class="grid-cols-3 gap-2 space-y-5 lg:space-y-0 lg:grid">
-                                @forelse ($suggested_rooms as $key => $room)
-                                    <div key="{{ $key }}" class="flex gap-3 border-slate-200 lg:block lg:space-y-2">
-                                        <x-img-lg class="w-full max-w-[200px] lg:max-w-full" src="{{ asset('storage/' . $room->image_1_path) }}" />
-            
-                                        <div class="w-full space-y-2">
-                                            <hgroup>
-                                                <h4 class="font-semibold capitalize text-md">Good for {{ $room->max_capacity }} guests</h4>
-                                                <p class="text-sm font-semibold"><x-currency />{{ $room->rate }} &#47; night</p>
-                                            </hgroup>
-            
-                                            <p class="text-xs text-zinc-800/50">{{ $room->roomType->name }}</p>
-            
-                                            <div class="flex flex-col gap-1 sm:flex-row lg:flex-col xl:flex-row">
-                                                {{-- Identify if the room is already selected or not --}}
-                                                @if ($selected_rooms->contains('id', $room->id))
-                                                    <x-secondary-button type="button" wire:click="removeRoom({{ $room->id }})">Remove Room</x-secondary-button>
-                                                @else
-                                                    <x-primary-button type="button" wire:click="addRoom({{ json_encode(array($room->id)) }})">Book this Room</x-primary-button>
-                                                @endif
-            
-                                                <x-secondary-button type="button" wire:click="viewRoom({{ $room->id }})">Details</x-secondary-button>
+                            <div class="p-5 m-5 mb-0 space-y-5 bg-white border rounded-lg border-slate-200">
+                                <div class="grid-cols-3 gap-5 space-y-5 lg:space-y-0 lg:grid">
+                                    @forelse ($suggested_rooms as $key => $room)
+                                        <div key="{{ $key }}" class="flex gap-3 border-slate-200 lg:block lg:space-y-2">
+                                            <x-img-lg class="w-full max-w-[200px] lg:max-w-full" src="{{ asset('storage/' . $room->image_1_path) }}" />
+                
+                                            <div class="w-full space-y-2">
+                                                <hgroup>
+                                                    <h4 class="font-semibold capitalize text-md">Good for {{ $room->max_capacity }} guests</h4>
+                                                    <p class="text-sm font-semibold"><x-currency />{{ $room->rate }} &#47; night</p>
+                                                </hgroup>
+                
+                                                <p class="text-xs text-zinc-800/50">{{ $room->roomType->name }}</p>
+                
+                                                <div class="flex flex-col gap-1 sm:flex-row lg:flex-col xl:flex-row">
+                                                    {{-- Identify if the room is already selected or not --}}
+                                                    @if ($selected_rooms->contains('id', $room->id))
+                                                        <x-secondary-button type="button" wire:click="removeRoom({{ $room->id }})">Remove Room</x-secondary-button>
+                                                    @else
+                                                        <x-primary-button type="button" wire:click="addRoom({{ json_encode(array($room->id)) }})">Book this Room</x-primary-button>
+                                                    @endif
+                
+                                                    <x-secondary-button type="button" wire:click="viewRoom({{ $room->id }})">Details</x-secondary-button>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <x-modal.full name='view-room-{{ $room->id }}' maxWidth='md'>
-                                            <div class="p-5 space-y-5">
-                                                <div class="w-full rounded-md aspect-video" 
-                                                    style="background-image: url('{{ asset('storage/' . $room->image_1_path) }}');
-                                                        background-position: center;
-                                                        background-size: cover;"></div>
+                                            <x-modal.full name='view-room-{{ $room->id }}' maxWidth='md'>
+                                                <div class="p-5 space-y-5">
+                                                    <div class="w-full rounded-md aspect-video" 
+                                                        style="background-image: url('{{ asset('storage/' . $room->image_1_path) }}');
+                                                            background-position: center;
+                                                            background-size: cover;"></div>
 
-                                                <div class="flex items-start justify-between">
-                                                    <div>
-                                                        <h3 class="text-lg font-semibold">{{ $room->roomType->name }} {{ $room->building->prefix . ' ' . $room->room_number }}</h3>
-                                                        <p class="text-sm font-semibold"><x-currency />{{ $room->rate }} &#47; night</p>
+                                                    <div class="flex items-start justify-between">
+                                                        <div>
+                                                            <h3 class="text-lg font-semibold">{{ $room->roomType->name }} {{ $room->building->prefix . ' ' . $room->room_number }}</h3>
+                                                            <p class="text-sm font-semibold"><x-currency />{{ $room->rate }} &#47; night</p>
+                                                        </div>
+
+                                                        @if ($selected_rooms->contains('id', $room->id))
+                                                            <x-secondary-button type="button" class="text-xs" wire:click="removeRoom({{ $room->id }})">Remove Room</x-secondary-button>
+                                                        @else
+                                                            <x-primary-button type="button" class="text-xs" wire:click="addRoom({{ json_encode(array($room->id)) }})">Book this Room</x-primary-button>
+                                                        @endif
                                                     </div>
 
-                                                    @if ($selected_rooms->contains('id', $room->id))
-                                                        <x-secondary-button type="button" class="text-xs" wire:click="removeRoom({{ $room->id }})">Remove Room</x-secondary-button>
-                                                    @else
-                                                        <x-primary-button type="button" class="text-xs" wire:click="addRoom({{ json_encode(array($room->id)) }})">Book this Room</x-primary-button>
-                                                    @endif
+                                                    <ul class="grid grid-cols-2 gap-1">
+                                                        @if ($room->amenities->count() > 0)
+                                                            <div class="flex items-center col-span-2 gap-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+                                                                <p class="font-semibold">Amenities</p>
+                                                            </div>
+                                                        @endif
+                                                        
+                                                        @forelse ($room->amenities as $amenity)
+                                                            <li class="px-3 py-2 text-sm border rounded-md">{{ $amenity->name }}</li>
+                                                        @empty
+                                                            <p class="col-span-2 py-3 text-sm font-semibold text-center border rounded-md opacity-50">This room has no amenity.</p>
+                                                        @endforelse
+                                                    </ul>
                                                 </div>
-
-                                                <ul class="grid grid-cols-2 gap-1">
-                                                    @if ($room->amenities->count() > 0)
-                                                        <div class="flex items-center col-span-2 gap-1">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
-                                                            <p class="font-semibold">Amenities</p>
-                                                        </div>
-                                                    @endif
-                                                    
-                                                    @forelse ($room->amenities as $amenity)
-                                                        <li class="px-3 py-2 text-sm border rounded-md">{{ $amenity->name }}</li>
-                                                    @empty
-                                                        <p class="col-span-2 py-3 text-sm font-semibold text-center border rounded-md opacity-50">This room has no amenity.</p>
-                                                    @endforelse
-                                                </ul>
-                                            </div>
-                                        </x-modal.full>
-                                    </div>
-                                @empty
-                                    <div class="col-span-3 text-center text-zinc-800/50">No available rooms at the moment...</div>
-                                @endforelse
+                                            </x-modal.full>
+                                        </div>
+                                    @empty
+                                        <div class="col-span-3 text-center text-zinc-800/50">No available rooms at the moment...</div>
+                                    @endforelse
                                 </div>
                             </div>
                         @endif
             
                         {{-- Room Categories --}}
-                        <div x-data="{ show: true }" class="p-5 space-y-3">
+                        <div x-data="{ show: true }" class="p-5 space-y-5">
                             <h3 class="font-semibold">Our Rooms</h3>
                             <x-form.input-error field="selected_rooms" />
             
-                            <div class="space-y-1">
+                            <div class="space-y-5">
                                 @forelse ($room_types as $room)
                                     <div key="{{ $room->id }}" class="flex flex-col items-start justify-between gap-3 p-3 bg-white border rounded-lg shadow-sm sm:flex-row">
                                         <div class="flex flex-col items-start w-full gap-3 sm:flex-row">
@@ -271,7 +267,7 @@
                                     <button type="button" x-on:click="show = true" x-show="!show" class="text-xs font-semibold text-blue-500">Show Rooms</button>
                                 </div>
             
-                                <div x-show="show" class="grid grid-cols-1 gap-1 sm:grid-cols-2">
+                                <div x-show="show" class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                                     @forelse ($selected_rooms as $room)
                                     <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
                                         {{-- Room Details --}}
@@ -288,7 +284,7 @@
                                             class="absolute text-xs font-semibold text-red-500 top-2 right-3"
                                             wire:click="removeRoom({{ $room->id }})">
                                             <span wire:loading.remove wire:target="removeRoom({{ $room->id }})">Remove</span>
-                                            <span wire:loading wire:target="removeRoom({{ $room->id }})">Removing</span>
+                                            <x-loading wire:loading wire:target="removeRoom({{ $room->id }})">Removing</x-loading>
                                         </button>
                                     </div>
                                     @empty
@@ -309,10 +305,10 @@
             
                 <div x-show="can_select_a_room" x-collapse.duration.1000ms>
                     <x-form.form-body>
-                        <div class="p-5 pt-0 space-y-3">
+                        <div class="p-5 pt-0 space-y-5">
                             <p class="text-sm">Enhance your stay by availing our additional services!</p>
             
-                            <div class="grid gap-2 sm:grid-cols-2">
+                            <div class="grid gap-5 sm:grid-cols-2">
                                 @forelse ($additional_services as $service)
                                     @php
                                         $checked = false;
@@ -355,25 +351,16 @@
 {{-- Modal for viewing rooms --}}
 <x-modal.full name="show-typed-rooms" maxWidth="lg">
     @if (!empty($selected_type))
-        <div class="flex flex-col min-h-screen sm:min-h-0">
-            <header class="sticky top-0 flex items-center gap-3 p-5 border-b">
-                <x-tooltip text="Back" dir="bottom">
-                    <x-icon-button x-ref="content" x-on:click="show = false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                    </x-icon-button>
-                </x-tooltip>
-                <hgroup>
-                    <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
-                    <p class="text-xs text-zinc-800">Click a room to reserve</p>
-                </hgroup>
-            </header>
+        <div class="p-5 space-y-5">
+            <hgroup>
+                <h2 class="text-lg font-semibold capitalize">{{ $selected_type->name }}</h2>
+                <p class="text-xs">Click a room to reserve</p>
+            </hgroup>
             
             {{-- Room List --}}
-            <section class="grid flex-grow h-full gap-1 p-5 bg-slate-100/50">
-                <div wire:loading.delay wire:target='selectBuilding' class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
-                    Amazing rooms incoming!
-                </div>
-                <div class="space-y-1">
+            <section class="grid flex-grow h-full gap-1 bg-slate-100/50">
+                <x-loading wire:loading.delay wire:target='selectBuilding' class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">Amazing rooms incoming!</x-loading>
+                <div class="space-y-2">
                     @forelse ($available_room_types as $capacity => $rooms)
                         @php
                             $rate_sum = 0;

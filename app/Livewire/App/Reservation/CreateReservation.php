@@ -435,6 +435,7 @@ class CreateReservation extends Component
             'email' => $this->rules()['email'],
             'phone' => $this->rules()['phone'],
             'address' => $this->rules()['address'],
+            'transaction_id' => 'nullable|required_unless:payment_method,cash',
             'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
             'note' => $this->rules()['note'],
         ]);
@@ -466,8 +467,9 @@ class CreateReservation extends Component
             'email' => $this->rules()['email'],
             'phone' => $this->rules()['phone'],
             'address' => $this->rules()['address'],
-            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
             'note' => $this->rules()['note'],
+            'transaction_id' => 'nullable|required_unless:payment_method,cash',
+            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
         ]);
 
         $validated['downpayment'] = $this->downpayment;

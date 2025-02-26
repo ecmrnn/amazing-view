@@ -115,24 +115,19 @@
     <div x-data="{ checked: false }" x-on:reservation-created.window="show = false">
         <section class="p-5 space-y-5 bg-white">
             <hgroup>
-                <h2 class="text-lg font-semibold capitalize">Reservation Confirmation</h2>
-                <p class="max-w-sm text-sm">Confirm that the reservation details entered are correct.</p>
+                <h2 class="text-lg font-semibold">Reservation Confirmation</h2>
+                <p class="text-xs">Confirm that the reservation details entered are correct</p>
             </hgroup>
 
             <div class="px-3 py-2 border border-gray-300 rounded-md">
                 <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
             </div>
-
-            <div class="grid gap-2 px-3 py-2 border border-gray-300 rounded-md">
-                <x-form.input-radio value="walk-in-reservation" id="walk-in-reservation" name="reservation_type" label="Walk-in Reservation" wire:model.live='reservation_type' />
-                <x-form.input-radio value="online-reservation" id="online-reservation" name="reservation_type" label="Online Reservation" wire:model.live='reservation_type' />
-            </div>
-
-            <div class="space-y-1">
+            
+            <x-form.input-group>
                 <x-form.input-label id="note">Add a note &lpar;optional&rpar;</x-form.input-label>
                 <x-form.textarea id="note" wire:model.live="note" maxlength="255" class="w-full" rows="3" />
                 <x-form.input-error field="note" />
-            </div>
+            </x-form.input-group>
 
             <x-loading wire:loading wire:target='store'>Processing reservation, please wait...</x-loading>
             
@@ -151,7 +146,7 @@
 <x-modal.full name='reset-reservation-modal' maxWidth='sm'>
     <div class="p-5 space-y-5">
         <hgroup>
-            <h3 class="text-lg font-semibold">Reset Reservation</h3>
+            <h2 class="text-lg font-semibold">Reset Reservation</h2>
             <p class="text-sm">Are you sure you want to reset your reservation?</p>
         </hgroup>
 

@@ -101,6 +101,7 @@ class ReservationService
                 'proof_image_path' => $proof_image_path,
                 'amount' => Arr::get($data, 'downpayment', 0),
                 'payment_method' => Arr::get($data, 'payment_method', 'gcash'),
+                'transaction_id' => Arr::get($data, 'transaction_id', null),
                 'purpose' => 'downpayment',
                 'payment_date' => now(),
             ]);

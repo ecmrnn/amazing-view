@@ -1,12 +1,12 @@
 <div class="flex flex-col gap-5 md:flex-row">
     <aside class="space-y-5 shrink-0 min-w-52">
-        <p class="text-xs font-semibold">Filter Invoice Status</p>
+        <p class="text-xs font-semibold">Filter Billing Status</p>
 
         <ul>
             <li>
                 <x-side-nav-link :status="null" href="{{ route('app.billings.index') }}">
                     <div class="flex items-center gap-1">
-                        <span>All Invoices</span>
+                        <span>All Billings</span>
                         @if ($invoice_by_status['all'] > 0)
                             <div class="text-xs">( {{ $invoice_by_status['all'] }} )</div>
                         @endif

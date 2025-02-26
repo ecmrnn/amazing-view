@@ -21,14 +21,16 @@
             <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" name="payment_method" value="bank" id="bank" label="Bank Transfer" />
         </div>
 
-        <div x-show="payment_method != 'cash'">
-            <x-form.input-text wire:model='transaction_id' label="Reference No." id="transaction_id" />
-        </div>
-
         <x-form.input-error x-show="payment_method != 'cash'" field="transaction_id" />
         <x-form.input-error x-show="payment_method != 'cash'" field="proof_image_path" />
         <x-form.input-error field="downpayment" />
     </div>
+
+    <x-form.input-group x-show="payment_method != 'cash'">
+        <x-form.input-label for='transaction_id'>Enter the Payment&apos;s Reference ID</x-form.input-label>
+        <x-form.input-text wire:model.live='transaction_id' label="Reference No." id="transaction_id" class="w-max" />
+        <x-form.input-error field="transaction_id" />
+    </x-form.input-group>
 
     {{-- Online Payment --}}
     <div x-show="payment_method != 'cash'">

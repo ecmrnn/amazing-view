@@ -15,7 +15,7 @@ class InvoiceCards extends Component
 
     public function render()
     {
-        $this->total_balance = Invoice::whereIn('status', [InvoiceStatus::PENDING, InvoiceStatus::PARTIAL, InvoiceStatus::DUE])->sum('balance');
+        $this->total_balance = ceil(Invoice::whereIn('status', [InvoiceStatus::PENDING, InvoiceStatus::PARTIAL, InvoiceStatus::DUE])->sum('balance'));
         $this->pending_billing = Invoice::whereStatus(InvoiceStatus::PENDING)->count();
         $this->partial_billing = Invoice::whereStatus(InvoiceStatus::PARTIAL)->count();
         $this->overdue_billing = Invoice::whereStatus(InvoiceStatus::DUE)->count();

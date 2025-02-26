@@ -99,8 +99,14 @@
                 <h3 class="font-semibold">Payments</h3>
                 <p class="text-xs">Track all the payments made on this invoice</p>
             </hgroup>
-            {{-- Payments Table --}}
-            <livewire:tables.invoice-payment-table :invoice="$invoice" />
+            @if ($payment_count > 0)
+                {{-- Payments Table --}}
+                <livewire:tables.invoice-payment-table :invoice="$invoice" />
+            @else
+                <div class="py-5 font-semibold text-center border rounded-md border-slate-200">
+                    <x-table-no-data.invoice-payment />
+                </div>
+            @endif
         </div>
     </div>
 
@@ -144,8 +150,4 @@
 
         <livewire:app.reservation-breakdown :reservation="$invoice->reservation" />
     </div>
-    
-    {{-- <section class="self-start w-full overflow-auto border rounded-lg sm:sticky top-5">
-        @include('components.app.billing.summary')
-    </section> --}}
 </section>

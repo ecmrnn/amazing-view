@@ -48,7 +48,7 @@ final class InvoicePaymentTable extends PowerGridComponent
 
     public function noDataLabel(): string|View
     { 
-        return view('components.table-no-data.guest');
+        return view('components.table-no-data.invoice-payment');
     }
 
     public function boot(): void

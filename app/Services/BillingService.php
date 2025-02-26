@@ -21,7 +21,7 @@ class BillingService
             'balance' => Arr::get($breakdown, 'taxes.net_total', 0),
             'status' => Invoice::STATUS_PENDING,
             'due_date' => Carbon::parse((string) $reservation->date_out)->addWeek(),
-        ]);    
+        ]);
 
         return $invoice;
     }

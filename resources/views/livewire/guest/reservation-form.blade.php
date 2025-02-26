@@ -69,7 +69,7 @@
     class="max-w-screen-xl py-10 mx-auto space-y-5">
 
     {{-- Reservation steps --}}
-    <div class="flex items-start mb-10 lg:gap-5">
+    <div class="grid gap-5 md:grid-cols-3">
         <x-web.reservation.steps step="1" currentStep="{{ $step }}" icon="bed" name="Reservation Details" />
         <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Guest Details" />
         <x-web.reservation.steps step="3" currentStep="{{ $step }}" icon="receipt" name="Payment" />
@@ -125,10 +125,7 @@
                         'email' => $email,
                         'phone' => $phone,
                         'address' => $address,
-                        'sub_total' => $sub_total,
-                        'vat' => $vat,
-                        'vatable_sales' => $vatable_sales,
-                        'net_total' => $net_total,
+                        'breakdown' => $breakdown,
                         'night_count' => $night_count,
                     ])
                     @break
@@ -151,9 +148,9 @@
     {{-- Modal for confirming reservation --}}
     <x-modal.full name="show-reservation-confirmation" maxWidth="lg">
         <div x-data="{ toc: false }">
-            <hgroup class="p-5">
+            <hgroup>
                 <h2 class="text-lg font-semibold">Reservation Confirmation</h2>
-                <p class="max-w-sm text-sm">Confirm that the reservation details entered are correct.</p>
+                <p class="text-xs">Confirm that the reservation details entered are correct</p>
             </hgroup>
             
             <section class="p-5 space-y-3 bg-slate-100/50">
@@ -175,7 +172,7 @@
         <div class="p-5 space-y-5">
             <hgroup>
                 <h3 class="text-lg font-semibold">Reset Reservation</h3>
-                <p class="text-sm">Are you sure you want to reset your reservation?</p>
+                <p class="text-xs">Are you sure you want to reset your reservation?</p>
             </hgroup>
     
             <div class="flex justify-end gap-1 mt-5">

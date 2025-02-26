@@ -23,10 +23,12 @@ class ShowInvoice extends Component
     // Invoice
     public $invoice;
     public $remaining_days;
+    public $payment_count = 0;
 
     public function mount(Invoice $invoice) {
         $this->invoice = $invoice;
         $this->remaining_days = (int) Carbon::parse(Carbon::now()->format('Y-m-d'))->diffInDays($invoice->due_date);
+        $this->payment_count = $invoice->payments()->count();
     }
 
     public function download() {

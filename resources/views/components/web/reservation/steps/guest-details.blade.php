@@ -46,12 +46,12 @@
                 {{-- Personal Information --}}
                 <x-form.form-body>
                     <div class="p-5 pt-0 space-y-5">
-                        <div class="space-y-3">
+                        <div class="space-y-5">
                             <hgroup>
                                 <h3 class="text-sm font-semibold">First &amp; Last Name</h3>
                                 <p class="max-w-sm text-xs">Kindly enter your <strong class="text-blue-500">First Name</strong> and <strong class="text-blue-500">Last Name</strong> on their respective input fields below.</p>
                             </hgroup>
-                            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                 <div class="space-y-2">
                                     <x-form.input-text
                                         wire:model.live="first_name"
@@ -78,12 +78,12 @@
                         </div>
     
                         {{-- Contact Information --}}
-                        <div class="space-y-3">
+                        <div class="space-y-5">
                             <hgroup>
                                 <h3 class="text-sm font-semibold">Email &amp; Contact Number</h3>
                                 <p class="max-w-sm text-xs">Kindly enter your <strong class="text-blue-500">Email</strong> and <strong class="text-blue-500">Contact Number</strong> on their respective input fields below.</p>
                             </hgroup>
-                            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                 <div class="space-y-2">
                                     <x-form.input-text
                                         wire:model.live="email"
@@ -108,10 +108,9 @@
                             </div>
                         </div>
     
-                        <div class="flex items-center gap-3">
-                            <x-primary-button type="button" wire:click="selectAddress()">Select Address</x-primary-button>
-                            <p wire:loading wire:target='selectAddress()' class="text-xs font-semibold">Please wait while we load the next form.</p>
-                        </div>
+                        <x-loading wire:loading.block wire:target='selectAddress()' class="text-xs font-semibold">Please wait while we load the next form.</x-loading>
+                        
+                        <x-primary-button type="button" wire:click="selectAddress()">Select Address</x-primary-button>
                     </div>
                 </x-form.form-body>
             </div>
@@ -147,7 +146,7 @@
                                 <p class="max-w-sm text-sm">Kindly select your home address using the dropdown options below starting with your region.</p>
     
                                 {{-- Regions & Provinces --}}
-                                <div class="flex gap-3">
+                                <div class="flex gap-2">
                                     <div class="w-full">
                                         <x-address.region
                                             :regions="$regions"
@@ -158,6 +157,7 @@
                                     @if ($region != 'National Capital Region (NCR)')
                                         <div class="w-full">
                                             <x-address.province
+                                                x-bind:disabled="region == '' || region == null"
                                                 :provinces="$provinces"
                                                 wire:model.live="province"
                                                 x-on:change="$wire.getCities(province)"
@@ -166,10 +166,11 @@
                                     @endif
                                 </div>
                                 {{-- Cities & Manila Districts & Baranggays --}}
-                                <div class="flex gap-3">
+                                <div class="flex gap-2">
                                     @if ($region == 'National Capital Region (NCR)')
                                         <div class="w-full">
                                             <x-address.ncr.city
+                                                x-bind:disabled="region == '' || region == null"
                                                 wire:model.live="city"
                                                 x-on:change="$wire.getBaranggays(city)"
                                                 x-model="city" />
@@ -177,6 +178,7 @@
                                         @if ($city == "City of Manila")
                                             <div class="w-full">
                                                 <x-address.ncr.district
+                                                    x-bind:disabled="city == '' || city == null"
                                                     :districts="$districts"
                                                     wire:model.live="district"
                                                     x-on:change="$wire.getDistrictBaranggays(district)"
@@ -187,6 +189,7 @@
                                         <div class="w-full">
                                             <x-address.city
                                                 :cities="$cities"
+                                                x-bind:disabled="province == '' || province == null"
                                                 wire:model.live="city"
                                                 x-on:change="$wire.getBaranggays(city)"
                                                 x-model="city" />
@@ -194,6 +197,7 @@
                                     @endif
                                     <div class="w-full">
                                         <x-address.baranggay
+                                            x-bind:disabled="city == '' || city == null || (city == 'City of Manila' && (district == '' || district == null))"
                                             :baranggays="$baranggays"
                                             wire:model.live="baranggay"
                                             x-model="baranggay"
@@ -202,6 +206,7 @@
                                 </div>
                                 {{-- Street --}}
                                 <x-form.input-text
+                                    class="capitalize"
                                     wire:model.live="street"
                                     x-model="street"
                                     label="Street (Optional)"
@@ -216,12 +221,12 @@
                             <x-form.input-error field="address" />
     
                             {{-- Loaders --}}
-                            <div wire:loading wire:target="getProvinces" class="text-xs font-semibold">Loading
+                            <x-loading wire:loading wire:target="getProvinces">Loading
                                 <span x-text="region == 'National Capital Region (NCR)' ? 'Cities...' : 'Provinces...'"></span>
-                            </div>
-                            <div wire:loading wire:target="getCities" class="text-xs font-semibold">Loading Cities &amp; Municipalities...</div>
-                            <div wire:loading wire:target="getBaranggays" class="text-xs font-semibold">Loading Baranggay...</div>
-                            <div wire:loading wire:target="getDistrictBaranggays" class="text-xs font-semibold">Loading Baranggay...</div>
+                            </x-loading>
+                            <x-loading wire:loading wire:target="getCities">Loading Cities &amp; Municipalities...</x-loading>
+                            <x-loading wire:loading wire:target="getBaranggays">Loading Baranggay...</x-loading>
+                            <x-loading wire:loading wire:target="getDistrictBaranggays">Loading Baranggay...</x-loading>
                         </div>
     
                     </div>

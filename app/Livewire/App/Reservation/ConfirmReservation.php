@@ -41,6 +41,7 @@ class ConfirmReservation extends Component
         if ($this->payment) {
             $this->amount = (int) $this->payment->amount;
             $this->payment_date = $this->payment->payment_date;
+            $this->transaction_id = $this->payment->transaction_id;
         }
     }
 
@@ -82,7 +83,7 @@ class ConfirmReservation extends Component
                             <div class="absolute top-0 flex gap-1 right-3">
                                 <x-tooltip text="Download" dir="top">
                                     <a x-ref="content" href="{{ asset($payment->proof_image_path) }}" download="{{ $reservation->rid . ' - ' . 'Payment'}}">
-                                        <x-icon-button>
+                                        <x-icon-button class="bg-white">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-down"><path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21"/><path d="m14 19 3 3v-5.5"/><path d="m17 22 3-3"/><circle cx="9" cy="9" r="2"/></svg>
                                         </x-icon-button>
                                     </a>
@@ -90,7 +91,7 @@ class ConfirmReservation extends Component
 
                                 <x-tooltip text="View" dir="top">
                                     <a href="{{ asset($payment->proof_image_path) }}" target="_blank" x-ref="content">
-                                        <x-icon-button>
+                                        <x-icon-button class="bg-white">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
                                         </x-icon-button>
                                     </a>

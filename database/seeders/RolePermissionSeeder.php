@@ -68,6 +68,11 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'update report']);
         Permission::create(['name' => 'delete report']);
 
+        Permission::create(['name' => 'create payment']);
+        Permission::create(['name' => 'read payments']);
+        Permission::create(['name' => 'update payment']);
+        Permission::create(['name' => 'delete payment']);
+
         $guest_permissions = [
             'read reservations',
         ];
@@ -84,6 +89,10 @@ class RolePermissionSeeder extends Seeder
 
             'create billing',
             'read billings',
+            
+            'create payment',
+            'read payments',
+            'update payment',
         ];
 
         $admin_permissions = [
@@ -131,6 +140,11 @@ class RolePermissionSeeder extends Seeder
             'read reports',
             'update report',
             'delete report',
+
+            'create payment',
+            'read payments',
+            'update payment',
+            'delete payment',
         ];
 
         // Create Roles
