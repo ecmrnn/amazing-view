@@ -273,19 +273,35 @@ class AddItem extends Component
     }
 
     public function removeItem($item) {
+        if (!empty($this->invoice)) {
+            if ($item['type'] == 'others') {
+                $item_to_delete = $this->invoice->items()->find($item['id']);
+    
+                if (!empty($item_to_delete)) {
+                    $item_to_delete->delete();
+                    $this->invoice->balance -= $item['price'] * $item['quantity'];
+                    $this->invoice->save();
+                }
+            } else {
+                $service = null;
+                $items = $this->items->filter(function ($_item) use ($item) {
+                    return $_item != $item;
+                });
+                
+                if ($item['type'] == 'amenity') {
+                    $service = new AmenityService;
+                } else {
+                    $service = new AdditionalServiceHandler;
+                }
+
+                $service->sync($this->invoice->reservation, $items);
+            }
+        }
+
+        // Remove the item from the collection
         $this->items = $this->items->reject(function ($_item) use ($item) {
             return $_item == $item;
         });
-
-        if (!empty($this->invoice) && $item['type'] == 'others') {
-            $item_to_delete = $this->invoice->items()->find($item['id']);
-
-            if (!empty($item_to_delete)) {
-                $item_to_delete->delete();
-                $this->invoice->balance -= $item['price'] * $item['quantity'];
-                $this->invoice->save();
-            }
-        }
 
         // Update invoice
         $billing = new BillingService;

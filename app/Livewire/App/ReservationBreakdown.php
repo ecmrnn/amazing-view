@@ -110,10 +110,9 @@ class ReservationBreakdown extends Component
                                 <?php $counter = 0 ?>
                                 @foreach ($reservation->invoice->items as $item)
                                     <?php $counter++ ?>
-                                    <div class="grid grid-cols-6 px-5 py-3 text-sm last:border-b-0 border-slate-200">
+                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-b last:border-b-0 border-slate-200">
                                         <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                        <p class="capitalize">{{ $item->name }}</p>
-                                        <p>Others</p>
+                                        <p class="col-span-2 capitalize">{{ $item->name }}</p>
                                         <p class="text-center">{{ $item->quantity }}</p>
                                         <p class="text-right"><x-currency />{{ number_format($item->price, 2) }}</p>
                                         <p class="text-right"><x-currency />{{ number_format($item->quantity * $item->price, 2) }}</p>

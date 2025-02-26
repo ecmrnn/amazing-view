@@ -3,9 +3,7 @@
 namespace App\Livewire\App\Cards;
 
 use App\Enums\InvoiceStatus;
-use App\Enums\ReservationStatus;
 use App\Models\Invoice;
-use App\Models\InvoicePayment;
 use Livewire\Component;
 
 class InvoiceCards extends Component
@@ -17,7 +15,7 @@ class InvoiceCards extends Component
 
     public function render()
     {
-        $this->total_balance = Invoice::sum('balance');
+        $this->total_balance = Invoice::whereIn('status', [InvoiceStatus::PENDING, InvoiceStatus::PARTIAL, InvoiceStatus::DUE])->sum('balance');
         $this->pending_billing = Invoice::whereStatus(InvoiceStatus::PENDING)->count();
         $this->partial_billing = Invoice::whereStatus(InvoiceStatus::PARTIAL)->count();
         $this->overdue_billing = Invoice::whereStatus(InvoiceStatus::DUE)->count();
