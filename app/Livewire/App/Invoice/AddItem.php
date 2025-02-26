@@ -2,19 +2,18 @@
 
 namespace App\Livewire\App\Invoice;
 
+use App\Models\AdditionalServices;
+use App\Models\Amenity;
 use App\Models\Invoice;
 use App\Models\Reservation;
+use App\Services\AdditionalServiceHandler;
 use App\Services\AmenityService;
 use App\Services\BillingService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use phpDocumentor\Reflection\Types\This;
-
-use function PHPUnit\Framework\isNull;
 
 class AddItem extends Component
 {
@@ -23,19 +22,26 @@ class AddItem extends Component
     protected $listeners = [
         'item-added' => '$refresh',
         'item-removed' => '$refresh',
+        'item-selected' => '$refresh',
     ];
 
     public $items;
-    public $item_type;
+    public $item_type = 'others';
     public $night_count;
     public $breakdown;
     public $invoice;
+    public $amenities;
+    public $services;
+    public $max = 999;
+    #[Validate] public $amenity;
+    #[Validate] public $service;
     #[Validate] public $name;
     #[Validate] public $quantity = 1;
-    #[Validate] public $price = 0;
+    #[Validate] public $price = 100;
 
     public function mount($invoice = null) {
         $this->items = collect();
+        // $this->amenities = collect();
 
         if (!empty($invoice)) {
             $this->invoice = Invoice::find($invoice);
@@ -45,10 +51,12 @@ class AddItem extends Component
 
     public function rules() {
         return [
-            'name' => 'required',
+            'name' => 'required_if:item_type,others',
             'item_type' => 'required',
-            'quantity' => 'required|numeric|min:1',
+            'quantity' => 'required|numeric|min:1|lte:max',
             'price' => 'required|numeric|min:1',
+            'amenity' => 'required_if:item_type,amenity',
+            'service' => 'required_if:item_type,service',
         ];
     }
 
@@ -86,15 +94,7 @@ class AddItem extends Component
                 'price' => $room->pivot->rate,
             ]);
         }
-        foreach ($reservation->amenities as $amenity) {
-            $this->items->push([
-                'id' => $amenity->id,
-                'name' => $amenity->name,
-                'type' => 'amenity',
-                'quantity' => $amenity->pivot->quantity,
-                'price' => $amenity->pivot->price,
-            ]);
-        }
+
         foreach ($reservation->services as $service) {
             $this->items->push([
                 'id' => $service->id,
@@ -105,6 +105,16 @@ class AddItem extends Component
             ]);
         }
 
+        foreach ($reservation->amenities as $amenity) {
+            $this->items->push([
+                'id' => $amenity->id,
+                'name' => $amenity->name,
+                'type' => 'amenity',
+                'quantity' => $amenity->pivot->quantity,
+                'price' => $amenity->pivot->price,
+                'max' => $amenity->quantity,
+            ]);
+        }
         
         foreach ($reservation->invoice->items as $item) {
             // $other_charges += $item->quantity * $item->price;
@@ -120,6 +130,65 @@ class AddItem extends Component
         $this->getTaxes();
     }
 
+    public function selectItem() {
+        if ($this->item_type == 'amenity') {
+            $selected_amenities = $this->invoice->reservation->amenities()->pluck('amenities.id');
+            $this->amenities = Amenity::whereNotIn('amenities.id', $selected_amenities)->where('amenities.quantity', '>', 0)->get();
+            if ($this->amenities->count() > 0) {
+                $this->name = $this->amenities->first()->name;
+                $this->amenity = (int) $this->amenities->first()->id;
+                $this->price = (int) $this->amenities->first()->price;
+                $this->max = (int) $this->amenities->first()->quantity;
+    
+                if ($this->quantity > $this->max) {
+                    $this->quantity = (int) $this->amenities->first()->quantity;
+                }
+            } else {
+                $this->toast('All Amenities Added', 'info', 'Edit quantity using the table.');
+            }
+        } elseif ($this->item_type == 'service') {
+            $selected_services = $this->invoice->reservation->services()->pluck('additional_services.id');
+            $this->services = AdditionalServices::whereNotIn('additional_services.id', $selected_services)->get();
+           
+            if ($this->services->count() > 0) {
+                $this->name = $this->services->first()->name;
+                $this->service = (int) $this->services->first()->id;
+                $this->price = (int) $this->services->first()->price;
+                $this->max = 1;
+                $this->quantity = 1;
+            } else {
+                $this->toast('All Services Added', 'info', 'Modify services using the table.');
+            }
+        } else {
+            $this->reset('name', 'price', 'max', 'quantity');
+        }
+        $this->resetErrorBag();
+    }
+
+    public function selectedItem() {
+        if ($this->item_type == 'amenity') {
+            $amenity = Amenity::find($this->amenity);
+            $this->name = $amenity->name;
+    
+            if (!empty($amenity)) {
+                $this->price = (int) $amenity->price;
+                $this->max = (int) $amenity->quantity;
+    
+                if ($this->quantity > $this->max) {
+                    $this->quantity = (int) $amenity->quantity;
+                }
+            }
+        } else {
+            $service = AdditionalServices::find($this->service);
+    
+            if (!empty($service)) {
+                $this->price = (int) $service->price;
+                $this->max = 1;
+                $this->quantity = 1;
+            }
+        }
+    }
+
     public function getTaxes() {
         $billing_service = new BillingService;
         $this->breakdown = $billing_service->rawTaxes($this->invoice, $this->items);
@@ -130,18 +199,13 @@ class AddItem extends Component
             'name' => $this->rules()['name'],
             'quantity' => $this->rules()['quantity'],
             'price' => $this->rules()['price'],
+            'amenity' => $this->rules()['amenity'],
+            'service' => $this->rules()['service'],
         ]);
 
-        $this->items->push([
-            'id' => uniqid(),
-            'name' => $this->name,
-            'type' => $this->item_type,
-            'quantity' => $this->quantity,
-            'price' => $this->price,
-        ]);
+        $id = uniqid();
 
         if (!empty($this->invoice)) {
-            // Add items to invoice when type is others
             if ($this->item_type == 'others') {
                 $this->invoice->items()->create([
                     'name' => $this->name,
@@ -150,17 +214,60 @@ class AddItem extends Component
                     'price' => $this->price,
                     'total' => $this->quantity * $this->price,
                 ]);
+            } else {
+                $service = null;
+
+                if ($this->item_type == 'amenity' && isset($this->amenity)) {
+                    $id = $this->amenity;
+                    $service = new AmenityService;
+                } elseif ($this->item_type == 'service' && isset($this->service)) {
+                    $id = $this->service;
+                    $service = new AdditionalServiceHandler;
+                }
+
+                if (!$service || !$id) {
+                    throw new \Exception("Invalid item type or missing ID");
+                }
+
+                $service->attach($this->invoice->reservation, collect([
+                    [
+                        'id' => $id,
+                        'name' => $this->name,
+                        'price' => $this->price,
+                        'quantity' => $this->quantity,
+                    ]
+                ]));
             }
 
-            // Update invoice balance
-            $this->invoice->balance += $this->quantity * $this->price;
+            $this->items->push([
+                'id' => $id,
+                'name' => $this->name,
+                'type' => $this->item_type,
+                'quantity' => $this->quantity,
+                'max' => $this->item_type == 'amenity' ?  $this->max : 999,
+                'price' => $this->price,
+            ]);
+
+            // Sort the order of the items
+            $order = ['room', 'service', 'amenity'];
+            $this->items = $this->items->sortBy(function ($item) use ($order) {
+                return array_search($item['type'], $order);
+            })->values();
+
+            // Update invoice
+            $billing = new BillingService;
+            $taxes = $billing->taxes($this->invoice->reservation);
+            $payments = $this->invoice->payments->sum('amount');
+
+            $this->invoice->total_amount = $taxes['net_total'];
+            $this->invoice->balance = $taxes['net_total'] - $payments;
             $this->invoice->save();
         }
 
         $this->getTaxes();
 
         $this->dispatch('item-added');
-        $this->reset(['item_type', 'name', 'quantity', 'price']);
+        $this->reset(['item_type', 'name', 'max', 'quantity', 'price']);
     }
 
     public function removeItem($item) {

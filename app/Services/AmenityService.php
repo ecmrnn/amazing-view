@@ -37,7 +37,14 @@ class AmenityService
                 
                 $reservation->amenities()->detach($amenity['id']);
                 
-                $_amenity->quantity += (int) $amenity->pivot->quantity;
+                if (in_array($reservation->status, [
+                    ReservationStatus::AWAITING_PAYMENT->value,
+                    ReservationStatus::PENDING->value,
+                    ReservationStatus::CONFIRMED->value,
+                    ReservationStatus::CHECKED_IN->value,
+                ])) {
+                    $_amenity->quantity += (int) $amenity->pivot->quantity;
+                }
                 $_amenity->save();
             }
         }
@@ -51,10 +58,10 @@ class AmenityService
                 ]);
 
                 if (in_array($reservation->status, [
-                    ReservationStatus::AWAITING_PAYMENT,
-                    ReservationStatus::PENDING,
-                    ReservationStatus::CONFIRMED,
-                    ReservationStatus::CHECKED_IN,
+                    ReservationStatus::AWAITING_PAYMENT->value,
+                    ReservationStatus::PENDING->value,
+                    ReservationStatus::CONFIRMED->value,
+                    ReservationStatus::CHECKED_IN->value,
                 ])) {
                     $_amenity->quantity -= (int) $amenity['quantity'];
                 }

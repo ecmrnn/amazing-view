@@ -13,8 +13,8 @@ class AdditionalServiceHandler
     // - Services to attach
     public function attach(Reservation $reservation, $services) {
         foreach ($services as $service) {
-            $reservation->services()->attach($service->id, [
-                'price' => $service->price,
+            $reservation->services()->attach($service['id'], [
+                'price' => $service['price'],
             ]);
         }
     }
@@ -28,6 +28,7 @@ class AdditionalServiceHandler
                 $reservation->services()->detach($service->id);
 
                 $reservation->invoice->balance -= $service->price;
+                $reservation->invoice->total_amount -= $service->price;
                 $reservation->save();
             }
         }
@@ -38,6 +39,7 @@ class AdditionalServiceHandler
                 ]);
 
                 $reservation->invoice->balance += $service->price;
+                $reservation->invoice->total_amount += $service->price;
                 $reservation->save();
             }
         }

@@ -347,7 +347,7 @@
                 :class="{ 'toast-no-description': !toast.description }"
                 >
                 <span 
-                    class="relative flex flex-col items-start shadow-[0_5px_15px_-3px_rgb(0_0_0_/_0.08)] w-full transition-all duration-300 ease-out bg-white border border-gray-100 sm:rounded-md sm:max-w-xs group"
+                    class="relative flex flex-col items-start w-full max-w-xs transition-all duration-300 ease-out bg-white border rounded-md border-slate-200 group"
                     :class="{ 'p-4' : !toast.html, 'p-0' : toast.html }"
                 >
                     <template x-if="!toast.html">
