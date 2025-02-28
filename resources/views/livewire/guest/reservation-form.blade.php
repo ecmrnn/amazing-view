@@ -147,24 +147,20 @@
 
     {{-- Modal for confirming reservation --}}
     <x-modal.full name="show-reservation-confirmation" maxWidth="lg">
-        <div x-data="{ toc: false }">
+        <div x-data="{ toc: false }" class="p-5 space-y-5">
             <hgroup>
                 <h2 class="text-lg font-semibold">Reservation Confirmation</h2>
                 <p class="text-xs">Confirm that the reservation details entered are correct</p>
             </hgroup>
             
-            <section class="p-5 space-y-3 bg-slate-100/50">
+            <section class="p-5 bg-white border rounded-md border-slate-200">
                 <x-form.input-checkbox x-model="toc" id="toc" label="I, {{ ucwords(strtolower($first_name)) . ' ' . ucwords(strtolower($last_name)) }}, ensure that the information I provided is true and correct. I also give consent to Amazing View Mountain Resort to collect and manage my data." />
             </section>
 
-            <footer x-show="toc" class="flex justify-end gap-3 p-5 bg-white border-t">
-                <x-secondary-button x-on:click="show = false">
-                    Cancel
-                </x-secondary-button>
-                <x-primary-button x-on:click="$wire.store(); show = false;">
-                    Submit Reservation
-                </x-primary-button>
-            </footer>
+            <div class="flex justify-end gap-1">
+                <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+                <x-primary-button x-bind:disabled="! toc" x-on:click="$wire.store(); show = false;">Submit Reservation</x-primary-button>
+            </div>
         </div>
     </x-modal.full> 
 

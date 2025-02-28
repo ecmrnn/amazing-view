@@ -19,10 +19,10 @@
             <h2 class="font-bold">Guest Details</h2>
 
             <div>
-                <p><strong class="font-bold">Name:</strong> <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span></p>
+                <p><strong class="font-bold capitalize">Name:</strong> <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span></p>
                 <p><strong class="font-bold">Contact Number:</strong> {{ $reservation->phone }}</p>
                 <p><strong class="font-bold">Email:</strong> {{ $reservation->email }}</p>
-                <p><strong class="font-bold">Address:</strong> {{ $reservation->address }}</p>
+                <p><strong class="font-bold capitalize">Address:</strong> {{ $reservation->address }}</p>
             </div>
 
             <h2 class="font-bold">Reservation Details</h2>
@@ -109,7 +109,7 @@
                 </div>
             @endif
 
-            <h2 class="text-lg md:*:text-2xl font-bold text-blue-500">Total Amount Due: <x-currency />{{ number_format($reservation->invoice->total_amount, 2) }}</h2>
+            <h2 class="text-lg md:*:text-2xl font-bold text-blue-500">Total Amount Due: <x-currency />{{ number_format($reservation->invoice->sub_total, 2) }}</h2>
 
             @if (!empty($reservation->expires_at))
                 <div>

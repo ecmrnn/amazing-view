@@ -58,7 +58,7 @@
                 </div>
     
                 <div class="grid grid-cols-2 gap-5">
-                    @if (!empty($row->transaction_id))
+                    @if ($row->payment_method != 'cash')
                         <x-form.input-group class="col-span-2">
                             {{-- <x-form.input-label for='transaction_id'>Reference No.</x-form.input-label> --}}
                             <x-form.input-text x-model="transaction_id" id="transaction_id" name="transaction_id" label="Reference No." />
@@ -69,7 +69,6 @@
                         <x-form.input-label for='amount'>Amount Paid</x-form.input-label>
                         <x-form.input-currency x-model="amount" id="amount" name="amount" label="amount" />
                         <x-form.input-error field="amount" />
-                        <x-form.input-error field="transaction_id" />
                     </x-form.input-group>
                     <x-form.input-group>
                         <x-form.input-label for='payment_date'>Payment Date</x-form.input-label>

@@ -51,8 +51,8 @@
                                 <h3 class="text-sm font-semibold">First &amp; Last Name</h3>
                                 <p class="max-w-sm text-xs">Kindly enter your <strong class="text-blue-500">First Name</strong> and <strong class="text-blue-500">Last Name</strong> on their respective input fields below.</p>
                             </hgroup>
-                            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                <div class="space-y-2">
+                            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                                <x-form.input-group>
                                     <x-form.input-text
                                         wire:model.live="first_name"
                                         x-model="first_name"
@@ -62,8 +62,8 @@
                                         class="capitalize"
                                     />
                                     <x-form.input-error field="first_name" />
-                                </div>
-                                <div class="space-y-2">
+                                </x-form.input-group>
+                                <x-form.input-group>
                                     <x-form.input-text
                                         wire:model.live="last_name"
                                         x-model="last_name"
@@ -73,7 +73,7 @@
                                         class="capitalize"
                                     />
                                     <x-form.input-error field="last_name" />
-                                </div>
+                                </x-form.input-group>
                             </div>
                         </div>
     
@@ -83,8 +83,8 @@
                                 <h3 class="text-sm font-semibold">Email &amp; Contact Number</h3>
                                 <p class="max-w-sm text-xs">Kindly enter your <strong class="text-blue-500">Email</strong> and <strong class="text-blue-500">Contact Number</strong> on their respective input fields below.</p>
                             </hgroup>
-                            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                <div class="space-y-2">
+                            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                                <x-form.input-group>
                                     <x-form.input-text
                                         wire:model.live="email"
                                         x-model="email"
@@ -93,8 +93,8 @@
                                         type="email"
                                     />
                                     <x-form.input-error field="email" />
-                                </div>
-                                <div class="space-y-2">
+                                </x-form.input-group>
+                                <x-form.input-group>
                                     <x-form.input-text
                                         wire:model.live="phone"
                                         x-model="phone"
@@ -104,7 +104,7 @@
                                         maxlength="11"
                                     />
                                     <x-form.input-error field="phone" />
-                                </div>
+                                </x-form.input-group>
                             </div>
                         </div>
     
@@ -122,8 +122,8 @@
     
             <div x-show="can_select_address" x-collapse.duration.1000ms>
                 <x-form.form-body>
-                    <div class="p-5 pt-0 space-y-3">
-                        <div class="space-y-3 overflow-auto"
+                    <div class="p-5 pt-0 space-y-5">
+                        <div class="space-y-5 overflow-auto"
                                 x-init="
                                 $watch('region', value => {
                                     province = '';
@@ -146,7 +146,7 @@
                                 <p class="max-w-sm text-sm">Kindly select your home address using the dropdown options below starting with your region.</p>
     
                                 {{-- Regions & Provinces --}}
-                                <div class="flex gap-2">
+                                <div class="flex flex-col gap-5 sm:flex-row">
                                     <div class="w-full">
                                         <x-address.region
                                             :regions="$regions"
@@ -166,7 +166,7 @@
                                     @endif
                                 </div>
                                 {{-- Cities & Manila Districts & Baranggays --}}
-                                <div class="flex gap-2">
+                                <div class="flex flex-col gap-5 sm:flex-row">
                                     @if ($region == 'National Capital Region (NCR)')
                                         <div class="w-full">
                                             <x-address.ncr.city
@@ -213,7 +213,7 @@
                                     id="street"
                                 />
                             @else
-                                <div class="space-y-3">
+                                <div class="space-y-5">
                                     <p class="max-w-sm text-sm">Kindly enter your home address in the input field below.</p>
                                     <x-form.input-text wire:model.live='street' x-model="street" id="street" name="street" label="Address" />
                                 </div>
@@ -239,11 +239,10 @@
     
             <div x-show="can_select_address" x-collapse.duration.1000ms>
                 <x-form.form-body>
-                    <div class="p-5 pt-0 space-y-3">
+                    <div class="p-5 pt-0 space-y-5">
                         <div class="flex items-start justify-between">
-                            <hgroup class="space-y-1">
+                            <hgroup>
                                 <h3 class="text-sm font-semibold">Vehicle</h3>
-                                {{-- <x-note>These details will be used by our security personnels to identify you upon arrival to the resort.</x-note> --}}
                                 <p class="max-w-sm text-sm">Add your vehicle here for parking reservations</p>
                             </hgroup>
     
@@ -251,7 +250,7 @@
                         </div>
     
                         <!-- Form -->
-                        <div class="space-y-1">
+                        <div class="space-y-5">
                             @forelse ($cars as $car)
                                 <div class="flex items-start justify-between p-3 bg-white border rounded-lg">
                                     <div>

@@ -18,6 +18,7 @@ class BillingService
     public function create(Reservation $reservation, $breakdown) {
         $invoice = $reservation->invoice()->create([
             'total_amount' => Arr::get($breakdown, 'taxes.net_total', 0),
+            'sub_total' => Arr::get($breakdown, 'sub_total', 0),
             'balance' => Arr::get($breakdown, 'taxes.net_total', 0),
             'status' => Invoice::STATUS_PENDING,
             'due_date' => Carbon::parse((string) $reservation->date_out)->addWeek(),
@@ -79,14 +80,12 @@ class BillingService
 
     public function breakdown(Reservation $reservation) {
         $sub_total = $this->subtotal($reservation);
-        $breakdown = [];
 
         $taxes = $this->taxes($reservation);
 
         return [
             'sub_total' => $sub_total,
             'taxes' => $taxes,
-            'breakdown' => $breakdown,
         ];
     }
 

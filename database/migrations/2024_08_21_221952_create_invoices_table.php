@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('iid')->nullable();
             $table->foreignIdFor(Reservation::class)->constrained();
             
+            $table->decimal('sub_total')->default(0);
             $table->decimal('total_amount')->default(0);
             $table->decimal('balance')->default(0);
 

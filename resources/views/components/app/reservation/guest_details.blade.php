@@ -69,40 +69,50 @@
                     })
                     $watch('city', value => { baranggay = ''; })">
                         {{-- Regions & Provinces --}}
-                        <div class="flex gap-5">
+                        <div class="flex flex-col gap-5 sm:flex-row">
                             <div class="w-full">
                                 <x-address.region :regions="$regions" wire:model.live="region"
                                     x-on:change="$wire.getProvinces(region)" x-model="region" />
                             </div>
                             @if ($region != 'National Capital Region (NCR)')
                                 <div class="w-full">
-                                    <x-address.province :provinces="$provinces" wire:model.live="province"
+                                    <x-address.province
+                                        x-bind:disabled="region == '' || region == null"
+                                         :provinces="$provinces" wire:model.live="province"
                                         x-on:change="$wire.getCities(province)" x-model="province" />
                                 </div>
                             @endif
                         </div>
                         {{-- Cities & Manila Districts & Baranggays --}}
-                        <div class="flex gap-5">
+                        <div class="flex flex-col gap-5 sm:flex-row">
                             @if ($region == 'National Capital Region (NCR)')
                                 <div class="w-full">
-                                    <x-address.ncr.city wire:model.live="city"
+                                    <x-address.ncr.city
+                                        x-bind:disabled="region == '' || region == null"
+                                        wire:model.live="city"
                                         x-on:change="$wire.getBaranggays(city)" x-model="city" />
                                 </div>
                                 @if ($city == 'City of Manila')
                                     <div class="w-full">
-                                        <x-address.ncr.district :districts="$districts" wire:model.live="district"
+                                        <x-address.ncr.district
+                                            x-bind:disabled="city == '' || city == null"
+                                            :districts="$districts" wire:model.live="district"
                                             x-on:change="$wire.getDistrictBaranggays(district)"
                                             x-model="district" />
                                     </div>
                                 @endif
                             @else
                                 <div class="w-full">
-                                    <x-address.city :cities="$cities" wire:model.live="city"
+                                    <x-address.city 
+                                        x-bind:disabled="province == '' || province == null"
+                                        :cities="$cities" wire:model.live="city"
                                         x-on:change="$wire.getBaranggays(city)" x-model="city" />
                                 </div>
                             @endif
                             <div class="w-full">
-                                <x-address.baranggay :baranggays="$baranggays" wire:model.live="baranggay"
+                                <x-address.baranggay
+                                    x-bind:disabled="city == '' || city == null || (city == 'City of Manila' && (district == '' || district == null))"
+                                    :baranggays="$baranggays" wire:model.live="baranggay"
                                     x-model="baranggay" />
                             </div>
                         </div>
