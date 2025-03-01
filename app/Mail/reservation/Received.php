@@ -3,6 +3,7 @@
 namespace App\Mail\reservation;
 
 use App\Models\Reservation;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -14,12 +15,13 @@ class Received extends Mailable
 {
     use Queueable, SerializesModels;
 
+    
     /**
      * Create a new message instance.
      */
     public function __construct(public Reservation $reservation)
     {
-        //
+        // 
     }
 
     /**

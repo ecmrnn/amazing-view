@@ -3,6 +3,7 @@
 namespace App\Mail\Reservation;
 
 use App\Models\Reservation;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -16,12 +17,14 @@ class Confirmed extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $refund_date;
+    
     /**
      * Create a new message instance.
      */
     public function __construct(public Reservation $reservation)
     {
-        //
+        $this->refund_date = Carbon::parse($reservation->created_at)->subWeek();
     }
 
     /**

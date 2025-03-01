@@ -14,7 +14,9 @@
         <main class="py-10 space-y-5">
             <h1 class="text-md"><span class="font-bold">Reservation ID:</span> {{ $reservation->rid }}</h1>
 
-            <p>Hi <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>! After verification of your proof of payment, we would like to inform you about your approved reservation.</p>
+            <p>Hi <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>! After verification of your proof of payment, we would like to inform you about your approved reservation. We have confirmed your payment amounting to 
+                <strong><x-currency />{{ number_format($reservation->invoice->payments()->sum('amount'), 2) }}</strong>.
+            </p>
 
             <div>
                 <p><strong class="font-bold">Check-in Date:</strong> {{ $reservation->resched_date_in != null ? date_format(date_create($reservation->resched_date_in), 'F j, Y') : date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
@@ -54,8 +56,8 @@
                 <p>If you need to cancel your reservation you may reach us through this email or any of our contact details below.</p>
                 
                 <div class="mt-5">
-                    <p><strong class="font-bold">100% Refund</strong> - If cancelled on or before October 19, 2024</p>
-                    <p><strong class="font-bold">50% Refund</strong> - If cancelled after October 19, 2024</p>
+                    <p><strong class="font-bold">100% Refund</strong> - If cancelled on or before {{ date_format($refund_date, 'F j, Y') }}</p>
+                    <p><strong class="font-bold">50% Refund</strong> - If cancelled after {{ date_format($refund_date, 'F j, Y') }}</p>
                     <p><strong class="font-bold">No Refund</strong> - If the guest does not arrive on the scheduled reservation</p>
                 </div>
             </div>
