@@ -14,9 +14,7 @@
 
     @push('modals')
         {{-- Proof of image modal --}}
-        <x-modal.full name="show-downpayment-modal" maxWidth="sm">
-            <livewire:app.reservation.confirm-reservation :reservation="$reservation" />
-        </x-modal.full> 
+        <livewire:app.reservation.confirm-reservation :reservation="$reservation" />
 
         {{-- Modal for canceling reservation --}}
         <x-modal.full name="show-cancel-reservation" maxWidth="sm">
