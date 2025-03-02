@@ -16,15 +16,15 @@
                 <p class="text-xs text-zinc-800">Check-in</p>
                 <p x-text="date_in === null || date_in === '' ? 'Select a Date' : formatDate(date_in)"
                     class="font-semibold line-clamp-1"></p>
-                    <p x-show="reservation_type == 'day_tour'" class="text-xs text-zinc-800">From: 8:00 AM</p>
-                    <p x-show="reservation_type != 'day_tour'" class="text-xs text-zinc-800">From: 2:00 PM</p>
+                    <p x-show="reservation_type == 'day tour'" class="text-xs text-zinc-800">From: 8:00 AM</p>
+                    <p x-show="reservation_type != 'day tour'" class="text-xs text-zinc-800">From: 2:00 PM</p>
             </div>
             <div class="px-3 py-2 border rounded-lg border-slate-200">
                 <p class="text-xs text-zinc-800">Check-out</p>
                 <p x-text="date_out === null || date_in === '' ? 'Select a Date' : formatDate(date_out)"
                     class="font-semibold line-clamp-1"></p>
-                    <p x-show="reservation_type == 'day_tour'" class="text-xs text-zinc-800">To: 6:00 PM</p>
-                    <p x-show="reservation_type != 'day_tour'" class="text-xs text-zinc-800">To: 12:00 PM</p>
+                    <p x-show="reservation_type == 'day tour'" class="text-xs text-zinc-800">To: 6:00 PM</p>
+                    <p x-show="reservation_type != 'day tour'" class="text-xs text-zinc-800">To: 12:00 PM</p>
             </div>
         </div>
 

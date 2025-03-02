@@ -358,10 +358,6 @@ class ReservationForm extends Component
             // 3: Payment
             switch ($this->step) {
                 case 1:
-                    // if ($this->reservation_type == 'day_tour') {
-                    //     $this->date_out = $this->date_in;
-                    // }
-
                     $this->validate([
                         'date_in' => $this->rules()['date_in'],
                         'date_out' => $this->rules()['date_out'],
@@ -444,6 +440,8 @@ class ReservationForm extends Component
                     break;
             }
         }
+        
+        $this->resetErrorBag();
     }
 
     public function store() {
@@ -476,6 +474,12 @@ class ReservationForm extends Component
         $this->dispatch('reservation-created');
         $this->toast('Success!', description: 'Reservation sent!');
         $this->step++;
+    }
+
+    public function updateReservationType() {
+        $this->reset('date_in', 'date_out', 'reservation_type');
+        $this->toast('Change Reservation Type', 'info', 'Select your new reservation type');
+        $this->resetErrorBag();
     }
 
     public function render()

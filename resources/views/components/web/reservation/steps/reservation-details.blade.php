@@ -35,7 +35,7 @@
             <x-form.form-body>
                 <div class="col-span-3 p-5 pt-0">
                     <div class="grid gap-5 md:grid-cols-2">
-                        <button x-on:click="$wire.set('reservation_type', 'day_tour')" type='button' class="p-5 text-left transition-all duration-200 ease-in-out border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-800">
+                        <button x-on:click="$wire.set('reservation_type', 'day tour')" type='button' class="p-5 text-left transition-all duration-200 ease-in-out border border-transparent rounded-md shadow-sm bg-slate-50 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-medium"><circle cx="12" cy="12" r="4"/><path d="M12 3v1"/><path d="M12 20v1"/><path d="M3 12h1"/><path d="M20 12h1"/><path d="m18.364 5.636-.707.707"/><path d="m6.343 17.657-.707.707"/><path d="m5.636 5.636.707.707"/><path d="m17.657 17.657.707.707"/></svg>
                             <strong class="block mt-3">Day Tour</strong>
                             <p class="text-sm">Perfect for a quick staycation <br /> from <time datetime="8:00">8:00 AM</time> to <time datetime="18:00">6:00 PM</time></p>
@@ -53,6 +53,8 @@
 
     <template x-if='reservation_type != null'>
         <div class="space-y-5">
+            <p class="text-sm">Current reservation is for <span x-text='reservation_type'></span> stays, <button class="font-semibold" type="button" wire:click='updateReservationType'>click here to change.</button></p>
+            
             {{-- Reservation Date & Guest Count --}}
             <x-form.form-section class="grid lg:grid-cols-2">
                 <div class="relative lg:col-span-2">
@@ -73,7 +75,7 @@
                             class="grid gap-5"
                             x-bind:class="{
                                 'grid-cols-2': reservation_type == 'overnight',
-                                'grid-cols-1': reservation_type == 'day_tour'
+                                'grid-cols-1': reservation_type == 'day tour'
                             }">
                             <x-form.input-group>
                                 <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
@@ -82,7 +84,7 @@
                                     x-model="date_in"
                                     x-bind:min="min_date_in"
                                     name="date_in"
-                                    x-on:input="$wire.setMinDateOut($event.target.value); if (reservation_type == 'day_tour') date_out = date_in;"
+                                    x-on:input="$wire.setMinDateOut($event.target.value); if (reservation_type == 'day tour') date_out = date_in;"
                                     id="date_in" class="block w-full" />
                                 <x-form.input-error field="date_in" />
                             </x-form.input-group>
