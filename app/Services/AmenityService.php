@@ -20,11 +20,6 @@ class AmenityService
             //     'price' => $amenity['price'],
             //     'quantity' => $amenity['quantity'],
             // ]);
-            
-            $reservation->rooms->amenities()->attach($amenity['id'], [
-                'price' => $amenity['price'],
-                'quantity' => $amenity['quantity'],
-            ]);
 
             $_amenity->quantity -= (int) $amenity['quantity'];
             $_amenity->save();
@@ -36,11 +31,12 @@ class AmenityService
     // - Reservation instance
     // - Collection of amenities to attach
     public function sync(Reservation $reservation, $amenities) {
-        if ($reservation->rooms->amenities->count() > 0) {
-            foreach ($reservation->rooms->amenities as $amenity) {
+        dd($amenities);
+        foreach ($reservation->rooms as $room) {
+            foreach ($room->amenities as $amenity) {
                 $_amenity = Amenity::find($amenity['id']);
                 
-                $reservation->rooms->amenities()->detach($amenity['id']);
+                $room->amenities()->detach($amenity['id']);
                 
                 if (in_array($reservation->status, [
                     ReservationStatus::AWAITING_PAYMENT->value,
@@ -57,10 +53,10 @@ class AmenityService
             foreach ($amenities as $amenity) {
                 $_amenity = Amenity::find($amenity['id']);
     
-                $reservation->rooms->amenities()->attach($amenity['id'], [
-                    'price' => $amenity['price'],
-                    'quantity' => $amenity['quantity'],
-                ]);
+                // $reservation->rooms->amenities()->attach($amenity['id'], [
+                //     'price' => $amenity['price'],
+                //     'quantity' => $amenity['quantity'],
+                // ]);
 
                 if (in_array($reservation->status, [
                     ReservationStatus::AWAITING_PAYMENT->value,
@@ -120,9 +116,11 @@ class AmenityService
     // For restocking amenities on reservation check-out
     // Accepts a reservation instance
     public function release(Reservation $reservation) {
-        foreach ($reservation->rooms->amenities as $amenity) {
-            $amenity->quantity += $amenity->pivot->quantity;
-            $amenity->save(); 
+        foreach ($reservation->rooms as $room) {
+            foreach ($room->amenities as $amenity) {
+                $amenity->quantity += $amenity->pivot->quantity;
+                $amenity->save(); 
+            }
         }
     }
 }

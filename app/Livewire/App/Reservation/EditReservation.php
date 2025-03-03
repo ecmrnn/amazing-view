@@ -67,6 +67,7 @@ class EditReservation extends Component
     public $available_amenities;
     public $amenity;
     #[Validate] public $quantity = 0;
+    public $amenity_room_id = 0;
     public $max_quantity = 0;
     public $available_room_types;
     public $available_rooms;
@@ -83,7 +84,7 @@ class EditReservation extends Component
     public $rooms;
     public $reservation;
 
-    public function mount(Reservation $reservation = null)
+    public function mount(Reservation $reservation)
     {
         $this->reservation = $reservation;
         $this->min_date = Carbon::now()->format('Y-m-d');
@@ -145,8 +146,8 @@ class EditReservation extends Component
             }   
         }
         
-        if (!empty($this->reservation->rooms->amenities)) {
-            foreach ($this->reservation->rooms->amenities as $amenity) {
+        foreach ($this->reservation->rooms as $room) {
+            foreach ($room->amenities as $amenity) {
                 $this->selected_amenities->push([
                     'id' => $amenity->id,
                     'name' => $amenity->name,
@@ -262,6 +263,26 @@ class EditReservation extends Component
 
         $this->dispatch('amenity-removed');
         $this->toast('Amenity Removed', 'info', ucwords($amenity->name) . ' is removed successfully!');
+    }
+
+    public function nextRoom() {
+        if ($this->amenity_room_id < $this->reservation->rooms->count() - 1) {
+            $this->amenity_room_id++;
+        } else {
+            $this->amenity_room_id = 0;
+        }
+    }
+
+    public function previousRoom() {
+        if ($this->amenity_room_id == 0) {
+            $this->amenity_room_id = $this->reservation->rooms->count() - 1;
+        } else {
+            $this->amenity_room_id--;
+        }
+    }
+
+    public function jumpRoom($room_id) {
+        $this->amenity_room_id = $room_id;
     }
 
     public function upFloor()

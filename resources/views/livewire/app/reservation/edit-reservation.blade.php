@@ -725,19 +725,40 @@
                         <p class="text-xs">Choose from which of the reserved rooms to apply the selected amenity.</p>
                     </hgroup>
 
-                    @foreach ($reservation->rooms as $room)
-                        <div class="p-5 bg-white border rounded-md border-slate-200">
-                            <img src="{{ asset('storage' . $room->image_1_path) }}" class="rounded-sm aspect-video" />
-                        </div>
-                    @endforeach
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
+                        <img src="{{ asset('storage/' . $reservation->rooms->get($amenity_room_id)->image_1_path) }}" class="object-cover object-center rounded-md aspect-video" />
+                        
+                        <hgroup>
+                            <h2 class="text-sm font-semibold">{{ $reservation->rooms->get($amenity_room_id)->building->prefix . ' ' . $reservation->rooms->get($amenity_room_id)->room_number }}</h2>
+                            <p class="text-xs">Capacity: {{ $reservation->rooms->get($amenity_room_id)->max_capacity }}</p>
+                        </hgroup>
 
-                    <div class="flex justify-between">
-                        <x-icon-button type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
-                        </x-icon-button>
-                        <x-icon-button type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
-                        </x-icon-button>
+                        <div class="flex items-center justify-between">
+                            <x-tooltip text="Previous" dir="top">
+                                <x-icon-button type="button" x-ref="content" wire:click='previousRoom'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+                                </x-icon-button>
+                            </x-tooltip>
+
+                            <div class="flex gap-1">
+                                @foreach ($reservation->rooms as $key => $room)
+                                    <button wire:key='{{ $key }}' type="button"
+                                        wire:click='jumpRoom({{ $key }})'
+                                        @class([
+                                            'inline-block w-2 p-1 rounded-full aspect-square',
+                                            'bg-blue-500' => $key == $amenity_room_id,
+                                            'bg-slate-200' => $key != $amenity_room_id,
+                                            ])>
+                                    </button>
+                                @endforeach
+                            </div>
+
+                            <x-tooltip text="Next" dir="top">
+                                <x-icon-button type="button" x-ref="content" wire:click='nextRoom'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+                                </x-icon-button>
+                            </x-tooltip>
+                        </div>
                     </div>
                 @else
                     <hgroup>
@@ -745,15 +766,14 @@
                         <p class="text-xs">The selected amenity will be applied to the room below.</p>
                     </hgroup>
 
-                    @foreach ($reservation->rooms as $room)
-                        <div class="p-5 bg-white border rounded-md border-slate-200">
-                            <img src="{{ asset('storage' . $room->image_1_path) }}" class="rounded-sm aspect-video" />
-                            <hgroup>
-                                <h2 class="text-sm font-semibold">{{ $room->building->prefix . ' ' . $room->room_number }}</h2>
-                                <p class="text-xs">Capacity: {{ $room->max_capacity }}</p>
-                            </hgroup>
-                        </div>
-                    @endforeach
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
+                        <img src="{{ asset('storage/' . $reservation->rooms->get($amenity_room_id)->image_1_path) }}" class="object-cover object-center rounded-md aspect-video" />
+                        
+                        <hgroup>
+                            <h2 class="text-sm font-semibold">{{ $reservation->rooms->get($amenity_room_id)->building->prefix . ' ' . $reservation->rooms->get($amenity_room_id)->room_number }}</h2>
+                            <p class="text-xs">Capacity: {{ $reservation->rooms->get($amenity_room_id)->max_capacity }}</p>
+                        </hgroup>
+                    </div>
                 @endif
             </div>
 

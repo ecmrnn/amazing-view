@@ -3,6 +3,7 @@
 namespace App\Mail\Reservation;
 
 use App\Models\Reservation;
+use App\Models\RoomAmenity;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,13 +14,14 @@ use Illuminate\Queue\SerializesModels;
 class Updated extends Mailable
 {
     use Queueable, SerializesModels;
+    public $has_amenities = false;
 
     /**
      * Create a new message instance.
      */
     public function __construct(public Reservation $reservation)
     {
-        //
+        $this->has_amenities = RoomAmenity::where('reservation_id', $reservation->id)->exists();
     }
 
     /**

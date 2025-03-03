@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Amenity;
+use App\Models\Reservation;
 use App\Models\Room;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,6 +17,7 @@ return new class extends Migration
         Schema::create('room_amenities', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Room::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Reservation::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Amenity::class)->constrained()->cascadeOnDelete();
             $table->smallInteger('quantity');
             $table->decimal('price');

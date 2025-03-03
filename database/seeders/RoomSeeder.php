@@ -25,12 +25,6 @@ class RoomSeeder extends Seeder
             'status' => 0,
         ]);
 
-        $room->amenities()->attach(1);
-        $room->amenities()->attach(2);
-        $room->amenities()->attach(3);
-        $room->amenities()->attach(4);
-        $room->amenities()->attach(5);
-
         Room::create([
             'room_type_id' => 1,
             'building_id' => 1,

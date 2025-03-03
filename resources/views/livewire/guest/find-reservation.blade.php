@@ -138,23 +138,25 @@
                             </div>
                     
                             <div class="space-y-1">
-                                @foreach ($reservation->rooms->amenities as $amenity)
-                                @php
-                                    $quantity = $amenity->pivot->quantity;
+                                @foreach ($reservation->rooms as $room)
+                                    @foreach ($room->amenities as $amenity)
+                                        @php
+                                            $quantity = $amenity->pivot->quantity;
 
-                                    // If quantity is 0, change it to 1
-                                    $quantity != 0 ?: $quantity = 1;
-                                @endphp
+                                            // If quantity is 0, change it to 1
+                                            $quantity != 0 ?: $quantity = 1;
+                                        @endphp
 
-                                <div class="grid grid-cols-2">
-                                    <p class="text-sm uppercase">{{ $amenity->name }}</p>
-                                    
-                                    <div class="grid grid-cols-3 text-sm place-items-end">
-                                            <p>{{ $quantity }}</p>
-                                            <p>{{ number_format($amenity->price, 2) }}</p>
-                                            <p>{{ number_format($amenity->price * $quantity, 2) }}</p>
+                                        <div class="grid grid-cols-2">
+                                            <p class="text-sm uppercase">{{ $room->building->prefix . ' ' . $room->room_number . ' - ' . $amenity->name }}</p>
+                                            
+                                            <div class="grid grid-cols-3 text-sm place-items-end">
+                                                <p>{{ $quantity }}</p>
+                                                <p>{{ number_format($amenity->price, 2) }}</p>
+                                                <p>{{ number_format($amenity->price * $quantity, 2) }}</p>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endforeach
                                 @endforeach
                             </div>
                         </section>
