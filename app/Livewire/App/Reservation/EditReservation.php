@@ -66,7 +66,7 @@ class EditReservation extends Component
     public $selected_building;
     public $available_amenities;
     public $amenity;
-    public $quantity = 0;
+    #[Validate] public $quantity = 0;
     public $max_quantity = 0;
     public $available_room_types;
     public $available_rooms;
@@ -145,8 +145,8 @@ class EditReservation extends Component
             }   
         }
         
-        if (!empty($this->reservation->amenities)) {
-            foreach ($this->reservation->amenities as $amenity) {
+        if (!empty($this->reservation->rooms->amenities)) {
+            foreach ($this->reservation->rooms->amenities as $amenity) {
                 $this->selected_amenities->push([
                     'id' => $amenity->id,
                     'name' => $amenity->name,
@@ -243,7 +243,7 @@ class EditReservation extends Component
     public function addAmenity() {
         $this->validate([
             'amenity' => 'required',
-            'quantity' => 'required|lte:max_quantity',
+            'quantity' => 'required|lte:max_quantity|gt:0',
         ]);
 
         $amenity = Amenity::find($this->amenity);

@@ -16,7 +16,12 @@ class AmenityService
         foreach ($amenities as $amenity) {
             $_amenity = Amenity::find($amenity['id']);
 
-            $reservation->amenities()->attach($amenity['id'], [
+            // $reservation->rooms->amenities()->attach($amenity['id'], [
+            //     'price' => $amenity['price'],
+            //     'quantity' => $amenity['quantity'],
+            // ]);
+            
+            $reservation->rooms->amenities()->attach($amenity['id'], [
                 'price' => $amenity['price'],
                 'quantity' => $amenity['quantity'],
             ]);
@@ -31,11 +36,11 @@ class AmenityService
     // - Reservation instance
     // - Collection of amenities to attach
     public function sync(Reservation $reservation, $amenities) {
-        if ($reservation->amenities->count() > 0) {
-            foreach ($reservation->amenities as $amenity) {
+        if ($reservation->rooms->amenities->count() > 0) {
+            foreach ($reservation->rooms->amenities as $amenity) {
                 $_amenity = Amenity::find($amenity['id']);
                 
-                $reservation->amenities()->detach($amenity['id']);
+                $reservation->rooms->amenities()->detach($amenity['id']);
                 
                 if (in_array($reservation->status, [
                     ReservationStatus::AWAITING_PAYMENT->value,
@@ -52,7 +57,7 @@ class AmenityService
             foreach ($amenities as $amenity) {
                 $_amenity = Amenity::find($amenity['id']);
     
-                $reservation->amenities()->attach($amenity['id'], [
+                $reservation->rooms->amenities()->attach($amenity['id'], [
                     'price' => $amenity['price'],
                     'quantity' => $amenity['quantity'],
                 ]);
@@ -115,7 +120,7 @@ class AmenityService
     // For restocking amenities on reservation check-out
     // Accepts a reservation instance
     public function release(Reservation $reservation) {
-        foreach ($reservation->amenities as $amenity) {
+        foreach ($reservation->rooms->amenities as $amenity) {
             $amenity->quantity += $amenity->pivot->quantity;
             $amenity->save(); 
         }

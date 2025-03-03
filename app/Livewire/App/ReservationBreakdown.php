@@ -85,8 +85,8 @@ class ReservationBreakdown extends Component
                                 @endforeach
                             @endif
                             <!-- Amenities -->
-                            @if ($reservation->amenities->count() > 0)
-                                @foreach ($reservation->amenities as $amenity)
+                            @if ($reservation->rooms->amenities->count() > 0)
+                                @foreach ($reservation->rooms->amenities as $amenity)
                                     <?php $counter++ ?>
                                     <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
                                         <p class="font-semibold opacity-50">{{ $counter }}</p>

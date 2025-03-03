@@ -70,7 +70,7 @@ class CreateReservation extends Component
     public $selected_type;
     public $max_senior_count;
     public $selected_building;
-    public $quantity = 0;
+    #[Validate] public $quantity = 0;
     public $max_quantity = 0;
     public $available_amenities;
     public $available_room_types;
@@ -165,6 +165,7 @@ class CreateReservation extends Component
             'amenity' => 'required',
             'quantity' => 'required|lte:max_quantity|gt:0',
         ]);
+
 
         $amenity = Amenity::find($this->amenity);
 

@@ -47,7 +47,7 @@ class Reservation extends Model
     public static function messages(array $excepts = []) {
         $messages = [
             'date_in.required' => 'Select a :attribute',
-            'date_out.required' => 'Select a :attribute',
+            'date_out.required_if' => 'Select a :attribute',
             'date_in.after_or_equal' => ':attribute must be after or equal to today',
             'date_out.after_or_equal' => ':attribute must be after or equal to check-in date',
             
@@ -115,10 +115,6 @@ class Reservation extends Model
 
     public function user(): BelongsTo {
         return $this->BelongsTo(User::class);
-    }
-
-    public function amenities(): BelongsToMany {
-        return $this->belongsToMany(Amenity::class, 'reservation_amenities')->withPivot('quantity', 'price');
     }
 
     public function services(): BelongsToMany {

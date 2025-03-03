@@ -168,7 +168,7 @@
 
         <div class="space-y-2">
             <x-form.input-group>
-                <x-form.input-number x-model="quantity" wire:model='quantity' :max="$max_quantity" id="quantity" name="quantity" label="Quantity" />
+                <x-form.input-number x-model="quantity" wire:model.live='quantity' :min="1" :max="$max_quantity" id="quantity" name="quantity" label="Quantity" />
                 <x-form.input-error field="quantity" />
             </x-form.input-group>
 

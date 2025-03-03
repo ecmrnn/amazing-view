@@ -101,6 +101,7 @@
         {{-- Step 4: Additional Details (Optional) --}}
         @include('components.app.reservation.add_details', [
             'services' => $services,
+            'quantity' => $quantity,
         ])
 
         {{-- Step 5: Payment --}}

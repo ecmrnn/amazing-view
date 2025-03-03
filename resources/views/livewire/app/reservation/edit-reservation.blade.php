@@ -14,16 +14,16 @@
         email: $wire.entangle('email'),
         phone: $wire.entangle('phone'),
         address: $wire.entangle('address'),
-        region: $wire.entangle('region'),
+        {{-- region: $wire.entangle('region'),
         province: $wire.entangle('province'),
         city: $wire.entangle('city'),
         district: $wire.entangle('district'),
         baranggay: $wire.entangle('baranggay'),
-        street: $wire.entangle('street'),
+        street: $wire.entangle('street'), --}}
 
         {{-- Operations --}}
     night_count: $wire.entangle('night_count'),
-        additional_amenity_quantity: $wire.entangle('additional_amenity_quantity'),
+        {{-- additional_amenity_quantity: $wire.entangle('additional_amenity_quantity'), --}}
 
         formatDate(date) {
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -709,12 +709,52 @@
 
             <div class="space-y-2">
                 <x-form.input-group>
-                    <x-form.input-number x-model="quantity" wire:model='quantity' :max="$max_quantity" id="quantity"
+                    <x-form.input-number x-model="quantity" wire:model.live='quantity' :max="$max_quantity" id="quantity"
                         name="quantity" label="Quantity" />
                     <x-form.input-error field="quantity" />
                 </x-form.input-group>
 
                 <p x-show="max_quantity > 0" class="text-xs">Remaining stock: <span x-text="max_quantity"></span></p>
+            </div>
+
+            {{-- Select Room --}}
+            <div class="space-y-5">
+                @if ($reservation->rooms->count() > 1)
+                    <hgroup>
+                        <h2 class="font-semibold">Select a room</h2>
+                        <p class="text-xs">Choose from which of the reserved rooms to apply the selected amenity.</p>
+                    </hgroup>
+
+                    @foreach ($reservation->rooms as $room)
+                        <div class="p-5 bg-white border rounded-md border-slate-200">
+                            <img src="{{ asset('storage' . $room->image_1_path) }}" class="rounded-sm aspect-video" />
+                        </div>
+                    @endforeach
+
+                    <div class="flex justify-between">
+                        <x-icon-button type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+                        </x-icon-button>
+                        <x-icon-button type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+                        </x-icon-button>
+                    </div>
+                @else
+                    <hgroup>
+                        <h2 class="font-semibold">Selected Room</h2>
+                        <p class="text-xs">The selected amenity will be applied to the room below.</p>
+                    </hgroup>
+
+                    @foreach ($reservation->rooms as $room)
+                        <div class="p-5 bg-white border rounded-md border-slate-200">
+                            <img src="{{ asset('storage' . $room->image_1_path) }}" class="rounded-sm aspect-video" />
+                            <hgroup>
+                                <h2 class="text-sm font-semibold">{{ $room->building->prefix . ' ' . $room->room_number }}</h2>
+                                <p class="text-xs">Capacity: {{ $room->max_capacity }}</p>
+                            </hgroup>
+                        </div>
+                    @endforeach
+                @endif
             </div>
 
             <div class="flex justify-end gap-1">

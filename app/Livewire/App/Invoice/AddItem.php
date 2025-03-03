@@ -106,7 +106,7 @@ class AddItem extends Component
             ]);
         }
 
-        foreach ($reservation->amenities as $amenity) {
+        foreach ($reservation->rooms->amenities as $amenity) {
             $this->items->push([
                 'id' => $amenity->id,
                 'name' => $amenity->name,
@@ -133,7 +133,7 @@ class AddItem extends Component
 
     public function selectItem() {
         if ($this->item_type == 'amenity') {
-            $selected_amenities = $this->invoice->reservation->amenities()->pluck('amenities.id');
+            $selected_amenities = $this->invoice->reservation->rooms->amenities()->pluck('amenities.id');
             $this->amenities = Amenity::whereNotIn('amenities.id', $selected_amenities)->where('amenities.quantity', '>', 0)->get();
             if ($this->amenities->count() > 0) {
                 $this->name = $this->amenities->first()->name;

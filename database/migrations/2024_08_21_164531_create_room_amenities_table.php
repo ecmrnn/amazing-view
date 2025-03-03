@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Room::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Amenity::class)->constrained()->cascadeOnDelete();
+            $table->smallInteger('quantity');
+            $table->decimal('price');
             $table->timestamps();
         });
     }

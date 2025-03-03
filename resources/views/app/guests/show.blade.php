@@ -161,7 +161,7 @@
                     </div>
             
                     <div class="space-y-1">
-                        @foreach ($reservation->amenities as $amenity)
+                        @foreach ($reservation->rooms->amenities as $amenity)
                         @php
                             $quantity = $amenity->pivot->quantity;
 

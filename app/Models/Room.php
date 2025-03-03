@@ -50,7 +50,7 @@ class Room extends Model
     }
 
     public function amenities(): BelongsToMany {
-        return $this->belongsToMany(Amenity::class, 'room_amenities');
+        return $this->belongsToMany(Amenity::class, 'room_amenities')->withPivot('quantity', 'price');
     }
 
     // Get all reserved rooms between a specific range of dates

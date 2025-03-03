@@ -71,7 +71,7 @@
                 </div>
             </div>
 
-            @if ($reservation->services->count() > 0 || $reservation->amenities->count() > 0)
+            @if ($reservation->services->count() > 0 || $reservation->rooms->amenities->count() > 0)
                 <h2 class="font-bold">Additional Services or Amenities Added</h2>
 
                 <div class="overflow-hidden border rounded-md border-slate-200">
@@ -95,7 +95,7 @@
                                     <td class="px-3 py-2"><x-currency />{{ number_format($service->pivot->price, 2) }}</td>
                                 </tr>
                             @endforeach
-                            @foreach ($reservation->amenities as $amenity)
+                            @foreach ($reservation->rooms->amenities as $amenity)
                                 <tr class="border-t border-slate-200">
                                     <td class="px-3 py-2 capitalize">{{ $amenity->name }}</td>
                                     <td class="px-3 py-2 capitalize">Amenity</td>
