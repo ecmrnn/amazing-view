@@ -230,7 +230,7 @@ class AddItem extends Component
                 if ($this->item_type == 'amenity' && isset($this->amenity)) {
                     $id = $this->amenity;
                     $service = new AmenityService;
-                    $collect = collect([
+                    $collect = array(
                         'id' => $id,
                         'room_number' => $this->room_number,
                         'name' => $this->name,
@@ -238,18 +238,18 @@ class AddItem extends Component
                         'quantity' => $this->quantity,
                         'price' => $this->price,
                         'max' => $this->max,
-                    ]);
+                    );
                 } elseif ($this->item_type == 'service' && isset($this->service)) {
                     $id = $this->service;
                     $service = new AdditionalServiceHandler;
 
-                    $collect = collect([
+                    $collect = array(
                         'id' => $id,
                         'name' => $this->name,
                         'price' => $this->price,
                         'type' => $this->item_type,
                         'quantity' => $this->quantity,
-                    ]);
+                    );
                 }
 
                 if (!$service || !$id) {
@@ -301,7 +301,7 @@ class AddItem extends Component
                         return $_item != $item;
                     }
                 });
-                
+
                 if ($item['type'] == 'amenity') {
                     $service = new AmenityService;
                 } else {
@@ -319,7 +319,7 @@ class AddItem extends Component
 
         // Update invoice
         $billing = new BillingService;
-        $taxes = $billing->taxes($this->invoice->reservation);
+        $taxes = $billing->taxes($this->invoice->reservation->fresh());
         $payments = $this->invoice->payments->sum('amount');
 
         $this->invoice->sub_total = $taxes['sub_total'];
