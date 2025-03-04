@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(Reservation::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Room::class)->constrained()->cascadeOnDelete();
             $table->decimal('rate');
+            $table->integer('status');
             $table->timestamps();
         });
     }

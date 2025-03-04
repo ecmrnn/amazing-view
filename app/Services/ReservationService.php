@@ -6,19 +6,17 @@ use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
-use App\Mail\Reservation\Confirmed;
 use App\Mail\reservation\Expire;
 use App\Mail\Reservation\NoShow;
 use App\Mail\reservation\Received;
 use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
-use App\Models\Invoice;
-use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ReservationService
 {
@@ -35,85 +33,87 @@ class ReservationService
     }
 
     public function create($data) {
-        // Assuming the $data is already validated prior to this point
-        $expires_at = Carbon::now()->addHour();
-        $status = ReservationStatus::AWAITING_PAYMENT->value;
-        $proof_image_path = null;
-
-        // Store proof of payment to payments folder
-        if ((int) Arr::get($data, 'downpayment', 0) > 0 || !empty($data['proof_image_path'])) {
-            if (!empty($data['proof_image_path'])) {
-                $proof_image_path = $data['proof_image_path']->store('payments', 'public');
-            }
-            
-            $expires_at = null; 
-            $status = ReservationStatus::PENDING->value;
-        }
-
-        // Create the reservation
-        $reservation = Reservation::create([
-            'date_in' => Arr::get($data, 'date_in'),
-            'date_out' => Arr::get($data, 'date_out'),
-            'senior_count' => Arr::get($data, 'senior_count'),
-            'pwd_count' => Arr::get($data, 'pwd_count'),
-            'adult_count' => Arr::get($data, 'adult_count'),
-            'children_count' => Arr::get($data, 'children_count'),
-            'first_name' => Arr::get($data, 'first_name'),
-            'last_name' => Arr::get($data, 'last_name'),
-            'email' => Arr::get($data, 'email'),
-            'phone' => Arr::get($data, 'phone'),
-            'address' => Arr::get($data, 'address'),
-            'note' => Arr::get($data, 'note', null),
-            'expires_at' => $expires_at,
-            'status' => $status,
-        ]);
-
-        // Attach the rooms to reservation
-        if (isset($data['selected_rooms'])) {
-            $this->handlers->get('room')->attach($reservation, $data['selected_rooms']);
-        }
-
-        // Attach amenities to reservation
-        if (isset($data['selected_amenities'])) {
-            $this->handlers->get('amenity')->attach($reservation, $data['selected_amenities']);
-        }
-
-        // Attach services to reservation
-        if (isset($data['selected_services'])) {
-            $this->handlers->get('service')->attach($reservation, $data['selected_services']);
-        }
-
-        // Store cars for park reservation
-        if (isset($data['cars'])) {
-            $this->handlers->get('car')->create($reservation, $data['cars']);
-        }
-
-        // Compute breakdown
-        $breakdown = $this->handlers->get('billing')->breakdown($reservation);
-        $breakdown['downpayment'] = Arr::get($data, 'downpayment', 0);
-
-        // Create the invoice
-        $invoice = $this->handlers->get('billing')->create($reservation, $breakdown);
-
-        // Create the downpayment
-        if ((int) Arr::get($data, 'downpayment', 0) > 0 || !empty($data['proof_image_path'])) {
-            $invoice->payments()->create([
-                'proof_image_path' => $proof_image_path,
-                'amount' => Arr::get($data, 'downpayment', 0),
-                'payment_method' => Arr::get($data, 'payment_method', 'gcash'),
-                'transaction_id' => Arr::get($data, 'transaction_id', null),
-                'purpose' => 'downpayment',
-                'payment_date' => now(),
-            ]);
-        }
-
-        // Generate PDF
-        GenerateReservationPDF::dispatch($reservation);
-
-        // Send confirmation email to the guest
-        Mail::to($reservation->email)->queue(new Received($reservation));
+        DB::transaction(function () use ($data) {
+                // Assuming the $data is already validated prior to this point
+                $expires_at = Carbon::now()->addHour();
+                $status = ReservationStatus::AWAITING_PAYMENT->value;
+                $proof_image_path = null;
         
-        return $reservation;
+                // Store proof of payment to payments folder
+                if ((int) Arr::get($data, 'downpayment', 0) > 0 || !empty($data['proof_image_path'])) {
+                    if (!empty($data['proof_image_path'])) {
+                        $proof_image_path = $data['proof_image_path']->store('payments', 'public');
+                    }
+                    
+                    $expires_at = null; 
+                    $status = ReservationStatus::PENDING->value;
+                }
+        
+                // Create the reservation
+                $reservation = Reservation::create([
+                    'date_in' => Arr::get($data, 'date_in'),
+                    'date_out' => Arr::get($data, 'date_out'),
+                    'senior_count' => Arr::get($data, 'senior_count'),
+                    'pwd_count' => Arr::get($data, 'pwd_count'),
+                    'adult_count' => Arr::get($data, 'adult_count'),
+                    'children_count' => Arr::get($data, 'children_count'),
+                    'first_name' => Arr::get($data, 'first_name'),
+                    'last_name' => Arr::get($data, 'last_name'),
+                    'email' => Arr::get($data, 'email'),
+                    'phone' => Arr::get($data, 'phone'),
+                    'address' => Arr::get($data, 'address'),
+                    'note' => Arr::get($data, 'note', null),
+                    'expires_at' => $expires_at,
+                    'status' => $status,
+                ]);
+        
+                // Attach the rooms to reservation
+                if (isset($data['selected_rooms'])) {
+                    $this->handlers->get('room')->attach($reservation, $data['selected_rooms']);
+                }
+        
+                // Attach amenities to reservation
+                if (isset($data['selected_amenities'])) {
+                    $this->handlers->get('amenity')->attach($reservation, $data['selected_amenities']);
+                }
+        
+                // Attach services to reservation
+                if (isset($data['selected_services'])) {
+                    $this->handlers->get('service')->attach($reservation, $data['selected_services']);
+                }
+        
+                // Store cars for park reservation
+                if (isset($data['cars'])) {
+                    $this->handlers->get('car')->create($reservation, $data['cars']);
+                }
+        
+                // Compute breakdown
+                $breakdown = $this->handlers->get('billing')->breakdown($reservation);
+                $breakdown['downpayment'] = Arr::get($data, 'downpayment', 0);
+        
+                // Create the invoice
+                $invoice = $this->handlers->get('billing')->create($reservation, $breakdown);
+        
+                // Create the downpayment
+                if ((int) Arr::get($data, 'downpayment', 0) > 0 || !empty($data['proof_image_path'])) {
+                    $invoice->payments()->create([
+                        'proof_image_path' => $proof_image_path,
+                        'amount' => Arr::get($data, 'downpayment', 0),
+                        'payment_method' => Arr::get($data, 'payment_method', 'gcash'),
+                        'transaction_id' => Arr::get($data, 'transaction_id', null),
+                        'purpose' => 'downpayment',
+                        'payment_date' => now(),
+                    ]);
+                }
+        
+                // Generate PDF
+                GenerateReservationPDF::dispatch($reservation);
+        
+                // Send confirmation email to the guest
+                Mail::to($reservation->email)->queue(new Received($reservation));
+                
+                return $reservation;
+        });
     }
 
     public function update(Reservation $reservation, $data)

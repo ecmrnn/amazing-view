@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
 use App\Models\Reservation;
 use App\Models\Room;
@@ -16,6 +17,7 @@ class RoomService
         foreach ($rooms as $room) {
             $reservation->rooms()->attach($room->id, [
                 'rate' => $room->rate,
+                'status' => $reservation->status,
             ]);
             
             $room->status = RoomStatus::RESERVED;
@@ -45,6 +47,7 @@ class RoomService
 
                 $reservation->rooms()->attach($room->id, [
                     'rate' => $room->rate,
+                    'status' => $reservation->status,
                 ]);
 
                 $room->status = RoomStatus::RESERVED->value;
