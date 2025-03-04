@@ -160,42 +160,6 @@ class CreateReservation extends Component
         $this->baranggays = AddressController::getDistrictBaranggays($district);
     }
 
-    public function addAmenity() {
-        $this->validate([
-            'amenity' => 'required',
-            'quantity' => 'required|lte:max_quantity|gt:0',
-        ]);
-
-
-        $amenity = Amenity::find($this->amenity);
-
-        $service = new AmenityService;
-        $service->add($this->selected_amenities, $amenity, $this->quantity);
-
-        $this->reset('amenity', 'quantity', 'max_quantity');
-        $this->dispatch('amenity-added');
-        $this->toast('Success!', description: 'Amenity added successfully!');
-    }
-
-    public function removeAmenity(Amenity $amenity) {
-        $service = new AmenityService;
-        $this->selected_amenities = $service->remove($this->selected_amenities, $amenity);
-
-        $this->dispatch('amenity-removed');
-        $this->toast('Amenity Removed', 'info', ucwords($amenity->name) . ' is removed successfully!');
-    }
-
-    public function selectAmenity() {
-        $amenity = Amenity::find($this->amenity);
-
-        if ($amenity) {
-            $this->max_quantity = $amenity->quantity;
-        } else {
-            $this->max_quantity = 0;
-            $this->quantity = 0;
-        }
-    }
-
     public function addCar() {
         $validated = $this->validate([
             'plate_number' => 'required',
@@ -478,7 +442,6 @@ class CreateReservation extends Component
         $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address']), ',') : $validated['address'];
         $validated['selected_rooms'] = $this->selected_rooms;
         $validated['selected_services'] = $this->selected_services;
-        $validated['selected_amenities'] = $this->selected_amenities;
         $validated['cars'] = $this->cars;
 
         $service = new ReservationService;

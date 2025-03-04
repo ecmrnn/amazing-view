@@ -75,7 +75,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="w-full sm:mt-5 relative overflow-hidden flex flex-col sm:min-h-0 max-h-screen transition-all transform rounded-t-lg sm:rounded-lg sm:w-full {{ $maxWidth }} mx-auto"
+        class="w-full sm:mt-5 relative overflow-hidden flex flex-col min-h-[50%] sm:min-h-0 max-h-screen transition-all transform rounded-t-lg sm:rounded-lg sm:w-full {{ $maxWidth }} mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
@@ -94,7 +94,7 @@ $maxWidth = [
             </div>
         </div>
     
-        <div class="max-h-full overflow-y-auto bg-slate-50">
+        <div class="max-h-full overflow-y-auto grow bg-slate-50">
             {{ $slot }}
         </div>
     </div>

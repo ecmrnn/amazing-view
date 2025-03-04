@@ -40,61 +40,6 @@
 <section class="p-5 space-y-5 bg-white border rounded-lg">
     <div class="flex items-start justify-between">
         <hgroup>
-            <h3 class="font-semibold">Amenities</h3>
-            <p class="max-w-sm text-xs">Click the <strong class="text-blue-500">Add Amenity</strong> button on the right to select an amenity you want to add.</p>
-        </hgroup>
-
-        <button type="button" class="text-xs font-semibold text-blue-500" x-on:click="$dispatch('open-modal', 'add-amenity-modal')">Add Amenity</button>
-    </div>
-
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        @forelse ($selected_amenities as $amenity)
-            <div wire:key='{{ $amenity['id'] }}'>
-                <div class="flex items-center justify-between w-full px-3 py-2 border rounded-md select-none border-slate-200">
-                    <div>
-                        <p class="font-semibold">{{ $amenity['name'] }}</p>
-                        <p class="text-xs">Price: <x-currency />{{ number_format($amenity['price'], 2) }}</p>
-                        <p class="text-xs">Qty: {{ $amenity['quantity'] }}</p>
-                    </div>
-
-                    <x-tooltip text="Remove Amenity" dir="top">
-                        <button x-ref="content" type="button" class="p-3 group" x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $amenity['id'] }}')">
-                            <svg class="transition-all duration-200 ease-in-out opacity-50 group-hover:opacity-100" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                        </button>
-                    </x-tooltip>
-                </div>
-
-                <x-modal.full name="remove-amenity-modal-{{ $amenity['id'] }}" maxWidth='sm'>
-                    <div class="p-5 space-y-5" x-on:amenity-removed.window="show = false">
-                        <div>
-                            <h2 class="text-lg font-semibold text-red-500">Remove Amenity</h2>
-                            <p class="text-xs">Are you sure you really want to remove <strong>{{ $amenity['name'] }}</strong> as an amenity?</p>
-                        </div>
-            
-                        <div class="flex justify-end gap-1">
-                            <x-secondary-button type="button" x-on:click="show = false">No, cancel</x-secondary-button>
-                            <x-danger-button type="button" wire:click="removeAmenity({{ $amenity['id'] }})">Yes, remove</x-danger-button>
-                        </div>
-                    </div>
-                </x-modal.full>
-            </div>
-        @empty
-            <div class="py-10 space-y-3 text-center border rounded-md sm:col-span-2 lg:col-span-4 border-slate-200">
-                <svg class="mx-auto text-zinc-200" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-notebook"><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M16 2v20"/></svg>
-            
-                <p class="text-sm font-semibold">No amenity selected!</p>
-            
-                <x-primary-button type='button' x-on:click="$dispatch('open-modal', 'add-amenity-modal')">
-                    Add Amenity
-                </x-primary-button>
-            </div>                
-        @endforelse
-    </div>
-</section>
-
-<section class="p-5 space-y-5 bg-white border rounded-lg">
-    <div class="flex items-start justify-between">
-        <hgroup>
             <h3 class="font-semibold">Cars</h3>
             <p class="max-w-sm text-xs">Click the <strong class="text-blue-500">Add Car</strong> button on the right to enter a new vehicle for the guest.</p>
         </hgroup>

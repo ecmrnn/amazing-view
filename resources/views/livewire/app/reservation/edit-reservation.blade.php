@@ -266,79 +266,71 @@
                         x-on:click="$dispatch('open-modal', 'add-amenity-modal')">Add Amenity</button>
                 </div>
 
-                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                    @forelse ($selected_amenities as $amenity)
-                        <div wire:key='{{ $amenity['id'] }}'>
-                            <div
-                                class="flex items-center justify-between w-full px-3 py-2 border rounded-md select-none border-slate-200">
-                                <div>
-                                    <p class="font-semibold">{{ $amenity['name'] }}</p>
-                                    <p class="text-xs">Price: <x-currency />{{ number_format($amenity['price'], 2) }}
-                                    </p>
-                                    <p class="text-xs">Qty: {{ $amenity['quantity'] }}</p>
+                
+                @php $counter = 0; @endphp
+                @if ($selected_amenities->count() > 0)
+                    <x-table.table headerCount="7">
+                        <x-slot:headers>
+                            <p>No.</p>
+                            <p>Room No.</p>
+                            <p>Amenity</p>
+                            <p class="text-center">Quantity</p>
+                            <p class="text-right">Price</p>
+                            <p class="text-right">Total</p>
+                            <p></p>
+                        </x-slot:headers>
+                        
+                        @foreach ($selected_amenities as $key => $amenity)
+                            <div wire:key='{{ $key }}'>
+                                <div class="grid items-center grid-cols-7 px-5 py-1 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
+                                    <p class="font-semibold opacity-50">{{ ++$counter }}</p>
+                                    <p>{{ $amenity['room_number'] }}</p>
+                                    <p>{{ $amenity['name'] }}</p>
+                                    <p class="text-center">{{ $amenity['quantity'] }}</p>
+                                    <p class="text-right"><x-currency />{{ number_format($amenity['price'], 2) }}</p>
+                                    <p class="text-right"><x-currency />{{ number_format($amenity['quantity'] * $amenity['price'], 2) }}</p>
+                                    <div class="ml-auto text-right w-max">
+                                        <x-tooltip text="Remove" dir="top">
+                                            <button x-ref="content" type="button" class="p-3 text-right group"
+                                                x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $key }}')">
+                                                <svg class="transition-all duration-200 ease-in-out opacity-50 group-hover:opacity-100" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
+                                            </button>
+                                        </x-tooltip>
+                                    </div>
                                 </div>
 
-                                <x-tooltip text="Remove Amenity" dir="top">
-                                    <button x-ref="content" type="button" class="p-3 group"
-                                        x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $amenity['id'] }}')">
-                                        <svg class="transition-all duration-200 ease-in-out opacity-50 group-hover:opacity-100"
-                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="lucide lucide-trash-2">
-                                            <path d="M3 6h18" />
-                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                            <line x1="10" x2="10" y1="11" y2="17" />
-                                            <line x1="14" x2="14" y1="11" y2="17" />
-                                        </svg>
-                                    </button>
-                                </x-tooltip>
+                                <x-modal.full name="remove-amenity-modal-{{ $key }}" maxWidth='sm'>
+                                    <div class="p-5 space-y-5" x-on:amenity-removed.window="show = false">
+                                        <div>
+                                            <h2 class="text-lg font-semibold text-red-500">Remove Amenity</h2>
+                                            <p class="text-xs">Are you sure you really want to remove
+                                                <strong>{{ $amenity['name'] }}</strong> as an amenity?
+                                            </p>
+                                        </div>
+                                        <div class="flex justify-end gap-1">
+                                            <x-secondary-button type="button" x-on:click="show = false">No,
+                                                cancel</x-secondary-button>
+                                            <x-danger-button type="button"
+                                                wire:click="removeAmenity({{ $amenity['id'] }}, '{{ $amenity['room_number'] }}')">Yes,
+                                                remove</x-danger-button>
+                                        </div>
+                                    </div>
+                                </x-modal.full>
                             </div>
+                        @endforeach
+                    </x-table.table>
+                @else
+                    <div class="py-10 space-y-3 text-center border rounded-md sm:col-span-2 lg:col-span-4 border-slate-200">
+                        <svg class="mx-auto text-zinc-200" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-notebook"><path d="M2 6h4" /><path d="M2 10h4" /><path d="M2 14h4" /><path d="M2 18h4" /><rect width="16" height="20" x="4" y="2" rx="2" /><path d="M16 2v20" /></svg>
 
-                            <x-modal.full name="remove-amenity-modal-{{ $amenity['id'] }}" maxWidth='sm'>
-                                <div class="p-5 space-y-5" x-on:amenity-removed.window="show = false">
-                                    <div>
-                                        <h2 class="text-lg font-semibold text-red-500">Remove Amenity</h2>
-                                        <p class="text-xs">Are you sure you really want to remove
-                                            <strong>{{ $amenity['name'] }}</strong> as an amenity?
-                                        </p>
-                                    </div>
+                        <p class="text-sm font-semibold">No amenity selected!</p>
 
-                                    <div class="flex justify-end gap-1">
-                                        <x-secondary-button type="button" x-on:click="show = false">No,
-                                            cancel</x-secondary-button>
-                                        <x-danger-button type="button"
-                                            wire:click="removeAmenity({{ $amenity['id'] }})">Yes,
-                                            remove</x-danger-button>
-                                    </div>
-                                </div>
-                            </x-modal.full>
-                        </div>
-                    @empty
-                        <div
-                            class="py-10 space-y-3 text-center border rounded-md sm:col-span-2 lg:col-span-4 border-slate-200">
-                            <svg class="mx-auto text-zinc-200" xmlns="http://www.w3.org/2000/svg" width="48"
-                                height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-notebook">
-                                <path d="M2 6h4" />
-                                <path d="M2 10h4" />
-                                <path d="M2 14h4" />
-                                <path d="M2 18h4" />
-                                <rect width="16" height="20" x="4" y="2" rx="2" />
-                                <path d="M16 2v20" />
-                            </svg>
-
-                            <p class="text-sm font-semibold">No amenity selected!</p>
-
-                            <x-primary-button type='button'
-                                x-on:click="$dispatch('open-modal', 'add-amenity-modal')">
-                                Add Amenity
-                            </x-primary-button>
-                        </div>
-                    @endforelse
-                </div>
+                        <x-primary-button type='button'
+                            x-on:click="$dispatch('open-modal', 'add-amenity-modal')">
+                            Add Amenity
+                        </x-primary-button>
+                    </div>
+                @endif
             </section>
 
             <section class="p-5 space-y-5 bg-white border rounded-lg">
@@ -697,15 +689,19 @@
                 <p class="text-xs">Select an amenity you want to add then enter their quantity.</p>
             </hgroup>
 
-            <x-form.select wire:model.live='amenity' x-on:change="$wire.selectAmenity()">
-                <option value="">Select an Amenity</option>
-
-                @foreach ($available_amenities as $amenity)
-                    @if (!$selected_amenities->contains('id', $amenity->id))
-                        <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
-                    @endif
-                @endforeach
-            </x-form.select>
+            <x-form.input-group>
+                <x-form.select wire:model.live='amenity' x-on:change="$wire.selectAmenity()">
+                    <option value="">Select an Amenity</option>
+                    @foreach ($available_amenities as $amenity)
+                        @if ($selected_amenities->doesntContain(function ($_amenity) use ($amenity, $reservation, $amenity_room_id) {
+                            return $_amenity['room_number'] == $reservation->rooms->get($amenity_room_id)->building->prefix . ' ' . $reservation->rooms->get($amenity_room_id)->room_number && $_amenity['id'] == $amenity['id'];
+                        }))
+                            <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
+                        @endif
+                    @endforeach
+                </x-form.select>
+                <x-form.input-error field="amenity" />
+            </x-form.input-group>
 
             <div class="space-y-2">
                 <x-form.input-group>
@@ -728,10 +724,14 @@
                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         <img src="{{ asset('storage/' . $reservation->rooms->get($amenity_room_id)->image_1_path) }}" class="object-cover object-center rounded-md aspect-video" />
                         
-                        <hgroup>
-                            <h2 class="text-sm font-semibold">{{ $reservation->rooms->get($amenity_room_id)->building->prefix . ' ' . $reservation->rooms->get($amenity_room_id)->room_number }}</h2>
-                            <p class="text-xs">Capacity: {{ $reservation->rooms->get($amenity_room_id)->max_capacity }}</p>
-                        </hgroup>
+                        <div class="flex items-start justify-between">
+                            <hgroup>
+                                <h2 class="text-sm font-semibold">{{ $reservation->rooms->get($amenity_room_id)->building->prefix . ' ' . $reservation->rooms->get($amenity_room_id)->room_number }}</h2>
+                                <p class="text-xs">Capacity: {{ $reservation->rooms->get($amenity_room_id)->max_capacity }}</p>
+                            </hgroup>
+
+                            <x-status type="room" :status="$reservation->rooms->get($amenity_room_id)->status" />
+                        </div>
 
                         <div class="flex items-center justify-between">
                             <x-tooltip text="Previous" dir="top">
@@ -739,7 +739,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
                                 </x-icon-button>
                             </x-tooltip>
-
+                            
                             <div class="flex gap-1">
                                 @foreach ($reservation->rooms as $key => $room)
                                     <button wire:key='{{ $key }}' type="button"

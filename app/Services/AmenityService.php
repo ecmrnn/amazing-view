@@ -13,16 +13,28 @@ class AmenityService
     // - Reservation instance
     // - Amenities to attach
     public function attach(Reservation $reservation, $amenities) {
-        foreach ($amenities as $amenity) {
-            $_amenity = Amenity::find($amenity['id']);
+        foreach ($reservation->rooms as $room) {
+            foreach ($amenities as $amenity) {
+                if ($amenity['room_number'] == $room->building->prefix . ' ' . $room->room_number) {
+                    $_amenity = Amenity::find($amenity['id']);
+        
+                    $room->amenities()->attach($amenity['id'], [
+                        'reservation_id' => $reservation->id,
+                        'price' => $amenity['price'],
+                        'quantity' => $amenity['quantity'],
+                    ]);
 
-            // $reservation->rooms->amenities()->attach($amenity['id'], [
-            //     'price' => $amenity['price'],
-            //     'quantity' => $amenity['quantity'],
-            // ]);
-
-            $_amenity->quantity -= (int) $amenity['quantity'];
-            $_amenity->save();
+                    if (in_array($reservation->status, [
+                        ReservationStatus::AWAITING_PAYMENT->value,
+                        ReservationStatus::PENDING->value,
+                        ReservationStatus::CONFIRMED->value,
+                        ReservationStatus::CHECKED_IN->value,
+                    ])) {
+                        $_amenity->quantity -= (int) $amenity['quantity'];
+                        $_amenity->save();
+                    }
+                }
+            }
         }
     }
     
@@ -31,7 +43,6 @@ class AmenityService
     // - Reservation instance
     // - Collection of amenities to attach
     public function sync(Reservation $reservation, $amenities) {
-        dd($amenities);
         foreach ($reservation->rooms as $room) {
             foreach ($room->amenities as $amenity) {
                 $_amenity = Amenity::find($amenity['id']);
@@ -50,25 +61,7 @@ class AmenityService
             }
         }
         if (!empty($amenities)) {
-            foreach ($amenities as $amenity) {
-                $_amenity = Amenity::find($amenity['id']);
-    
-                // $reservation->rooms->amenities()->attach($amenity['id'], [
-                //     'price' => $amenity['price'],
-                //     'quantity' => $amenity['quantity'],
-                // ]);
-
-                if (in_array($reservation->status, [
-                    ReservationStatus::AWAITING_PAYMENT->value,
-                    ReservationStatus::PENDING->value,
-                    ReservationStatus::CONFIRMED->value,
-                    ReservationStatus::CHECKED_IN->value,
-                ])) {
-                    $_amenity->quantity -= (int) $amenity['quantity'];
-                }
-    
-                $_amenity->save();
-            }
+            $this->attach($reservation, $amenities);
         }
 
         $billing = new BillingService;
@@ -82,32 +75,26 @@ class AmenityService
     }
 
     // For adding amenities on edit and create reservations
-    // Accepts the following arguments:
-    // - Collection of amenities
-    // - Amenity model instance to access both ID and current price of the amenity
-    // - Quantity to be used on pivot table
-    public function add($amenities, Amenity $amenity, $quantity)
+    public function add(Reservation $reservation, Amenity $amenity, $amenities, $quantity, $room_number)
     {
-        if (!$amenities->contains('id', $amenity->id)) {
-            $amenities->push([
-                'id' => $amenity->id,
-                'name' => $amenity->name,
-                'quantity' => $quantity,
-                'price' => $amenity->price,
-            ]);
+        $amenities->push([
+            'id' => $amenity->id,
+            'room_number' => $room_number,
+            'name' => $amenity->name,
+            'quantity' => $quantity,
+            'price' => $amenity->price,
+        ]);
 
-            return $amenities;
-        }
-        return 0;
+        return $amenities;
     }
 
     // For removing amenities on edit and create reservations
     // Accepts the following arguments:
     // - Collection of amenities
     // - Amenity model instance
-    public function remove($amenities, Amenity $amenity) {
-        $amenities = $amenities->reject(function ($_amenity) use ($amenity) {
-            return $_amenity['id'] == $amenity->id;
+    public function remove(Amenity $amenity, $amenities, $room_number) {
+        $amenities = $amenities->reject(function ($_amenity) use ($amenity, $room_number) {
+            return $_amenity['room_number'] == $room_number && $_amenity['id'] == $amenity->id;
         });
 
         return $amenities;

@@ -41,7 +41,7 @@
             toast(toast_details.message, {
                 type: toast_details.type,
                 description: toast_details.description,
-                position: 'top-right',
+                position: 'top-center',
             })"
         >
         <div @class([

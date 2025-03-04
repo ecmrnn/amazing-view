@@ -65,7 +65,7 @@ class EditReservation extends Component
     public $selected_type; 
     public $selected_building;
     public $available_amenities;
-    public $amenity;
+    #[Validate] public $amenity;
     #[Validate] public $quantity = 0;
     public $amenity_room_id = 0;
     public $max_quantity = 0;
@@ -150,6 +150,7 @@ class EditReservation extends Component
             foreach ($room->amenities as $amenity) {
                 $this->selected_amenities->push([
                     'id' => $amenity->id,
+                    'room_number' => $room->building->prefix . ' ' . $room->room_number,
                     'name' => $amenity->name,
                     'quantity' => $amenity->pivot->quantity,
                     'price' => $amenity->pivot->price,
@@ -207,6 +208,10 @@ class EditReservation extends Component
 
         if ($amenity) {
             $this->max_quantity = $amenity->quantity;
+
+            if ($this->max_quantity < $this->quantity) {
+                $this->quantity = $amenity->quantity;
+            }
         } else {
             $this->max_quantity = 0;
             $this->quantity = 0;
@@ -248,19 +253,24 @@ class EditReservation extends Component
         ]);
 
         $amenity = Amenity::find($this->amenity);
-
         $service = new AmenityService;
-        $service->add($this->selected_amenities, $amenity, $this->quantity);
+        $room = $this->reservation->rooms->get($this->amenity_room_id);
+        $room_number = $room->building->prefix . ' ' . $room->room_number;
+
+        $this->selected_amenities = $service->add($this->reservation, $amenity, $this->selected_amenities, $this->quantity, $room_number);
+
+        $service->sync($this->reservation, $this->selected_amenities);
 
         $this->reset('amenity', 'quantity', 'max_quantity');
         $this->dispatch('amenity-added');
         $this->toast('Success!', description: 'Amenity added successfully!');
     }
 
-    public function removeAmenity(Amenity $amenity) {
+    public function removeAmenity(Amenity $amenity, $room_number) {
         $service = new AmenityService;
-        $this->selected_amenities = $service->remove($this->selected_amenities, $amenity);
-
+        $this->selected_amenities = $service->remove($amenity, $this->selected_amenities, $room_number);
+        $service->sync($this->reservation, $this->selected_amenities);
+        
         $this->dispatch('amenity-removed');
         $this->toast('Amenity Removed', 'info', ucwords($amenity->name) . ' is removed successfully!');
     }
@@ -271,6 +281,16 @@ class EditReservation extends Component
         } else {
             $this->amenity_room_id = 0;
         }
+
+        $amenity = $this->amenity;
+        $room = $this->reservation->rooms->get($this->amenity_room_id);
+        $room_number = $room->building->prefix . ' ' . $room->room_number;
+
+        if ($this->selected_amenities->contains(function ($_amenity) use ($room_number, $amenity) {
+            return $_amenity['room_number'] == $room_number && $_amenity['id'] == $amenity;
+        })) {
+            $this->reset('amenity', 'max_quantity', 'quantity');
+        }
     }
 
     public function previousRoom() {
@@ -278,6 +298,16 @@ class EditReservation extends Component
             $this->amenity_room_id = $this->reservation->rooms->count() - 1;
         } else {
             $this->amenity_room_id--;
+        }
+
+        $amenity = $this->amenity;
+        $room = $this->reservation->rooms->get($this->amenity_room_id);
+        $room_number = $room->building->prefix . ' ' . $room->room_number;
+
+        if ($this->selected_amenities->contains(function ($_amenity) use ($room_number, $amenity) {
+            return $_amenity['room_number'] == $room_number && $_amenity['id'] == $amenity;
+        })) {
+            $this->reset('amenity', 'max_quantity', 'quantity');
         }
     }
 
