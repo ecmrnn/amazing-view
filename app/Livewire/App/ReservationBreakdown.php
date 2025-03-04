@@ -87,9 +87,12 @@ class ReservationBreakdown extends Component
                         @foreach ($reservation->rooms as $room)
                             @foreach ($room->amenities as $amenity)
                                 <?php $counter++ ?>
-                                <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
+                                <div class="grid grid-cols-6 px-5 py-2.5 items-center text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
                                     <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                    <p>{{ $room->building->prefix . ' ' . $room->room_number . ' - ' . $amenity->name }}</p>
+                                    <div class="flex items-center gap-3">
+                                        <p>{{ $amenity->name }}</p>
+                                        <p class="px-2 py-1 text-xs font-semibold border rounded-md bg-slate-50 border-slate-200">{{ $room->building->prefix . ' ' . $room->room_number }}</p>
+                                    </div>
                                     <p>Amenity</p>
                                     <p class="text-center">{{ $amenity->pivot->quantity }}</p>
                                     <p class="text-right"><x-currency />{{ number_format($amenity->pivot->price, 2) }}</p>
@@ -130,8 +133,8 @@ class ReservationBreakdown extends Component
                         <td class="text-right"><x-currency />{{ number_format($breakdown['sub_total'], 2) }}</td>
                     </tr>
                     <tr>
-                        <td class="pr-5 text-right">Vatable Sales</td>
-                        <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_sales'], 2) }}</td>
+                        <td class="pt-5 pr-5 text-right">Vatable Sales</td>
+                        <td class="pt-5 text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_sales'], 2) }}</td>
                     </tr>
                     @if ($breakdown['taxes']['vatable_exempt_sales'] > 0)
                         <tr>

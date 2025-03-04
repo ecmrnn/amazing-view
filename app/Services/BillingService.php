@@ -125,6 +125,7 @@ class BillingService
         $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount) + $other_charges;
 
         return [
+            'sub_total' => $sub_total,
             'vatable_sales' => $vatable_sales,
             'vatable_exempt_sales' => $vatable_exempt_sales,
             'vat' => $vat,

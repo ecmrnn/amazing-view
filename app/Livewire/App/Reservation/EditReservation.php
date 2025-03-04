@@ -192,7 +192,7 @@ class EditReservation extends Component
             return $query->where('reservations.id', '!=', $this->reservation->id)
                 ->where('date_in', '<=', $this->date_out)
                 ->where('date_out', '>=', $this->date_in)
-                ->whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value]);
+                ->whereIn('reservations.status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value]);
         })->pluck('id')->toArray();
 
         // Get the rooms in the building
@@ -407,7 +407,7 @@ class EditReservation extends Component
             return $query->where('reservations.id', '!=', $this->reservation->id)
                 ->where('date_in', '<=', $this->date_out)
                 ->where('date_out', '>=', $this->date_in)
-                ->whereIn('status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value]);
+                ->whereIn('reservations.status', [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value]);
         })->pluck('id')->toArray();
         
         $room_by_capacity = Room::whereNotIn('id', $this->reserved_rooms)

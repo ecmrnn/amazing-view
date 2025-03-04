@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between gap-3">
             <hgroup>
                 <h1 class="text-xl font-bold leading-tight text-gray-800">
-                    {{ __('Billings') }}
+                    Billings
                 </h1>
                 <p class="text-xs">Manage your billings here</p>
             </hgroup>
