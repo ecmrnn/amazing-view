@@ -282,11 +282,22 @@
                         
                         @foreach ($selected_amenities as $key => $amenity)
                             <div wire:key='{{ $key }}'>
-                                <div class="grid items-center grid-cols-7 px-5 py-1 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
+                                <div x-data="{ quantity: @js($amenity['quantity']) }" class="grid items-center grid-cols-7 px-5 py-1 text-sm border-t border-solid hover:bg-slate-50 border-slate-200"
+                                        x-init="
+                                        let timeout;
+                                        $watch('quantity', (value) => {
+                                            clearTimeout(timeout); // Cancel the previous request if another change happens quickly
+                                            timeout = setTimeout(() => { 
+                                                if (value > 0) {
+                                                    @this.call('updateQuantity', '{{ $amenity['id'] }}', value, '{{ $amenity['room_number'] }}');
+                                                }
+                                            }, 300); // Adjust debounce delay (300ms is a good default)
+                                        })"
+                                    >
                                     <p class="font-semibold opacity-50">{{ ++$counter }}</p>
                                     <p>{{ $amenity['room_number'] }}</p>
                                     <p>{{ $amenity['name'] }}</p>
-                                    <p class="text-center">{{ $amenity['quantity'] }}</p>
+                                    <x-form.input-number x-model="quantity" max="{{ $amenity['max'] }}" min="1" id="quantity" name="quantity" class="text-center" />
                                     <p class="text-right"><x-currency />{{ number_format($amenity['price'], 2) }}</p>
                                     <p class="text-right"><x-currency />{{ number_format($amenity['quantity'] * $amenity['price'], 2) }}</p>
                                     <div class="ml-auto text-right w-max">

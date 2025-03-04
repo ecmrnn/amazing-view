@@ -83,6 +83,7 @@ class AmenityService
             'name' => $amenity->name,
             'quantity' => $quantity,
             'price' => $amenity->price,
+            'max' => $amenity->quantity - $quantity,
         ]);
 
         return $amenities;

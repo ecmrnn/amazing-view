@@ -154,6 +154,7 @@ class EditReservation extends Component
                     'name' => $amenity->name,
                     'quantity' => $amenity->pivot->quantity,
                     'price' => $amenity->pivot->price,
+                    'max' => $amenity->quantity + $amenity->pivot->quantity,
                 ]);
             }
         }
@@ -273,6 +274,32 @@ class EditReservation extends Component
         
         $this->dispatch('amenity-removed');
         $this->toast('Amenity Removed', 'info', ucwords($amenity->name) . ' is removed successfully!');
+    }
+
+    public function updateQuantity($amenity, $quantity, $room_number) {
+        $amenity = $this->selected_amenities->first(function ($_amenity) use ($amenity, $room_number) {
+            if ($_amenity['id'] == $amenity && $_amenity['room_number'] == $room_number) {
+                return $_amenity;
+            }
+        });
+
+        if ($quantity > $amenity['max']) {
+            $this->toast('Update Failed', 'warning', 'Remaining stock of ' . ucwords($amenity['name']) . ' is ' . $amenity['max'] . '.');
+            return;
+        }
+
+        $this->selected_amenities = $this->selected_amenities->map(function ($_amenity) use ($amenity, $quantity, $room_number){
+            if ($_amenity['id'] == $amenity['id'] && $_amenity['room_number'] == $room_number) {
+                $_amenity['quantity'] = $quantity;
+            }
+            return $_amenity;
+        });
+
+        $service = new AmenityService;
+        $service->sync($this->reservation, $this->selected_amenities);
+
+        $this->reset('quantity');
+        $this->toast('Success!', description: 'Updated quantity of ' . ucwords($amenity['name'] . '!'));
     }
 
     public function nextRoom() {
