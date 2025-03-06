@@ -17,7 +17,6 @@
 
         {{-- Operations --}}
     night_count: $wire.entangle('night_count'),
-        {{-- additional_amenity_quantity: $wire.entangle('additional_amenity_quantity'), --}}
 
         formatDate(date) {
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -27,13 +26,34 @@
     @csrf
 
     <section class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
-        <div class="flex items-center gap-5 p-5 bg-white border rounded-lg border-slate-200">
-            <x-back />
-
-            <div>
-                <h2 class="text-lg font-semibold">Edit Reservation</h2>
-                <p class="max-w-sm text-xs">Update reservation details here</p>
+        <div class="flex items-center justify-between p-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-center gap-5">
+                <x-back />
+                <div>
+                    <h2 class="text-lg font-semibold">Edit Reservation</h2>
+                    <p class="max-w-sm text-xs">Update reservation details here</p>
+                </div>
             </div>
+
+            <x-actions>
+                <div class="space-y-1">
+                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'reschedule-reservation'); dropdown = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-clock"><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.3V14"/><circle cx="16" cy="16" r="6"/></svg>
+                        <p>Reschedule</p>
+                    </button>
+                </div>
+
+                @if ($reservation->status == App\Enums\ReservationStatus::PENDING->value || $reservation->status == App\Enums\ReservationStatus::CONFIRMED->value || $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT->value)
+                    <div class="w-full h-px bg-slate-200"></div>
+                    
+                    <div class="space-y-1">
+                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-cancel-reservation'); dropdown = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                            <p>Cancel</p>
+                        </button>
+                    </div>
+                @endif
+            </x-actions>
         </div>
 
         {{-- For canceled resrvations --}}
@@ -89,10 +109,10 @@
                             <p class="font-semibold">{{ $reservation->rid }}</p>
                             <p class="text-xs">Reservation ID</p>
                         </div>
-                        @if ($reservation->status != App\Enums\ReservationStatus::CANCELED->value)
-                            <button x-on:click="$dispatch('open-modal', 'edit-reservation-details')" type="button"
+                        {{-- @if ($reservation->status != App\Enums\ReservationStatus::CANCELED->value)
+                            <button x-on:click="$dispatch('open-modal', 'reschedule-reservation')" type="button"
                                 class="text-xs font-semibold text-blue-500">Edit</button>
-                        @endif
+                        @endif --}}
                     </div>
 
                     {{-- Reservation Details --}}
@@ -450,17 +470,13 @@
         @endif
     </section>
 
-    <x-modal.drawer name='edit-reservation-details' maxWidth='xl'>
-        <div class="p-5 space-y-5" x-on:reservation-details-updated.window="show = false">
-            <livewire:app.reservation.edit-reservation-details :reservation="$reservation" />
-        </div>
-    </x-modal.drawer>
+    <x-modal.full name='reschedule-reservation' maxWidth='xl'>
+        <livewire:app.reservation.reschedule-reservation :reservation="$reservation" />
+    </x-modal.full>
 
     {{-- Modal for confirming reservation --}}
     <x-modal.full name="show-cancel-reservation" maxWidth="sm">
-        <div x-data="{ reason: 'guest' }">
-            <livewire:app.reservation.cancel-reservation :reservation="$reservation" />
-        </div>
+        <livewire:app.reservation.cancel-reservation :reservation="$reservation" />
     </x-modal.full>
 
     {{-- Modal for showing building's rooms --}}

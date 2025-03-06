@@ -93,7 +93,7 @@ class CancelReservation extends Component
     {
 
         return <<<'HTML'
-        <section x-data="{ refund_amount: @entangle('refund_amount') }" class="p-5 space-y-5 bg-white" x-on:reservation-canceled.window="show = false">
+        <section x-data="{ refund_amount: @entangle('refund_amount'), reason: 'guest' }" class="p-5 space-y-5 bg-white" x-on:reservation-canceled.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold capitalize">Reservation Cancellation</h2>
                 <p class="max-w-sm text-xs">Are you sure you really want to cancel this reservation?</p>

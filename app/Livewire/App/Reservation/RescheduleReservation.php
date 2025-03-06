@@ -15,7 +15,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class EditReservationDetails extends Component
+class RescheduleReservation extends Component
 {
     use DispatchesToast;
 
@@ -216,7 +216,7 @@ class EditReservationDetails extends Component
         $this->pwd_count = $data['pwd_count'];
     }
 
-    public function edit() {
+    public function reschedule() {
         switch ($this->step) {
             case 1:
                 $this->validate([
@@ -286,38 +286,35 @@ class EditReservationDetails extends Component
     public function render()
     {
         return <<<'HTML'
-        <div class="space-y-5" 
+        <div class="p-5 space-y-5" x-on:reservation-details-updated.window="show = false"
             x-data="{
                 hide: true,
                 date_in: @entangle('date_in'),
                 date_out: @entangle('date_out'),
-                adult_count: @entangle('adult_count'),
-                children_count: @entangle('children_count'),
                 selected_rooms: @entangle('selected_rooms'),
-                disable_date: @entangle('disable_date'),
                 is_map_view: $wire.entangle('is_map_view'),
             }">
             <hgroup>
-                <h2 class="text-lg font-semibold">Reservation Details</h2>
+                <h2 class="text-lg font-semibold">Reschedule Reservation</h2>
                 <p class="max-w-sm text-xs">Enter your new reservation details below</p>
             </hgroup>
 
             {{-- Reservation steps --}}
             <div class="flex items-start gap-5 mb-10">
-                <x-web.reservation.steps step="1" currentStep="{{ $step }}" icon="bed" name="Reservation Details" />
-                <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Select a Room" />
+                <x-web.reservation.steps step="1" currentStep="{{ $step }}" icon="bed" name="Reservation Dates" />
+                <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Confirm Rooms" />
             </div>
 
             @switch($step)
                 @case(1)
-                    <div class="grid grid-cols-2 gap-5 p-5 border rounded-md border-slate-200">
+                    <div class="grid grid-cols-2 gap-5 p-5 bg-white border rounded-md border-slate-200">
                         <x-form.input-group>
-                            <x-form.input-label for='date_in'>Check-in date</x-form.input-label>
-                            <x-form.input-date x-bind:disabled="disable_date ? true : false" x-model="date_in" min="{{ $min_date }}" id='date_in' name='date_in' class="w-full" />
+                            <x-form.input-label for='date_in'>New check-in date</x-form.input-label>
+                            <x-form.input-date x-model="date_in" min="{{ $min_date }}" id='date_in' name='date_in' class="w-full" />
                             <x-form.input-error field="date_in" />
                         </x-form.input-group>
                         <x-form.input-group>
-                            <x-form.input-label for='date_out'>Check-out date</x-form.input-label>
+                            <x-form.input-label for='date_out'>New check-out date</x-form.input-label>
                             <x-form.input-date x-model="date_out" x-bind:min="date_in" id='date_out' name='date_out' class="w-full" />
                             <x-form.input-error field="date_out" />
                         </x-form.input-group>
@@ -336,18 +333,18 @@ class EditReservationDetails extends Component
 
                     <div class="flex items-center justify-between gap-1">
                         <div>
-                            <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                            <x-primary-button type="button" wire:click="edit">Continue</x-primary-button>
+                            <x-loading wire:loading wire:target="reschedule">Checking room availability</x-loading>
                         </div>
-                        <div class="ml-4">
-                            <x-loading wire:loading wire:target="edit">Checking available rooms</x-loading>
+                        <div>
+                            <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                            <x-primary-button type="button" wire:click="reschedule">Continue</x-primary-button>
                         </div>
                     </div>
                     @break
                 @case(2)
                     <x-form.input-error field="selected_rooms" />
 
-                    <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         <div class="grid grid-cols-2 gap-5">
                             <div>
                                 <x-secondary-button x-on:click="is_map_view = !is_map_view"
@@ -461,37 +458,10 @@ class EditReservationDetails extends Component
                             </div>
                         @endif
                     </div>
-
-                    <div class="p-5 space-y-5 border rounded-md border-slate-200">
-                        <div class="grid grid-cols-2 gap-5">
-                            <x-form.input-group>
-                                <x-form.input-label for='adult_count'>Number of Adults</x-form.input-label>
-                                <x-form.input-number x-model="adult_count" wire:model.live='adult_count' id='adult_count' name='adult_count' class="w-full" />
-                                <x-form.input-error field="adult_count" />
-                            </x-form.input-group>
-                            <x-form.input-group>
-                                <x-form.input-label for='children_count'>Number of Children</x-form.input-label>
-                                <x-form.input-number x-model="children_count" wire:model.live='children_count' id='children_count' name='children_count' class="w-full" />
-                                <x-form.input-error field="children_count" />
-                            </x-form.input-group>
-                            <x-form.input-error field="max_capacity" />
-                        </div>
-                        
-                        <div class="flex items-center gap-3">
-                            <x-icon-button wire:click="updateGuests">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>
-                            </x-icon-button>
-
-                            <div wire:click="updateGuests">
-                                <p class="text-sm font-semibold">Apply Discounts</p>
-                                <p class="text-sm">For Senior and PWD Guests</p>
-                            </div>
-                        </div>
-                    </div>
                     
                     <div class="flex gap-1">
                         <x-secondary-button type="button" wire:click="back">Back</x-secondary-button>
-                        <x-primary-button type="button" wire:click="edit">Save Changes</x-primary-button>
+                        <x-primary-button type="button" wire:click="reschedule">Reschedule</x-primary-button>
                     </div>
                     @break
             @endswitch

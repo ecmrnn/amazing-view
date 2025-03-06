@@ -22,7 +22,6 @@ class FindReservation extends Component
     public $reservation_id;
     public $reservation;
     public $selected_rooms;
-    public $selected_amenities = [];
     public $vat = 0;
     public $vatable_sales = 0;
     public $net_total = 0;
@@ -50,8 +49,7 @@ class FindReservation extends Component
     #[Validate] public $proof_image_path;
 
     public function mount() {
-        $this->reservation = new Collection;
-        $this->selected_rooms = new Collection;
+        $this->selected_rooms = collect();
 
         if (!empty($this->rid)) {
             $this->reservation_id = $this->rid;
@@ -108,20 +106,19 @@ class FindReservation extends Component
         $this->reservation = Reservation::where('rid', $this->reservation_id)->first();
         
         if ($this->reservation != null) {
-            $this->selected_rooms = Reservation::find($this->reservation['id'])->rooms;
-            $this->selected_amenities = Reservation::find($this->reservation['id'])->amenities;
-
             // Get the number of nights between 'date_in' and 'date_out'
             $this->night_count = Carbon::parse($this->reservation['date_in'])->diffInDays(Carbon::parse($this->reservation['date_out']));
             // If 'date_in' == 'date_out', 'night_count' = 1
             $this->night_count != 0 ?: $this->night_count = 1;
 
-            foreach ($this->selected_rooms as $room) {
-                $this->sub_total += ($room->rate * $this->night_count);
+            foreach ($this->reservation->rooms as $room) {
+                $this->sub_total += ($room->pivot->rate * $this->night_count);
             }
 
-            foreach ($this->selected_amenities as $amenity) {
-                $this->sub_total += $amenity->price;
+            foreach ($this->reservation->rooms as $room) {
+                foreach ($room->amenity as $amenity) {
+                    $this->sub_total += $amenity->pivot->price * $amenity->pivot->quantity;
+                }
             }
 
             $this->vatable_sales = $this->sub_total / 1.12;

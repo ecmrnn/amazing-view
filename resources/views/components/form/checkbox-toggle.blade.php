@@ -25,7 +25,7 @@
             @disabled(true)
         @endif
     >
-    <label for="{{ $id }}" class="inline-flex items-center justify-between w-full border {{ $class }} rounded-lg cursor-pointer group peer-checked:border-blue-600 peer-checked:bg-blue-50/50">
+    <label for="{{ $id }}" class="inline-flex items-center justify-between w-full border {{ $class }} rounded-lg cursor-pointer group peer-checked:border-blue-500 peer-checked:bg-blue-50/50 peer-checked:text-blue-800">
         {{ $slot }}
     </label>
 </div>

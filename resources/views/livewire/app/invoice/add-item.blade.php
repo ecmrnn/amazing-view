@@ -305,25 +305,27 @@
                 </div>
                 
                 <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
-                    <x-form.input-group>
-                        <x-form.input-label for='room_number'>Select a Room</x-form.input-label>
-                        <x-form.select wire:model.live='room_number' id="room_number" name="room_number" wire:change='selectRoom'>
-                            @foreach ($invoice->reservation->rooms as $room)
-                                <option value="{{ $room->building->prefix . ' ' . $room->room_number }}">{{ $room->building->prefix . ' ' . $room->room_number }}</option>
-                            @endforeach
-                        </x-form.select>
-                        <x-form.input-error field="room_number" />
-                    </x-form.input-group>
-
-                    <x-form.input-group>
-                        <x-form.input-label for='quantity'>Quantity</x-form.input-label>
-                        <x-form.input-number x-bind:disabled="item_type == 'service'" min="1" x-model="quantity" wire:model.live='quantity' id="quantity" name="quantity" max="{{ $max }}" label="Item Name" />
-                        <x-form.input-error field="quantity" />
-                        @if ($max != 99999 && $item_type == 'amenity')
+                    @if ($item_type != 'service')
+                        <x-form.input-group>
+                            <x-form.input-label for='room_number'>Select a Room</x-form.input-label>
+                            <x-form.select wire:model.live='room_number' id="room_number" name="room_number" wire:change='selectRoom'>
+                                @foreach ($invoice->reservation->rooms as $room)
+                                    <option value="{{ $room->building->prefix . ' ' . $room->room_number }}">{{ $room->building->prefix . ' ' . $room->room_number }}</option>
+                                @endforeach
+                            </x-form.select>
+                            <x-form.input-error field="room_number" />
+                        </x-form.input-group>
+                        
+                        <x-form.input-group>
+                            <x-form.input-label for='quantity'>Quantity</x-form.input-label>
+                            <x-form.input-number x-bind:disabled="item_type == 'service'" min="1" x-model="quantity" wire:model.live='quantity' id="quantity" name="quantity" max="{{ $max }}" label="Item Name" />
+                            <x-form.input-error field="quantity" />
+                            @if ($max != 99999 && $item_type == 'amenity')
                             <p class="text-xs">Remaining: {{ $max }}</p>
-                        @endif
-                    </x-form.input-group>
-        
+                            @endif
+                        </x-form.input-group>
+                    @endif
+                        
                     <x-form.input-group>
                         <x-form.input-label for='price'>Price</x-form.input-label>
                         <x-form.input-currency x-bind:disabled="item_type != 'others'" wire:model.live='price' id="price" name="price" label="Item Name" />
