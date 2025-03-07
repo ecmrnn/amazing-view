@@ -14,4 +14,5 @@ enum ReservationStatus: int
     case RESERVED = 7;
     case AWAITING_PAYMENT = 8;
     case NO_SHOW = 9;
+    case RESCHEDULED = 10;
 }

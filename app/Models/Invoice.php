@@ -40,14 +40,26 @@ class Invoice extends Model
     {
         // Generate custom ID: https://laravelarticle.com/laravel-custom-id-generator
         parent::boot();
-        self::creating(function ($model) {
-            $model->iid = IdGenerator::generate([
+        self::creating(function ($invoice) {
+            $invoice->iid = IdGenerator::generate([
                 'table' => 'invoices',
                 'field' => 'iid',
                 'length' => 10,
                 'prefix' => 'I' . date('ymd'),
                 'reset_on_prefix_change' => true
             ]);
+        });
+
+        self::updating(function ($invoice) {
+            if (empty($invoice->iid)) {
+                $invoice->iid = IdGenerator::generate([
+                    'table' => 'invoices',
+                    'field' => 'iid',
+                    'length' => 10,
+                    'prefix' => 'I' . date('ymd'),
+                    'reset_on_prefix_change' => true
+                ]);
+            }
         });
     }
 }

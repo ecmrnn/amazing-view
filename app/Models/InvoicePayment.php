@@ -89,14 +89,26 @@ class InvoicePayment extends Model
     {
         // Generate custom ID: https://laravelarticle.com/laravel-custom-id-generator
         parent::boot();
-        self::creating(function ($model) {
-            $model->orid = IdGenerator::generate([
+        self::creating(function ($payment) {
+            $payment->orid = IdGenerator::generate([
                 'table' => 'invoice_payments',
                 'field' => 'orid',
                 'length' => 12,
                 'prefix' => 'OR' . date('ymd'),
                 'reset_on_prefix_change' => true
             ]);
+        });
+
+        self::updating(function ($payment) {
+            if (empty($payment->orid)) {
+                $payment->orid = IdGenerator::generate([
+                    'table' => 'invoice_payments',
+                    'field' => 'orid',
+                    'length' => 12,
+                    'prefix' => 'OR' . date('ymd'),
+                    'reset_on_prefix_change' => true
+                ]);
+            }
         });
     }
 }

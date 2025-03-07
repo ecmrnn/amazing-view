@@ -8,6 +8,7 @@ use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomReservation;
 use App\Models\RoomType;
+use App\Services\ReservationService;
 use App\Services\RoomService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
@@ -53,6 +54,10 @@ class RescheduleReservation extends Component
         $this->reservation = $reservation;
         $this->rooms = collect();
 
+        // Initialize the buildings and rooms
+        $this->buildings = Building::with('rooms')->withCount('rooms')->get();
+        $this->rooms = RoomType::with('rooms')->get();
+
         if (in_array($reservation->status, [
             ReservationStatus::AWAITING_PAYMENT->value,
             ReservationStatus::PENDING->value,
@@ -83,7 +88,7 @@ class RescheduleReservation extends Component
         ];
     }
     
-    public function validateReservationDetails() {
+    public function checkRoomConflict() {
         // Edit Reservation Details (Update Date Algo.)
         // 1. User change date-in or date-out
         // 2. Get all the reservations on the selected dates
@@ -132,17 +137,10 @@ class RescheduleReservation extends Component
         $this->conflict_rooms = array_intersect($this->selected_rooms->pluck('id')->toArray(), $reserved_rooms);
         if (!empty($this->conflict_rooms)) {
             // 4.1. Reserved: Choose another room
-            $this->toast('Update failed', 'danger', 'The selected rooms is already reserved on the selected dates');
+            $this->toast('Unavailable Rooms', 'warning', 'One of the rooms reserved is unavailable on the selected dates.');
             $this->conflict_rooms = Room::whereIn('id', $this->conflict_rooms)->get();
             return;
-        } else {
-            // 4.2. Not Reserved: Continue with the update
-            $this->step = 2;
-        }
-
-        // Initialize the buildings and rooms
-        $this->buildings = Building::with('rooms')->withCount('rooms')->get();
-        $this->rooms = RoomType::with('rooms')->get();
+        } 
     }
 
     public function back() {
@@ -167,6 +165,8 @@ class RescheduleReservation extends Component
             });
             $this->max_capacity -= $room->max_capacity;
         }
+
+        $this->checkRoomConflict();
     }
 
     #[On('add-rooms')]
@@ -179,6 +179,8 @@ class RescheduleReservation extends Component
                 break;
             }
         }
+
+        $this->checkRoomConflict();
     }
 
     public function removeRoom(Room $room) {
@@ -224,21 +226,22 @@ class RescheduleReservation extends Component
                     'date_out' => 'required|date|after_or_equal:date_in',
                 ]);
 
-                $this->validateReservationDetails();
+                if ($this->reservation->date_in == $this->date_in && $this->reservation->date_out == $this->date_out) {
+                    $this->addError('date_in', 'Select a new check-in date');
+                    $this->addError('date_out', 'Select a new check-out date');
+                    return;
+                }
+
+                $this->step = 2;
+                $this->checkRoomConflict();
                 break;
             case 2:
                 $this->validate([
-                    'adult_count' => 'required|gte:1|integer',
-                    'children_count' => 'nullable|integer',
                     'selected_rooms' => 'required',
                 ]);
 
-                if ($this->adult_count + $this->children_count > $this->max_capacity) {
-                    $this->addError('selected_rooms', 'Selected rooms cannot accommodate the total number of guests.');
-                    return;
-                }
-                if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
-                    $this->addError('adult_count', 'Total Seniors and PWDs cannot exceed total guests');
+                if (!empty($this->conflict_rooms)) {
+                    $this->toast('Reschedule Failed', 'warning', 'One of the Rooms selected is already reserved.');
                     return;
                 }
 
@@ -250,35 +253,17 @@ class RescheduleReservation extends Component
     }
 
     public function update() {
-        // 1. Update date and number of guests
-        $reservation = $this->reservation;
-        
-        if ($reservation->date_in != $this->date_in) {
-            $reservation->resched_date_in = $this->date_in;
-        } else {
-            $reservation->resched_date_in = null;
-            $reservation->date_in = $this->date_in;
-        }
-        
-        if ($reservation->date_out != $this->date_out) {
-            $reservation->resched_date_out = $this->date_out;
-        } else {
-            $reservation->resched_date_out = null;
-            $reservation->date_out = $this->date_out;
-        }
-        
-        $reservation->adult_count = $this->adult_count;
-        $reservation->children_count = $this->children_count;
-        $reservation->senior_count = $this->senior_count;
-        $reservation->pwd_count = $this->pwd_count;
+        $validated = $this->validate([
+            'date_in' => 'date|required',
+            'date_out' => 'date|required',
+            'selected_rooms' => 'required',
+        ]);
+        $validated['selected_rooms'] = $this->selected_rooms;
+        // 1. Reschedule reservation
+        $service = new ReservationService;
+        $service->reschedule($this->reservation, $validated);
 
-        $reservation->save();
-        
-        // 2. Reassign rooms
-        $room_service = new RoomService;
-        $room_service->sync($reservation, $this->selected_rooms);
-
-        // 3. Pop a toast
+        // 2. Pop a toast
         $this->toast('Edit Success!', description: 'Reservation details updated!');
         $this->dispatch('reservation-details-updated');
     }
@@ -320,17 +305,6 @@ class RescheduleReservation extends Component
                         </x-form.input-group>
                     </div>
 
-                    @if (!empty($conflict_rooms))
-                        <div class="p-5 space-y-5 text-red-500 border border-red-500 rounded-md bg-red-50">
-                            <p class="text-sm font-semibold">The selected rooms is already reserved on the selected dates, create a new reservation or select another date.</p>
-                            <ul class="list-disc list-inside">
-                                @foreach ($conflict_rooms as $room)
-                                    <li>{{ $room->building->prefix . ' ' . $room->room_number }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     <div class="flex items-center justify-between gap-1">
                         <div>
                             <x-loading wire:loading wire:target="reschedule">Checking room availability</x-loading>
@@ -344,26 +318,37 @@ class RescheduleReservation extends Component
                 @case(2)
                     <x-form.input-error field="selected_rooms" />
 
+                    @if (!empty($conflict_rooms))
+                        <div class="p-5 space-y-5 text-red-500 border border-red-500 rounded-md bg-red-50">
+                            <p class="text-xs font-semibold">The following rooms is already reserved on the selected dates.</p>
+                            <ul class="list-disc list-inside">
+                                @foreach ($conflict_rooms as $room)
+                                    <li class="text-xs font-semibold">{{ $room->building->prefix . ' ' . $room->room_number }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         <div class="grid grid-cols-2 gap-5">
                             <div>
-                                <x-secondary-button x-on:click="is_map_view = !is_map_view"
+                                <x-secondary-button type="button" x-on:click="is_map_view = !is_map_view"
                                     x-show="!is_map_view" class="flex w-full gap-2 m-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
                                     <p class="text-xs font-semibold">Map View</p>
                                 </x-secondary-button>
-                                <x-primary-button x-show="is_map_view" class="flex w-full gap-2 m-1">
+                                <x-primary-button type="button" x-show="is_map_view" class="flex w-full gap-2 m-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
                                     <p class="text-xs font-semibold">Map View</p>
                                 </x-primary-button>
                             </div>
 
                             <div>
-                                <x-primary-button x-show="!is_map_view" class="flex w-full gap-2 m-1">
+                                <x-primary-button type="button" x-show="!is_map_view" class="flex w-full gap-2 m-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse"><path d="m3 10 2.5-2.5L3 5" /><path d="m3 19 2.5-2.5L3 14" /><path d="M10 6h11" /><path d="M10 12h11" /><path d="M10 18h11" /></svg>
                                     <p class="text-xs font-semibold">List View</p>
                                 </x-primary-button>
-                                <x-secondary-button x-on:click="is_map_view = !is_map_view"
+                                <x-secondary-button type="button" x-on:click="is_map_view = !is_map_view"
                                     x-show="is_map_view" class="flex w-full gap-2 m-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse"><path d="m3 10 2.5-2.5L3 5" /><path d="m3 19 2.5-2.5L3 14" /><path d="M10 6h11" /><path d="M10 12h11" /><path d="M10 18h11" /></svg>
                                     <p class="text-xs font-semibold">List View</p>
@@ -459,7 +444,7 @@ class RescheduleReservation extends Component
                         @endif
                     </div>
                     
-                    <div class="flex gap-1">
+                    <div class="flex justify-end gap-1">
                         <x-secondary-button type="button" wire:click="back">Back</x-secondary-button>
                         <x-primary-button type="button" wire:click="reschedule">Reschedule</x-primary-button>
                     </div>

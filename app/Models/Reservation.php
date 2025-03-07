@@ -137,26 +137,34 @@ class Reservation extends Model
     {
         // Generate custom ID: https://laravelarticle.com/laravel-custom-id-generator
         parent::boot();
-        self::creating(function ($model) {
-            $model->rid = IdGenerator::generate([
+        self::creating(function ($reservation) {
+            $reservation->rid = IdGenerator::generate([
                 'table' => 'reservations',
                 'field' => 'rid',
                 'length' => 10,
                 'prefix' => date('Rymd'),
                 'reset_on_prefix_change' => true
             ]);
-        });
 
-        Reservation::creating(function ($reservation) {
             $reservation->first_name = trim(strtolower($reservation->first_name));
             $reservation->last_name = trim(strtolower($reservation->last_name));
             $reservation->note = htmlentities(str_replace('"', "'", $reservation->note));
         });
 
-        Reservation::updating(function ($reservation) {
+        self::updating(function ($reservation) {
             $reservation->first_name = trim(strtolower($reservation->first_name));
             $reservation->last_name = trim(strtolower($reservation->last_name));
             $reservation->note = htmlentities(str_replace('"', "'", $reservation->note));
+
+            if (empty($reservation->rid)) {
+                $reservation->rid = IdGenerator::generate([
+                    'table' => 'reservations',
+                    'field' => 'rid',
+                    'length' => 10,
+                    'prefix' => date('Rymd'),
+                    'reset_on_prefix_change' => true
+                ]);
+            }
         });
     }
 }

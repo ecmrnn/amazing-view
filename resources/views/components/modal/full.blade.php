@@ -75,14 +75,14 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="w-full sm:mt-5 relative overflow-hidden flex flex-col min-h-[50%] sm:min-h-0 max-h-screen transition-all transform rounded-t-lg sm:rounded-lg sm:w-full {{ $maxWidth }} mx-auto"
+        class="w-full sm:mt-5 relative overflow-hidden flex flex-col min-h-[50%] sm:min-h-0 max-h-screen sm:max-h-[calc(100vh-20px)] transition-all transform rounded-t-lg sm:rounded-lg sm:w-full {{ $maxWidth }} mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
         x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-    >
+        >
         {{-- Close Button --}}
         <div class="p-2 bg-white border-b border-slate-200">
             <div class="flex justify-end">

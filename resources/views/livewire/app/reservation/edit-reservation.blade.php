@@ -449,30 +449,11 @@
                 <x-loading wire:target='update' wire:loading.delay>Updating your reservation, please wait</x-loading>
             </div>
         @endif
-
-        @if (
-            $reservation->status == App\Enums\ReservationStatus::PENDING->value ||
-                $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT->value ||
-                $reservation->status == App\Enums\ReservationStatus::CONFIRMED->value)
-            {{-- Cancel reservation --}}
-            <section class="p-3 space-y-5 border border-red-500 rounded-lg bg-red-200/50 sm:p-5">
-                <hgroup>
-                    <h3 class="font-semibold text-red-500">Cancel Reservation</h3>
-                    <p class="max-w-sm text-xs">If you need to cancel the reservation, click the button below.</p>
-                </hgroup>
-
-                <div>
-                    <x-danger-button type="button"
-                        x-on:click="$dispatch('open-modal', 'show-cancel-reservation')">Cancel
-                        Reservation</x-danger-button>
-                </div>
-            </section>
-        @endif
     </section>
 
-    <x-modal.full name='reschedule-reservation' maxWidth='xl'>
+    <x-modal.drawer name='reschedule-reservation' maxWidth='xl'>
         <livewire:app.reservation.reschedule-reservation :reservation="$reservation" />
-    </x-modal.full>
+    </x-modal.drawer>
 
     {{-- Modal for confirming reservation --}}
     <x-modal.full name="show-cancel-reservation" maxWidth="sm">
@@ -486,24 +467,13 @@
                 floor_number: $wire.entangle('floor_number'),
                 floor_count: $wire.entangle('floor_count'),
                 column_count: $wire.entangle('column_count'),
-            }" wire:key="modal-{{ $modal_key }}">
-                <header class="flex items-center gap-3 p-5 border-b">
-                    <x-tooltip text="Back" dir="bottom">
-                        <x-icon-button x-ref="content" x-on:click="show = false">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left">
-                                <path d="m12 19-7-7 7-7" />
-                                <path d="M19 12H5" />
-                            </svg>
-                        </x-icon-button>
-                    </x-tooltip>
-
+                }" wire:key="modal-{{ $modal_key }}">
+                <div class="p-5 pb-0">
                     <hgroup>
                         <h2 class="text-lg font-semibold capitalize">{{ $selected_building->name }} Building</h2>
                         <p class="text-xs text-zinc-800">Click a room to reserve</p>
                     </hgroup>
-                </header>
+                </div>
 
                 {{-- Room List --}}
                 <section class="grid p-5 overflow-auto max-h-80 bg-slate-100/50 gap-x-1 gap-y-5"
@@ -586,26 +556,14 @@
     {{-- Modal for viewing rooms --}}
     <x-modal.full name="show-typed-rooms" maxWidth="lg">
         @if (!empty($selected_type))
-            <div>
-                <header class="flex items-center gap-3 p-5 border-b">
-                    <x-tooltip text="Back" dir="bottom">
-                        <x-icon-button x-ref="content" x-on:click="show = false">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left">
-                                <path d="m12 19-7-7 7-7" />
-                                <path d="M19 12H5" />
-                            </svg>
-                        </x-icon-button>
-                    </x-tooltip>
-                    <hgroup>
-                        <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
-                        <p class="text-xs text-zinc-800">Click a room to reserve</p>
-                    </hgroup>
-                </header>
+            <div class="p-5 space-y-5">
+                <hgroup>
+                    <h2 class="text-lg font-semibold capitalize">{{ $selected_type->name }}</h2>
+                    <p class="text-xs text-zinc-800">Click a room to reserve</p>
+                </hgroup>
 
                 {{-- Room List --}}
-                <section class="grid gap-1 p-5 bg-slate-100/50">
+                <section class="grid gap-1 bg-slate-100/50">
 
                     <div wire:loading.delay wire:target='selectBuilding'
                         class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">

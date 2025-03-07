@@ -205,7 +205,6 @@ class ReservationService
         $this->handlers->get('amenity')->release($reservation);
 
         // Send 'Thank You' email to the guests
-        
     }
 
     public function downloadPdf(Reservation $reservation) {
@@ -293,5 +292,50 @@ class ReservationService
         $this->handlers->get('service')->sync($reservation, null);
 
         $reservation->delete();
+    }
+
+    public function reschedule(Reservation $reservation, $data) {
+        DB::transaction(function () use ($reservation, $data) {
+            // Copy the old reservation to a new reservation
+            $new_reservation = $reservation->replicate(['rid']);
+            $new_reservation->date_in = $data['date_in'];
+            $new_reservation->date_out = $data['date_out'];
+            $new_reservation->status = $reservation->status;
+            $new_reservation->save();
+
+            // Attach rooms and services to the new reservation
+            $this->handlers->get('room')->attach($new_reservation, $data['selected_rooms']);
+            $this->handlers->get('service')->attach($new_reservation, $reservation->services);
+
+            // Create a new invoice for the new reservation
+            $breakdown = $this->handlers->get('billing')->breakdown($new_reservation->fresh());
+            $new_invoice = $this->handlers->get('billing')->create($new_reservation, $breakdown);
+            $new_invoice->status = $reservation->invoice->status;
+            $new_invoice->save();
+
+            // Copy the payments made from old reservation to new reservation
+            foreach ($reservation->invoice->payments as $payment) {
+                $new_payment = $payment->replicate(['invoice_id']);
+                $new_payment->invoice_id = $new_invoice->id;
+                $new_payment->save();
+            }
+
+            // Update balance of the invoice
+            $new_invoice->balance = $new_invoice->total_amount - $new_invoice->payments->sum('amount');
+            $new_invoice->save();
+
+            // Generate PDF for the new reservation
+            GenerateReservationPDF::dispatch($new_reservation);
+
+            // Update the old reservation
+            $reservation->status = ReservationStatus::RESCHEDULED->value;
+            $reservation->resched_date_in = $data['date_in'];
+            $reservation->resched_date_out = $data['date_out'];
+            $reservation->save();
+
+            // Update the invoice of the old reservation
+            $reservation->invoice->status = InvoiceStatus::CANCELED->value;
+            $reservation->invoice->save();
+        });
     }
 }

@@ -112,6 +112,10 @@
             $label = 'No Show';
             $class = 'text-white border-stone-500 bg-stone-500/75';
             break;
+        case 10:
+            $label = 'Rescheduled';
+            $class = 'text-white border-indigo-500 bg-indigo-500/75';
+            break;
         default:
             # code...
             break;
