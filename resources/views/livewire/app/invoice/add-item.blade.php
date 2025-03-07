@@ -5,7 +5,10 @@
             <p class="text-xs">Select an item you want to add</p>
         </hgroup>
 
-        @if ($items->count() > 0)
+        @if ($items->count() > 0 && in_array($invoice->reservation->status, [
+                \App\Enums\ReservationStatus::CONFIRMED->value,
+                \App\Enums\ReservationStatus::CHECKED_IN->value,
+            ]))
             <button type="button" x-on:click="$dispatch('open-modal', 'add-item-modal')" class="text-xs font-semibold text-blue-500">Add Item</button>
         @endif
     </div>

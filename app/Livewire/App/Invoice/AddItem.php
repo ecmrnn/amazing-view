@@ -105,6 +105,7 @@ class AddItem extends Component
                 'type' => 'service',
                 'quantity' => 1,
                 'price' => $service->pivot->price,
+                'max' => 99999
             ]);
         }
 
@@ -212,20 +213,32 @@ class AddItem extends Component
         ]);
 
         $id = uniqid();
+        $collect = null;
 
         if (!empty($this->invoice)) {
             if ($this->item_type == 'others') {
-                $item = $this->invoice->items()->create([
-                    'name' => $this->name,
-                    'type' => $this->item_type,
-                    'quantity' => $this->quantity,
-                    'price' => $this->price,
-                    'total' => $this->quantity * $this->price,
-                ]);
-                $id = $item->id;
+                foreach ($this->invoice->reservation->rooms as $room) {
+                    if ($this->room_number == $room->building->prefix . ' ' . $room->room_number) {
+                        $item = $this->invoice->items()->create([
+                            'name' => $this->name,
+                            'room_id' => $room->id,
+                            'quantity' => $this->quantity,
+                            'price' => $this->price,
+                            'total' => $this->quantity * $this->price,
+                        ]);
+                        $collect = array(
+                            'id' => $item->id,
+                            'room_number' => $this->room_number,
+                            'name' => $this->name,
+                            'type' => $this->item_type,
+                            'quantity' => $this->quantity,
+                            'price' => $this->price,
+                            'max' => 99999
+                        );
+                    }
+                }
             } else {
                 $service = null;
-                $collect = null;
 
                 if ($this->item_type == 'amenity' && isset($this->amenity)) {
                     $id = $this->amenity;
@@ -339,7 +352,7 @@ class AddItem extends Component
             }
         });
 
-        if ($quantity > $item['max']) {
+        if ($quantity > Arr::get($item, 'max', 0) && $item['type'] == 'amenity') {
             $this->toast('Update Failed', 'warning', 'Remaining stock of ' . ucwords($item['name']) . ' is ' . $item['max'] . '.');
             return;
         }

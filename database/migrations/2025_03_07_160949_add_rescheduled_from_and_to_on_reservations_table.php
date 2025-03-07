@@ -13,11 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reservations', function (Blueprint $table) {
-            $table->unsignedBigInteger('rescheduled_from')->nullable();
-            $table->foreign('rescheduled_from')->references('id')->on('reservations')->onDelete('set null');
-    
-            $table->unsignedBigInteger('rescheduled_to')->nullable();
-            $table->foreign('rescheduled_to')->references('id')->on('reservations')->onDelete('set null');
+            
         });
     }
 
