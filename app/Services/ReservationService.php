@@ -300,6 +300,7 @@ class ReservationService
             $new_reservation = $reservation->replicate(['rid']);
             $new_reservation->date_in = $data['date_in'];
             $new_reservation->date_out = $data['date_out'];
+            $new_reservation->rescheduled_from = $reservation->id;
             $new_reservation->status = $reservation->status;
             $new_reservation->save();
 
@@ -331,6 +332,7 @@ class ReservationService
             $reservation->status = ReservationStatus::RESCHEDULED->value;
             $reservation->resched_date_in = $data['date_in'];
             $reservation->resched_date_out = $data['date_out'];
+            $reservation->rescheduled_to = $new_reservation->id;
             $reservation->save();
 
             // Update the invoice of the old reservation

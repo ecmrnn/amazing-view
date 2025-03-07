@@ -259,12 +259,13 @@ class RescheduleReservation extends Component
             'selected_rooms' => 'required',
         ]);
         $validated['selected_rooms'] = $this->selected_rooms;
+        
         // 1. Reschedule reservation
         $service = new ReservationService;
         $service->reschedule($this->reservation, $validated);
 
         // 2. Pop a toast
-        $this->toast('Edit Success!', description: 'Reservation details updated!');
+        $this->toast('Reservation Rescheduled!', description: 'Succesfully rescheduled this reservation!');
         $this->dispatch('reservation-details-updated');
     }
 

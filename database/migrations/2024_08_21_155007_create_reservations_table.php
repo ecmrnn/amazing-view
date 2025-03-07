@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;

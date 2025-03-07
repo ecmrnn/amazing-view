@@ -12,10 +12,23 @@
         {{-- Action buttons --}}
         <x-actions>
             <div class="space-y-1">
-                <a href="{{ route('app.reservations.edit', ['reservation' => $reservation->rid]) }}" wire:navigate>
+                @if (in_array($reservation->status, [
+                        App\Enums\ReservationStatus::AWAITING_PAYMENT->value,
+                        App\Enums\ReservationStatus::PENDING->value,
+                        App\Enums\ReservationStatus::CONFIRMED->value,
+                    ]))
+                    <a href="{{ route('app.reservations.edit', ['reservation' => $reservation->rid]) }}" wire:navigate>
+                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+                            <p>Edit</p>
+                        </button>
+                    </a>
+                @endif
+
+                <a href="{{ route('app.billings.show' , ['billing' => $reservation->invoice->iid]) }}" wire:navigate>
                     <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
-                        <p>Edit</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>
+                        <p>View Bill</p>
                     </button>
                 </a>
 
@@ -107,6 +120,29 @@
                 <p class="text-xs">Expiration date: {{ date_format(date_create($reservation->expires_at), 'F j, Y \a\t h:i A') }}</p>
             </div>
         </x-warning-message>
+    @endif
+
+    @if (!empty($reservation->rescheduledFrom) && in_array($reservation->status, [
+        \App\Enums\ReservationStatus::AWAITING_PAYMENT->value,
+        \App\Enums\ReservationStatus::PENDING->value,
+        \App\Enums\ReservationStatus::CONFIRMED->value,
+    ]))
+        <x-info-message>
+            <p class="text-xs">Rescheduled From: <a wire:navigate class="font-semibold" href="{{ route('app.reservations.show', ['reservation' => $reservation->rescheduledFrom->rid]) }}">{{ $reservation->rescheduledFrom->rid }}</a></p>
+        </x-info-message>
+    @endif
+
+    {{-- Rescheduled Reservation --}}
+    @if ($reservation->status == \App\Enums\ReservationStatus::RESCHEDULED->value)
+        <x-info-message>
+            <div>
+                <h2 class="font-semibold">This reservation rescheduled!</h2>
+                @if (!empty($reservation->rescheduledFrom))
+                    <p class="text-xs">Rescheduled From: <a wire:navigate class="font-semibold" href="{{ route('app.reservations.show', ['reservation' => $reservation->rescheduledFrom->rid]) }}">{{ $reservation->rescheduledFrom->rid }}</a></p>
+                @endif
+                <p class="text-xs">Rescheduled To: <a wire:navigate class="font-semibold" href="{{ route('app.reservations.show', ['reservation' => $reservation->rescheduledTo->rid]) }}">{{ $reservation->rescheduledTo->rid }}</a></p>
+            </div>
+        </x-info-message>
     @endif
 
     <section x-data="{ show: false }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">

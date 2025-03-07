@@ -133,10 +133,19 @@ class Reservation extends Model
         return $this->hasOne(CancelledReservation::class);
     }
 
+    public function rescheduledFrom(): hasOne {
+        return $this->hasOne(Reservation::class, 'rescheduled_to');
+    }
+
+    public function rescheduledTo(): HasOne {
+        return $this->hasOne(Reservation::class, 'rescheduled_from');
+    }
+
     public static function boot()
     {
         // Generate custom ID: https://laravelarticle.com/laravel-custom-id-generator
         parent::boot();
+
         self::creating(function ($reservation) {
             $reservation->rid = IdGenerator::generate([
                 'table' => 'reservations',
@@ -165,6 +174,10 @@ class Reservation extends Model
                     'reset_on_prefix_change' => true
                 ]);
             }
+        });
+
+        self::deleting(function ($reservation) {
+            $reservation->invoice()->delete();
         });
     }
 }

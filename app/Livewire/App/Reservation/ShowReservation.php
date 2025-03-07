@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Reservation;
 
+use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
@@ -20,6 +21,7 @@ class ShowReservation extends Component
     ];
 
     public $reservation;
+    public $new_reservation;
 
     public function downloadPdf()
     {

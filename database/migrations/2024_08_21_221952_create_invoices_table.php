@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('iid')->nullable();
-            $table->foreignIdFor(Reservation::class)->constrained();
+            $table->foreignIdFor(Reservation::class)->constrained('reservations')->cascadeOnDelete()->cascadeOnUpdate();
             
             $table->decimal('sub_total')->default(0);
             $table->decimal('total_amount')->default(0);
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->date('issue_date')->nullable();
             $table->date('due_date')->nullable();
             $table->smallInteger('status')->default(InvoiceStatus::PARTIAL);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
