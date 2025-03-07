@@ -110,101 +110,6 @@ final class ReservationTable extends PowerGridComponent
             })
 
             ->add('status')
-            ->add('status_update', function ($reservation) {
-                if (in_array($reservation->status, [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])) {
-                    $date_in = $reservation->resched_date_in == null ? $reservation->date_in : $reservation->resched_date_in;
-
-                    if ($reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
-                        $reservation_statuses = [
-                            '' => 'Update Status',
-                            ReservationStatus::PENDING->value => 'Pending',
-                        ];
-                    } elseif ($reservation->status == ReservationStatus::PENDING->value) {
-                        $reservation_statuses = [
-                            '' => 'Update Status',
-                            ReservationStatus::CONFIRMED->value => 'Confirm',
-                        ];
-                    } elseif ($reservation->status == ReservationStatus::CONFIRMED->value && $date_in == Carbon::now()->format('Y-m-d')) {
-                        $reservation_statuses = [
-                            '' => 'Update Status',
-                            ReservationStatus::CHECKED_IN->value => 'Check-in',
-                        ];
-                    } else {
-                        $reservation_statuses = [
-                            '' => 'Update Status',
-                        ];
-                    }
-    
-                    return Blade::render('
-                        <div x-data="{ selected_value: @js($selected), default_value: @js($selected) }">
-                            <x-form.select type="occurrence"
-                                :options=$options
-                                :selected=$selected
-                                x-model="selected_value"
-                                x-bind:disabled="selected_value == 3"
-                                x-on:change="
-                                    selected_value = $event.target.value;
-                                    $wire.selected_value = $event.target.value;
-                                    if ($event.target.value == 1) {
-                                        $dispatch(\'open-modal\', \'show-checkin-confirmation-{{ $reservation->id }}\');
-                                    } else {
-                                        $dispatch(\'open-modal\', \'show-update-status-confirmation-{{ $reservation->id }}\');
-                                    }
-                                    "
-                            />
-                            
-                            <x-modal.full :click_outside="false" name="show-update-status-confirmation-{{ $reservation->id }}" maxWidth="xs">
-                                <section class="p-5 space-y-5 bg-white">
-                                    <hgroup>
-                                        <h2 class="text-lg font-semibold capitalize">Update Status</h2>
-                                        <p class="max-w-sm text-xs">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
-                                    </hgroup>
-                    
-                                    <div class="flex items-end justify-end gap-1">
-                                        <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
-                                        <x-primary-button type="button"
-                                            wire:click="statusChanged(selected_value, {{ $reservation->id }});
-                                            show = false;
-                                            default_value = selected_value"
-                                            >
-                                            Yes, update
-                                        </x-primary-button>
-                                    </div>
-                                </section>
-                            </x-modal.full>
-    
-                            <x-modal.full :click_outside="false" name="show-checkin-confirmation-{{ $reservation->id }}" maxWidth="md">
-                                <div x-on:cancel-confirmation.window="selected_value = default_value">
-                                    @if ($reservation->status != 8)
-                                        <section class="p-5 space-y-5 bg-white">
-                                            <hgroup>
-                                                <h2 class="text-lg font-semibold capitalize">Update Status</h2>
-                                                <p class="max-w-sm text-xs">You are about to update this reservation by <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>, proceed?</p>
-                                            </hgroup>
-                                            <div class="flex items-center justify-end gap-1">
-                                                <x-secondary-button type="button" x-on:click="show = false; selected_value = default_value">No, cancel</x-secondary-button>
-                                                <x-primary-button type="button"
-                                                    wire:click="statusChanged(selected_value, {{ $reservation->id }});
-                                                    show = false;
-                                                    default_value = selected_value"
-                                                    >
-                                                    Yes, update
-                                                </x-primary-button>
-                                            </div>
-                                        </section>
-                                    @else
-                                        <livewire:app.invoice.create-payment :invoice="$reservation->invoice->id" />
-                                    @endif
-                                </div>
-                            </x-modal.full>
-                        </div> ', ['reservation' => $reservation, 'options' => $reservation_statuses, 'selected' => intval($reservation->status)]
-                    );
-                } elseif (in_array($reservation->status, [])) {
-                    return Blade::render('<a wire:navigate class="text-xs text-zinc-800/50" href="{{ route(\'app.reservations.edit\', [\'reservation\' => \'' . $reservation->rid . '\']) }}">View Reservation to Edit</a>');
-                } else {
-                    return Blade::render('<span class="text-xs text-zinc-800/50">---</span>');
-                }
-            })
             ->add('status_formatted', function ($reservation) {
                 return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
             })
@@ -216,6 +121,14 @@ final class ReservationTable extends PowerGridComponent
                         <div x-ref="content" class="max-w-[250px] line-clamp-1">' . html_entity_decode($reservation->note) . '</div>
                     </x-tooltip>'
                 );
+            })
+            ->add('first_name')
+            ->add('first_name_formatted', function ($reservation) {
+                return ucwords(strtolower($reservation->first_name));
+            })
+            ->add('last_name')
+            ->add('last_name_formatted', function ($reservation) {
+                return ucwords(strtolower($reservation->last_name));
             });
     }
 
@@ -224,6 +137,12 @@ final class ReservationTable extends PowerGridComponent
         $columns = [
             Column::make('Reservation Id', 'rid', 'rid')
                 ->sortable()
+                ->searchable(),
+
+            Column::make('First Name', 'first_name_formatted', 'first_name')
+                ->searchable(),
+
+            Column::make('Last Name', 'last_name_formatted', 'last_name')
                 ->searchable(),
 
             Column::make('Check in', 'date_in_formatted', 'date_in')
@@ -236,10 +155,6 @@ final class ReservationTable extends PowerGridComponent
                 
             Column::make('Status', 'status_formatted', 'status'),
         ];
-
-        if (in_array($this->status, [ReservationStatus::AWAITING_PAYMENT->value, ReservationStatus::PENDING->value, ReservationStatus::CONFIRMED->value])) {
-            $columns[] = Column::make('Update status', 'status_update');
-        }
 
         $columns[] = Column::make('Note', 'note_formatted', 'note');
         $columns[] = Column::action('');

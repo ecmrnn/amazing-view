@@ -49,7 +49,7 @@ class SendReservationReminderEmail extends Command
         
         if ($reservations->count() > 0) {
             foreach ($reservations as $reservation) {
-                Mail::to($reservation->email)->queue(new Reminder($reservation));
+                // Mail::to($reservation->email)->queue(new Reminder($reservation));
             }
         }
     }

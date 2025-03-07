@@ -110,7 +110,7 @@ class ReservationService
                 GenerateReservationPDF::dispatch($reservation);
         
                 // Send confirmation email to the guest
-                Mail::to($reservation->email)->queue(new Received($reservation));
+                // Mail::to($reservation->email)->queue(new Received($reservation));
                 
                 return $reservation;
         });
@@ -163,7 +163,7 @@ class ReservationService
         $this->handlers->get('billing')->update($reservation->invoice, $invoice_data);
 
         // Send update email
-        Mail::to($reservation->email)->queue(new Updated($reservation));
+        // Mail::to($reservation->email)->queue(new Updated($reservation));
 
         return $reservation;
     }
@@ -186,7 +186,7 @@ class ReservationService
         $this->handlers->get('room')->release($reservation);
 
         // Send cancellation email to the guests
-        Mail::to($reservation->email)->queue(new Cancelled($reservation));
+        // Mail::to($reservation->email)->queue(new Cancelled($reservation));
     }
 
     public function checkIn(Reservation $reservation) {
@@ -256,7 +256,7 @@ class ReservationService
         $reservation->save();
 
         // Send email to guests with expired reservations
-        Mail::to($reservation->email)->queue(new Expire($reservation));
+        // Mail::to($reservation->email)->queue(new Expire($reservation));
 
         $this->handlers->get('room')->sync($reservation, null);
         $this->handlers->get('amenity')->sync($reservation, null);
@@ -278,7 +278,7 @@ class ReservationService
         $reservation->save();
 
         // Send email to guests with no-show reservations
-        Mail::to($reservation->email)->queue(new NoShow($reservation));
+        // Mail::to($reservation->email)->queue(new NoShow($reservation));
 
         $this->handlers->get('room')->sync($reservation, null);
         $this->handlers->get('amenity')->sync($reservation, null);
