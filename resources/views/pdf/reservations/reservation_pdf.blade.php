@@ -23,11 +23,11 @@
         <div class="grid grid-cols-2 gap-5">
             <div class="grid grid-cols-2 p-5 rounded-md bg-slate-50">
                 <div>
-                    <p class="font-semibold">{{ $reservation->resched_date_in == null ? date_format(date_create($reservation->date_in), 'F j, Y') : date_format(date_create($reservation->resched_date_in), 'F j, Y');  }}</p>
+                    <p class="font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
                     <p class="text-xs">Check-in Date</p>
                 </div>
                 <div>
-                    <p class="font-semibold">{{ $reservation->resched_date_out == null ? date_format(date_create($reservation->date_out), 'F j, Y') : date_format(date_create($reservation->resched_date_out), 'F j, Y');  }}</p>
+                    <p class="font-semibold">{{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
                     <p class="text-xs">Check-out Date</p>
                 </div>
             </div>

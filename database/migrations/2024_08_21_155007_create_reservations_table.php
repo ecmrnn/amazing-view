@@ -21,9 +21,7 @@ return new class extends Migration
             $table->date('date_in');
             $table->date('date_out');
 
-            // Reschedueld Fields
-            $table->date('resched_date_in')->nullable();
-            $table->date('resched_date_out')->nullable();
+            // Rescheduled Fields
             $table->unsignedBigInteger('rescheduled_from')->nullable();
             $table->foreign('rescheduled_from')->references('id')->on('reservations')->onDelete('set null');
             $table->unsignedBigInteger('rescheduled_to')->nullable();

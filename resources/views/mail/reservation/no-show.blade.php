@@ -22,7 +22,7 @@
 
             <div>
                 <p><strong class="font-bold">Reservation ID:</strong> {{ $reservation->rid }}</p>
-                <p><strong class="font-bold">Check-in Date:</strong> {{ $reservation->resched_date_in != null ? date_format(date_create($reservation->resched_date_in), 'F j, Y') : date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
+                <p><strong class="font-bold">Check-in Date:</strong> {{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
             </div>
 
             <div class="p-5 space-y-5 rounded-lg bg-slate-50">

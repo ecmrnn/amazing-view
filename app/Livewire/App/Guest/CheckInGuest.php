@@ -38,8 +38,8 @@ class CheckInGuest extends Component
                 $this->reservation = null;
                 $this->toast('Check-in Failed', 'warning', 'Reservation status must be confirmed');
             } else {
-                $this->date_in = empty($this->reservation->resched_date_in) ? $this->reservation->date_in : $this->reservation->resched_date_in;
-                $this->date_out = empty($this->reservation->resched_date_out) ? $this->reservation->date_out : $this->reservation->resched_date_out;
+                $this->date_in = $this->reservation->date_in;
+                $this->date_out = $this->reservation->date_out;
                 
                 if ($this->date_in != Carbon::now()->format('Y-m-d')) {
                     $this->reservation = null;

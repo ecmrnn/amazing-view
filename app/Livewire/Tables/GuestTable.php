@@ -57,21 +57,13 @@ final class GuestTable extends PowerGridComponent
     {
         if (isset($this->status)) {
             $query = Reservation::query()
-                ->where(function($query) {
-                    return $query->whereNull('resched_date_in')
-                        ->where('date_in', Carbon::now()->format('Y-m-d'));
-                })
-                ->orWhere('resched_date_in', Carbon::now()->format('Y-m-d'))
+                ->where('date_in', Carbon::now()->format('Y-m-d'))
                 ->whereStatus($this->status)
                 ->orderByDesc('rid');
         }
         
         $query = Reservation::query()->with('rooms')
-            ->where(function($query) {
-                return $query->whereNull('resched_date_in')
-                    ->where('date_in', Carbon::now()->format('Y-m-d'));
-            })
-            ->orWhere('resched_date_in', Carbon::now()->format('Y-m-d'))
+            ->where('date_in', Carbon::now()->format('Y-m-d'))
             ->orderByDesc('rid');
 
         return $query;
@@ -106,8 +98,8 @@ final class GuestTable extends PowerGridComponent
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
-                $date_in = empty($reservation->resched_date_in) ? $reservation->date_in : $reservation->resched_date_in;
-                $date_out = empty($reservation->resched_date_out) ? $reservation->date_out : $reservation->resched_date_out;
+                $date_in = $reservation->date_in;
+                $date_out = $reservation->date_out;
 
                 if ($date_in == $date_out) {
                     return Carbon::parse($date_in)->format('F j, Y') . ' - ' . '8:00 AM';
@@ -118,8 +110,8 @@ final class GuestTable extends PowerGridComponent
 
             ->add('date_out')
             ->add('date_out_formatted', function ($reservation) {
-                $date_in = empty($reservation->resched_date_in) ? $reservation->date_in : $reservation->resched_date_in;
-                $date_out = empty($reservation->resched_date_out) ? $reservation->date_out : $reservation->resched_date_out;
+                $date_in = $reservation->date_in;
+                $date_out = $reservation->date_out;
 
                 if ($date_in == $date_out) {
                     return Carbon::parse($date_out)->format('F j, Y') . ' - ' . '6:00 PM';

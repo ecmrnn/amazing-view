@@ -119,23 +119,11 @@
                     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                         <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
                             <div>
-                                @if (!empty($reservation->resched_date_in))
-                                    <p class="font-semibold">
-                                        {{ date_format(date_create($reservation->resched_date_in), 'F j, Y') }}</p>
-                                @else
-                                    <p class="font-semibold">
-                                        {{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
-                                @endif
+                                <p class="font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
                                 <p class="text-xs">Check-in Date</p>
                             </div>
                             <div>
-                                @if (!empty($reservation->resched_date_out))
-                                    <p class="font-semibold">
-                                        {{ date_format(date_create($reservation->resched_date_out), 'F j, Y') }}</p>
-                                @else
-                                    <p class="font-semibold">
-                                        {{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
-                                @endif
+                                <p class="font-semibold">{{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
                                 <p class="text-xs">Check-out Date</p>
                             </div>
                         </div>

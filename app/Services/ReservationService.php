@@ -122,8 +122,6 @@ class ReservationService
         $reservation->update([
             'date_in' => Arr::get($data, 'date_in', $reservation->date_in),
             'date_out' => Arr::get($data, 'date_out', $reservation->date_out),
-            'resched_date_in' => Arr::get($data, 'resched_date_in', $reservation->resched_date_in),
-            'resched_date_out' => Arr::get($data, 'resched_date_out', $reservation->resched_date_out),
             'adult_count' => Arr::get($data, 'adult_count', $reservation->adult_count),
             'children_count' => Arr::get($data, 'children_count', $reservation->children_count),
             'senior_count' => Arr::get($data, 'senior_count', $reservation->senior_count),
@@ -330,8 +328,6 @@ class ReservationService
 
             // Update the old reservation
             $reservation->status = ReservationStatus::RESCHEDULED->value;
-            $reservation->resched_date_in = $data['date_in'];
-            $reservation->resched_date_out = $data['date_out'];
             $reservation->rescheduled_to = $new_reservation->id;
             $reservation->save();
 

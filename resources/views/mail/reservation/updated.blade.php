@@ -31,8 +31,8 @@
             <h2 class="font-bold">Reservation Details</h2>
 
             <div>
-                <p><strong class="font-bold">Check-in Date:</strong> {{ $reservation->resched_date_in != null ? date_format(date_create($reservation->resched_date_in), 'F j, Y') : date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
-                <p><strong class="font-bold">Check-out Date:</strong> {{ $reservation->resched_date_out != null ? date_format(date_create($reservation->resched_date_out), 'F j, Y') : date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
+                <p><strong class="font-bold">Check-in Date:</strong> {{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
+                <p><strong class="font-bold">Check-out Date:</strong> {{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
                 <p><strong class="font-bold">Number of Guests:</strong> {{ $reservation->adult_count }} {{ $reservation->adult_count > 1 ? 'Adults' : 'Adult' }} 
                     @if ($reservation->children_count > 0)
                         {{ '& ' . $reservation->children_count }} {{ $reservation->children_count > 1 ? 'Children' : 'Child' }}

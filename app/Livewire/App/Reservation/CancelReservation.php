@@ -44,7 +44,7 @@ class CancelReservation extends Component
     }
 
     public function calculateRefundAmount() {
-        $date_in = $this->reservation->resched_date_in == null ? $this->reservation->date_in : $this->reservation->resched_date_in;
+        $date_in = $this->reservation->date_in;
         $date_diff = Carbon::parse($this->canceled_at)->diffInDays($date_in);
         
         $this->max_amount = 0;

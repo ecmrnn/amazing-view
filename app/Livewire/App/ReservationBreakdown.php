@@ -19,13 +19,6 @@ class ReservationBreakdown extends Component
         $date_in = $reservation->date_in;
         $date_out = $reservation->date_out;
 
-        if (!empty($reservation->resched_date_in)) {
-            $date_in = $reservation->resched_date_in;
-        }
-        if (!empty($reservation->resched_date_out)) {
-            $date_out = $reservation->resched_date_out;
-        }
-
         $billing_service = new BillingService;
         $this->night_count = Carbon::parse((string) $date_in)->diffInDays($date_out);
 

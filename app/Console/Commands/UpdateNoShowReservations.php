@@ -30,11 +30,7 @@ class UpdateNoShowReservations extends Command
     public function handle()
     {
         $reservations = Reservation::whereStatus(ReservationStatus::CONFIRMED)
-            ->where(function($query) {
-                return $query->whereNull('resched_date_in')
-                    ->where('date_in', '<', Carbon::now()->format('Y-m-d'));
-            })
-            ->orWhere('resched_date_in', '<', Carbon::now()->format('Y-m-d'))
+            ->where('date_in', '<', Carbon::now()->format('Y-m-d'))
             ->get();
 
         if ($reservations->count() > 0) {
