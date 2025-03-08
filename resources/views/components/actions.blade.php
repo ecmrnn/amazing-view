@@ -9,7 +9,7 @@
     </x-icon-button>
 
     {{-- Dropdown --}}
-    <div x-show="dropdown" x-on:click.outside="dropdown = !dropdown" class="absolute right-0 p-3 space-y-3 translate-y-1 bg-white border rounded-md shadow-md w-max top-full border-slate-200 z-0 min-w-[200px]">
+    <div x-show="dropdown" x-on:click.outside="dropdown = !dropdown" class="absolute right-0 p-3 space-y-3 translate-y-1 bg-white border rounded-md shadow-md w-max top-full border-slate-200 z-50 min-w-[200px]">
         {{ $slot }}
     </div>
 </div>

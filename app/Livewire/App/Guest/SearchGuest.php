@@ -45,8 +45,8 @@ class SearchGuest extends Component
             </hgroup>
 
             <x-form.input-group>
-                <x-form.input-label for='email'>Email Address</x-form.input-label>
-                <x-form.input-text id="email" wire:model.live="email" name="email" label="Email" />
+                <x-form.input-label for='search-email'>Email Address</x-form.input-label>
+                <x-form.input-text id="search-email" wire:model.live="email" name="search-email" label="Email" />
                 <x-form.input-error field="email" />
             </x-form.input-group>
 

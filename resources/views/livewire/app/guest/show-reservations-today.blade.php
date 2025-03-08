@@ -118,8 +118,4 @@
             </div>
         @endif
     </div>
-
-    <x-modal.full name='show-notif' maxWidth='sm'>
-        <div class="p-5">Hello!</div>
-    </x-modal.full>
 </div>

@@ -74,10 +74,10 @@ class CheckInGuest extends Component
     public function render()
     {
         return <<<'HTML'
-            <div class="p-5 space-y-5 bg-white" x-on:guest-checked-in.window="show = false">
+            <div class="p-5 space-y-5" x-on:guest-checked-in.window="show = false">
                 <hgroup>
-                    <h2 class="font-semibold capitalize">Check-in Guest</h2>
-                    <p class="max-w-sm text-sm">Enter the <strong class="text-blue-500">Reservation ID</strong> of the guest you want to check-in</p>
+                    <h2 class="text-lg font-semibold capitalize">Check-in Guest</h2>
+                    <p class="text-xs">Enter the <strong class="text-blue-500">Reservation ID</strong> of the guest you want to check-in</p>
                 </hgroup>
 
                 @if (!empty($reservation))
@@ -86,31 +86,28 @@ class CheckInGuest extends Component
                         <p class="text-emerald-800">Ready for check-in!</p>
                     </div>
 
-                    <div class="p-5 space-y-5 border rounded-md border-slate-200 ">
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         <hgroup class="flex justify-between">
                             <h3 class="font-semibold">{{ $reservation->rid }}</h3>
 
                             <x-status type="reservation" :status="$reservation->status" />
-                            <!-- <a href="{{ route('app.reservations.show', ['reservation' => $reservation->rid]) }}" wire:navigate.hover>
-                                View Reservation
-                            </a> -->
                         </hgroup>
                     </div>
 
-                    <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         <div>
                             <p class="font-semibold capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</p>
-                            <p class="flex justify-between text-sm capitalize">Name</p>
+                            <p class="flex justify-between text-xs capitalize">Name</p>
                         </div>
 
                         <div class="grid grid-cols-2 gap-5">
                             <div>
                                 <p class="font-semibold capitalize">{{ date_format(date_create($date_in), 'F j, Y') }}</p>
-                                <p class="flex justify-between text-sm capitalize">Check-in Date</p>
+                                <p class="flex justify-between text-xs capitalize">Check-in Date</p>
                             </div>
                             <div>
                                 <p class="font-semibold capitalize">{{ date_format(date_create($date_out), 'F j, Y') }}</p>
-                                <p class="flex justify-between text-sm capitalize">Check-out Date</p>
+                                <p class="flex justify-between text-xs capitalize">Check-out Date</p>
                             </div>
                         </div>
                     </div>

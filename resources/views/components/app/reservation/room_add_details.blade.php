@@ -80,7 +80,7 @@
                                     </div>
                                 </div>
 
-                                <x-secondary-button class="flex-shrink-0 text-xs" x-on:click="$dispatch('open-modal', 'show-typed-rooms')" wire:click="viewRooms({{ $room->id }})">
+                                <x-secondary-button class="flex-shrink-0 text-xs" wire:click="viewRooms({{ $room->id }})">
                                     View Rooms
                                 </x-secondary-button>
                             </div>
@@ -166,17 +166,10 @@
             floor_count: $wire.entangle('floor_count'),
             column_count: $wire.entangle('column_count'),
             }" wire:key="modal-{{ $modal_key }}">
-            <header class="flex items-center gap-3 p-5 border-b">
-                <x-tooltip text="Back" dir="bottom">
-                    <x-icon-button x-ref="content" x-on:click="show = false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                    </x-icon-button>
-                </x-tooltip>
-                <hgroup>
-                    <h2 class="text-sm font-semibold capitalize">{{ $selected_building->name }} Building</h2>
-                    <p class="text-xs text-zinc-800">Click a room to reserve</p>
-                </hgroup>
-            </header>
+            <hgroup class="p-5 pb-0">
+                <h2 class="text-lg font-semibold capitalize">{{ $selected_building->name }} Building</h2>
+                <p class="text-xs text-zinc-800">Click a room to reserve</p>
+            </hgroup>
             
             {{-- Room List --}}
             <section class="grid p-5 overflow-auto max-h-80 bg-slate-100/50 gap-x-1 gap-y-5"
@@ -254,17 +247,10 @@
             floor_count: $wire.entangle('floor_count'),
             column_count: $wire.entangle('column_count'),
             }">
-            <header class="flex items-center gap-3 p-5 border-b">
-                <x-tooltip text="Back" dir="bottom">
-                    <x-icon-button x-ref="content" x-on:click="show = false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                    </x-icon-button>
-                </x-tooltip>
-                <hgroup>
-                    <h2 class="text-sm font-semibold capitalize">{{ $selected_type->name }}</h2>
-                    <p class="text-xs text-zinc-800">Click a room to reserve</p>
-                </hgroup>
-            </header>
+            <hgroup class="p-5 pb-0">
+                <h2 class="text-lg font-semibold capitalize">{{ $selected_type->name }}</h2>
+                <p class="text-xs text-zinc-800">Click a room to reserve</p>
+            </hgroup>
             
             {{-- Room List --}}
             <section class="grid gap-1 p-5 bg-slate-100/50">
@@ -324,7 +310,9 @@
                             </div>
                         </div>
                     @empty
-                        <x-table-no-data.rooms />
+                        <div class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
+                            No available rooms for this type of room
+                        </div>
                     @endforelse
                 </div>
             </section>

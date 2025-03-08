@@ -25,7 +25,7 @@
     <livewire:app.guest.show-reservations-today />
 
     {{-- Modal for confirming reservation --}}
-    <x-modal.full name="show-check-in-modal" maxWidth="md">
+    <x-modal.full name="show-check-in-modal" maxWidth="sm">
         <livewire:app.guest.check-in-guest />
     </x-modal.full> 
 </x-app-layout>

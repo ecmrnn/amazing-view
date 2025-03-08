@@ -10,6 +10,7 @@
         App\Enums\ReservationStatus::AWAITING_PAYMENT->value,
         App\Enums\ReservationStatus::PENDING->value,
         App\Enums\ReservationStatus::CONFIRMED->value,
+        App\Enums\ReservationStatus::CHECKED_IN->value,
     ]))
         <x-tooltip text="Edit" dir="top">
             <a x-ref="content" href="{{ route($edit_link, ['reservation' => $row->rid]) }}" wire:navigate.hover>

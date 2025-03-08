@@ -14,7 +14,7 @@
             </x-tooltip>
         
             <div>
-                <h2 class="text-lg font-semibold">{{ $invoice->iid }}</h2>
+                <h2 class="text-lg font-semibold">Edit Billing</h2>
                 <p class="max-w-sm text-xs">Modify and update this billing</p>
             </div>
         </div>

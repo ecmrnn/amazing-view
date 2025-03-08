@@ -16,6 +16,7 @@
                         App\Enums\ReservationStatus::AWAITING_PAYMENT->value,
                         App\Enums\ReservationStatus::PENDING->value,
                         App\Enums\ReservationStatus::CONFIRMED->value,
+                        App\Enums\ReservationStatus::CHECKED_IN->value,
                     ]))
                     <a href="{{ route('app.reservations.edit', ['reservation' => $reservation->rid]) }}" wire:navigate>
                         <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
@@ -60,6 +61,12 @@
             <div class="w-full h-px bg-slate-200"></div>
 
             <div class="space-y-1">
+                @if ($reservation->status == App\Enums\ReservationStatus::CONFIRMED->value && $reservation->date_in == date_format(date_create(), 'Y-m-d'))
+                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-check-in-modal'); dropdown = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+                        <p>Check-in</p>
+                    </button>
+                @endif
                 @if ($reservation->status == App\Enums\ReservationStatus::CHECKED_IN->value)
                     <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-checkout-reservation'); dropdown = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
@@ -67,11 +74,17 @@
                     </button>
                 @endif
 
-                @if ($reservation->status == App\Enums\ReservationStatus::PENDING->value || $reservation->status == App\Enums\ReservationStatus::CONFIRMED->value || $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT->value)
-                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-cancel-reservation'); dropdown = false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
-                        <p>Cancel</p>
-                    </button>
+                @if (in_array($reservation->status, [
+                        App\Enums\ReservationStatus::PENDING->value,
+                        App\Enums\ReservationStatus::CONFIRMED->value,
+                        App\Enums\ReservationStatus::AWAITING_PAYMENT->value
+                    ]))
+                    @can('cancel reservation')
+                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-cancel-reservation'); dropdown = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                            <p>Cancel</p>
+                        </button>
+                    @endcan
                 @endif
 
                 @if ($reservation->status == \App\Enums\ReservationStatus::EXPIRED->value)

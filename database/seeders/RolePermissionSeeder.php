@@ -27,6 +27,8 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'read reservations']);
         Permission::create(['name' => 'update reservation']);
         Permission::create(['name' => 'delete reservation']);
+        Permission::create(['name' => 'cancel reservation']);
+        Permission::create(['name' => 'reactivate reservation']);
 
         Permission::create(['name' => 'create room']);
         Permission::create(['name' => 'read rooms']);
@@ -115,6 +117,8 @@ class RolePermissionSeeder extends Seeder
             'read reservations',
             'update reservation',
             'delete reservation',
+            'cancel reservation',
+            'reactivate reservation',
 
             'create billing',
             'read billings',

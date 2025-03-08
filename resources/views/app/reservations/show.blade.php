@@ -42,5 +42,9 @@
         <x-modal.full name='show-send-email-modal' maxWidth='sm'>
             <livewire:app.reservation.send-reservation-email :reservation="$reservation" />
         </x-modal.full>
+
+        <x-modal.full name="show-check-in-modal" maxWidth="sm">
+            <livewire:app.guest.check-in-guest :reservation="$reservation" />
+        </x-modal.full> 
     @endpush
 </x-app-layout>  

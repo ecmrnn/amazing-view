@@ -4,10 +4,8 @@
     <p class="text-sm font-semibold text-center">No rooms found!</p>
 
     @can('create room')
-        <a class="inline-block text-xs" href="{{ route('app.room.create', ['type' => $room_type_id]) }}" wire:navigate>
-            <x-primary-button>
-                Add Room
-            </x-primary-button>
-        </a>
+        <x-primary-button>
+            Add Room
+        </x-primary-button>
     @endcan
 </div>

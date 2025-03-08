@@ -18,6 +18,7 @@ class ShowReservation extends Component
         'guest-checked-out' => '$refresh',
         'payment-added' => '$refresh',
         'reservation-reactivated' => '$refresh',
+        'guest-checked-in' => '$refresh',
     ];
 
     public $reservation;

@@ -323,6 +323,7 @@ class CreateReservation extends Component
             ->toBase();
 
         $this->available_room_types = $room_by_capacity->groupBy('max_capacity');
+        $this->dispatch('open-modal', 'show-typed-rooms');
     }
 
     public function addRoom($room_ids) {
@@ -457,9 +458,6 @@ class CreateReservation extends Component
     {
         $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
 
-        return view('livewire.app.reservation.create-reservation', [
-            'buildings' => $this->buildings,
-            'rooms' => $this->rooms,
-        ]);
+        return view('livewire.app.reservation.create-reservation');
     }
 }
