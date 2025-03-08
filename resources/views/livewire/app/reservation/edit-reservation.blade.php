@@ -41,6 +41,18 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-clock"><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.3V14"/><circle cx="16" cy="16" r="6"/></svg>
                         <p>Reschedule</p>
                     </button>
+                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-edit-reservation-details'); dropdown = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-open"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg>
+                        <p>Rooms &amp; Guests</p>
+                    </button>
+                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'add-amenity-modal'); dropdown = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-concierge-bell"><path d="M3 20a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1Z"/><path d="M20 16a8 8 0 1 0-16 0"/><path d="M12 4v4"/><path d="M10 4h4"/></svg>
+                        <p>Add Amenity</p>
+                    </button>
+                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'add-car-modal'); dropdown = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car-front"><path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.646 5H8.4a2 2 0 0 0-1.903 1.257L5 10 3 8"/><path d="M7 14h.01"/><path d="M17 14h.01"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>
+                        <p>Add Car</p>
+                    </button>
                 </div>
 
                 @if ($reservation->status == App\Enums\ReservationStatus::PENDING->value || $reservation->status == App\Enums\ReservationStatus::CONFIRMED->value || $reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT->value)
@@ -93,8 +105,7 @@
             <div class="flex items-start justify-between">
                 <hgroup>
                     <h3 class="font-semibold">Reservation Details</h3>
-                    <p class="max-w-sm text-xs">Click the <strong class="text-blue-500">Edit</strong> button on the
-                        right of the reservation id to edit the details of this reservation.</p>
+                    <p class="max-w-sm text-xs">Click the <strong class="text-blue-500">Edit</strong> button on the right of the reservation id to edit the details of this reservation.</p>
                 </hgroup>
 
                 <div class="flex-shrink-0">
@@ -103,16 +114,14 @@
             </div>
 
             <div class="space-y-5">
-                <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                <div class="space-y-5">
                     <div class="flex items-start justify-between gap-5">
                         <div>
                             <p class="font-semibold">{{ $reservation->rid }}</p>
                             <p class="text-xs">Reservation ID</p>
                         </div>
-                        {{-- @if ($reservation->status != App\Enums\ReservationStatus::CANCELED->value)
-                            <button x-on:click="$dispatch('open-modal', 'reschedule-reservation')" type="button"
-                                class="text-xs font-semibold text-blue-500">Edit</button>
-                        @endif --}}
+                        
+                        <button x-on:click="$dispatch('open-modal', 'show-edit-reservation-details')" type="button" class="text-xs font-semibold text-blue-500">Edit</button>
                     </div>
 
                     {{-- Reservation Details --}}
@@ -129,23 +138,29 @@
                         </div>
                         <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
                             <div>
-                                <p class="font-semibold">{{ $reservation->adult_count }}</p>
-                                <p class="text-xs">Number of Adults</p>
+                                <p class="font-semibold">
+                                    {{ $reservation->adult_count > 1 ? $reservation->adult_count . ' Adults' : $reservation->adult_count . ' Adult' }}
+                                    @if ($reservation->children_count > 0)
+                                        {{ ' & ' }}
+                                        {{ $reservation->children_count > 1 ?  $reservation->children_count . ' Children' : $reservation->children_count . ' Child' }}
+                                    @endif
+                                </p>
+                                <p class="text-xs">Total Number of Guests</p>
                             </div>
-                            <div>
-                                <p class="font-semibold">{{ $reservation->children_count }}</p>
-                                <p class="text-xs">Number of Children</p>
-                            </div>
-                            @if ($reservation->senior_count > 0)
+                            @if ($reservation->senior_count > 0 || $reservation->pwd_count > 0)
                                 <div>
-                                    <p class="font-semibold">{{ $reservation->senior_count }}</p>
-                                    <p class="text-xs">Number of Senior</p>
-                                </div>
-                            @endif
-                            @if ($reservation->pwd_count > 0)
-                                <div>
-                                    <p class="font-semibold">{{ $reservation->pwd_count }}</p>
-                                    <p class="text-xs">Number of PWD</p>
+                                    <p class="font-semibold">
+                                        @if ($reservation->senior_count > 0)
+                                            {{ $reservation->senior_count > 1 ?  $reservation->senior_count . ' Seniors' : $reservation->senior_count . ' Senior' }}
+                                        @endif
+                                        @if ($reservation->pwd_count > 0)
+                                            @if ($reservation->senior_count > 0)
+                                                {{ ' & ' }}
+                                            @endif
+                                            {{ $reservation->pwd_count > 1 ?  $reservation->pwd_count . ' PWDs' : $reservation->pwd_count . ' PWD' }}
+                                        @endif
+                                    </p>
+                                    <p class="text-xs">Seniors and PWDs</p>
                                 </div>
                             @endif
                         </div>
@@ -373,17 +388,7 @@
                                 <x-tooltip text="Remove Car" dir="top">
                                     <button x-ref="content" type="button" class="p-3 group"
                                         x-on:click="$dispatch('open-modal', 'remove-car-modal-{{ $car['plate_number'] }}')">
-                                        <svg class="transition-all duration-200 ease-in-out opacity-50 group-hover:opacity-100"
-                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="lucide lucide-trash-2">
-                                            <path d="M3 6h18" />
-                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                            <line x1="10" x2="10" y1="11" y2="17" />
-                                            <line x1="14" x2="14" y1="11" y2="17" />
-                                        </svg>
+                                        <svg class="transition-all duration-200 ease-in-out opacity-50 group-hover:opacity-100" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
                                     </button>
                                 </x-tooltip>
                             </div>
@@ -409,17 +414,7 @@
                         </div>
                     @empty
                         <div class="py-10 space-y-3 text-center border rounded-md sm:col-span-2 border-slate-200">
-                            <svg class="mx-auto text-zinc-200" xmlns="http://www.w3.org/2000/svg" width="48"
-                                height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-car-front">
-                                <path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.646 5H8.4a2 2 0 0 0-1.903 1.257L5 10 3 8" />
-                                <path d="M7 14h.01" />
-                                <path d="M17 14h.01" />
-                                <rect width="18" height="8" x="3" y="10" rx="2" />
-                                <path d="M5 18v2" />
-                                <path d="M19 18v2" />
-                            </svg>
+                            <svg class="mx-auto text-zinc-200" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car-front"><path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.646 5H8.4a2 2 0 0 0-1.903 1.257L5 10 3 8" /><path d="M7 14h.01" /><path d="M17 14h.01" /><rect width="18" height="8" x="3" y="10" rx="2" /><path d="M5 18v2" /><path d="M19 18v2" /></svg>
 
                             <p class="text-sm font-semibold">No car added!</p>
 
@@ -623,7 +618,13 @@
         @endif
     </x-modal.full>
 
-    <x-modal.full name='show-discounts-modal' maxWidth='sm'>
+    {{-- Modal for editing rooms and guests --}}
+    <x-modal.drawer name='show-edit-reservation-details' maxWidth='xl'>
+        <livewire:app.reservation.edit-reservation-details :reservation="$reservation" />
+    </x-modal.drawer>
+
+    {{-- For applying discounts on guests --}}
+    <x-modal.full name='show-discounts-modal' maxWidth='sm' :click_outside="false">
         <div class="p-5 space-y-5" x-on:apply-discount.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold">Apply Discounts</h2>
@@ -649,6 +650,7 @@
         </div>
     </x-modal.full>
 
+    {{-- Modal for adding amenity --}}
     <x-modal.full name='add-amenity-modal' maxWidth='sm'>
         <div class="p-5 space-y-5" x-data="{ quantity: @entangle('quantity'), max_quantity: @entangle('max_quantity') }" x-on:amenity-added.window="show = false">
             <hgroup>
@@ -751,6 +753,7 @@
         </div>
     </x-modal.full>
 
+    {{-- Modal for adding cars --}}
     <x-modal.full name='add-car-modal' maxWidth='sm'>
         <div class="p-5 space-y-5" x-data="{ quantity: @entangle('quantity'), max_quantity: @entangle('max_quantity') }" x-on:car-added.window="show = false">
             <hgroup>

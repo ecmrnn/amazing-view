@@ -122,25 +122,21 @@
         </x-warning-message>
     @endif
 
-    @if (!empty($reservation->rescheduledFrom) && in_array($reservation->status, [
-        \App\Enums\ReservationStatus::AWAITING_PAYMENT->value,
-        \App\Enums\ReservationStatus::PENDING->value,
-        \App\Enums\ReservationStatus::CONFIRMED->value,
-    ]))
-        <x-info-message>
-            <p class="text-xs">Rescheduled From: <a wire:navigate class="font-semibold" href="{{ route('app.reservations.show', ['reservation' => $reservation->rescheduledFrom->rid]) }}">{{ $reservation->rescheduledFrom->rid }}</a></p>
-        </x-info-message>
-    @endif
-
     {{-- Rescheduled Reservation --}}
-    @if ($reservation->status == \App\Enums\ReservationStatus::RESCHEDULED->value)
+    @if (!empty($reservation->rescheduledFrom) || !empty($reservation->rescheduledTo) && in_array($reservation->status, [
+            \App\Enums\ReservationStatus::AWAITING_PAYMENT->value,
+            \App\Enums\ReservationStatus::PENDING->value,
+            \App\Enums\ReservationStatus::CONFIRMED->value,
+            \App\Enums\ReservationStatus::RESCHEDULED->value,
+        ]))
         <x-info-message>
             <div>
-                <h2 class="font-semibold">This reservation rescheduled!</h2>
                 @if (!empty($reservation->rescheduledFrom))
                     <p class="text-xs">Rescheduled From: <a wire:navigate class="font-semibold" href="{{ route('app.reservations.show', ['reservation' => $reservation->rescheduledFrom->rid]) }}">{{ $reservation->rescheduledFrom->rid }}</a></p>
                 @endif
-                <p class="text-xs">Rescheduled To: <a wire:navigate class="font-semibold" href="{{ route('app.reservations.show', ['reservation' => $reservation->rescheduledTo->rid]) }}">{{ $reservation->rescheduledTo->rid }}</a></p>
+                @if (!empty($reservation->rescheduledTo))
+                    <p class="text-xs">Rescheduled To: <a wire:navigate class="font-semibold" href="{{ route('app.reservations.show', ['reservation' => $reservation->rescheduledTo->rid]) }}">{{ $reservation->rescheduledTo->rid }}</a></p>
+                @endif
             </div>
         </x-info-message>
     @endif

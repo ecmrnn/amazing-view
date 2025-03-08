@@ -40,7 +40,7 @@
                 </x-tooltip>
         
                 <div>
-                    <h2 class="text-lg font-semibold">{{ $invoice->iid }}</h2>
+                    <h2 class="text-lg font-semibold">Billing Details</h2>
                     <p class="max-w-sm text-xs">Confirm and view billing</p>
                 </div>
             </div>

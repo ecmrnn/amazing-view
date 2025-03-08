@@ -30,6 +30,7 @@ class EditReservation extends Component
         'reservation-details-updated' => '$refresh',
         'reservation-canceled' => '$refresh',
         'reservation-confirmed' => '$refresh',
+        'reservation-edited' => '$refresh',
     ];
 
     // Reservation Details
