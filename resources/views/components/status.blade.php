@@ -1,6 +1,6 @@
 @props([
     'status' => '',
-    'type' => '', /* reservation | room | invoice */
+    'type' => '', /* reservation | room | invoice | page */
 ])
 
 @php
@@ -21,6 +21,10 @@
                 case 'invoice':
                     $label = 'Partial';
                     $class = 'text-yellow-800 border-yellow-500 bg-yellow-50';
+                    break;
+                case 'page':
+                    $label = 'Active';
+                    $class = 'text-green-800 border-green-500 bg-green-50';
                     break;
             }
             break;

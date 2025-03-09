@@ -60,10 +60,10 @@ class CreateService extends Component
     {
 
         return <<<'HTML'
-            <div x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:service-added.window="show = false; count = 200" class="block p-5 space-y-5 bg-white" wire:submit="submit">
+            <div x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:service-added.window="show = false; count = 200" class="p-5 space-y-5 bg-white" wire:submit="submit">
                 <hgroup>
-                    <h2 class="font-semibold text-center capitalize">Add Service</h2>
-                    <p class="max-w-sm text-sm text-center">Create a new service to feature here</p>
+                    <h2 class="text-lg font-semibold capitalize">Add Service</h2>
+                    <p class="max-w-sm text-sm">Create a new service to feature here</p>
                 </hgroup>
 
                 <x-note>
@@ -84,7 +84,7 @@ class CreateService extends Component
                     <x-form.input-error field="image" />
                 </div>
 
-                <div class="space-y-2">
+                <x-form.input-group class="space-y-2">
                     <div>
                         <x-form.input-label for="title">Title &amp; Description</x-form.input-label>
                         <p class="text-xs">Enter the title and short description of your service</p>
@@ -98,9 +98,9 @@ class CreateService extends Component
                         <span><x-form.input-error field="description" /></span>
                         <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
                     </div>
-                </div>
+                </x-form.input-group>
                 
-                <div class="flex items-center justify-center gap-1">
+                <div class="flex items-center justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
                     <x-primary-button type="button" wire:click="submit">Add Service</x-primary-button>
                 </div>

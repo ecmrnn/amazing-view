@@ -64,13 +64,13 @@ class EditHistory extends Component
     public function render()
     {
         return <<<'HTML'
-            <div x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="block p-5 space-y-5 bg-white" wire:submit="submit">
+            <div x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white" wire:submit="submit">
                 <hgroup>
-                    <h2 class="font-semibold text-center capitalize">Edit History</h2>
-                    <p class="max-w-sm text-sm text-center">Update history details here</p>
+                    <h2 class="text-lg font-semibold capitalize">Edit History</h2>
+                    <p class="max-w-sm text-sm">Update history details here</p>
                 </hgroup>
 
-                <div class="space-y-2">
+                <x-form.input-group>
                     <div>
                         <x-form.input-label for="edit-history-image">Image</x-form.input-label>
                         <p class="text-xs">Upload a new image here</p>
@@ -83,9 +83,9 @@ class EditHistory extends Component
                     />
 
                     <x-form.input-error field="history_image" />
-                </div>
+                </x-form.input-group>
 
-                <div class="space-y-2">
+                <x-form.input-group>
                     <div>
                         <x-form.input-label for="edit-history">History</x-form.input-label>
                         <p class="text-xs">Write an amazing story here</p>
@@ -97,9 +97,9 @@ class EditHistory extends Component
                         <span><x-form.input-error field="history" /></span>
                         <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 1000</p>
                     </div>
-                </div>
+                </x-form.input-group>
                 
-                <div class="flex items-center justify-center gap-1">
+                <div class="flex items-center justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
                     <x-primary-button type="button" wire:click="submit">Edit History</x-primary-button>
                 </div>

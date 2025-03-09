@@ -106,7 +106,10 @@ class ReservationBreakdown extends Component
                                     <?php $counter++ ?>
                                     <div class="grid grid-cols-6 px-5 py-3 text-sm border-b last:border-b-0 border-slate-200">
                                         <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                        <p class="col-span-2 capitalize">{{ $item->name }}</p>
+                                        <div class="flex items-center gap-3">
+                                            <p>{{ $item->name }}</p>
+                                            <p class="px-2 py-1 text-xs font-semibold border rounded-md bg-slate-50 border-slate-200">{{ $item->room->building->prefix . ' ' . $item->room->room_number }}</p>
+                                        </div>
                                         <p class="text-center">{{ $item->quantity }}</p>
                                         <p class="text-right"><x-currency />{{ number_format($item->price, 2) }}</p>
                                         <p class="text-right"><x-currency />{{ number_format($item->quantity * $item->price, 2) }}</p>

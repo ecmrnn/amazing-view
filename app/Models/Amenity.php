@@ -16,8 +16,4 @@ class Amenity extends Model
     public function rooms(): BelongsToMany {
         return $this->belongsToMany(Room::class, 'room_amenities');
     }
-
-    public function reservations(): BelongsToMany {
-        return $this->belongsToMany(Reservation::class, 'reservation_amenities');
-    }
 }

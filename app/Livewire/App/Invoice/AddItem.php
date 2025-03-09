@@ -8,6 +8,7 @@ use App\Models\Amenity;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\RoomAmenity;
 use App\Services\AdditionalServiceHandler;
 use App\Services\AmenityService;
 use App\Services\BillingService;
@@ -49,7 +50,13 @@ class AddItem extends Component
         if (!empty($invoice)) {
             $this->invoice = Invoice::find($invoice);
             $checked_in_rooms = $this->invoice->reservation->rooms()->where('room_reservations.status', ReservationStatus::CHECKED_IN->value)->get();
-            $this->room_number = $checked_in_rooms->first()->building->prefix . ' ' . $checked_in_rooms->first()->room_number;
+            
+            if ($checked_in_rooms->count() > 0) {
+                $this->room_number = $checked_in_rooms->first()->building->prefix . ' ' . $checked_in_rooms->first()->room_number;
+            } else {
+                $this->room_number = $this->invoice->reservation->rooms()->first()->building->prefix . ' ' . $this->invoice->reservation->rooms()->first()->room_number;
+            }
+
             $this->setItems($this->invoice->reservation);
         }
     }
@@ -104,20 +111,21 @@ class AddItem extends Component
             ]);
         }
 
-        foreach ($reservation->rooms as $room) {
-            foreach ($room->amenities as $amenity) {
-                $this->items->push([
-                    'id' => $amenity->id,
-                    'room_number' => $room->building->prefix . ' ' . $room->room_number,
-                    'name' => $amenity->name,
-                    'type' => 'amenity',
-                    'quantity' => $amenity->pivot->quantity,
-                    'price' => $amenity->pivot->price,
-                    'max' => $amenity->quantity + $amenity->pivot->quantity,
-                    'status' => $room->pivot->status,
-                ]);
-            }
+        $amenities = RoomAmenity::where('reservation_id', $reservation->id)->get();
+        foreach ($amenities as $amenity) {
+            $this->items->push([
+                'id' => $amenity->id,
+                'room_number' => $room->building->prefix . ' ' . $room->room_number,
+                'name' => $amenity->name,
+                'type' => 'amenity',
+                'quantity' => $amenity->pivot->quantity,
+                'price' => $amenity->pivot->price,
+                'max' => $amenity->quantity + $amenity->pivot->quantity,
+                'status' => $room->pivot->status,
+            ]);
+        }
 
+        foreach ($reservation->rooms as $room) {
             foreach ($room->items as $item) {
                 if ($item->invoice_id == $reservation->invoice->id) {
                     $this->items->push([

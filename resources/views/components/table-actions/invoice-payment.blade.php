@@ -58,21 +58,21 @@
                 </div>
     
                 <div class="grid grid-cols-2 gap-5">
-                    @if ($row->payment_method != 'cash')
+                    @if ($row->payment_method != 'CASH')
                         <x-form.input-group class="col-span-2">
-                            {{-- <x-form.input-label for='transaction_id'>Reference No.</x-form.input-label> --}}
-                            <x-form.input-text x-model="transaction_id" id="transaction_id" name="transaction_id" label="Reference No." />
+                            <x-form.input-label for='transaction_id-{{ $row->id }}'>Reference No.</x-form.input-label>
+                            <x-form.input-text x-model="transaction_id" id="transaction_id-{{ $row->id }}" name="transaction_id-{{ $row->id }}" label="Reference No." />
                             <x-form.input-error field="transaction_id" />
                         </x-form.input-group>
                     @endif
                     <x-form.input-group>
-                        <x-form.input-label for='amount'>Amount Paid</x-form.input-label>
-                        <x-form.input-currency x-model="amount" id="amount" name="amount" label="amount" />
+                        <x-form.input-label for='amount-{{ $row->id }}'>Amount Paid</x-form.input-label>
+                        <x-form.input-currency x-model="amount" id="amount-{{ $row->id }}" name="amount-{{ $row->id }}" label="amount" />
                         <x-form.input-error field="amount" />
                     </x-form.input-group>
                     <x-form.input-group>
-                        <x-form.input-label for='payment_date'>Payment Date</x-form.input-label>
-                        <x-form.input-date x-model="payment_date" id="payment_date" name="payment_date" label="payment_date" class="w-full" />
+                        <x-form.input-label for='payment_date-{{ $row->id }}'>Payment Date</x-form.input-label>
+                        <x-form.input-date x-model="payment_date" id="payment_date-{{ $row->id }}" name="payment_date-{{ $row->id }}" label="payment_date" class="w-full" />
                         <x-form.input-error field="payment_date" />
                     </x-form.input-group>
                 </div>
@@ -99,8 +99,8 @@
                 </hgroup>
     
                 <x-form.input-group>
-                    <x-form.input-label for="password">Enter your password to delete</x-form.input-label>
-                    <x-form.input-text wire:model.live='password' type="password" id="password" name="password" label="Password" />
+                    <x-form.input-label for="password-{{ $row->id }}">Enter your password to delete</x-form.input-label>
+                    <x-form.input-text wire:model.live='password' type="password" id="password-{{ $row->id }}" name="password-{{ $row->id }}" label="Password" />
                     <x-form.input-error field="password" />
                 </x-form.input-group>
     

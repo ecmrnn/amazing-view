@@ -31,6 +31,7 @@ class EditHome extends Component
     public $history_image;
     public $home_hero_image;
     public $feature_count;
+    public $status;
 
     public function rules() {
         return [
