@@ -190,12 +190,4 @@ final class GuestTable extends PowerGridComponent
             'view_link' => 'app.reservations.show',
         ]);
     }
-
-    public function checkOut(Reservation $reservation) {
-        $service = new ReservationService;
-        $service->checkOut($reservation);
-        $this->toast('Success!', description: 'Guest checked-out');
-        $this->dispatch('guest-checked-out');
-        $this->dispatch('pg:eventRefresh-GuestTable');
-    }
 }

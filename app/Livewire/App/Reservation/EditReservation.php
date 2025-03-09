@@ -146,7 +146,7 @@ class EditReservation extends Component
         }
         
         foreach ($this->reservation->rooms as $room) {
-            foreach ($room->amenities as $amenity) {
+            foreach ($room->amenitiesForReservation($this->reservation->id)->get() as $amenity) {
                 $this->selected_amenities->push([
                     'id' => $amenity->id,
                     'room_number' => $room->building->prefix . ' ' . $room->room_number,
@@ -257,10 +257,13 @@ class EditReservation extends Component
         $room = $this->reservation->rooms->get($this->amenity_room_id);
         $room_number = $room->building->prefix . ' ' . $room->room_number;
         
-        if ($room->pivot->status == ReservationStatus::CHECKED_IN->value) {
+        if (in_array($room->pivot->status, [
+            ReservationStatus::CONFIRMED->value,
+            ReservationStatus::PENDING->value,
+            ReservationStatus::CHECKED_IN->value,
+        ])) {
             $service = new AmenityService;
             $this->selected_amenities = $service->add($this->reservation, $amenity, $this->selected_amenities, $this->quantity, $room_number);
-    
             $service->sync($this->reservation, $this->selected_amenities);
     
             $this->reset('amenity', 'quantity', 'max_quantity');

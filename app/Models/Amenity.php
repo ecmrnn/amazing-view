@@ -14,6 +14,6 @@ class Amenity extends Model
     protected $guarded = [];
 
     public function rooms(): BelongsToMany {
-        return $this->belongsToMany(Room::class, 'room_amenities');
+        return $this->belongsToMany(Room::class, 'room_amenities')->withPivot(['quantity', 'price']);
     }
 }

@@ -287,7 +287,7 @@
                                                     <p class="text-right">Total</p>
                                                 </div>
         
-                                                @foreach ($room->amenities as $amenity)
+                                                @foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity)
                                                     <div class="grid grid-cols-4 px-5 py-3 text-sm border-t border-slate-200 first:border-t-0">
                                                         <p>{{ $amenity->name }}</p>
                                                         <p class="text-center">{{ $amenity->pivot->quantity }}</p>

@@ -225,7 +225,7 @@ class BillingService
 
         // Compute amenity rates
         foreach ($reservation->rooms as $room) {
-            foreach($room->amenities as $amenity) {
+            foreach($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
                 $sub_total += $amenity->pivot->price * $amenity->pivot->quantity;
                 $breakdown[] = [
                     'name' => $amenity->name,

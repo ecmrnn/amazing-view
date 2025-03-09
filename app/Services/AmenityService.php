@@ -44,7 +44,7 @@ class AmenityService
     // - Collection of amenities to attach
     public function sync(Reservation $reservation, $amenities) {
         foreach ($reservation->rooms as $room) {
-            foreach ($room->amenities as $amenity) {
+            foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
                 $_amenity = Amenity::find($amenity['id']);
                 
                 $room->amenities()->detach($amenity['id']);
@@ -103,13 +103,13 @@ class AmenityService
 
     // For restocking amenities on reservation check-out
     // Accepts a reservation instance
-    public function release(Reservation $reservation) {
-        foreach ($reservation->rooms as $room) {
-            if ($room->pivot->status == ReservationStatus::CHECKED_OUT->value) {
-                foreach ($room->amenities as $amenity) {
-                    $amenity->quantity += $amenity->pivot->quantity;
-                    $amenity->save(); 
-                }
+    public function release(Reservation $reservation, $selected_rooms) {
+        $rooms = $reservation->rooms->whereIn('id', $selected_rooms->pluck('id'));
+
+        foreach ($rooms as $room) {
+            foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
+                $amenity->quantity += $amenity->pivot->quantity;
+                $amenity->save(); 
             }
         }
     }

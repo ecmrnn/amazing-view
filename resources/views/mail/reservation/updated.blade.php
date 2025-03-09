@@ -104,7 +104,7 @@
                                 </tr>
                             @endforeach
                             @foreach ($reservation->rooms as $room)
-                                @foreach ($room->amenities as $amenity)
+                                @foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity)
                                     <tr class="border-t border-slate-200">
                                         <td class="px-3 py-2 capitalize">{{ $room->building->prefix . ' ' . $room->room_number . ' - ' . $amenity->name }}</td>
                                         <td class="px-3 py-2 capitalize">Amenity</td>

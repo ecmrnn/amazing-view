@@ -62,8 +62,10 @@ class RoomService
     // For releasing rooms or marking rooms as 'Available' on the database
     // Acceps the following arguments:
     // - Reservation to access the rooms pivot table
-    public function release(Reservation $reservation) {
-        foreach ($reservation->rooms as $room) {
+    public function release(Reservation $reservation, $selected_rooms) {
+        $rooms = $reservation->rooms->whereIn('id', $selected_rooms->pluck('id'));
+        
+        foreach ($rooms as $room) {
             $room->status = RoomStatus::AVAILABLE->value;
             $room->save();
         }

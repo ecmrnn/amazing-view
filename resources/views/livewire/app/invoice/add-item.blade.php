@@ -30,71 +30,72 @@
                             <p></p> {{-- Action --}}
                         </x-slot:headers>
                 
-                        <div>
-                            <?php $counter = 0; ?>
-                            @foreach ($items as $key => $item)
-                                @if ($item['type'] != 'others')
-                                    <?php $counter++ ?>
-                                    <div x-data="{ quantity: @js($item['quantity']) }" wire:key="{{ $item['id'] }}"
-                                        x-init="
-                                            let timeout;
-                                            $watch('quantity', (value) => {
-                                                clearTimeout(timeout); // Cancel the previous request if another change happens quickly
-                                                timeout = setTimeout(() => { 
-                                                    if (value > 0) {
-                                                        @this.call('updateQuantity', '{{ $item['id'] }}', value, '{{ $item['type'] }}', '{{ Arr::get($item, 'room_number', null) }}');
-                                                    }
-                                                }, 300); // Adjust debounce delay (300ms is a good default)
-                                            })"
-                                        class="grid items-center grid-cols-7 px-5 py-1 text-sm border-b border-solid hover:bg-slate-50 last:border-b-0 border-slate-200">
-                                        <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                        @if ($item['type'] == 'amenity')
-                                            <div class="flex items-center gap-3 w-max">
-                                                <p>{{ $item['name'] }}</p>
-                                                <p class="px-2 py-1 text-xs font-semibold border rounded-md bg-slate-50 border-slate-200">{{ $item['room_number'] }}</p>
-                                            </div>
-                                        @else
+                        <?php $counter = 0; ?>
+                        @foreach ($items as $key => $item)
+                            @if ($item['type'] != 'others')
+                                <?php $counter++ ?>
+                                <div x-data="{ quantity: @js($item['quantity']) }" wire:key="{{ $item['id'] }}"
+                                    x-init="
+                                        let timeout;
+                                        $watch('quantity', (value) => {
+                                            clearTimeout(timeout); // Cancel the previous request if another change happens quickly
+                                            timeout = setTimeout(() => { 
+                                                if (value > 0) {
+                                                    @this.call('updateQuantity', '{{ $item['id'] }}', value, '{{ $item['type'] }}', '{{ Arr::get($item, 'room_number', null) }}');
+                                                }
+                                            }, 300); // Adjust debounce delay (300ms is a good default)
+                                        })"
+                                    class="grid items-center grid-cols-7 px-5 py-1 text-sm hover:bg-slate-50 border-slate-200">
+                                    <p class="font-semibold opacity-50">{{ $counter }}</p>
+                                    @if ($item['type'] == 'amenity')
+                                        <div class="flex items-center gap-3 w-max">
                                             <p>{{ $item['name'] }}</p>
-                                        @endif
-                                        <p class="capitalize">{{ $item['type'] }}</p>
-                                        @if ($item['type'] == 'amenity' && Arr::get($item, 'status', null) == App\Enums\ReservationStatus::CHECKED_IN->value)
-                                            <x-form.input-number x-model="quantity" max="{{ $item['max'] }}" min="1" id="quantity-{{ $key }}" name="quantity" class="text-center" />
+                                            <p class="px-2 py-1 text-xs font-semibold border rounded-md bg-slate-50 border-slate-200">{{ $item['room_number'] }}</p>
+                                        </div>
+                                    @else
+                                        <p>{{ $item['name'] }}</p>
+                                    @endif
+                                    <p class="capitalize">{{ $item['type'] }}</p>
+                                    @if ($item['type'] == 'amenity' && in_array(Arr::get($item, 'status', null), [
+                                        App\Enums\ReservationStatus::CHECKED_IN->value,
+                                        App\Enums\ReservationStatus::CONFIRMED->value,
+                                    ]))
+                                        <x-form.input-number x-model="quantity" max="{{ $item['max'] }}" min="1" id="quantity-{{ $key }}" name="quantity" class="text-center" />
+                                    @else
+                                        <p class="text-center">{{ $item['quantity'] }}</p>
+                                    @endif
+                                    <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
+                                    <p class="text-right"><x-currency />{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
+                                    <div class="ml-auto text-right w-max">
+                                        @if ($item['type'] == 'room' || Arr::get($item, 'status', null) == App\Enums\ReservationStatus::CHECKED_OUT->value)
+                                            <x-icon-button x-ref="content" type="button" class="opacity-0 hover:cursor-default">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                            </x-icon-button>
                                         @else
-                                            <p class="text-center">{{ $item['quantity'] }}</p>
-                                        @endif
-                                        <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
-                                        <p class="text-right"><x-currency />{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
-                                        <div class="ml-auto text-right w-max">
-                                            @if ($item['type'] == 'room' || Arr::get($item, 'status', null) == App\Enums\ReservationStatus::CHECKED_OUT->value)
-                                                <x-icon-button x-ref="content" type="button" class="opacity-0 hover:cursor-default">
+                                            <x-tooltip text="Remove" dir="left">
+                                                <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'remove-item-modal-{{ $key }}')" type="button">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                                 </x-icon-button>
-                                            @else
-                                                <x-tooltip text="Remove" dir="left">
-                                                    <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'remove-item-modal-{{ $key }}')" type="button">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                                    </x-icon-button>
-                                                </x-tooltip>
-                                            @endif 
-                                        </div>
-
-                                        <x-modal.full name='remove-item-modal-{{ $key }}' maxWidth='sm'>
-                                            <div class="p-5 space-y-5" x-on:item-removed.window="show = false">
-                                                <hgroup>
-                                                    <h2 class="text-lg font-semibold text-red-500">Remove Item</h2>
-                                                    <p class="text-xs">Are you sure you want to remove this item?</p>
-                                                </hgroup>
-                    
-                                                <div class="flex justify-end gap-1">
-                                                    <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
-                                                    <x-danger-button type="button" wire:click="removeItem({{ json_encode($item) }})">Remove item</x-danger-button>
-                                                </div>
-                                            </div>
-                                        </x-modal.full>
+                                            </x-tooltip>
+                                        @endif 
                                     </div>
-                                @endif
-                            @endforeach
-                        </div>
+
+                                    <x-modal.full name='remove-item-modal-{{ $key }}' maxWidth='sm'>
+                                        <div class="p-5 space-y-5" x-on:item-removed.window="show = false">
+                                            <hgroup>
+                                                <h2 class="text-lg font-semibold text-red-500">Remove Item</h2>
+                                                <p class="text-xs">Are you sure you want to remove this item?</p>
+                                            </hgroup>
+                
+                                            <div class="flex justify-end gap-1">
+                                                <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
+                                                <x-danger-button type="button" wire:click="removeItem({{ json_encode($item) }})">Remove item</x-danger-button>
+                                            </div>
+                                        </div>
+                                    </x-modal.full>
+                                </div>
+                            @endif
+                        @endforeach
                     </x-table.table>
 
                     

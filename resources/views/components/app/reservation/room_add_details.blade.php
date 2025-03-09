@@ -192,7 +192,7 @@
                         if ($selected_rooms->contains('id', $room->id)) {
                             $checked = true;
                         }
-                        elseif ($room->status == \App\Enums\RoomStatus::UNAVAILABLE) {
+                        elseif ($room->status == \App\Enums\RoomStatus::UNAVAILABLE->value) {
                             $disabled = true;
                         }
                         elseif (in_array($room->id, $reserved_rooms)) {

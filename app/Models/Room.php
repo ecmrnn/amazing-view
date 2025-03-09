@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Room extends Model
@@ -53,6 +54,10 @@ class Room extends Model
         return $this->belongsToMany(Amenity::class, 'room_amenities')->withPivot('quantity', 'price');
     }
 
+    public function amenitiesForReservation($reservation) {
+        return $this->belongsToMany(Amenity::class, 'room_amenities')->where('room_amenities.reservation_id', $reservation)->withPivot('quantity', 'price');
+    }
+    
     public function items(): HasMany {
         return $this->hasMany(InvoiceItem::class);
     }
@@ -64,15 +69,16 @@ class Room extends Model
     // Get all reserved rooms between a specific range of dates
     public function scopeReservedRooms($query, $date_in, $date_out)
     {
-        return $query->whereHas('reservations', function ($query) use ($date_in, $date_out) {
-            $query->where(function ($q) use ($date_in, $date_out) {
-                $q->whereBetween('date_in', [$date_in, $date_out])
-                ->orWhereBetween('date_out', [$date_in, $date_out])
-                ->orWhere(function ($overlap_query) use ($date_in, $date_out) {
-                    $overlap_query->where('date_in', '<=', $date_in)
-                                    ->where('date_out', '>=', $date_out);
+        return $query->whereIn('rooms.status', [
+                RoomStatus::RESERVED->value,
+                RoomStatus::OCCUPIED->value,
+                RoomStatus::UNAVAILABLE->value,
+            ])
+            ->whereHas('reservations', function ($query) use ($date_in, $date_out) {
+                $query->where(function ($q) use ($date_in, $date_out) {
+                    $q->where('date_in', '<=', $date_out)  // Starts before end of range
+                    ->where('date_out', '>=', $date_in); // Ends after start of range
                 });
-            });
         });
     }   
 }

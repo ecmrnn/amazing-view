@@ -28,7 +28,7 @@
         <h3 class="font-semibold">Amenities</h3>
         <p class="text-xs text-zinc-800/50">This room includes the following amenities.</p>
         <ul class="grid grid-cols-2 text-xs">
-            @forelse ($room->amenities as $amenity)
+            @forelse ($room->amenitiesForReservation($reservation->id)->get() as $amenity)
                 <li class="flex items-center gap-2 capitalize line-clamp-1"><x-line class="bg-zinc-800/50" />{{ $amenity->name }}</li>                
             @empty
                 <li class="text-xs text-zinc-800/50">This room has no amenities.</li>

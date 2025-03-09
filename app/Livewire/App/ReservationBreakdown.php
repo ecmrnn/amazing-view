@@ -21,7 +21,6 @@ class ReservationBreakdown extends Component
 
         $billing_service = new BillingService;
         $this->night_count = Carbon::parse((string) $date_in)->diffInDays($date_out);
-
         if ($this->night_count == 0) {
             $this->night_count = 1;
         }
@@ -78,7 +77,7 @@ class ReservationBreakdown extends Component
                         @endif
                         <!-- Amenities -->
                         @foreach ($reservation->rooms as $room)
-                            @foreach ($room->amenities as $amenity)
+                            @foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity)
                                 <?php $counter++ ?>
                                 <div class="grid grid-cols-6 px-5 py-2.5 items-center text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
                                     <p class="font-semibold opacity-50">{{ $counter }}</p>

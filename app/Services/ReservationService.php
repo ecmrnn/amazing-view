@@ -167,24 +167,26 @@ class ReservationService
     }
 
     public function cancel(Reservation $reservation, $data) {
-        $reservation->canceled_at = now();
-        $reservation->status = ReservationStatus::CANCELED;
-        $reservation->save();
-
-        CancelledReservation::create([
-            'reservation_id' => $reservation->id,
-            'reason' => Arr::get($data, 'reason'),
-            'canceled_by' => Arr::get($data, 'canceled_by'),
-            'refund_amount' => Arr::get($data, 'refund_amount', 0),
-            'canceled_at' => now(),
-        ]);
-
-        // Update amenity's quantity and room's availability tables
-        $this->handlers->get('amenity')->release($reservation);
-        $this->handlers->get('room')->release($reservation);
-
-        // Send cancellation email to the guests
-        // Mail::to($reservation->email)->queue(new Cancelled($reservation));
+        DB::transaction(function () use ($reservation, $data) {
+            $reservation->canceled_at = now();
+            $reservation->status = ReservationStatus::CANCELED;
+            $reservation->save();
+    
+            CancelledReservation::create([
+                'reservation_id' => $reservation->id,
+                'reason' => Arr::get($data, 'reason'),
+                'canceled_by' => Arr::get($data, 'canceled_by'),
+                'refund_amount' => Arr::get($data, 'refund_amount', 0),
+                'canceled_at' => now(),
+            ]);
+    
+            // Update amenity's quantity and room's availability tables
+            $this->handlers->get('amenity')->release($reservation, $reservation->rooms);
+            $this->handlers->get('room')->release($reservation, $reservation->rooms);
+    
+            // Send cancellation email to the guests
+            // Mail::to($reservation->email)->queue(new Cancelled($reservation));
+        });
     }
 
     public function checkIn(Reservation $reservation) {
@@ -223,8 +225,8 @@ class ReservationService
                 $reservation->invoice->save();
             }
 
-            $this->handlers->get('amenity')->release($reservation->fresh());
-            $this->handlers->get('room')->release($reservation->fresh());
+            $this->handlers->get('amenity')->release($reservation->fresh(), $selected_rooms);
+            $this->handlers->get('room')->release($reservation->fresh(), $selected_rooms);
         });
     }
 

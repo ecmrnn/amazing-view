@@ -111,21 +111,25 @@ class AddItem extends Component
             ]);
         }
 
-        $amenities = RoomAmenity::where('reservation_id', $reservation->id)->get();
-        foreach ($amenities as $amenity) {
-            $this->items->push([
-                'id' => $amenity->id,
-                'room_number' => $room->building->prefix . ' ' . $room->room_number,
-                'name' => $amenity->name,
-                'type' => 'amenity',
-                'quantity' => $amenity->pivot->quantity,
-                'price' => $amenity->pivot->price,
-                'max' => $amenity->quantity + $amenity->pivot->quantity,
-                'status' => $room->pivot->status,
-            ]);
-        }
+        // $amenities = RoomAmenity::where('reservation_id', $reservation->id)->get();
+        // foreach ($amenities as $amenity) {
+            
+        // }
 
         foreach ($reservation->rooms as $room) {
+            foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
+                $this->items->push([
+                    'id' => $amenity->id,
+                    'room_number' => $room->building->prefix . ' ' . $room->room_number,
+                    'name' => $amenity->name,
+                    'type' => 'amenity',
+                    'quantity' => $amenity->pivot->quantity,
+                    'price' => $amenity->pivot->price,
+                    'max' => $amenity->quantity + $amenity->pivot->quantity,
+                    'status' => $room->pivot->status,
+                ]);
+            }
+
             foreach ($room->items as $item) {
                 if ($item->invoice_id == $reservation->invoice->id) {
                     $this->items->push([

@@ -291,8 +291,8 @@
                         </x-slot:headers>
                         
                         @foreach ($selected_amenities as $key => $amenity)
-                            <div wire:key='{{ $key }}'>
-                                <div x-data="{ quantity: @js($amenity['quantity']) }" class="grid items-center grid-cols-7 px-5 py-1 text-sm border-t border-solid first:border-t-0 hover:bg-slate-50 border-slate-200"
+                            <div wire:key='amenity-{{ $key }}' >
+                                <div x-data="{ quantity: @js($amenity['quantity']) }"
                                         x-init="
                                         let timeout;
                                         $watch('quantity', (value) => {
@@ -303,11 +303,15 @@
                                                 }
                                             }, 300); // Adjust debounce delay (300ms is a good default)
                                         })"
+                                        class="grid items-center grid-cols-7 px-5 py-1 text-sm hover:bg-slate-50"
                                     >
                                     <p class="font-semibold opacity-50">{{ ++$counter }}</p>
                                     <p>{{ $amenity['room_number'] }}</p>
                                     <p>{{ $amenity['name'] }}</p>
-                                    @if (Arr::get($amenity, 'status', null) == App\Enums\ReservationStatus::CHECKED_IN->value)
+                                    @if (in_array(Arr::get($amenity, 'status', null), [
+                                        App\Enums\ReservationStatus::CONFIRMED->value,
+                                        App\Enums\ReservationStatus::CHECKED_IN->value,
+                                    ]))
                                         <x-form.input-number x-model="quantity" max="{{ $amenity['max'] }}" min="1" id="quantity" name="quantity" class="text-center" />
                                     @else
                                         <p class="text-center">{{ $amenity['quantity'] }}</p>
@@ -686,7 +690,7 @@
                         <p class="text-xs">Choose from which of the reserved rooms to apply the selected amenity.</p>
                     </hgroup>
 
-                    <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         @foreach ($reservation->rooms as $key => $room)
                             @if ($key == $amenity_room_id)
                                 <div wire:key='gallery-{{ $room->id}}'>
