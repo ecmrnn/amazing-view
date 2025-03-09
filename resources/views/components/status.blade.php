@@ -1,6 +1,6 @@
 @props([
     'status' => '',
-    'type' => '',
+    'type' => '', /* reservation | room | invoice */
 ])
 
 @php
@@ -36,7 +36,7 @@
                     break;
                 case 'invoice':
                     $label = 'Paid';
-                    $class = 'text-white border-green-500 bg-green-500/75';
+                    $class = 'text-white border-blue-500 bg-blue-500/75';
                     break;
             }
             break;
@@ -97,8 +97,16 @@
             }
             break;
         case 6:
-            $label = 'Canceled';
-            $class = 'text-white border-stone-500 bg-stone-500/75';
+            switch ($type) {
+                case 'reservation':
+                    $label = 'Canceled';
+                    $class = 'text-white border-stone-500 bg-stone-500/75';
+                    break;
+                case 'invoice':
+                    $label = 'Completed';
+                    $class = 'text-white border-green-500 bg-green-500/75';
+                    break;
+            }
             break;
         case 7:
             $label = 'Reserved';

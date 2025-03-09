@@ -105,9 +105,11 @@ class AmenityService
     // Accepts a reservation instance
     public function release(Reservation $reservation) {
         foreach ($reservation->rooms as $room) {
-            foreach ($room->amenities as $amenity) {
-                $amenity->quantity += $amenity->pivot->quantity;
-                $amenity->save(); 
+            if ($room->pivot->status == ReservationStatus::CHECKED_OUT->value) {
+                foreach ($room->amenities as $amenity) {
+                    $amenity->quantity += $amenity->pivot->quantity;
+                    $amenity->save(); 
+                }
             }
         }
     }

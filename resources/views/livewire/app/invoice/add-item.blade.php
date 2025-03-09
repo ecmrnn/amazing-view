@@ -57,7 +57,7 @@
                                             <p>{{ $item['name'] }}</p>
                                         @endif
                                         <p class="capitalize">{{ $item['type'] }}</p>
-                                        @if ($item['type'] == 'amenity')
+                                        @if ($item['type'] == 'amenity' && Arr::get($item, 'status', null) == App\Enums\ReservationStatus::CHECKED_IN->value)
                                             <x-form.input-number x-model="quantity" max="{{ $item['max'] }}" min="1" id="quantity-{{ $key }}" name="quantity" class="text-center" />
                                         @else
                                             <p class="text-center">{{ $item['quantity'] }}</p>
@@ -65,8 +65,8 @@
                                         <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
                                         <p class="text-right"><x-currency />{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
                                         <div class="ml-auto text-right w-max">
-                                            @if ($item['type'] == 'room')
-                                                <x-icon-button disabled x-ref="content" x-on:click="$dispatch('open-modal', 'remove-item-modal-{{ $key }}')" type="button">
+                                            @if ($item['type'] == 'room' || Arr::get($item, 'status', null) == App\Enums\ReservationStatus::CHECKED_OUT->value)
+                                                <x-icon-button x-ref="content" type="button" class="opacity-0 hover:cursor-default">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                                 </x-icon-button>
                                             @else
@@ -122,17 +122,30 @@
                                                 })"
                                                 >
                                                 <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                                <p>{{ $item['name'] }}</p>
+                                                <div class="flex items-center gap-3 w-max">
+                                                    <p>{{ $item['name'] }}</p>
+                                                    <p class="px-2 py-1 text-xs font-semibold border rounded-md bg-slate-50 border-slate-200">{{ $item['room_number'] }}</p>
+                                                </div>
                                                 <p class="capitalize">{{ $item['type'] }}</p>
-                                                <x-form.input-number x-model="quantity" min="1" id="quantity" name="quantity" class="text-center" />
+                                                @if (Arr::get($item, 'status', null) == App\Enums\ReservationStatus::CHECKED_IN->value)
+                                                    <x-form.input-number x-model="quantity" min="1" id="quantity" name="quantity" class="text-center" />
+                                                @else
+                                                    <p class="text-center">{{ $item['quantity'] }}</p>
+                                                @endif
                                                 <p class="text-right"><x-currency />{{ number_format($item['price'], 2) }}</p>
                                                 <p class="text-right"><x-currency />{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
                                                 <div class="ml-auto text-right w-max">
-                                                    <x-tooltip text="Remove" dir="left">
-                                                        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'remove-item-modal-{{ $key }}')" type="button">
+                                                    @if (Arr::get($item, 'status', null) == App\Enums\ReservationStatus::CHECKED_OUT->value)
+                                                        <x-icon-button x-ref="content" type="button" class="opacity-0 hover:cursor-default">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                                         </x-icon-button>
-                                                    </x-tooltip>
+                                                    @else
+                                                        <x-tooltip text="Remove" dir="left">
+                                                            <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'remove-item-modal-{{ $key }}')" type="button">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                                            </x-icon-button>
+                                                        </x-tooltip>
+                                                    @endif 
                                                 </div>
 
                                                 <x-modal.full name='remove-item-modal-{{ $key }}' maxWidth='sm'>
@@ -313,7 +326,9 @@
                             <x-form.input-label for='room_number'>Select a Room</x-form.input-label>
                             <x-form.select wire:model.live='room_number' id="room_number" name="room_number" wire:change='selectRoom'>
                                 @foreach ($invoice->reservation->rooms as $room)
-                                    <option value="{{ $room->building->prefix . ' ' . $room->room_number }}">{{ $room->building->prefix . ' ' . $room->room_number }}</option>
+                                    @if ($room->pivot->status == App\Enums\ReservationStatus::CHECKED_IN->value)
+                                        <option value="{{ $room->building->prefix . ' ' . $room->room_number }}">{{ $room->building->prefix . ' ' . $room->room_number }}</option>
+                                    @endif
                                 @endforeach
                             </x-form.select>
                             <x-form.input-error field="room_number" />

@@ -27,14 +27,6 @@ class ReservationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(string $reservation)
@@ -58,14 +50,6 @@ class ReservationController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
     public function updateNote(Request $request, Reservation $reservation) {
         $validated = $request->validate([
             'note' => Reservation::rules()['note'] 
@@ -77,12 +61,11 @@ class ReservationController extends Controller
         return redirect()->route('app.reservations.show', ['reservation' => $reservation->rid]);
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    public function checkOut(Request $request, $reservation) {
+        $reservation = Reservation::where('rid', $reservation)->first();
+        
+        return view('app.reservations.check-out', [
+            'reservation' => $reservation,
+        ]);
     }
 }

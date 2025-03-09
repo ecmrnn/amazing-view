@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\InvoiceStatus;
-use App\Enums\RoomStatus;
 use App\Enums\ReservationStatus;
 use App\Jobs\Invoice\GenerateInvoicePDF;
 use App\Models\Invoice;
@@ -11,7 +10,6 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
-use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 
 class BillingService
 {

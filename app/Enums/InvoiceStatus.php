@@ -10,4 +10,5 @@ enum InvoiceStatus: int
     case DUE = 3;
     case CANCELED = 4;
     case ISSUED = 5;
+    case COMPLETED = 6;
 }

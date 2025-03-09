@@ -16,4 +16,8 @@ class InvoiceItem extends Model
     {
         return $this->belongsTo(Invoice::class);
     }
+
+    public function room(): BelongsTo {
+        return $this->belongsTo(Room::class);
+    }
 }

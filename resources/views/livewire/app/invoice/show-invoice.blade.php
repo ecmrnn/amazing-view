@@ -51,6 +51,7 @@
                 @if (in_array($invoice->status, [
                         App\Enums\InvoiceStatus::PARTIAL->value,
                         App\Enums\InvoiceStatus::PENDING->value,
+                        App\Enums\InvoiceStatus::PAID->value,
                     ])) 
                     <a href="{{ route('app.billings.edit', ['billing' => $invoice->iid]) }}" wire:navigate>
                         <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">

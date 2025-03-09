@@ -23,10 +23,6 @@
             </div>
         </x-modal.full> 
 
-        <x-modal.full name='show-checkout-reservation' maxWidth='sm'>
-            <livewire:app.guest.check-out-guest :reservation="$reservation" />
-        </x-modal.full>
-
         <x-modal.full name='show-payment-reservation' maxWidth='sm'>
             <livewire:app.invoice.create-payment :invoice="$reservation->invoice" />
         </x-modal.full>

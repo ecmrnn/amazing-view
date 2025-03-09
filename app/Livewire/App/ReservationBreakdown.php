@@ -52,7 +52,7 @@ class ReservationBreakdown extends Component
                         @if ($reservation->rooms->count() > 0)
                             @foreach ($reservation->rooms as $room)
                                 <?php $counter++ ?>
-                                <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
+                                <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid first:border-t-0 hover:bg-slate-50 border-slate-200">
                                     <p class="font-semibold opacity-50">{{ $counter }}</p>
                                     <p>{{ $room->building->prefix . ' ' . $room->room_number}}</p>
                                     <p>Room</p>

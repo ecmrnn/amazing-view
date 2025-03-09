@@ -36,18 +36,4 @@
         {{-- Edit Reservation Form --}}
         <livewire:app.guest.edit-guest :reservation="$reservation" />
     </div>
-
-    {{-- Modal for checking-out guest reservation --}}
-    <x-modal.full name="show-check-out-modal" maxWidth="sm">
-        <div x-data="{ checked: false }" x-on:guest-checked-in.window="show = false">
-            <section class="p-5 space-y-5 bg-white">
-                <hgroup>
-                    <h2 class="font-semibold capitalize">Check-out Guest</h2>
-                    <p class="max-w-sm text-sm">Are you sure you really want to check-out <strong class="text-blue-500 capitalize">{{ $reservation->first_name . " " . $reservation->last_name}}</strong>?</p>
-                </hgroup>
-
-                <livewire:app.guest.check-out-guest :reservation="$reservation" />
-            </section>
-        </div>
-    </x-modal.full> 
 </x-app-layout>  

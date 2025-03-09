@@ -292,7 +292,7 @@
                         
                         @foreach ($selected_amenities as $key => $amenity)
                             <div wire:key='{{ $key }}'>
-                                <div x-data="{ quantity: @js($amenity['quantity']) }" class="grid items-center grid-cols-7 px-5 py-1 text-sm border-t border-solid hover:bg-slate-50 border-slate-200"
+                                <div x-data="{ quantity: @js($amenity['quantity']) }" class="grid items-center grid-cols-7 px-5 py-1 text-sm border-t border-solid first:border-t-0 hover:bg-slate-50 border-slate-200"
                                         x-init="
                                         let timeout;
                                         $watch('quantity', (value) => {
@@ -307,16 +307,28 @@
                                     <p class="font-semibold opacity-50">{{ ++$counter }}</p>
                                     <p>{{ $amenity['room_number'] }}</p>
                                     <p>{{ $amenity['name'] }}</p>
-                                    <x-form.input-number x-model="quantity" max="{{ $amenity['max'] }}" min="1" id="quantity" name="quantity" class="text-center" />
+                                    @if (Arr::get($amenity, 'status', null) == App\Enums\ReservationStatus::CHECKED_IN->value)
+                                        <x-form.input-number x-model="quantity" max="{{ $amenity['max'] }}" min="1" id="quantity" name="quantity" class="text-center" />
+                                    @else
+                                        <p class="text-center">{{ $amenity['quantity'] }}</p>
+                                    @endif
                                     <p class="text-right"><x-currency />{{ number_format($amenity['price'], 2) }}</p>
                                     <p class="text-right"><x-currency />{{ number_format($amenity['quantity'] * $amenity['price'], 2) }}</p>
                                     <div class="ml-auto text-right w-max">
-                                        <x-tooltip text="Remove" dir="left">
-                                            <x-icon-button x-ref="content" type="button"
+                                        @if (Arr::get($amenity, 'status', null) == App\Enums\ReservationStatus::CHECKED_OUT->value)
+                                            <x-icon-button type="button"
+                                                class="opacity-0"
                                                 x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $key }}')">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
                                             </x-icon-button>
-                                        </x-tooltip>
+                                        @else
+                                            <x-tooltip text="Remove" dir="left">
+                                                <x-icon-button x-ref="content" type="button"
+                                                    x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $key }}')">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
+                                                </x-icon-button>
+                                            </x-tooltip>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -674,18 +686,25 @@
                         <p class="text-xs">Choose from which of the reserved rooms to apply the selected amenity.</p>
                     </hgroup>
 
-                    <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
-                        <img src="{{ asset('storage/' . $reservation->rooms->get($amenity_room_id)->image_1_path) }}" class="object-cover object-center rounded-md aspect-video" />
-                        
-                        <div class="flex items-start justify-between">
-                            <hgroup>
-                                <h2 class="text-sm font-semibold">{{ $reservation->rooms->get($amenity_room_id)->building->prefix . ' ' . $reservation->rooms->get($amenity_room_id)->room_number }}</h2>
-                                <p class="text-xs">Capacity: {{ $reservation->rooms->get($amenity_room_id)->max_capacity }}</p>
-                            </hgroup>
+                    <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                        @foreach ($reservation->rooms as $key => $room)
+                            @if ($key == $amenity_room_id)
+                                <div wire:key='gallery-{{ $room->id}}'>
+                                    <div class="space-y-5">
+                                        <img src="{{ asset('storage/' . $room->image_1_path) }}" alt="room" class="object-cover object-center rounded-md aspect-video">
 
-                            <x-status type="room" :status="$reservation->rooms->get($amenity_room_id)->status" />
-                        </div>
-
+                                        <div class="flex items-start justify-between">
+                                            <hgroup>
+                                                <h3 class="font-semibold">{{ $room->building->prefix . ' ' . $room->room_number }}</h3>
+                                                <p class="text-xs">Rate: <x-currency />{{ number_format($room->rate, 2) }}</p>
+                                            </hgroup>
+                                            <x-status type="reservation" status="{{ $room->pivot->status }}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                        {{-- Gallery Navigation --}}
                         <div class="flex items-center justify-between">
                             <x-tooltip text="Previous" dir="top">
                                 <x-icon-button type="button" x-ref="content" wire:click='previousRoom'>
@@ -705,7 +724,7 @@
                                     </button>
                                 @endforeach
                             </div>
-
+    
                             <x-tooltip text="Next" dir="top">
                                 <x-icon-button type="button" x-ref="content" wire:click='nextRoom'>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>

@@ -15,11 +15,13 @@
     </x-tooltip>
 
     @if ($row->status == \App\Enums\ReservationStatus::CHECKED_IN->value)
-        <x-tooltip text="Check-out" dir="top">
-            <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'show-checkout-guest-{{ $row->id}}')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-            </x-icon-button>
-        </x-tooltip>
+        <a href="{{ route('app.reservation.check-out', ['reservation' => $row->rid]) }}" wire:navigate>
+            <x-tooltip text="Check-out" dir="top">
+                <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'show-checkout-guest-{{ $row->id}}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                </x-icon-button>
+            </x-tooltip>
+        </a>
     @endif
     
     @if ($row->status == \App\Enums\ReservationStatus::CONFIRMED->value)
@@ -38,34 +40,6 @@
         </a>
     </x-tooltip>
     
-    <x-modal.full name='show-checkout-guest-{{ $row->id}}' maxWidth='sm'>
-        <div class="p-5 space-y-5" x-on:guest-checked-out.window="show = false">
-            <hgroup>
-                <h2 class="text-lg font-semibold capitalize">Check-out Guest</h2>
-                <p class="text-sm">Are you sure you really want to check-out this guest?</p>
-            </hgroup>
-
-            <div class="p-5 border rounded-md border-slate-200">
-                <div>
-                    <h3 class="font-semibold">{{ $row->rid }}</h3>
-                    <p class="text-xs">Reservation ID</p>
-                </div>
-            </div>
-
-            <div class="p-5 border rounded-md border-slate-200">
-                <div>
-                    <h3 class="font-semibold capitalize">{{ $row->first_name . ' ' . $row->last_name}}</h3>
-                    <p class="text-xs">Name</p>
-                </div>
-            </div>
-
-            <div class="flex justify-end gap-1">
-                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" wire:click="checkOut({{ $row->id }})">Check-out</x-primary-button>
-            </div>
-        </div>
-    </x-modal.full>
-
     <x-modal.full name='show-checkin-guest-{{ $row->id}}' maxWidth='sm'>
         <div class="p-5 space-y-5 bg-white" x-on:guest-checked-in.window="show = false">
             <hgroup>

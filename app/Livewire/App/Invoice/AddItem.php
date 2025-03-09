@@ -2,11 +2,12 @@
 
 namespace App\Livewire\App\Invoice;
 
+use App\Enums\ReservationStatus;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Invoice;
-use App\Models\InvoiceItem;
 use App\Models\Reservation;
+use App\Models\Room;
 use App\Services\AdditionalServiceHandler;
 use App\Services\AmenityService;
 use App\Services\BillingService;
@@ -47,7 +48,8 @@ class AddItem extends Component
 
         if (!empty($invoice)) {
             $this->invoice = Invoice::find($invoice);
-            $this->room_number = $this->invoice->reservation->rooms->first()->building->prefix . ' ' . $this->invoice->reservation->rooms->first()->room_number;
+            $checked_in_rooms = $this->invoice->reservation->rooms()->where('room_reservations.status', ReservationStatus::CHECKED_IN->value)->get();
+            $this->room_number = $checked_in_rooms->first()->building->prefix . ' ' . $checked_in_rooms->first()->room_number;
             $this->setItems($this->invoice->reservation);
         }
     }
@@ -112,19 +114,23 @@ class AddItem extends Component
                     'quantity' => $amenity->pivot->quantity,
                     'price' => $amenity->pivot->price,
                     'max' => $amenity->quantity + $amenity->pivot->quantity,
+                    'status' => $room->pivot->status,
                 ]);
             }
-        }
-        
-        foreach ($reservation->invoice->items as $item) {
-            // $other_charges += $item->quantity * $item->price;
-            $this->items->push([
-                'id' => $item->id,
-                'name' => $item->name,
-                'type' => 'others',
-                'quantity' => $item->quantity,
-                'price' => $item->price,
-            ]);
+
+            foreach ($room->items as $item) {
+                if ($item->invoice_id == $reservation->invoice->id) {
+                    $this->items->push([
+                        'id' => $item->id,
+                        'room_number' => $room->building->prefix . ' ' . $room->room_number,
+                        'name' => $item->name,
+                        'type' => 'others',
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'status' => $room->pivot->status,
+                    ]);
+                }
+            }
         }
         
         $this->getTaxes();

@@ -57,13 +57,15 @@ final class GuestTable extends PowerGridComponent
     {
         if (isset($this->status)) {
             $query = Reservation::query()
-                ->where('date_in', Carbon::now()->format('Y-m-d'))
+                ->whereDate('date_in', '<=', Carbon::today())
+                ->whereDate('date_out', '>=', Carbon::today())
                 ->whereStatus($this->status)
                 ->orderByDesc('rid');
         }
         
         $query = Reservation::query()->with('rooms')
-            ->where('date_in', Carbon::now()->format('Y-m-d'))
+            ->whereDate('date_in', '<=', Carbon::today())
+            ->whereDate('date_out', '>=', Carbon::today())
             ->orderByDesc('rid');
 
         return $query;

@@ -38,6 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:frontdesk|admin')->prefix('app')->name('app.')->group(function () {
         // Guests type route
         Route::resource('/guests', GuestController::class);
+        Route::get('/guests/check-out/{reservation}', [ReservationController::class, 'checkOut'])->name('reservation.check-out');
 
         // Reservation type route
         Route::resource('/reservations', ReservationController::class);

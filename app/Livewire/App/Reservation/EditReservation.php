@@ -18,8 +18,6 @@ use Illuminate\Support\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use phpDocumentor\Reflection\Types\This;
-use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class EditReservation extends Component
@@ -156,6 +154,7 @@ class EditReservation extends Component
                     'quantity' => $amenity->pivot->quantity,
                     'price' => $amenity->pivot->price,
                     'max' => $amenity->quantity + $amenity->pivot->quantity,
+                    'status' => $room->pivot->status,
                 ]);
             }
         }
@@ -255,17 +254,21 @@ class EditReservation extends Component
         ]);
 
         $amenity = Amenity::find($this->amenity);
-        $service = new AmenityService;
         $room = $this->reservation->rooms->get($this->amenity_room_id);
         $room_number = $room->building->prefix . ' ' . $room->room_number;
-
-        $this->selected_amenities = $service->add($this->reservation, $amenity, $this->selected_amenities, $this->quantity, $room_number);
-
-        $service->sync($this->reservation, $this->selected_amenities);
-
-        $this->reset('amenity', 'quantity', 'max_quantity');
-        $this->dispatch('amenity-added');
-        $this->toast('Success!', description: 'Amenity added successfully!');
+        
+        if ($room->pivot->status == ReservationStatus::CHECKED_IN->value) {
+            $service = new AmenityService;
+            $this->selected_amenities = $service->add($this->reservation, $amenity, $this->selected_amenities, $this->quantity, $room_number);
+    
+            $service->sync($this->reservation, $this->selected_amenities);
+    
+            $this->reset('amenity', 'quantity', 'max_quantity');
+            $this->dispatch('amenity-added');
+            $this->toast('Success!', description: 'Amenity added successfully!');
+        } else {
+            $this->toast('Room is Checked-out', 'warning', 'The room selected is already checked-out.');
+        }
     }
 
     public function removeAmenity(Amenity $amenity, $room_number) {

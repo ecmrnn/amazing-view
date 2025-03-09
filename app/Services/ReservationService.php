@@ -188,21 +188,44 @@ class ReservationService
     }
 
     public function checkIn(Reservation $reservation) {
-        $reservation->status = ReservationStatus::CHECKED_IN;
-        $reservation->save();
+        DB::transaction(function () use ($reservation) {
+            $reservation->status = ReservationStatus::CHECKED_IN;
+            $reservation->save();
+
+            foreach ($reservation->rooms as $room) {
+                $room->pivot->status = ReservationStatus::CHECKED_IN;
+                $room->pivot->save();
+            }
+        });
     }
 
-    public function checkOut(Reservation $reservation) {
-        $reservation->status = ReservationStatus::CHECKED_OUT;
-        $reservation->save();
+    public function checkOut(Reservation $reservation, $selected_rooms) {
+        DB::transaction(function () use ($reservation, $selected_rooms) {
+            $rooms = $reservation->rooms()->whereIn('rooms.id', $selected_rooms->pluck('id'))->get();
 
-        // Generate invoice
-        $this->handlers->get('billing')->issueInvoice($reservation->invoice);
+            foreach ($rooms as $room) {
+                $room->pivot->status = ReservationStatus::CHECKED_OUT->value;
+                $room->pivot->save();
+            }
 
-        $this->handlers->get('room')->release($reservation);
-        $this->handlers->get('amenity')->release($reservation);
+            /**
+             * If all rooms are checked out: 
+             * - mark reservation as 'checked out'
+             * - mark invoice as 'paid'
+             */
+            $checked_in_rooms = $reservation->fresh()->rooms()->where('room_reservations.status', ReservationStatus::CHECKED_IN)->count();
 
-        // Send 'Thank You' email to the guests
+            if (empty($checked_in_rooms)) {
+                $reservation->status = ReservationStatus::CHECKED_OUT->value;
+                $reservation->save();
+
+                $reservation->invoice->status = InvoiceStatus::COMPLETED->value;
+                $reservation->invoice->save();
+            }
+
+            $this->handlers->get('amenity')->release($reservation->fresh());
+            $this->handlers->get('room')->release($reservation->fresh());
+        });
     }
 
     public function downloadPdf(Reservation $reservation) {
