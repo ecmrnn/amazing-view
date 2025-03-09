@@ -12,15 +12,15 @@
                 // Green
                 case 'reservation':
                     $label = 'Confirmed';
-                    $class = 'text-white border-green-500 bg-green-500/75';
+                    $class = 'text-green-800 border-green-500 bg-green-50';
                     break;
                 case 'room':
                     $label = 'Available';
-                    $class = 'text-white border-blue-500 bg-blue-500/75';
+                    $class = 'text-blue-800 border-blue-500 bg-blue-50';
                     break;
                 case 'invoice':
                     $label = 'Partial';
-                    $class = 'text-white border-yellow-500 bg-yellow-500/75';
+                    $class = 'text-yellow-800 border-yellow-500 bg-yellow-50';
                     break;
             }
             break;
@@ -28,15 +28,15 @@
             switch ($type) {
                 case 'reservation':
                     $label = 'Pending';
-                    $class = 'text-white border-orange-500 bg-orange-500/75';
+                    $class = 'text-orange-800 border-orange-500 bg-orange-50';
                     break;
                 case 'room':
                     $label = 'Unavailable';
-                    $class = 'text-white border-red-500 bg-red-500/75';
+                    $class = 'text-red-800 border-red-500 bg-red-50';
                     break;
                 case 'invoice':
                     $label = 'Paid';
-                    $class = 'text-white border-blue-500 bg-blue-500/75';
+                    $class = 'text-blue-800 border-blue-500 bg-blue-50';
                     break;
             }
             break;
@@ -44,15 +44,15 @@
             switch ($type) {
                 case 'reservation':
                     $label = 'Expired';
-                    $class = 'text-white border-red-500 bg-red-500/75';
+                    $class = 'text-red-800 border-red-500 bg-red-50';
                     break;
                 case 'room':
                     $label = 'Occupied';
-                    $class = 'text-white border-orange-500 bg-orange-500/75';
+                    $class = 'text-orange-800 border-orange-500 bg-orange-50';
                     break;
                 case 'invoice':
                     $label = 'Pending';
-                    $class = 'text-white border-blue-500 bg-blue-500/75';
+                    $class = 'text-blue-800 border-blue-500 bg-blue-50';
                     break;
             }
             break;
@@ -60,15 +60,15 @@
             switch ($type) {
                 case 'reservation':
                     $label = 'Checked-in';
-                    $class = 'text-white border-blue-500 bg-blue-500/75';
+                    $class = 'text-blue-800 border-blue-500 bg-blue-50';
                     break;
                 case 'room':
                     $label = 'Reserved';
-                    $class = 'text-white border-green-500 bg-green-500/75';
+                    $class = 'text-green-800 border-green-500 bg-green-50';
                     break;
                 case 'invoice':
                     $label = 'Due';
-                    $class = 'text-white border-red-500 bg-red-500/75';
+                    $class = 'text-red-800 border-red-500 bg-red-50';
                     break;
             }
             break;
@@ -76,11 +76,11 @@
             switch ($type) {
                 case 'reservation':
                     $label = 'Checked-out';
-                    $class = 'text-white border-gray-500 bg-gray-500/75';
+                    $class = 'text-gray-800 bg-gray-200 border-gray-500';
                     break;
                 case 'invoice':
                     $label = 'Canceled';
-                    $class = 'text-white border-stone-500 bg-stone-500/75';
+                    $class = 'text-stone-800 border-stone-500 bg-stone-200';
                     break;
             }
             break;
@@ -88,11 +88,11 @@
             switch ($type) {
                 case 'reservation':
                     $label = 'Completed';
-                    $class = 'text-white border-lime-500 bg-lime-500/75';
+                    $class = 'text-lime-800 border-lime-500 bg-lime-50';
                     break;
                 case 'invoice':
                     $label = 'Issued';
-                    $class = 'text-white border-green-500 bg-green-500/75';
+                    $class = 'text-green-800 border-green-500 bg-green-50';
                     break;
             }
             break;
@@ -100,29 +100,29 @@
             switch ($type) {
                 case 'reservation':
                     $label = 'Canceled';
-                    $class = 'text-white border-stone-500 bg-stone-500/75';
+                    $class = 'text-stone-800 border-stone-500 bg-stone-200';
                     break;
                 case 'invoice':
                     $label = 'Completed';
-                    $class = 'text-white border-green-500 bg-green-500/75';
+                    $class = 'text-green-800 border-green-500 bg-green-50';
                     break;
             }
             break;
         case 7:
             $label = 'Reserved';
-            $class = 'text-white border-green-500 bg-green-500/75';
+            $class = 'text-green-800 border-green-500 bg-green-50';
             break;
         case 8:
             $label = 'Awaiting Payment';
-            $class = 'text-white border-yellow-500 bg-yellow-500/75';
+            $class = 'text-yellow-800 border-yellow-500 bg-yellow-50';
             break;
         case 9:
             $label = 'No Show';
-            $class = 'text-white border-stone-500 bg-stone-500/75';
+            $class = 'text-stone-800 border-stone-500 bg-stone-200';
             break;
         case 10:
             $label = 'Rescheduled';
-            $class = 'text-white border-indigo-500 bg-indigo-500/75';
+            $class = 'text-indigo-800 border-indigo-500 bg-indigo-50';
             break;
         default:
             # code...
