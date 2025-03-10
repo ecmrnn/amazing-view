@@ -220,13 +220,15 @@ class ReservationService
             if (empty($checked_in_rooms)) {
                 $reservation->status = ReservationStatus::CHECKED_OUT->value;
                 $reservation->save();
-
-                $reservation->invoice->status = InvoiceStatus::COMPLETED->value;
-                $reservation->invoice->save();
             }
 
             $this->handlers->get('amenity')->release($reservation->fresh(), $selected_rooms);
             $this->handlers->get('room')->release($reservation->fresh(), $selected_rooms);
+
+            // Issue invoice if not yet issued
+            if (empty($reservation->invoice->issue_date)) {
+                $this->handlers->get('billing')->issueInvoice($reservation->invoice->fresh());
+            }
         });
     }
 

@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class BillingService
@@ -68,12 +69,17 @@ class BillingService
     }
 
     public function issueInvoice(Invoice $invoice) {
-        // Generate Invoice PDF
-        GenerateInvoicePDF::dispatch($invoice);
-
-        $invoice->issue_date = Carbon::now()->format('Y-m-d');
-        $invoice->status = InvoiceStatus::ISSUED;
-        $invoice->save();
+        DB::transaction(function () use ($invoice) {
+            // Generate Invoice PDF
+            GenerateInvoicePDF::dispatch($invoice);
+    
+            $invoice->issue_date = Carbon::now()->format('Y-m-d');
+            $invoice->status = InvoiceStatus::ISSUED;
+            $invoice->save();
+    
+            // Send invoice to user via email
+            
+        });
     }
 
     public function breakdown(Reservation $reservation) {
