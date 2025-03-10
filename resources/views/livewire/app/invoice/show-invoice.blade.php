@@ -124,32 +124,34 @@
             <x-status type="invoice" :status="$invoice->status"></x-status>
         </div>
 
-        <div class="grid gap-5 p-5 border rounded-md border-slate-200 sm:grid-cols-3">
-            <div>
+        <div class="flex flex-col gap-5 p-5 border rounded-md border-slate-200 sm:flex-row">
+            <div class="w-full">
                 <a href="{{ route('app.reservations.show', ['reservation' => $invoice->reservation->rid]) }}" wire:navigate>
                     <h2 class="font-semibold text-blue-500">{{ $invoice->reservation->rid }}</h2>
                 </a>
                 <p class="text-xs">Reservation ID</p>
             </div>
-            <div>
+            <div class="w-full">
                 <h2 class="font-semibold">{{ $invoice->reservation->email }}</h2>
                 <p class="text-xs">Billing Recepient</p>
             </div>
-            <div>
-                <h2 class="font-semibold">{{ date_format(date_create($invoice->due_date), 'F j, Y') }}</h2>
-                <p class="text-xs">Due Date 
-                    @switch($remaining_days)
-                        @case(0)
-                            &lpar;Today&rpar;
-                            @break
-                        @case(1)
-                            &lpar;Tomorrow&rpar;
-                            @break
-                        @default
-                            &lpar;{{ $remaining_days }} days remaining&rpar;
-                    @endswitch
-                </p>
-            </div>
+            @if ($invoice->status != App\Enums\InvoiceStatus::ISSUED->value)
+                <div class="w-full">
+                    <h2 class="font-semibold">{{ date_format(date_create($invoice->due_date), 'F j, Y') }}</h2>
+                    <p class="text-xs">Due Date 
+                        @switch($remaining_days)
+                            @case(0)
+                                &lpar;Today&rpar;
+                                @break
+                            @case(1)
+                                &lpar;Tomorrow&rpar;
+                                @break
+                            @default
+                                &lpar;{{ $remaining_days }} days remaining&rpar;
+                        @endswitch
+                    </p>
+                </div>
+            @endif
         </div>
 
         <livewire:app.reservation-breakdown :reservation="$invoice->reservation" />

@@ -42,12 +42,9 @@ final class GuestTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckBox();
-
         return [
             Header::make()
-                ->showSearchInput()
-                ->showToggleColumns(),
+                ->showSearchInput(),
             Footer::make()
                 ->showPerPage(),
         ];
@@ -92,9 +89,13 @@ final class GuestTable extends PowerGridComponent
             })
 
             ->add('first_name')
+            ->add('first_name_formatted', function($reservation) {
+                return ucwords(strtolower($reservation->first_name));
+            })
+            
             ->add('last_name')
-            ->add('name_formatted', function($reservation) {
-                return ucwords(strtolower($reservation->first_name)) . ' ' . ucwords(strtolower($reservation->last_name));
+            ->add('last_name_formatted', function($reservation) {
+                return ucwords(strtolower($reservation->last_name));
             })
 
 
@@ -122,18 +123,6 @@ final class GuestTable extends PowerGridComponent
                 return Carbon::parse($date_out)->format('F j, Y') . ' - ' . '12:00 PM';
             })
 
-            ->add('rooms', function ($reservation) {
-                return Blade::render('
-                    <div class="max-w-[200px] flex gap-1 flex-wrap">
-                        @foreach ($reservation->rooms as $room)
-                            <div key="{{ $room->id }}" class="px-2 py-1 font-semibold capitalize rounded-md min-w-max bg-slate-100">
-                                {{ $room->building->prefix . " " . $room->room_number }}
-                            </div>
-                        @endforeach
-                    </div>
-                ', ['reservation' =>$reservation]);
-            })
-
             ->add('status_formatted', function ($reservation) {
                 return Blade::render('<x-status type="reservation" :status="' . $reservation->status . '" />');
             })
@@ -149,11 +138,13 @@ final class GuestTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Name', 'name_formatted', 'first_name')
+            Column::make('First Name', 'first_name_formatted', 'first_name')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Rooms', 'rooms'),
+            Column::make('Last Name', 'last_name_formatted', 'last_name')
+                ->sortable()
+                ->searchable(),
 
             Column::make('Check-in Date', 'date_in_formatted', 'date_in'),
 
