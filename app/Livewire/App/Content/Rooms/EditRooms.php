@@ -2,7 +2,6 @@
 
 namespace App\Livewire\App\Content\Rooms;
 
-use App\Models\ContactDetails;
 use App\Models\Content;
 use App\Models\Page;
 use App\Models\RoomType;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactDetails;
 use App\Models\Content;
 use App\Models\FeaturedService;
 use App\Models\MediaFile;
@@ -68,52 +67,51 @@ class PageController extends Controller
     }
 
     public function rooms() {
-        $heading = Content::whereName('rooms_heading')->pluck('value')->first();
-        $subheading = Content::whereName('rooms_subheading')->pluck('value')->first();
-        $rooms_hero_image = Content::whereName('rooms_hero_image')->pluck('value')->first();
-        $available_rooms = RoomType::all();
+        $page = Page::whereUrl('/rooms')->first();
+        $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
+        $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
+        $rooms = RoomType::all();
 
         return view('rooms', [
-            'heading' => html_entity_decode($heading),
-            'subheading' => html_entity_decode($subheading),
-            'available_rooms' => $available_rooms,
-            'rooms_hero_image' => $rooms_hero_image
+            'contents' => $contents,
+            'medias' => $medias,
+            'rooms' => $rooms,
         ]);
     }
 
     public function contact() {
-        $contact_hero_image = Content::whereName('contact_hero_image')->pluck('value')->first();
-        $heading = Content::whereName('contact_heading')->pluck('value')->first();
-        $subheading = Content::whereName('contact_subheading')->pluck('value')->first();
-        $contact_details = ContactDetails::pluck('value');
+        $page = Page::whereUrl('/contact')->first();
+        $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
+        $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
+        $contact_details = $page->contents->where('key', 'phone_number');
         
         return view('contact', [
-            'heading' => html_entity_decode($heading),
-            'subheading' => html_entity_decode($subheading),
+            'contents' => $contents,
+            'medias' => $medias,
             'contact_details' => $contact_details,
-            'contact_hero_image' => $contact_hero_image,
         ]);
     }
 
     public function reservation() {
-        $reservation_hero_image = Content::whereName('reservation_hero_image')->pluck('value')->first();
-        $heading = Content::whereName('reservation_heading')->pluck('value')->first();
-        $subheading = Content::whereName('reservation_subheading')->pluck('value')->first();
+        $page = Page::whereUrl('/reservation')->first();
+        $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
+        $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
         
         return view('reservation', [
-            'heading' => html_entity_decode($heading),
-            'subheading' => html_entity_decode($subheading),
-            'reservation_hero_image' => $reservation_hero_image,
+            'contents' => $contents,
+            'medias' => $medias,
         ]);
     }
 
     public function functionHall() {
-        $reservation_hero_image = Content::whereName('reservation_hero_image')->pluck('value')->first();
+        $page = Page::whereUrl('/global')->first();
+        $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
+        $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
 
         return view('function-hall', [
             'heading' => 'Function Hall',
             'subheading' => 'Make your events unforgettable with our elegant Function Hall',
-            'reservation_hero_image' => $reservation_hero_image,
+            'medias' => $medias,
         ]);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Livewire\App\Content\Contact;
 
-use App\Models\ContactDetails;
 use App\Models\Content;
 use App\Models\Page;
 use App\Traits\DispatchesToast;
@@ -32,7 +31,7 @@ class EditContact extends Component
         $this->contact_hero_image = Content::whereName('contact_hero_image')->pluck('value')->first();
         $this->heading = html_entity_decode(Content::whereName('contact_heading')->pluck('value')->first());
         $this->subheading = html_entity_decode(Content::whereName('contact_subheading')->pluck('value')->first());
-        $this->contact_details = ContactDetails::whereName('phone_number')->get();
+        // $this->contact_details = ContactDetails::whereName('phone_number')->get();
         
         $page = Page::whereTitle('Contact')->first();
         

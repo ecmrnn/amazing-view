@@ -4,11 +4,11 @@
         <div class="grid h-full max-w-screen-xl mx-auto rounded-lg place-items-center">
             <div class="space-y-5 text-center text-white">
                 <x-h1>
-                    {!! $heading !!}
+                    {!! $contents['rooms_heading'] !!}
                 </x-h1>
         
                 <p class='max-w-sm mx-auto'>
-                    {!! $subheading !!}
+                    {!! $contents['rooms_subheading'] !!}
                 </p>
         
                 <a class="block" href="#rooms">
@@ -17,7 +17,7 @@
             </div>
 
             <div class="absolute w-full h-full rounded-lg -z-10 before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                style="background-image: url({{ asset('storage/' . $rooms_hero_image) }});
+                style="background-image: url({{ asset('storage/' . $medias['rooms_hero_image']) }});
                 background-size: cover;
                 background-position: center;">
             </div>
@@ -31,7 +31,7 @@
         <x-slot:subheading>Experience elegant comfort through our rooms!</x-slot:subheading>
 
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            @foreach ($available_rooms as $room)
+            @foreach ($rooms as $room)
                 <div class="space-y-5">
                     <div>
                         <x-img-lg src="{{ $room->image_1_path }}" />

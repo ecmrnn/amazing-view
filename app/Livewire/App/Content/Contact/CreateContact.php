@@ -2,7 +2,6 @@
 
 namespace App\Livewire\App\Content\Contact;
 
-use App\Models\ContactDetails;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -32,11 +31,11 @@ class CreateContact extends Component
             'contact' => $this->rules()['contact']
         ]);
 
-        ContactDetails::create([
-            'name' => 'phone_number',
-            'type' => 'phone',
-            'value' => $validated['contact']
-        ]);
+        // ContactDetails::create([
+        //     'name' => 'phone_number',
+        //     'type' => 'phone',
+        //     'value' => $validated['contact']
+        // ]);
 
         $this->toast('Contact Created!', 'success', 'Contact created successfully');
         $this->dispatch('contact-added');

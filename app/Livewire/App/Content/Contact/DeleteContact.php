@@ -2,7 +2,6 @@
 
 namespace App\Livewire\App\Content\Contact;
 
-use App\Models\ContactDetails;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,9 +16,9 @@ class DeleteContact extends Component
     #[Validate] public $password;
     public $contact;
 
-    public function mount(ContactDetails $contact_detail) {
-        $this->contact = $contact_detail;
-    }
+    // public function mount(ContactDetails $contact_detail) {
+    //     $this->contact = $contact_detail;
+    // }
 
     public function rules() {
         return [

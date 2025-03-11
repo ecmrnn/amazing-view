@@ -17,7 +17,7 @@
             </div>
 
             <div class="absolute w-full h-full rounded-lg -z-10 before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                style="background-image: url({{ asset('storage/' . $reservation_hero_image) }});
+                style="background-image: url({{ asset('storage/' . Arr::get($medias, 'function_hall_hero_image', '')) }});
                 background-size: cover;
                 background-position: center;">
             </div>
