@@ -12,10 +12,8 @@
     }
 </style> --}}
 
-<div id="{{$mapId}}" @if(isset($attributes['class']))
- class='rounded-lg h-96'
-@endif
-></div>
+<div id="{{$mapId}}" class='rounded-lg h-96'>
+</div>
 
 <!-- Make sure you put this AFTER Leaflet's CSS -->
 <script src="{{'https://unpkg.com/leaflet@' . $leafletVersion . '/dist/leaflet.js'}}"

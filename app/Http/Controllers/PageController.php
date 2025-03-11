@@ -32,20 +32,38 @@ class PageController extends Controller
     }
 
     public function about() {
-        $heading = Content::whereName('about_heading')->pluck('value')->first();
-        $subheading = Content::whereName('about_subheading')->pluck('value')->first();
-        $history = Content::whereName('about_history')->pluck('long_value')->first();
-        $history_image = Content::whereName('about_history_image')->pluck('value')->first();
-        $about_hero_image = Content::whereName('about_hero_image')->pluck('value')->first();
+        $page = Page::whereUrl('/about')->first();
+        $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
+        $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
         $milestones = Milestone::all();
 
+        $map = array(
+            'option' => [
+                'center' => [
+                    'lat' => 14.442312,
+                    'lng' => 121.396931
+                ],
+                'zoom' => 14,
+                'zoomControl' => true,
+                'minZoom' => 10,
+                'maxZoom' => 18,
+            ],
+            'marker' => [
+                [
+                    'position' => [
+                        'lat' => 14.442312,
+                        'lng' => 121.396931
+                    ],
+                    'draggable' => false,
+                ]
+            ]
+        );
+
         return view('about', [
-            'heading' => html_entity_decode($heading),
-            'subheading' => html_entity_decode($subheading),
-            'history' => html_entity_decode($history),
-            'history_image' => $history_image,
-            'about_hero_image' => $about_hero_image,
+            'contents' => $contents,
+            'medias' => $medias,
             'milestones' => $milestones,
+            'map' => $map,
         ]);
     }
 
