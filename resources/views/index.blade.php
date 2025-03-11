@@ -4,11 +4,11 @@
         <div class="grid h-full max-w-screen-xl mx-auto rounded-lg place-items-center">
             <div class="space-y-5 text-center text-white">
                 <x-h1>
-                    {!! $heading !!}
+                    {!! $contents['home_heading'] !!}
                 </x-h1>
             
                 <p class="max-w-xs mx-auto">
-                    {{ $subheading }}
+                    {{ $contents['home_subheading'] }}
                 </p>
             
                 <div class="flex items-center justify-center gap-1">
@@ -22,7 +22,7 @@
             </div>
             
             <div class="absolute w-full h-full rounded-lg -z-10 before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                style="background-image: url({{ asset('storage/' . $home_hero_image) }});
+                style="background-image: url({{ asset('storage/' . $medias['home_hero_image']) }});
                 background-size: cover;
                 background-position: center;">
             </div>
@@ -35,7 +35,7 @@
         <x-slot:heading>Featured Services</x-slot:heading>
         <x-slot:subheading>Experience our featured services!</x-slot:subheading>
 
-        <div class="grid gap-5 sm:grid-cols-3">
+        <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
             @foreach ($featured_services as $key => $featured_service)
                 <div class="space-y-5">
                     @if (!empty($featured_service->image))
@@ -61,20 +61,18 @@
         <x-slot:heading>Amazing View Mountain Resort</x-slot:heading>
         <x-slot:subheading>Book your dream getaway!</x-slot:subheading>
 
-        <div class="grid gap-5 sm:grid-cols-2">
-            <x-img-lg src="{{ $history_image }}" class="border border-white" />
-
-            <div class="space-y-5">
-                <h3 class="text-xl font-semibold">Be amaze by our story!</h3>
-
-                <p class="text-justify indent-16">
-                    {!! $history !!}
-                </p>
-
-                <a href="/about" class="block" wire:navigate>
-                    <x-primary-button>Explore our Resort</x-primary-button>
-                </a>
-            </div>
+        <div class="flex items-center justify-center gap-5">
+            <a href="{{ route('guest.reservation') }}" wire:navigate class="block w-full text-right">
+                <x-secondary-button>
+                    Book a Room
+                </x-secondary-button>
+            </a>
+            <p>|</p>
+            <a href="{{ route('guest.function-hall') }}" wire:navigate class="block w-full">
+                <x-secondary-button>
+                    Book a Hall
+                </x-secondary-button>
+            </a>
         </div>
     </x-section>
 

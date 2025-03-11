@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::name('guest.')->group(function () {
-    Route::get('/', [PageController::class, 'home'])->name('home');
+    Route::get('/', [PageController::class, 'index'])->name('home');
     Route::get('/rooms', [PageController::class, 'rooms'])->name('rooms');
     Route::get('/about', [PageController::class, 'about'])->name('about');
     Route::get('/contact', [PageController::class, 'contact'])->name('contact');

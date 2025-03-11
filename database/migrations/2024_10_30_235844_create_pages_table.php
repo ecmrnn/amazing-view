@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('name'); /* Corresponds to a named oute */
-            $table->string('url'); /* Corresponds to 'get' route */
+            $table->string('url');
+            $table->string('view');
             $table->smallInteger('status')->default(PageStatus::ACTIVE);
             $table->timestamps();
         });

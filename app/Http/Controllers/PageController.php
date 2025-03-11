@@ -5,32 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\ContactDetails;
 use App\Models\Content;
 use App\Models\FeaturedService;
+use App\Models\MediaFile;
 use App\Models\Milestone;
+use App\Models\Page;
+use App\Models\PageContent;
 use App\Models\RoomType;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    public function home() {
-        // $heading = Content::whereName('home_heading')->pluck('value')->first();
-        // $home_hero_image = Content::whereName('home_hero_image')->pluck('value')->first();
-        // $subheading = Content::whereName('home_subheading')->pluck('value')->first();
-        // $history_image = Content::whereName('about_history_image')->pluck('value')->first();
-        // $history = Content::whereName('about_history')->pluck('long_value')->first();
-        // $featured_services = FeaturedService::select('image', 'title', 'description')
-        //     ->whereStatus(FeaturedService::STATUS_ACTIVE)
-        //     ->get();
-        // $testimonials = Testimonial::whereStatus(Testimonial::STATUS_ACTIVE)->get();
+    public function index() {
+        $page = Page::whereUrl('/')->first();
+        $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
+        $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
+        $featured_services = FeaturedService::all();
+        $testimonials = Testimonial::all();
 
-        return view('index', [
-            // 'heading' => html_entity_decode($heading),
-            // 'subheading' => html_entity_decode($subheading),
-            // 'home_hero_image' => $home_hero_image,
-            // 'featured_services' => $featured_services,
-            // 'history_image' => $history_image,
-            // 'history' => $history,
-            // 'testimonials' => $testimonials,
+        return view($page->view, [
+            'page' => $page,
+            'contents' => $contents,
+            'medias' => $medias,
+            'featured_services' => $featured_services,
+            'testimonials' => $testimonials,
         ]);
     }
 

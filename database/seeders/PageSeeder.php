@@ -17,32 +17,32 @@ class PageSeeder extends Seeder
             [
                 'title' => 'Home',
                 'url' => '/',
-                'name' => 'home',
+                'view' => 'index',
             ],
             [
                 'title' => 'Rooms',
                 'url' => '/rooms',
-                'name' => 'rooms',
+                'view' => 'rooms',
             ],
             [
                 'title' => 'About',
                 'url' => '/about',
-                'name' => 'about',
+                'view' => 'about',
             ],
             [
                 'title' => 'Contact',
                 'url' => '/contact',
-                'name' => 'contact',
+                'view' => 'contact',
             ],
             [
                 'title' => 'Reservation',
                 'url' => '/reservation',
-                'name' => 'reservation',
+                'view' => 'reservation',
             ],
             [
                 'title' => 'Global',
                 'url' => '/global',
-                'name' => 'function-hall',
+                'view' => 'function-hall',
             ]
         ]);
 
@@ -50,7 +50,7 @@ class PageSeeder extends Seeder
             Page::create([
                 'title' => $page['title'],
                 'url' => $page['url'],
-                'name' => $page['name'],
+                'view' => $page['view'],
             ]);
         }
 
