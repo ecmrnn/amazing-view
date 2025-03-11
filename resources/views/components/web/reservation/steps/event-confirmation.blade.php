@@ -62,7 +62,7 @@
 
     <x-modal.full name="show-reservation-confirmation" maxWidth="lg">
         <div x-data="{ toc: false }">
-            <hgroup>
+            <hgroup class="p-5 pb-0">
                 <h2 class="text-lg font-semibold">Reservation Confirmation</h2>
                 <p class="text-xs">Confirm that the reservation details entered are correct</p>
             </hgroup>

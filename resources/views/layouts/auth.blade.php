@@ -21,7 +21,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="relative grid min-h-screen antialiased font-inter text-zinc-800 place-items-center">
-        <div class="absolute top-0 z-50 p-5 py-0 mt-5 text-xs font-semibold -translate-x-1/2 bg-white rounded-lg left-1/2">
+        <div class="absolute z-50 p-5 py-0 text-xs font-semibold -translate-x-1/2 bg-white rounded-lg top-10 sm:top-10 left-1/2">
             <x-nav-link href="{{ route('guest.home') }}">Back to Home</x-nav-link>
         </div>
         
@@ -30,8 +30,8 @@
             <x-overlay />
         </div>
 
-        <main class="relative">
-            <div class="p-5 bg-white rounded-lg">
+        <main class="relative w-full h-full p-5 sm:w-auto sm:h-auto">
+            <div class="grid h-full p-5 bg-white rounded-lg sm:h-auto place-items-center">
                 {{ $slot }}
             </div>
         </main>

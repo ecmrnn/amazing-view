@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl py-10 mx-auto space-y-5">
-    <div class="flex items-start mb-10 lg:gap-5">
+    <div class="flex items-start gap-5 mb-10">
         <x-web.reservation.steps step="1" currentStep="{{ $step }}" icon="bed" name="Event Details" />
         <x-web.reservation.steps step="2" currentStep="{{ $step }}" icon="face" name="Confirmation" />
     </div>
@@ -23,7 +23,7 @@
         </form>
 
         @if ($step < 3)
-            <aside class="self-start p-5 space-y-3 bg-white rounded-lg shadow-sm">
+            <aside class="self-start p-5 space-y-5 bg-white rounded-lg shadow-sm">
                 <div>
                     <h3 class="text-lg font-semibold">Reminders!</h3>
                     <p class="text-sm">A few reminders when reserving a function hall:</p>
@@ -50,8 +50,10 @@
 
     <x-modal.full name='reset-reservation-modal' maxWidth='sm'>
         <div class="p-5 space-y-5">
-            <h3 class="text-lg font-semibold">Reset Reservation</h3>
-            <p class="text-sm">Are you sure you want to reset your reservation?</p>
+            <hgroup>
+                <h3 class="text-lg font-semibold">Reset Reservation</h3>
+                <p class="text-sm">Are you sure you want to reset your reservation?</p>
+            </hgroup>
     
             <div class="flex justify-end gap-1 mt-5">
                 <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>

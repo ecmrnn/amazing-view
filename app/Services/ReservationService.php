@@ -9,8 +9,10 @@ use App\Mail\Reservation\Cancelled;
 use App\Mail\reservation\Expire;
 use App\Mail\Reservation\NoShow;
 use App\Mail\reservation\Received;
+use App\Mail\reservation\ReceivedFunctionHall;
 use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
+use App\Models\FunctionHallReservations;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -361,6 +363,22 @@ class ReservationService
             // Update the invoice of the old reservation
             $reservation->invoice->status = InvoiceStatus::CANCELED->value;
             $reservation->invoice->save();
+        });
+    }
+
+    public function processFunctionHall($data) {
+        DB::transaction(function () use ($data) {
+            $function_hall = FunctionHallReservations::create([
+                'event_name' => $data['event_name'],
+                'event_description' => $data['event_description'],
+                'reservation_date' => $data['reservation_date'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'email' => $data['email'],
+            ]);
+
+            // Send email
+            Mail::to($data['email'])->queue(new ReceivedFunctionHall($function_hall));
         });
     }
 }

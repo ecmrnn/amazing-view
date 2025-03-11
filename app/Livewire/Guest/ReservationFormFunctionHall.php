@@ -3,6 +3,7 @@
 namespace App\Livewire\Guest;
 
 use App\Models\FunctionHallReservations;
+use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -45,16 +46,10 @@ class ReservationFormFunctionHall extends Component
     }
 
     public function store() {
-        $this->validate();
+        $validated = $this->validate();
 
-        FunctionHallReservations::create([
-            'event_name' => $this->event_name,
-            'event_description' => $this->event_description,
-            'reservation_date' => $this->reservation_date,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'email' => $this->email,
-        ]);
+        $service = new ReservationService;
+        $service->processFunctionHall($validated);
 
         // Mail::to($this->email)->send(new \App\Mail\ReservationFormFunctionHall($data));
         $this->toast('Success!', description: 'Your reservation has been successfully submitted.');
