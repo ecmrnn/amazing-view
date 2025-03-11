@@ -13,34 +13,46 @@ class PageSeeder extends Seeder
      */
     public function run(): void
     {
-        Page::create([
-            'title' => 'Home',
-            'url' => '/home',
+        $pages = collect([
+            [
+                'title' => 'Home',
+                'url' => '/',
+                'name' => 'home',
+            ],
+            [
+                'title' => 'Rooms',
+                'url' => '/rooms',
+                'name' => 'rooms',
+            ],
+            [
+                'title' => 'About',
+                'url' => '/about',
+                'name' => 'about',
+            ],
+            [
+                'title' => 'Contact',
+                'url' => '/contact',
+                'name' => 'contact',
+            ],
+            [
+                'title' => 'Reservation',
+                'url' => '/reservation',
+                'name' => 'reservation',
+            ],
+            [
+                'title' => 'Global',
+                'url' => '/global',
+                'name' => 'function-hall',
+            ]
         ]);
 
-        Page::create([
-            'title' => 'Rooms',
-            'url' => '/rooms',
-        ]);
+        foreach ($pages as $page) {
+            Page::create([
+                'title' => $page['title'],
+                'url' => $page['url'],
+                'name' => $page['name'],
+            ]);
+        }
 
-        Page::create([
-            'title' => 'About',
-            'url' => '/about',
-        ]);
-
-        Page::create([
-            'title' => 'Contact',
-            'url' => '/contact',
-        ]);
-
-        Page::create([
-            'title' => 'Reservation',
-            'url' => '/reservation',
-        ]);
-
-        Page::create([
-            'title' => 'Global',
-            'url' => '/global',
-        ]);
     }
 }

@@ -4,14 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use Database\Seeders\content\AboutSeeder;
-use Database\Seeders\content\ContactSeeder;
-use Database\Seeders\content\HomeSeeder;
-use Database\Seeders\content\MilestoneSeeder;
-use Database\Seeders\content\ReservationSeeder as ContentReservationSeeder;
-use Database\Seeders\content\RoomSeeder;
-use Database\Seeders\ReservationSeeder as AppReservationSeeder;
-use Database\Seeders\RoomSeeder as AppRoomSeeder;
+use Database\Seeders\MilestoneSeeder;
+use Database\Seeders\ReservationSeeder as ReservationSeeder;
+use Database\Seeders\RoomSeeder as RoomSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,24 +19,20 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BuildingSeeder::class,
             RoomTypeSeeder::class,
+            RoomSeeder::class,
             AdditionalServicesSeeder::class,
             AmenitySeeder::class,
-            AppRoomSeeder::class,
             RolePermissionSeeder::class,
             UserSeeder::class,
-            DiscountSeeder::class,
-            // AppReservationSeeder::class,
+            // DiscountSeeder::class,
+            // ReservationSeeder::class,
             // ReportSeeder::class,
             
             // Content
             PageSeeder::class,
-            AboutSeeder::class,
-            HomeSeeder::class,
+            ContentSeeder::class,
+            FeaturedServiceSeeder::class,
             MilestoneSeeder::class,
-            RoomSeeder::class,
-            ContactSeeder::class,
-            ContentReservationSeeder::class,
-            TestimonialSeeder::class,
         ]);
     }
 }

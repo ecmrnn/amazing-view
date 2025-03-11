@@ -1,9 +1,8 @@
 <?php
 
-namespace Database\Seeders\content;
+namespace Database\Seeders;
 
 use App\Models\Milestone;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 

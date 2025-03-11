@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PageStatus;
 use App\Models\Page;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,8 +16,9 @@ return new class extends Migration
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('url');
-            $table->smallInteger('status')->default(Page::STATUS_UP);
+            $table->string('name'); /* Corresponds to a named oute */
+            $table->string('url'); /* Corresponds to 'get' route */
+            $table->smallInteger('status')->default(PageStatus::ACTIVE);
             $table->timestamps();
         });
     }
