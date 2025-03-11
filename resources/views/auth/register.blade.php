@@ -1,5 +1,5 @@
 <x-auth-layout>
-    <form method="POST" action="{{ route('register') }}" class="grid min-h-screen px-5 py-20 place-items-center">
+    <form method="POST" action="{{ route('register') }}">
         @csrf
 
         <div class="max-w-sm">

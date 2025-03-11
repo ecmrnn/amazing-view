@@ -20,32 +20,19 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased font-inter text-zinc-800">
-        {{-- Back --}}
+    <body class="relative grid min-h-screen antialiased font-inter text-zinc-800 place-items-center">
+        <div class="absolute top-0 z-50 p-5 py-0 mt-5 text-xs font-semibold -translate-x-1/2 bg-white rounded-lg left-1/2">
+            <x-nav-link href="{{ route('guest.home') }}">Back to Home</x-nav-link>
+        </div>
         
-        <main class="grid min-h-screen grid-cols-1 lg:grid-cols-2">
-            <div class="relative">
+        <div class="fixed top-0 z-0">
+            <img src="{{ asset('storage/global/login.jpg') }}" alt="" class="object-cover object-center w-screen h-screen">
+            <x-overlay />
+        </div>
+
+        <main class="relative">
+            <div class="p-5 bg-white rounded-lg">
                 {{ $slot }}
-
-                <div class="absolute top-0 p-5 text-xs font-semibold -translate-x-1/2 left-1/2">
-                    <x-nav-link href="/">Back to Home</x-nav-link>
-                </div>
-            </div>
-            <!-- Image -->
-            <div
-                class="relative hidden m-4 overflow-hidden rounded-2xl lg:block"
-                 style="background-image: url({{ asset('storage/global/login.jpg') }});
-                        background-size: cover;
-                        background-position: center;">
-
-                <div class="absolute z-50 px-4 py-3 bg-white top-4 left-4 rounded-xl">
-                    <hgroup class="space-y-1">
-                        <h2 class="font-bold leading-none">Amazing View Mountain Resort</h2>
-                        <p class="text-xs leading-none">Book a room now, amazing experience awaits!</p>
-                    </hgroup>
-                </div>
-
-                <x-overlay />
             </div>
         </main>
 

@@ -77,36 +77,66 @@
         <div x-show="open"
             x-transition.opacity.duration.600ms 
             x-on:click="open = false"
-            class="fixed inset-0 bg-gradient-to-b from-blue-800/75 to-blue-500/50 backdrop-blur-sm"></div>
+            class="fixed inset-0 bg-gradient-to-b from-blue-800/75 to-blue-500 backdrop-blur-sm md:hidden"></div>
 
         <div x-cloak x-show="open" x-on:click.outside="open = false"
-            x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700" 
-            x-transition:enter-start="translate-x-full" 
-            x-transition:enter-end="translate-x-0" 
-            x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700" 
-            x-transition:leave-start="translate-x-0" 
-            x-transition:leave-end="translate-x-full" 
-                class="fixed top-0 right-0 z-[500] w-3/4 h-screen bg-white border-l md:hidden">
-            <div class="flex items-center justify-between p-5">
-                <div>
-                    <p class="font-semibold">Main Menu</p>
+                x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700" 
+                x-transition:enter-start="translate-x-full" 
+                x-transition:enter-end="translate-x-0" 
+                x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700" 
+                x-transition:leave-start="translate-x-0" 
+                x-transition:leave-end="translate-x-full" 
+                class="fixed top-0 right-0 z-[9999] w-3/4 h-screen bg-white border-l md:hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between p-5">
+                    <div>
+                        <p class="font-semibold">Menu</p>
+                    </div>
+                    <div>
+                        <x-close-button x-on:click="open = false" />
+                    </div>
                 </div>
+                
+                <div class="px-5 text-right">
+                    <x-nav-link class="block w-full text-sm" :active="Request::is('/')" href="{{ route('guest.home') }}">Home</x-nav-link>
+                    <x-nav-link class="block w-full text-sm" :active="Request::is('rooms*')" href="{{ route('guest.rooms') }}">Rooms</x-nav-link>
+                    <x-nav-link class="block w-full text-sm" :active="Request::is('about')" href="{{ route('guest.about') }}">About</x-nav-link>
+                    <x-nav-link class="block w-full text-sm" :active="Request::is('contact')" href="{{ route('guest.contact') }}">Contact</x-nav-link>
+                    <div x-data="{ dropdown: false }">
+                        <div class="flex items-center justify-end gap-5 hover:cursor-pointer">
+                            <x-icon-button x-on:click="dropdown = ! dropdown"
+                                x-bind:class="dropdown ? 'rotate-180' : 'rotate-0'" class="transition-all duration-200 ease-in-out">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                            </x-icon-button>
+                            <x-nav-link x-on:click="dropdown = ! dropdown" class="text-sm" :active="Request::is('reservation') || Request::is('search')">Reservation</x-nav-link>
+                        </div>
 
-                <div>
-                    <x-close-button x-on:click="open = false" />
+                        <div class="mt-3 space-y-1">
+                            <a x-show="dropdown" x-transition:enter x-transition:leave.delay.100ms
+                                href="{{ route('guest.reservation')}}" wire:navigate
+                                class="block w-full px-5 py-3 border rounded-md border-slate-200">
+                                <p class="text-sm font-semibold">Room</p>
+                                <p class="text-xs">For overnight stays and daytour</p>
+                            </a>
+                            <a x-show="dropdown" x-transition:enter.delay.50ms x-transition:leave.delay.50ms
+                                href="{{ route('guest.function-hall')}}" wire:navigate
+                                class="block w-full px-5 py-3 border rounded-md border-slate-200">
+                                <p class="text-sm font-semibold">Function Hall</p>
+                                <p class="text-xs">For events and seminars</p>
+                            </a>
+                            <a x-show="dropdown" x-transition:enter.delay.100ms x-transition:leave
+                                href="{{ route('guest.search') }}" wire:navigate
+                                class="block w-full px-5 py-3 border rounded-md border-slate-200">
+                                <p class="text-sm font-semibold">Find a Reservation</p>
+                                <p class="text-xs">Track your room reservation</p>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="flex flex-col items-start px-5">
-                <x-nav-link :active="Request::is('/')" href="{{ route('guest.home') }}">Home</x-nav-link>
-                <x-nav-link :active="Request::is('rooms*')" href="{{ route('guest.rooms') }}">Rooms</x-nav-link>
-                <x-nav-link :active="Request::is('about')" href="{{ route('guest.about') }}">About</x-nav-link>
-                <x-nav-link :active="Request::is('contact')" href="{{ route('guest.contact') }}">Contact</x-nav-link>
-                <x-nav-link :active="Request::is('reservation') || Request::is('search')" href="{{ route('guest.reservation') }}">Reservation</x-nav-link>
             </div>
 
             @guest
-                <div class="inline-flex w-full gap-1 p-5 mt-3 border-t border-slate-200">
+                <div class="inline-flex justify-end w-full gap-1 p-5 border-t border-slate-200">
                     <a href="{{ route('register') }}" wire:navigate>
                         <x-secondary-button>Sign up</x-secondary-button>
                     </a>

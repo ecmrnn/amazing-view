@@ -1,5 +1,5 @@
 <x-auth-layout>
-    <div class="grid min-h-screen px-5 py-20 place-items-center">
+    <div>
         <div>
             <h1 class="mb-4 text-2xl font-semibold">Forgot your Password?</h1>
             
