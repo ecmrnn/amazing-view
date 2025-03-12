@@ -5,7 +5,7 @@
     <div class="space-y-5">
         <!-- Building -->
         <div class="space-y-3">
-            <div class="flex gap-3 p-3 border border-gray-300 rounded-lg">
+            <div class="flex gap-3 p-3 border rounded-lg border-slate-200">
                 <p class="pl-1 text-lg font-semibold text-blue-500">{{ $room->floor_number . 'F' }}</p>
                 <p class="text-lg font-semibold">{{ $room->building->name }}</p>
             </div> 
@@ -13,7 +13,7 @@
 
         <div class="space-y-3">
             <h3 class="text-sm font-semibold">General Room Details</h3>
-            <div class="p-3 space-y-3 border border-gray-300 rounded-lg">
+            <div class="p-3 space-y-3 border rounded-lg border-slate-200">
                 <!-- Capacity -->
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-3">

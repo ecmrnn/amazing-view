@@ -300,7 +300,7 @@
 
                                             <div class="grid gap-1 sm:grid-cols-2">
                                                 <div>
-                                                    <input disabled class="text-xs py-2 sm:py-0 disabled:opacity-50 w-full h-full px-2.5 border outline-0 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" value="{{ $quantity }}" />
+                                                    <input disabled class="text-xs py-2 sm:py-0 disabled:opacity-50 w-full h-full px-2.5 border outline-0 border-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" value="{{ $quantity }}" />
                                                 </div>
                                                 <p class="grid px-2 text-xs border rounded-lg place-items-center">
                                                     <span>
@@ -358,9 +358,9 @@
                                                     max="{{ $additional_amenity->quantity }}"
                                                 @endif
                                                 value="1"
-                                                class="text-xs w-full h-full px-2.5 py-2 sm:py-0 border outline-0 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" />
+                                                class="text-xs w-full h-full px-2.5 py-2 sm:py-0 border outline-0 border-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" />
                                         </div>
-                                        <p class="grid px-2 py-2 text-xs border border-gray-300 rounded-lg sm:py-0 place-items-center">
+                                        <p class="grid px-2 py-2 text-xs border rounded-lg border-slate-200 sm:py-0 place-items-center">
                                             @if (!empty($additional_amenity_id))
                                                 <span>
                                                     <x-currency />{{ number_format($additional_amenity->price, 2) }}

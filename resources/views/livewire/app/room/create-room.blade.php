@@ -11,7 +11,7 @@
     <!-- Building -->
     <div class="space-y-3">
         <h3 class="text-sm font-semibold">Building Details</h3>
-        <div class="flex gap-3 p-3 border border-gray-300 rounded-lg">
+        <div class="flex gap-3 p-3 border rounded-lg border-slate-200">
             <div class="flex flex-col self-start w-full gap-3">
                 <div>
                     <x-form.input-label for="building_id">Select a Building</x-form.input-label>
@@ -37,7 +37,7 @@
 
     <div class="space-y-3">
         <h3 class="text-sm font-semibold">General Room Details</h3>
-        <div class="p-3 space-y-3 border border-gray-300 rounded-lg">
+        <div class="p-3 space-y-3 border rounded-lg border-slate-200">
             <!-- Room Number -->
             <div class="space-y-3">
                 <div>
@@ -47,7 +47,7 @@
 
                 <div class="flex w-full gap-1">
                     @if (!empty($building))
-                        <div class="grid px-3 text-sm font-semibold border border-gray-300 rounded-md place-items-center text-zinc-800/75">{{ $building->prefix  }}</div>
+                        <div class="grid px-3 text-sm font-semibold border rounded-md border-slate-200 place-items-center text-zinc-800/75">{{ $building->prefix  }}</div>
                     @endif
                     <x-form.input-text id="room_number" name="room_number" label="Room Number" wire:model.live='room_number_input' x-on:keypress="$wire.formatRoomNumber()" />
                 </div>

@@ -106,7 +106,7 @@ class CancelReservation extends Component
 
             <x-form.input-label for="canceled_by">Who wants to cancel?</x-form.input-label>
 
-            <div class="px-3 py-2 border border-gray-300 rounded-md">
+            <div class="px-3 py-2 border rounded-md border-slate-200">
                 <x-form.input-radio name="canceled_by" wire:model.live="canceled_by" value="guest" id="guest" label="The guest want to cancel" />
                 <x-form.input-radio name="canceled_by" wire:model.live="canceled_by" value="management" id="management" label="The management want to cancel" />    
                 <x-form.input-error field="canceled_by" />

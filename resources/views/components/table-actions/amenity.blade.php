@@ -27,7 +27,7 @@
                 <p class="text-xs">Fill up the form below to edit this amenity</p>
             </hgroup>
             
-            <div class="p-3 space-y-3 border border-gray-300 rounded-md">
+            <div class="p-3 space-y-3 border rounded-md border-slate-200">
                 <div class="space-y-3">
                     <div>
                         <x-form.input-label for="name-{{ $row->id }}">Name</x-form.input-label>

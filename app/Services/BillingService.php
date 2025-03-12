@@ -40,6 +40,7 @@ class BillingService
         $invoice = DB::transaction(function () use ($invoice, $payment) {
             if ($invoice->reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
                 $invoice->reservation->status = ReservationStatus::PENDING->value;
+                $invoice->reservation->expires_at = null;
                 $invoice->reservation->save();
             }
     

@@ -192,7 +192,7 @@
 
         {{-- Payment Methods --}}
         <div class="grid">
-            <div class="flex items-center gap-3 p-3 bg-white border border-gray-300 rounded-lg">
+            <div class="flex items-center gap-3 p-3 bg-white border rounded-lg border-slate-200">
                 <div class="max-w-[80px] aspect-square w-full rounded-lg"
                     style="background-image: url({{ asset('storage/global/gcash-qr.png') }});
                         background-size: cover;">

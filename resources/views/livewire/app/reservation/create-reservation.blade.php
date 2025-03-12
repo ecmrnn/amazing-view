@@ -115,7 +115,7 @@
                 <p class="text-xs">Confirm that the reservation details entered are correct</p>
             </hgroup>
 
-            <div class="px-3 py-2 border border-gray-300 rounded-md">
+            <div class="px-3 py-2 border rounded-md border-slate-200">
                 <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
             </div>
             

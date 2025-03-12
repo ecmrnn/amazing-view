@@ -19,7 +19,7 @@
                 <input 
                     wire:click="selectCheckboxAll"
                     wire:model="checkboxAll"
-                    id="remember_me" type="checkbox" class="text-blue-600 border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:border-blue-600" name="remember">
+                    id="remember_me" type="checkbox" class="text-blue-600 rounded shadow-sm border-slate-200 focus:outline-none focus:ring-0 focus:border-blue-600" name="remember">
             </label>
         </div>
     </th>

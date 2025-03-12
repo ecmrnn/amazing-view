@@ -150,7 +150,7 @@
         <form x-on:otp-checked.window="show = false" wire:submit.prevent="checkOtp" autocomplete="off" class="p-5 space-y-5">
             <hgrpup>
                 <h3 class="text-lg font-bold">Verify Reservation</h3>
-                <p class="text-sm">A one-time-pinP has been sent to your email: {{ $encrypted_email }}</p>
+                <p class="text-sm">A one-time-pin has been sent to your email: {{ $encrypted_email }}</p>
             </hgrpup>
 
             <x-note>
@@ -161,7 +161,7 @@
             </x-note>
 
             @if (!$otp_expired)
-                <div class="space-y-3" x-data="{
+                <div class="space-y-2" x-data="{
                     isNumber(input, nextInput) { 
                         const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
@@ -172,41 +172,40 @@
                                 nextInput.focus();
                             }
                         }
-                    } }"
-                    wire:loading.remove wire:target='checkOtp'>
+                    } }">
                     <label for="otp1" class="block text-sm font-semibold">Enter your OTP here</label>
                     <div class="grid grid-cols-6 gap-1">
-                        <input type="text" name="otp1" id="otp1" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                        <input type="text" name="otp1" id="otp1" class="text-2xl font-bold text-center text-blue-500 border rounded-md border-slate-200 aspect-square"
                             wire:model="otp_input.otp_1"
                             x-mask="9"
                             x-on:input="(e) => { isNumber(e.data, $refs.otp2) }"
                             x-on:keyup="(e) => { e.key === 'Backspace' ? $refs.otp1.focus() : '' }"
                             x-ref="otp1" />
-                        <input type="text" name="otp2" id="otp2" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                        <input type="text" name="otp2" id="otp2" class="text-2xl font-bold text-center text-blue-500 border rounded-md border-slate-200 aspect-square"
                             wire:model="otp_input.otp_2"
                             x-mask="9"
                             x-on:input="(e) => { isNumber(e.data, $refs.otp3) }"
                             x-on:keyup="(e) => { e.key === 'Backspace' ? $refs.otp1.focus() : '' }"
                             x-ref="otp2" />
-                        <input type="text" name="otp3" id="otp3" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                        <input type="text" name="otp3" id="otp3" class="text-2xl font-bold text-center text-blue-500 border rounded-md border-slate-200 aspect-square"
                             wire:model="otp_input.otp_3"
                             x-mask="9"
                             x-on:input="(e) => { isNumber(e.data, $refs.otp4) }"
                             x-on:keyup="(e) => { e.key === 'Backspace' ? $refs.otp2.focus() : '' }"
                             x-ref="otp3" />
-                        <input type="text" name="otp4" id="otp4" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                        <input type="text" name="otp4" id="otp4" class="text-2xl font-bold text-center text-blue-500 border rounded-md border-slate-200 aspect-square"
                             wire:model="otp_input.otp_4"
                             x-mask="9"
                             x-on:input="(e) => { isNumber(e.data, $refs.otp5) }"
                             x-on:keyup="(e) => { e.key === 'Backspace' ? $refs.otp3.focus() : '' }"
                             x-ref="otp4" />
-                        <input type="text" name="otp5" id="otp5" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                        <input type="text" name="otp5" id="otp5" class="text-2xl font-bold text-center text-blue-500 border rounded-md border-slate-200 aspect-square"
                             wire:model="otp_input.otp_5"
                             x-mask="9"
                             x-on:input="(e) => { isNumber(e.data, $refs.otp6) }"
                             x-on:keyup="(e) => { e.key === 'Backspace' ? $refs.otp4.focus() : '' }"
                             x-ref="otp5" />
-                        <input type="text" name="otp6" id="otp6" class="text-2xl font-bold text-center border border-gray-300 rounded-md aspect-square"
+                        <input type="text" name="otp6" id="otp6" class="text-2xl font-bold text-center text-blue-500 border rounded-md border-slate-200 aspect-square"
                             wire:model="otp_input.otp_6"
                             x-mask="9"
                             x-on:input="(e) => { isNumber(e.data, null) }"
@@ -225,7 +224,7 @@
                                         $dispatch('otp-expired');
                                     }
                                 }, 1000)"
-                            class="text-sm font-semibold">
+                            class="text-xs">
                             OTP Expires in
                             <span x-text="`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`"></span>
                         </p>
@@ -234,7 +233,9 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-1" wire:loading.remove wire:target='checkOtp'>
+                <x-loading wire:loading wire:target='checkOtp'>Checking your OTP, please wait</x-loading>
+
+                <div class="flex items-center justify-end gap-1">
                     <x-secondary-button wire:click='sendOtp()' type="button">Send another OTP</x-secondary-button>
                     <x-primary-button type='button' wire:click='checkOtp()'>Check OTP</x-primary-button>
                 </div>
@@ -242,17 +243,6 @@
                 <p class="text-sm font-semibold text-red-500">OTP has expired. Please request for another OTP.</p>
                 <x-primary-button type='button' wire:click='sendOtp()'>Send another OTP</x-primary-button>
             @endif
-
-            <div wire:loading.block wire:target='checkOtp'>
-                <div class="flex items-center w-full p-5 bg-white rounded-md">
-                    <div class="mr-5 shrink-0">
-                        <p class="font-semibold">Checking OTP</p>
-                        <p class="text-sm">Please wait for a second</p>
-                    </div>
-                    <div class="w-full opacity-0"></div>
-                    <svg class="mx-auto animate-spin shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                </div>
-            </div>
         </form>
     </x-modal.full>
 </div>

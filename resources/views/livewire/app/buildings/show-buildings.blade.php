@@ -1,6 +1,6 @@
 <section class="grid gap-1 p-5 bg-white rounded-lg lg:grid-cols-5 sm:grid-cols-2">
     @foreach ($buildings as $building)
-        <div wire:key="{{ $building->id }}" x-data="{ rooms_count: @js($building->rooms_count) }" class="p-5 space-y-5 bg-white border border-gray-300 rounded-lg group">
+        <div wire:key="{{ $building->id }}" x-data="{ rooms_count: @js($building->rooms_count) }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200 group">
             <div class="relative">
                 <x-img-lg src="{{ asset('storage/' . $building->image) }}" />
 

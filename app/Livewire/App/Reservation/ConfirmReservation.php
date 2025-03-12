@@ -54,8 +54,6 @@ class ConfirmReservation extends Component
             'payment_date' => $this->rules()['payment_date'],
         ]);
 
-        dd($this->amount);
-
         $this->can_confirm = true;
     }
 

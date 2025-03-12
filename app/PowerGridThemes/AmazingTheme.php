@@ -77,7 +77,7 @@ class AmazingTheme extends Tailwind
         return Theme::checkbox()
             ->th('px-6 py-3 text-left text-xs font-medium text-pg-primary-500 tracking-wider')
             ->label('flex items-center space-x-3')
-            ->input('form-checkbox dark:border-dark-600 border-1 dark:bg-dark-800 rounded border-gray-300 bg-white transition duration-100 ease-in-out h-4 w-4 text-primary-500 focus:ring-primary-500 dark:ring-offset-dark-900');
+            ->input('form-checkbox dark:border-dark-600 border-1 dark:bg-dark-800 rounded border-slate-200 bg-white transition duration-100 ease-in-out h-4 w-4 text-primary-500 focus:ring-primary-500 dark:ring-offset-dark-900');
     }
 
     public function radio(): Radio

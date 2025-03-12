@@ -18,7 +18,7 @@
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
                         <x-img-lg src="{{ asset('storage/' . $rooms_hero_image) }}" />
 
-                        <div class="grid p-5 border border-gray-300 rounded-md place-items-center">
+                        <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
                             <div>
                                 <p class="font-semibold text-center">{!! $heading !!}</p>
                                 <p class="text-sm text-center">{!! $subheading !!}</p>
@@ -50,7 +50,7 @@
 
                     <div class="space-y-1">
                         @foreach ($room_types as $room_type)
-                            <div x-data="{ room_count: @js($room_type->rooms->count())}" class="relative flex gap-3 p-5 border border-gray-300 rounded-md">
+                            <div x-data="{ room_count: @js($room_type->rooms->count())}" class="relative flex gap-3 p-5 border rounded-md border-slate-200">
                                 <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" class="w-full md:max-w-[150px]" /> {{-- Fix --}}
 
                                 <div>
@@ -104,7 +104,7 @@
     
     <!-- Visuals -->
     <section class="hidden space-y-5 xl:block">
-        <section class="overflow-y-scroll border border-gray-300 rounded-lg aspect-video">
+        <section class="overflow-y-scroll border rounded-lg border-slate-200 aspect-video">
             <div class="p-5 space-y-1 min-w-[780px]">
                 <header class="flex justify-between w-3/4 p-2 mx-auto rounded-md">
                     <!-- Logo -->

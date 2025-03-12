@@ -6,7 +6,7 @@
         </hgroup>
 
         <article class="space-y-1">
-            <div class="p-1 border border-gray-300 rounded-lg">
+            <div class="p-1 border rounded-lg border-slate-200">
                 <x-app-nav-link :active="false" href="{{ route('app.buildings.index') }}" class="flex items-center gap-3 p-3">
                     <div class="pl-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hotel"><path d="M10 22v-6.57"/><path d="M12 11h.01"/><path d="M12 7h.01"/><path d="M14 15.43V22"/><path d="M15 16a5 5 0 0 0-6 0"/><path d="M16 11h.01"/><path d="M16 7h.01"/><path d="M8 11h.01"/><path d="M8 7h.01"/><rect x="4" y="2" width="16" height="20" rx="2"/></svg>
@@ -27,7 +27,7 @@
                 </x-app-nav-link>
             </div>
 
-            <div class="p-1 border border-gray-300 rounded-lg">
+            <div class="p-1 border rounded-lg border-slate-200">
                 <x-app-nav-link :active="false" href="{{ route('app.users.index') }}" class="flex items-center gap-3 p-3">
                     <div class="pl-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg>

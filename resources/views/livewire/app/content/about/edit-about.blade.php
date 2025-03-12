@@ -18,7 +18,7 @@
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
                         <x-img-lg src="{{ asset('storage/' . $about_hero_image) }}" />
 
-                        <div class="grid p-5 border border-gray-300 rounded-md place-items-center">
+                        <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
                             <div>
                                 <p class="font-semibold text-center">{!! $heading !!}</p>
                                 <p class="text-sm text-center">{!! $subheading !!}</p>
@@ -73,7 +73,7 @@
                     <div class="space-y-1">
                         @foreach ($milestones as $milestone)
                             <div key="{{ $milestone->id }}"
-                                class="relative p-3 border border-gray-300 rounded-md"
+                                class="relative p-3 border rounded-md border-slate-200"
                                 >
                                 <div class="flex flex-col gap-3 md:flex-row">
                                     @if (!empty($milestone->milestone_image))
@@ -134,7 +134,7 @@
     
     <!-- Visuals -->
     <section class="hidden space-y-5 xl:block">
-        <section class="overflow-y-scroll border border-gray-300 rounded-lg aspect-video">
+        <section class="overflow-y-scroll border rounded-lg border-slate-200 aspect-video">
             <div class="p-5 space-y-1 min-w-[780px]">
                 <header class="flex justify-between w-3/4 p-2 mx-auto rounded-md">
                     <!-- Logo -->
