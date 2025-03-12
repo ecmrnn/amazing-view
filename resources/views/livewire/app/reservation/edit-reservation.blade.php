@@ -460,13 +460,9 @@
 
                 {{-- Room List --}}
                 <section class="grid p-5 overflow-auto max-h-80 bg-slate-100/50 gap-x-1 gap-y-5"
-                    @if ($available_rooms->isNotEmpty()) style="grid-template-columns: repeat({{ $column_count }}, 1fr)" @endif
-                    @can('update room')
-                        x-sort
-                    @endcan>
+                    @if ($available_rooms->isNotEmpty()) style="grid-template-columns: repeat({{ $column_count }}, 1fr)" @endif>
 
-                    <div wire:loading.delay wire:target='selectBuilding'
-                        class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
+                    <div wire:loading.delay wire:target='selectBuilding' class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
                         Amazing rooms incoming!
                     </div>
 
@@ -494,8 +490,8 @@
                             </div>
                         </x-form.checkbox-toggle>
                     @empty
-                        <div class="py-5 text-sm font-semibold text-center bg-white border rounded-lg">
-                            No rooms assigned to this floor
+                        <div class="text-center">
+                            <x-table-no-data.rooms />
                         </div>
                     @endforelse
                 </section>
@@ -610,7 +606,9 @@
                                 </div>
                             </div>
                         @empty
-                            <x-table-no-data.rooms />
+                            <div class="text-center">
+                                <x-table-no-data.rooms />
+                            </div>
                         @endforelse
                     </div>
                 </section>

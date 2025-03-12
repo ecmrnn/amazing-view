@@ -37,33 +37,42 @@ class BillingService
     }
 
     public function addPayment(Invoice $invoice, $payment) {
-        if ($invoice->reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
-            $invoice->reservation->status = ReservationStatus::PENDING->value;
-            $invoice->reservation->save();
-        }
+        $invoice = DB::transaction(function () use ($invoice, $payment) {
+            if ($invoice->reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
+                $invoice->reservation->status = ReservationStatus::PENDING->value;
+                $invoice->reservation->save();
+            }
+    
+            if (!empty($payment['proof_image_path'])) {
+                $payment['proof_image_path'] = $payment['proof_image_path']->store('payments', 'public');
+            }  
+            
+            $invoice->payments()->create([
+                'transaction_id' => Arr::get($payment, 'transaction_id', null),
+                'amount' => Arr::get($payment, 'amount', 0),
+                'payment_date' => Arr::get($payment, 'payment_date', now()),
+                'payment_method' => Arr::get($payment, 'payment_method', 'gcash'),
+                'proof_image_path' => Arr::get($payment, 'proof_image_path', null),
+            ]);
+            
+            if (!in_array($invoice->reservation->fresh()->status, [
+                ReservationStatus::AWAITING_PAYMENT->value,
+                ReservationStatus::PENDING->value,
+            ])) {
+                $invoice->balance -= $payment['amount'];
+            }
+    
+            if ($invoice->balance <= 0) {
+                $invoice->balance = 0;
+                $invoice->status = InvoiceStatus::PAID->value;
+            } else {
+                $invoice->status = InvoiceStatus::PARTIAL->value;
+            }
+    
+            $invoice->save();
 
-        if (!empty($payment['proof_image_path'])) {
-            $payment['proof_image_path'] = $payment['proof_image_path']->store('payments', 'public');
-        }  
-        
-        $invoice->payments()->create([
-            'transaction_id' => $payment['transaction_id'],
-            'amount' => $payment['amount'],
-            'payment_date' => $payment['payment_date'],
-            'payment_method' => $payment['payment_method'],
-            'proof_image_path' => $payment['proof_image_path'],
-        ]);
-        
-        $invoice->balance -= $payment['amount'];
-
-        if ($invoice->balance <= 0) {
-            $invoice->balance = 0;
-            $invoice->status = InvoiceStatus::PAID->value;
-        } else {
-            $invoice->status = InvoiceStatus::PARTIAL->value;
-        }
-
-        $invoice->save();
+            return $invoice->fresh();
+        });
 
         return $invoice;
     }

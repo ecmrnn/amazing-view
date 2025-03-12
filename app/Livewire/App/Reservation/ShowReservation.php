@@ -30,7 +30,7 @@ class ShowReservation extends Component
         $pdf = $service->downloadPdf($this->reservation);
 
         if (!$pdf) {
-            $this->toast('Generating PDF', 'info', 'Please wait for a few seconds');
+            $this->toast('Generating PDF', 'info', 'Please wait for a few seconds and then try again.');
         } else {
             $this->toast('Downloading PDF', description: 'Stay online while we download your file!');
             return $pdf;

@@ -35,7 +35,7 @@ class ReservationService
     }
 
     public function create($data) {
-        DB::transaction(function () use ($data) {
+        $reservation = DB::transaction(function () use ($data) {
                 // Assuming the $data is already validated prior to this point
                 $expires_at = Carbon::now()->addHour();
                 $status = ReservationStatus::AWAITING_PAYMENT->value;
@@ -113,9 +113,9 @@ class ReservationService
         
                 // Send confirmation email to the guest
                 // Mail::to($reservation->email)->queue(new Received($reservation));
-                
                 return $reservation;
-        });
+            });
+            return $reservation;
     }
 
     public function update(Reservation $reservation, $data)

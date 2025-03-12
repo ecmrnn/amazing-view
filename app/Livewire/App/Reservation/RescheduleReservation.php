@@ -375,7 +375,10 @@ class RescheduleReservation extends Component
 
                         @if ($selected_rooms->count() > 0)
                             <div class="flex items-center justify-between">
-                                <h3 class="font-semibold">Selected Rooms &lpar;{{ $selected_rooms->count() }}&rpar;</h3>
+                                <h3 class="flex items-center gap-3 font-semibold">
+                                    <p>Selected Rooms</p>
+                                    <div class="px-2 py-1 text-xs text-blue-800 border border-blue-500 rounded-md bg-blue-50 aspect-square">{{ $selected_rooms->count() }}</div>
+                                </h3>
                                 <button type="button" x-on:click="hide = false" x-show="hide" class="text-xs font-semibold text-blue-500">Hide Rooms</button>
                                 <button type="button" x-on:click="hide = true" x-show="!hide" class="text-xs font-semibold text-blue-500">Show Rooms</button>
                             </div>

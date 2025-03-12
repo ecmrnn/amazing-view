@@ -4,8 +4,11 @@ namespace App\Livewire\Guest;
 
 use App\Enums\ReservationStatus;
 use App\Http\Controllers\OTP\MailOtp;
+use App\Models\Otp;
 use App\Models\Reservation;
 use App\Models\RoomReservation;
+use App\Services\BillingService;
+use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -18,17 +21,13 @@ use Spatie\LivewireFilepond\WithFilePond;
 class FindReservation extends Component
 {
     use DispatchesToast, WithFilePond;
+    
+    protected $listeners = [
+        'otp-sent' => '$refresh'
+    ];
 
-    public $reservation_id;
+    #[Url] public $reservation_id;
     public $reservation;
-    public $selected_rooms;
-    public $vat = 0;
-    public $vatable_sales = 0;
-    public $net_total = 0;
-    public $sub_total = 0;
-    public $night_count;
-    public $discount_amount = 0;
-    #[Url] public $rid;
     // Operations
     public $is_authorized = null;
     public $email;
@@ -44,17 +43,27 @@ class FindReservation extends Component
         'otp_6' => '',
     ];
     public $otp_expired = false;
+    public $otp_per_day = 4;
+    public $remaining_otp;
     public $timer = 300;
 
     #[Validate] public $proof_image_path;
+    #[Validate] public $amount;
+    #[Validate] public $payment_date;
 
-    public function mount() {
-        $this->selected_rooms = collect();
+    public function rules() {
+        return [
+            'reservation_id' => 'required',
+            'proof_image_path' => 'required|mimes:jpg,jpeg,png|file|max:1000',
+            'payment_date' => 'required|date',
+            'amount' => 'required|integer|gte:500',
+        ];
+    }
 
-        if (!empty($this->rid)) {
-            $this->reservation_id = $this->rid;
-            $this->getReservation();
-        }
+    public function messages() {
+        return [
+            'proof_image_path.required' => 'Upload your image here',
+        ];
     }
 
     public function checkOtp() {
@@ -64,6 +73,7 @@ class FindReservation extends Component
             if (MailOtp::check($this->reservation->email, $otp)) {
                 $this->is_authorized = 'authorized';
                 $this->toast('Success!', 'success', 'OTP is correct.');
+                $this->dispatch('otp-checked');
             } else {
                 $this->is_authorized = 'unauthorized';
                 $this->otp_input = [
@@ -90,84 +100,83 @@ class FindReservation extends Component
     public function resetOtp() {
         $this->reset('otp_input', 'is_authorized');
     }
-
-    public function rules() {
-        return [
-            'reservation_id' => 'required',
-        ];
-    }
-
-    public function getReservation() {
-        $this->validate(['reservation_id' => $this->rules()['reservation_id']]);
-
-        $this->vat = 0;
-        $this->net_total = 0;
-        $this->sub_total = 0;
-        $this->reservation = Reservation::where('rid', $this->reservation_id)->first();
-        
-        if ($this->reservation != null) {
-            // Get the number of nights between 'date_in' and 'date_out'
-            $this->night_count = Carbon::parse($this->reservation['date_in'])->diffInDays(Carbon::parse($this->reservation['date_out']));
-            // If 'date_in' == 'date_out', 'night_count' = 1
-            $this->night_count != 0 ?: $this->night_count = 1;
-
-            foreach ($this->reservation->rooms as $room) {
-                $this->sub_total += ($room->pivot->rate * $this->night_count);
-            }
-
-            foreach ($this->reservation->rooms as $room) {
-                foreach ($room->amenity as $amenity) {
-                    $this->sub_total += $amenity->pivot->price * $amenity->pivot->quantity;
-                }
-            }
-
-            $this->vatable_sales = $this->sub_total / 1.12;
-            $this->vat = ($this->sub_total) - $this->vatable_sales;
-            $this->net_total = $this->vatable_sales + $this->vat;
-            $this->encrypted_email = preg_replace('/(?<=...).(?=.*@)/u', '*', $this->reservation->email);
-
-            if (!empty($this->reservation->expires_at)) {
-                $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');
-            }
-
-            $this->otp = MailOtp::send($this->reservation->email);
-            
-            $this->reset('is_authorized', 'email');
-        }
-    }
     
     public function sendOtp() {
-        MailOtp::send($this->reservation->email);
-        $this->toast('Success!', description: 'OTP sent successfully.');
-        $this->dispatch('otp-sent');
-        $this->timer = 300;
-        $this->otp_expired = false;
+        $otp_record = Otp::where('email', $this->reservation->email)
+                ->whereDate('created_at', now()->toDateString())
+                ->first();
+
+        if ($otp_record->request_count > $this->otp_per_day) {
+            $this->toast('OTP Not Sent', 'warning', 'You have reached the maximum OTP requests per day.');
+        } else {
+            $this->remaining_otp = ($this->otp_per_day - $otp_record->request_count);
+            $this->otp = MailOtp::send($this->reservation->email);
+            $this->toast('Success!', description: 'OTP sent successfully.');
+            $this->dispatch('otp-sent');
+            $this->timer = 300;
+            $this->otp_expired = false;
+        }
     }
 
     public function resetSearch() {
         $this->reset();
     }
 
+    public function downloadPdf() {
+        $service = new ReservationService;
+        $pdf = $service->downloadPdf($this->reservation);
+
+        if (!$pdf) {
+            $this->toast('Generating PDF', 'info', 'Please wait for a few seconds and then try again.');
+        } else {
+            $this->toast('Downloading PDF', description: 'Stay online while we download your file!');
+            return $pdf;
+        }
+    }
+
     public function submitPayment() {
-        $this->validate([
-            'proof_image_path' => 'required|image|max:1024',
+        $payment = $this->validate([
+            'proof_image_path' => $this->rules()['proof_image_path'],
+            'amount' => $this->rules()['amount'],
+            'payment_date' => $this->rules()['payment_date'],
         ]);
 
-        $this->reservation->update([
-            'status' => ReservationStatus::PENDING->value,
-            'expires_at' => null,
-            // 'proof_image_path' => $this->proof_image_path->store('downpayments', 'public'),
-        ]);
-
-        // Update billing here!!!
+        $service = new BillingService;
+        $service->addPayment($this->reservation->invoice, $payment);
 
         $this->toast('Success!', 'success', 'Payment submitted successfully.');
-        $this->reset('proof_image_path');
+        $this->reset('proof_image_path', 'expires_at');
         $this->dispatch('payment-submitted');
     }
 
     public function submit() {
-        $this->getReservation();
+        $this->validate(['reservation_id' => $this->rules()['reservation_id']]);
+
+        $this->reservation = Reservation::where('rid', $this->reservation_id)->first();
+        
+        if ($this->reservation != null) {
+            $otp_record = Otp::where('email', $this->reservation->email)
+                ->whereDate('created_at', now()->toDateString())
+                ->first();
+
+            if ($otp_record->request_count > $this->otp_per_day) {
+                $this->toast('OTP Not Sent', 'warning', 'You have reached the maximum OTP requests per day.');
+            } else {
+                $this->encrypted_email = preg_replace('/(?<=...).(?=.*@)/u', '*', $this->reservation->email);
+    
+                if (!empty($this->reservation->expires_at)) {
+                    $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');
+                }
+    
+                if (empty($this->otp)) {
+                    $this->sendOtp();
+                }
+    
+                $this->reset('is_authorized', 'email');
+                $this->dispatch('open-modal', 'enter-otp');
+            }
+                
+        }
     }
 
     public function render()

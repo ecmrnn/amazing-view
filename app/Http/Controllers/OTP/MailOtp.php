@@ -15,17 +15,34 @@ class MailOtp extends Controller
         // Generate OTP
         $otp = random_int(100000, 999999);
 
+        $otp_record = Otp::where('email', $email)
+            ->whereDate('created_at', now()->toDateString())
+            ->first();
+        
         // Save OTP to database
-        $stored_otp = Otp::updateOrCreate(
-            ['email' => $email],
-            [
+        if ($otp_record) {
+            // Update existing record
+            $otp_record->update([
                 'otp' => $otp,
-                'expires_at' => Carbon::now()->addMinutes(5)
-            ]
-        );
+                'expires_at' => Carbon::now()->addMinutes(5),
+                'request_count' => $otp_record->request_count + 1
+            ]);
+        } else {
+            // Create new record
+            Otp::create([
+                'email' => $email,
+                'otp' => $otp,
+                'expires_at' => Carbon::now()->addMinutes(5),
+                'request_count' => 1
+            ]);
+        }
+
+        $otp_record = Otp::where('email', $email)
+            ->whereDate('created_at', now()->toDateString())
+            ->first();
     
         // Send OTP to email
-        Mail::to($email)->queue(new SendOtp($stored_otp));
+        Mail::to($email)->queue(new SendOtp($otp_record));
 
         return $otp;
     }

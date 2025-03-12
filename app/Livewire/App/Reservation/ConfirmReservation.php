@@ -29,8 +29,8 @@ class ConfirmReservation extends Component
 
     public function rules() {
         return [
-            'amount' => 'nullable|min:0|integer',
-            'transaction_id' => 'nullable|:',
+            'amount' => 'required|integer|gt:500',
+            'transaction_id' => 'nullable',
             'payment_date' => 'date|required',
         ];
     }
@@ -53,6 +53,8 @@ class ConfirmReservation extends Component
             'transaction_id' => $this->rules()['transaction_id'],
             'payment_date' => $this->rules()['payment_date'],
         ]);
+
+        dd($this->amount);
 
         $this->can_confirm = true;
     }

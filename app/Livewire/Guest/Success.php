@@ -50,7 +50,7 @@ class Success extends Component
                 <a href="{{ route('guest.reservation') }}" wire:navigate>
                     <x-secondary-button type="button">Start Again</x-secondary-button>
                 </a>
-                <a href="{{ route('guest.search', ['rid' => $reservation->rid]) }}" wire:navigate>
+                <a href="{{ route('guest.search', ['reservation_id' => $reservation->rid]) }}" wire:navigate>
                     <x-primary-button type="button">View Reservation</x-primary-button>
                 </a>
             </div>
