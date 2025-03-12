@@ -103,19 +103,21 @@ class FindReservation extends Component
     
     public function sendOtp() {
         $otp_record = Otp::where('email', $this->reservation->email)
-                ->whereDate('created_at', now()->toDateString())
-                ->first();
+            ->whereDate('created_at', now()->toDateString())
+            ->first();
 
-        if ($otp_record->request_count > $this->otp_per_day) {
+        if ($otp_record && $otp_record->request_count > $this->otp_per_day) {
             $this->toast('OTP Not Sent', 'warning', 'You have reached the maximum OTP requests per day.');
-        } else {
-            $this->remaining_otp = ($this->otp_per_day - $otp_record->request_count);
-            $this->otp = MailOtp::send($this->reservation->email);
-            $this->toast('Success!', description: 'OTP sent successfully.');
-            $this->dispatch('otp-sent');
-            $this->timer = 300;
-            $this->otp_expired = false;
+            return;
         }
+
+        $this->remaining_otp = $otp_record ? ($this->otp_per_day - $otp_record->request_count) : $this->otp_per_day;
+
+        $this->otp = MailOtp::send($this->reservation->email);
+        $this->toast('Success!', description: 'OTP sent successfully.');
+        $this->dispatch('otp-sent');
+        $this->timer = 300;
+        $this->otp_expired = false;
     }
 
     public function resetSearch() {
@@ -159,23 +161,23 @@ class FindReservation extends Component
                 ->whereDate('created_at', now()->toDateString())
                 ->first();
 
-            if ($otp_record->request_count > $this->otp_per_day) {
+            if ($otp_record && $otp_record->request_count > $this->otp_per_day) {
                 $this->toast('OTP Not Sent', 'warning', 'You have reached the maximum OTP requests per day.');
-            } else {
-                $this->encrypted_email = preg_replace('/(?<=...).(?=.*@)/u', '*', $this->reservation->email);
-    
-                if (!empty($this->reservation->expires_at)) {
-                    $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');
-                }
-    
-                if (empty($this->otp)) {
-                    $this->sendOtp();
-                }
-    
-                $this->reset('is_authorized', 'email');
-                $this->dispatch('open-modal', 'enter-otp');
+                return;
             }
-                
+
+            $this->encrypted_email = preg_replace('/(?<=...).(?=.*@)/u', '*', $this->reservation->email);
+
+            if (!empty($this->reservation->expires_at)) {
+                $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');
+            }
+
+            if (empty($this->otp)) {
+                $this->sendOtp();
+            }
+
+            $this->reset('is_authorized', 'email');
+            $this->dispatch('open-modal', 'enter-otp');
         }
     }
 
