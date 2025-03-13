@@ -185,12 +185,13 @@ class EditReservationDetails extends Component
     public function render()
     {
         return <<<'HTML'
-        <div x-data="{ 
+        <form x-data="{ 
                 adult_count: @entangle('adult_count'),
                 children_count: @entangle('children_count'),
                 is_map_view: @entangle('is_map_view'),
                 hide: true,
-            }" 
+            }"
+            wire:submit="submit" 
             x-on:reservation-edited.window="show = false"
             class="block p-5 space-y-5">
             <hgroup>
@@ -242,7 +243,7 @@ class EditReservationDetails extends Component
                         
                             <div class="flex justify-end gap-1">
                                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                                <x-primary-button type="button" wire:click="submit">Continue</x-primary-button>
+                                <x-primary-button type="submit">Continue</x-primary-button>
                             </div>
                         </div>
                     </div>
@@ -364,11 +365,11 @@ class EditReservationDetails extends Component
 
                     <div class="flex justify-end gap-1">
                         <x-secondary-button type="button" x-on:click="$wire.set('step', 1)">Back</x-secondary-button>
-                        <x-primary-button type="button" wire:click="submit">Save</x-primary-button>
+                        <x-primary-button type="submit">Save</x-primary-button>
                     </div>
                     @break
             @endswitch
-        </div>
+        </form>
         HTML;
     }
 }

@@ -24,11 +24,5 @@ class AdditionalServicesSeeder extends Seeder
             'price' => 250,
             'is_active' => true
         ]);
-
-        AdditionalServices::create([
-            'name' => 'Breakfast',
-            'price' => 250,
-            'is_active' => true
-        ]);
     }
 }

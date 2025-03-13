@@ -80,7 +80,7 @@ class ConfirmReservation extends Component
         return <<<'HTML'
         <div>
             <x-modal.full name="show-downpayment-modal" maxWidth="sm">
-                <div x-data="{ checked: false, amount: @entangle('amount') }" x-on:reservation-confirmed.window="show = false">
+                <form wire:submit="confirm" x-data="{ checked: false, amount: @entangle('amount') }" x-on:reservation-confirmed.window="show = false">
                     @if(! $can_confirm)
                         <section class="p-5 space-y-5">
                             <hgroup>
@@ -148,7 +148,7 @@ class ConfirmReservation extends Component
                             <div class="flex justify-end gap-1">
                                 <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
                                 @if ($reservation->status == 1)
-                                    <x-primary-button type="button" wire:click="validateReservation">Confirm</x-primary-button>
+                                    <x-primary-button type="button" wire:loading.attr="disabled" wire:click="validateReservation">Confirm</x-primary-button>
                                 @endif
                             </div>
                         </section>
@@ -163,11 +163,11 @@ class ConfirmReservation extends Component
 
                             <div class="flex justify-end gap-1">
                                 <x-secondary-button type="button" x-on:click="$wire.set('can_confirm', false)">Back</x-secondary-button>
-                                <x-primary-button type="button" wire:click="confirm">Confirm </x-primary-button>
+                                <x-primary-button type="submit">Confirm</x-primary-button>
                             </div>
                         </div>
                     @endif
-                </div>
+                </form>
             </x-modal.full> 
         </div>
         HTML;

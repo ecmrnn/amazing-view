@@ -78,13 +78,11 @@
                 </div>
             </div>
             
-            <div class="flex items-center justify-between">
-                <x-loading wire:loading wire:target="checkIn">Checking-in the guest</x-loading>
-                
-                <div class="flex gap-1 ml-auto">
-                    <x-secondary-button type="button" x-on:click="show = false; $wire.set('reservation', null)">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="checkIn({{ $row->id }})">Check-in</x-primary-button>
-                </div>
+            <x-loading wire:loading wire:target="checkIn">Checking-in the guest</x-loading>
+            
+            <div class="flex justify-between gap-1">
+                <x-secondary-button type="button" x-on:click="show = false; $wire.set('reservation', null)">Cancel</x-secondary-button>
+                <x-primary-button type="button" wire:click="checkIn({{ $row->id }})" wire:loading.attr='disabled'>Check-in</x-primary-button>
             </div>
         </div>
     </x-modal.full>

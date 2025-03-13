@@ -75,7 +75,7 @@ class SendReservationEmail extends Component
     public function render()
     {
         return <<<'HTML'
-            <div class="p-5 space-y-5" x-on:email-sent.window="show = false">
+            <form wire:submit="sendEmail" class="p-5 space-y-5" x-on:email-sent.window="show = false">
                 <hgroup>
                     <h2 class="text-lg font-semibold">Send Email</h2>
                     <p class="text-xs">Choose which email you want to send.</p>
@@ -131,9 +131,9 @@ class SendReservationEmail extends Component
 
                 <div class="flex justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="sendEmail">Send</x-primary-button>
+                    <x-primary-button type="submit">Send</x-primary-button>
                 </div>
-            </div>
+            </form>
         HTML;
     }
 }

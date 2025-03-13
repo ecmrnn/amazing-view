@@ -47,10 +47,10 @@ class IssueInvoice extends Component
     public function render()
     {
         return <<<'HTML'
-        <div class="p-5 space-y-5" x-on:invoice-issued.window="show = false">
+        <form wire:submit="issue" class="p-5 space-y-5" x-on:invoice-issued.window="show = false">
             <hgroup>
                 <h2 class="font-semibold">Issue Invoice</h2>
-                <p class="text-xs">Enter your password to issue an invoice</p>
+                <p class="text-xs">Enter your password to issue an invoice to this bill</p>
             </hgroup>
 
             <div>
@@ -67,9 +67,9 @@ class IssueInvoice extends Component
 
             <div class="flex justify-end gap-1">
                 <x-secondary-button x-on:click="show = false" type="button">Cancel</x-secondary-button>
-                <x-primary-button wire:click="issue" type="button">Issue</x-primary-button>
+                <x-primary-button type="submit">Issue</x-primary-button>
             </div>
-        </div>
+        </form>
         HTML;
     }
 }

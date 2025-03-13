@@ -51,23 +51,25 @@ class DeleteReservation extends Component
     public function render()
     {
         return <<<'HTML'
-        <div class="p-5 space-y-5 bg-white" x-on:reservation-deleted.window="show = false">
+        <form wire:submit="destroy" class="p-5 space-y-5 bg-white" x-on:reservation-deleted.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold text-red-500 capitalize">Delete Reservation</h2>
                 <p class="text-xs">You are about to delete this reservation, this action cannot be undone</p>
             </hgroup>
     
             <div class="space-y-2">
-                <x-form.input-label for="password">Enter your password to delete this reservation</x-form.input-label>
-                <x-form.input-text wire:model.live="password" type="password" label="Password" id="password" />
+                <x-form.input-label for="delete-password">Enter your password to delete this reservation</x-form.input-label>
+                <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-password" />
                 <x-form.input-error field="password" />
             </div>
+
+            <x-loading wire:loading wire:target="destroy">Checking your password, please wait</x-loading>
             
             <div class="flex items-center justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-danger-button type="button" wire:click="destroy">Delete</x-danger-button>
+                <x-danger-button type="submit">Delete</x-danger-button>
             </div>
-        </div>
+        </form>
         HTML;
     }
 }

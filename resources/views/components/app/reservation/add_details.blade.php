@@ -92,41 +92,6 @@
     </div>
 </section>
 
-<x-modal.full name='add-amenity-modal' maxWidth='sm'>
-    <div class="p-5 space-y-5" x-data="{ quantity: @entangle('quantity'), max_quantity: @entangle('max_quantity')}" x-on:amenity-added.window="show = false">
-        <hgroup>
-            <h2 class="text-lg font-semibold">Add Amenity</h2>
-            <p class="text-xs">Select an amenity you want to add then enter their quantity.</p>
-        </hgroup>
-
-        <div class="space-y-1">
-            <x-form.select wire:model.live='amenity' x-on:change="$wire.selectAmenity()">
-                <option value="">Select an Amenity</option>
-                @foreach ($available_amenities as $amenity)
-                    @if (!$selected_amenities->contains('id', $amenity->id))
-                        <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
-                    @endif
-                @endforeach
-            </x-form.select>
-            <x-form.input-error field="amenity" />
-        </div>
-
-        <div class="space-y-2">
-            <x-form.input-group>
-                <x-form.input-number x-model="quantity" wire:model.live='quantity' :min="1" :max="$max_quantity" id="quantity" name="quantity" label="Quantity" />
-                <x-form.input-error field="quantity" />
-            </x-form.input-group>
-
-            <p x-show="max_quantity > 0" class="text-xs">Remaining stock: <span x-text="max_quantity"></span></p>
-        </div>
-
-        <div class="flex justify-end gap-1">
-            <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-            <x-primary-button type="button" wire:click='addAmenity'>Add Amenity</x-primary-button>
-        </div>
-    </div>
-</x-modal.full>
-
 <x-modal.full name='add-car-modal' maxWidth='sm'>
     <div class="p-5 space-y-5" x-data="{ quantity: @entangle('quantity'), max_quantity: @entangle('max_quantity')}" x-on:car-added.window="show = false">
         <hgroup>

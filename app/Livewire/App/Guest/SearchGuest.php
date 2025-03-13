@@ -38,7 +38,7 @@ class SearchGuest extends Component
     public function render()
     {
         return <<<'HTML'
-        <div class="p-5 space-y-5" x-on:guest-found.window="show = false">
+        <form wire:submit='find' class="p-5 space-y-5" x-on:guest-found.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold">Search Guest</h2>
                 <p class="text-xs">Enter the guest&apos;s email address to search for their details.</p>
@@ -54,9 +54,9 @@ class SearchGuest extends Component
 
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" wire:click="find">Find</x-primary-button>
+                <x-primary-button type="submit">Find</x-primary-button>
             </div>
-        </div>
+        </form>
         HTML;
     }
 }

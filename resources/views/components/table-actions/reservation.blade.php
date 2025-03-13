@@ -60,7 +60,7 @@
             
             <div class="flex items-center justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-danger-button type="submit">Delete</x-danger-button>
+                <x-danger-button type="submit" wire:loading.attr='disabled'>Delete</x-danger-button>
             </div>
         </form>
     </x-modal.full>

@@ -71,7 +71,7 @@ class CreatePayment extends Component
     public function render()
     {
         return <<<'HTML'
-            <section x-data="{ payment_method: @entangle('payment_method') }" x-on:payment-added.window="show = false" class="p-5 space-y-5">
+            <form wire:submit="store" x-data="{ payment_method: @entangle('payment_method') }" x-on:payment-added.window="show = false" class="p-5 space-y-5">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Add Payment</h2>
                     <p class="text-sm">Enter the payment details made by the guest.</p>
@@ -131,9 +131,9 @@ class CreatePayment extends Component
                 
                 <div class="flex items-center justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="$dispatch('cancel-confirmation'); show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="store">Submit Payment</x-primary-button>
+                    <x-primary-button type="submimt">Submit Payment</x-primary-button>
                 </div>
-            </section>
+            </form>
         HTML;
     }
 }

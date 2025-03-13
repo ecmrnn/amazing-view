@@ -1,4 +1,4 @@
-<form x-data="{
+<div x-data="{
     {{-- Reservation Details --}}
     date_in: $wire.entangle('date_in'),
         date_out: $wire.entangle('date_out'),
@@ -22,7 +22,7 @@
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
             return new Date(date).toLocaleDateString('en-US', options)
         },
-}" wire:submit="submit()">
+}">
     @csrf
 
     <section class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
@@ -428,7 +428,7 @@
 
             {{-- Save Changes button --}}
             <div class="flex items-center gap-5">
-                <x-primary-button type="button" wire:click='update'>Save Changes</x-primary-button>
+                <x-primary-button type="button" wire:loading.attr='disabled' wire:click='update'>Save Changes</x-primary-button>
                 <x-loading wire:target='update' wire:loading.delay>Updating your reservation, please wait</x-loading>
             </div>
         @endif
@@ -650,7 +650,7 @@
 
     {{-- Modal for adding amenity --}}
     <x-modal.full name='add-amenity-modal' maxWidth='sm'>
-        <div class="p-5 space-y-5" x-data="{ quantity: @entangle('quantity'), max_quantity: @entangle('max_quantity') }" x-on:amenity-added.window="show = false">
+        <form wire:submit='addAmenity' class="p-5 space-y-5" x-data="{ quantity: @entangle('quantity'), max_quantity: @entangle('max_quantity') }" x-on:amenity-added.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold">Add Amenity</h2>
                 <p class="text-xs">Select an amenity you want to add then enter their quantity.</p>
@@ -753,14 +753,14 @@
 
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" wire:click='addAmenity'>Add Amenity</x-primary-button>
+                <x-primary-button type="submit">Add Amenity</x-primary-button>
             </div>
-        </div>
+        </form>
     </x-modal.full>
 
     {{-- Modal for adding cars --}}
     <x-modal.full name='add-car-modal' maxWidth='sm'>
-        <div class="p-5 space-y-5" x-data="{ quantity: @entangle('quantity'), max_quantity: @entangle('max_quantity') }" x-on:car-added.window="show = false">
+        <form wire:submit='addCar' class="p-5 space-y-5" x-data="{ quantity: @entangle('quantity'), max_quantity: @entangle('max_quantity') }" x-on:car-added.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold">Add Car</h2>
                 <p class="text-xs">Enter the vehicle details below.</p>
@@ -792,8 +792,8 @@
 
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" wire:click='addCar'>Add Car</x-primary-button>
+                <x-primary-button type="submit">Add Car</x-primary-button>
             </div>
-        </div>
+        </form>
     </x-modal.full>
-</form>
+</div>

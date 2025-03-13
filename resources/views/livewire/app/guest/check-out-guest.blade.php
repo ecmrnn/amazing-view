@@ -1,5 +1,5 @@
 <div>
-    <div class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
+    <form wire:submit='submit' class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
         <div class="flex items-center justify-between p-5 bg-white border rounded-lg border-slate-200">
             <div class="flex items-center gap-3 sm:gap-5">
                 <x-back />
@@ -91,7 +91,7 @@
                     </div>
         
                     <div class="flex justify-end">
-                        <x-primary-button type="button" x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" wire:click='submit'>Continue</x-primary-button>
+                        <x-primary-button type="submit" x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }">Continue</x-primary-button>
                     </div>
                 </div>
                 @break
@@ -211,7 +211,7 @@
                     </div>
                     <div class="flex justify-end gap-1">
                         <x-secondary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="button" x-on:click="$wire.set('step', 1)">Back</x-secondary-button>
-                        <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="button" wire:click='submit'>Continue</x-primary-button>
+                        <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="submit">Continue</x-primary-button>
                     </div>
                 </div>
                 @break
@@ -330,7 +330,7 @@
                     </div>
                     <div class="flex justify-end gap-1">
                         <x-secondary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="button" x-on:click="$wire.set('step', 2)">Back</x-secondary-button>
-                        <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="button" wire:click='submit'>Check Out</x-primary-button>
+                        <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="submit">Check Out</x-primary-button>
                     </div>
                 </div>
                 @break
@@ -348,19 +348,19 @@
 
                     <div class="mx-auto">
                         <a href="{{ route('app.guests.index') }}" wire:navigate>
-                            <x-primary-button>Back to Guests</x-primary-button>
+                            <x-primary-button type="button">Back to Guests</x-primary-button>
                         </a>
                     </div>
                 </div>
         @endswitch
-    </div>
+    </form>
 
     <x-modal.full name='add-payment-modal' maxWidth='sm'>
         <livewire:app.invoice.create-payment :invoice="$reservation->invoice" />
     </x-modal.full>
 
     <x-modal.full name='show-checkout-confirmation' maxWidth='sm'>
-        <div class="p-5 space-y-5" x-on:checked-out.window="show = false">
+        <form wire:submit='checkout' class="p-5 space-y-5" x-on:checked-out.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold">Check-out Confirmation</h2>
                 <p class="text-xs">You are about to check-out this rooms, are you sure?</p>
@@ -376,8 +376,8 @@
 
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" wire:click='checkout'>Check-out</x-primary-button>
+                <x-primary-button type="submit">Check-out</x-primary-button>
             </div>
-        </div>
+        </form>
     </x-modal.full>
 </div>

@@ -18,7 +18,7 @@
         <x-modal.full name='delete-payment-modal-{{ $row->id }}' maxWidth='sm'>
             <div class="p-5 space-y-5" x-on:payment-deleted.window="show = false">
                 <hgroup>
-                    <h2 class="text-lg font-semibold">Delete Payment</h2>
+                    <h2 class="text-lg font-semibold text-red-500">Delete Payment</h2>
                     <p class="text-xs">Are you sure you really want to delete this payment?</p>
                 </hgroup>
     
@@ -30,7 +30,7 @@
     
                 <div class="flex justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
-                    <x-danger-button type="button" x-on:click="$dispatch('delete-payment', { payment:{{ $row->id }} })">Delete</x-danger-button>
+                    <x-danger-button type="submit" wire:loading.attr='disabled' x-on:click="$dispatch('delete-payment', { payment:{{ $row->id }} })">Delete</x-danger-button>
                 </div>
             </div>
         </x-modal.full>
@@ -58,7 +58,7 @@
                 @endif
             </hgroup>
     
-            @if ($row->invoice->status != App\Enums\InvoiceStatus::ISSUED->value)
+            @if (!empty($row->proof_image_Path))
                 <div class="col-span-2 overflow-auto border rounded-md aspect-square border-slate-200">
                     <img src="{{ asset('storage/' . $row->proof_image_path) }}" alt="">
                 </div>
@@ -106,14 +106,19 @@
                 
                 <div class="flex justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
-                    <x-primary-button type="button"
+                    <x-primary-button 
+                        type="submit"
+                        wire:loading.attr='disabled'
                         x-on:click="$dispatch('edit-payment', {
                             'id': {{ $row->id }},
                             'amount': amount,
                             'payment_date': payment_date,
                             'transaction_id': transaction_id, 
                             'payment_method': payment_method 
-                            })">Edit</x-primary-button>
+                            })"
+                        >
+                        Edit
+                    </x-primary-button>
                 </div>
             @endif
         </div>

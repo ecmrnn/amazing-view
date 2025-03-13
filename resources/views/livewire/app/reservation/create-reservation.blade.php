@@ -1,4 +1,4 @@
-<form x-data="{
+<div x-data="{
     {{-- Reservation Details --}}
     min: new Date(),
     date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
@@ -108,7 +108,7 @@
 
 {{-- Modal for confirming reservation --}}
 <x-modal.full name="show-reservation-confirmation" maxWidth="sm">
-    <div x-data="{ checked: false }" x-on:reservation-created.window="show = false">
+    <form wire:submit='store' x-data="{ checked: false }" x-on:reservation-created.window="show = false">
         <section class="p-5 space-y-5 bg-white">
             <hgroup>
                 <h2 class="text-lg font-semibold">Reservation Confirmation</h2>
@@ -129,10 +129,10 @@
             
             <div class="flex items-center justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" x-bind:disabled="!checked" wire:click="store">Submit Reservation</x-primary-button>
+                <x-primary-button type="submit" x-bind:disabled="!checked">Submit Reservation</x-primary-button>
             </div>
         </section>
-    </div>
+    </form>
 </x-modal.full> 
 
 <x-modal.full name='search-guest-modal' maxWidth='sm'>
@@ -153,5 +153,5 @@
     </div>
 </x-modal.full>
 
-</form>
+</div>
 

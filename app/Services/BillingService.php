@@ -111,12 +111,9 @@ class BillingService
         $other_charges = 0;
         
         // Compute for discounts
-        if (in_array($reservation->status, [
+        if (!in_array($reservation->status, [
             ReservationStatus::AWAITING_PAYMENT->value,
             ReservationStatus::PENDING->value,
-            ReservationStatus::CONFIRMED->value,
-            ReservationStatus::CHECKED_OUT->value,
-            ReservationStatus::COMPLETED->value,
         ])) {
             if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
                 $guest_count = $reservation->children_count + $reservation->adult_count;

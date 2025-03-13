@@ -93,7 +93,7 @@ class CancelReservation extends Component
     {
 
         return <<<'HTML'
-        <section x-data="{ refund_amount: @entangle('refund_amount'), reason: 'guest' }" class="p-5 space-y-5 bg-white" x-on:reservation-canceled.window="show = false">
+        <form wire:submit="cancel" x-data="{ refund_amount: @entangle('refund_amount'), reason: 'guest' }" class="p-5 space-y-5 bg-white" x-on:reservation-canceled.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold capitalize">Reservation Cancellation</h2>
                 <p class="max-w-sm text-xs">Are you sure you really want to cancel this reservation?</p>
@@ -133,9 +133,9 @@ class CancelReservation extends Component
             
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-danger-button type="button" wire:click="cancel">Cancel Reservation</x-danger-button>
+                <x-danger-button type="submit">Cancel Reservation</x-danger-button>
             </div>
-        </section>
+        </form>
         HTML;
     }
 }

@@ -235,7 +235,7 @@ class RescheduleReservation extends Component
     public function render()
     {
         return <<<'HTML'
-        <div class="p-5 space-y-5" x-on:reservation-details-updated.window="show = false"
+        <form wire:submit="reschedule" class="p-5 space-y-5" x-on:reservation-details-updated.window="show = false"
             x-data="{
                 hide: true,
                 date_in: @entangle('date_in'),
@@ -275,7 +275,7 @@ class RescheduleReservation extends Component
                         </div>
                         <div>
                             <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                            <x-primary-button type="button" wire:click="reschedule">Continue</x-primary-button>
+                            <x-primary-button type="submit">Continue</x-primary-button>
                         </div>
                     </div>
                     @break
@@ -413,11 +413,11 @@ class RescheduleReservation extends Component
                     
                     <div class="flex justify-end gap-1">
                         <x-secondary-button type="button" wire:click="back">Back</x-secondary-button>
-                        <x-primary-button type="button" wire:click="reschedule">Reschedule</x-primary-button>
+                        <x-primary-button type="submit">Reschedule</x-primary-button>
                     </div>
                     @break
             @endswitch
-        </div>
+        </form>
         HTML;
     }
 }

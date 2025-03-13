@@ -74,7 +74,7 @@ class CheckInGuest extends Component
     public function render()
     {
         return <<<'HTML'
-            <div class="p-5 space-y-5" x-on:guest-checked-in.window="show = false">
+            <form wire:submit="checkIn" class="p-5 space-y-5" x-on:guest-checked-in.window="show = false">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Check-in Guest</h2>
                     <p class="text-xs">Enter the <strong class="text-blue-500">Reservation ID</strong> of the guest you want to check-in</p>
@@ -117,23 +117,21 @@ class CheckInGuest extends Component
                         
                         <div class="flex gap-1 ml-auto">
                             <x-secondary-button type="button" x-on:click="show = false; $wire.set('reservation', null)">Cancel</x-secondary-button>
-                            <x-primary-button type="button" wire:click="checkIn">Check-in</x-primary-button>
+                            <x-primary-button type="submit">Check-in</x-primary-button>
                         </div>
                     </div>
                 @else
                     <x-form.input-text label="Reservation ID" wire:model="reservation_rid" id="reservation" class="w-full" />
                     <x-form.input-error field="reservation" />
                     
-                    <div class="flex items-center justify-between">
                     <x-loading wire:loading wire:target="getReservation">Finding reservation</x-loading>
-
-                        <div class="flex gap-1 ml-auto">
-                            <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                            <x-primary-button type="button" wire:click="getReservation">Find</x-primary-button>
-                        </div>
+                    
+                    <div class="flex justify-end gap-1">
+                        <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                        <x-primary-button type="button" wire:click="getReservation" wire:loading.attr="disabled">Find</x-primary-button>
                     </div>
                 @endif
-            </div>
+            </form>
         HTML;
     }
 }
