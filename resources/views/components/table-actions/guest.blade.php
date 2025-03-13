@@ -41,7 +41,7 @@
     </x-tooltip>
     
     <x-modal.full name='show-checkin-guest-{{ $row->id}}' maxWidth='sm'>
-        <div class="p-5 space-y-5 bg-white" x-on:guest-checked-in.window="show = false">
+        <div class="p-5 space-y-5" x-on:guest-checked-in.window="show = false">
             <hgroup>
                 <h2 class="font-semibold capitalize">Check-in Guest</h2>
                 <p class="max-w-sm text-sm">Confirm the guest&apos;s details here</p>
@@ -52,30 +52,27 @@
                 <p class="text-emerald-800">Ready for check-in!</p>
             </div>
 
-            <div class="p-5 space-y-5 border rounded-md border-slate-200 ">
-                <hgroup class="flex justify-between">
-                    <h3 class="font-semibold">{{ $row->rid }}</h3>
+            <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200 ">
+                <hgroup class="flex items-center justify-between">
+                    <h3 class="text-base font-semibold">{{ $row->rid }}</h3>
 
                     <x-status type="reservation" :status="$row->status" />
-                    <!-- <a href="{{ route('app.reservations.show', ['reservation' => $row->rid]) }}" wire:navigate.hover>
-                        View Reservation
-                    </a> -->
                 </hgroup>
             </div>
 
-            <div class="p-5 space-y-5 border rounded-md border-slate-200">
+            <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                 <div>
-                    <p class="font-semibold capitalize">{{ $row->first_name . ' ' . $row->last_name }}</p>
+                    <p class="text-base font-semibold capitalize">{{ $row->first_name . ' ' . $row->last_name }}</p>
                     <p class="flex justify-between text-sm capitalize">Name</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-5">
                     <div>
-                        <p class="font-semibold capitalize">{{ date_format(date_create($row->date_in), 'F j, Y') }}</p>
+                        <p class="text-base font-semibold capitalize">{{ date_format(date_create($row->date_in), 'F j, Y') }}</p>
                         <p class="flex justify-between text-sm capitalize">Check-in Date</p>
                     </div>
                     <div>
-                        <p class="font-semibold capitalize">{{ date_format(date_create($row->date_out), 'F j, Y') }}</p>
+                        <p class="text-base font-semibold capitalize">{{ date_format(date_create($row->date_out), 'F j, Y') }}</p>
                         <p class="flex justify-between text-sm capitalize">Check-out Date</p>
                     </div>
                 </div>
@@ -86,7 +83,7 @@
                 
                 <div class="flex gap-1 ml-auto">
                     <x-secondary-button type="button" x-on:click="show = false; $wire.set('reservation', null)">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="checkIn">Check-in</x-primary-button>
+                    <x-primary-button type="button" wire:click="checkIn({{ $row->id }})">Check-in</x-primary-button>
                 </div>
             </div>
         </div>

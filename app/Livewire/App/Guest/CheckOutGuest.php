@@ -24,7 +24,7 @@ class CheckOutGuest extends Component
     public $reservation;
     public $checked_in_rooms;
     public $unique_id = '';
-    public $step = 2;
+    public $step = 1;
     public $gallery_index = 0;
     #[Validate] public $selected_rooms;
 

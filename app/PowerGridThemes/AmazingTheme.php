@@ -34,11 +34,11 @@ class AmazingTheme extends Tailwind
             ->tdAction('')
             ->tr('')
             ->trFilters('')
-            ->th('font-semibold px-2 pr-4 py-3 text-left')
+            ->th('font-semibold px-5 pr-4 py-3 text-left')
             ->tbody('text-sm')
             ->trBody('border-b border-dashed hover:border-solid hover:bg-slate-50')
-            ->tdBody('p-2 pr-4')
-            ->tdBodyEmpty('p-2')
+            ->tdBody('px-5 py-2')
+            ->tdBodyEmpty('p-5')
             ->trBodyClassTotalColumns('')
             ->tdBodyTotalColumns('p-2 text-sm text-pg-primary-600 text-right space-y-2');
     }

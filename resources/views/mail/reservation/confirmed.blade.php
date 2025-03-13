@@ -20,7 +20,7 @@
 
             <div>
                 <p><strong class="font-bold">Check-in Date:</strong> {{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
-                <p><strong class="font-bold">Check-out Date:</strong> {{ $reservation->resched_date_out != null ? date_format(date_create($reservation->resched_date_out), 'F j, Y') : date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
+                <p><strong class="font-bold">Check-out Date:</strong> {{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
                 <div>
                     <strong class="font-bold">Rooms Reserved:</strong> 
                     <div class="mt-5 overflow-hidden border rounded-md border-slate-200">

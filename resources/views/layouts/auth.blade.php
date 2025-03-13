@@ -21,12 +21,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="relative grid min-h-screen antialiased font-inter text-zinc-800 place-items-center">
-        <div class="absolute z-50 p-5 py-0 text-xs font-semibold -translate-x-1/2 bg-white rounded-lg top-10 sm:top-10 left-1/2">
+        <div class="absolute z-50 px-5 text-xs font-semibold -translate-x-1/2 bg-white rounded-lg top-10 sm:top-5 left-1/2">
             <x-nav-link href="{{ route('guest.home') }}">Back to Home</x-nav-link>
         </div>
         
         <div class="fixed top-0 z-0">
-            <img src="{{ asset('storage/global/login.jpg') }}" alt="" class="object-cover object-center w-screen h-screen">
+            <img src="{{ asset('storage/global/login.jpg') }}" alt="" class="object-cover object-center w-screen h-screen blur-md">
             <x-overlay />
         </div>
 

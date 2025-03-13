@@ -52,18 +52,20 @@ final class GuestTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        if (isset($this->status)) {
-            $query = Reservation::query()
-                ->whereDate('date_in', '<=', Carbon::today())
-                ->whereDate('date_out', '>=', Carbon::today())
-                ->whereStatus($this->status)
-                ->orderByDesc('rid');
-        }
-        
         $query = Reservation::query()->with('rooms')
             ->whereDate('date_in', '<=', Carbon::today())
             ->whereDate('date_out', '>=', Carbon::today())
             ->orderByDesc('rid');
+
+        if (!empty($this->status)) {
+            $query = Reservation::query()
+                ->where(function ($query) {
+                    $query->where('date_in', '<=', Carbon::today())
+                        ->where('date_out', '>=', Carbon::today());
+                })
+                ->where('status', $this->status)
+                ->orderByDesc('rid');
+        }
 
         return $query;
     }
@@ -180,5 +182,14 @@ final class GuestTable extends PowerGridComponent
             'edit_link' => 'app.reservations.edit',
             'view_link' => 'app.reservations.show',
         ]);
+    }
+
+    public function checkIn(Reservation $reservation) {
+        $service = new ReservationService;
+        $service->checkIn($reservation);
+
+        $this->toast('Success!', description: 'Guest successfully checked in!');
+        $this->dispatch('guest-checked-in');
+        $this->dispatch('pg:eventRefresh-GuestTable');
     }
 }

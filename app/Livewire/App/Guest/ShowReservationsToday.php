@@ -24,6 +24,7 @@ class ShowReservationsToday extends Component
         'completed' => 0,
         'canceled' => 0,
         'expired' => 0,
+        'rescheduled' => 0,
     ];
     public $reservation_count;
     #[Url] public $status;
@@ -42,6 +43,7 @@ class ShowReservationsToday extends Component
             'completed' => ReservationStatus::COMPLETED->value,
             'canceled' => ReservationStatus::CANCELED->value,
             'expired' => ReservationStatus::EXPIRED->value,
+            'rescheduled' => ReservationStatus::RESCHEDULED->value,
         ];
 
         $counts = Reservation::selectRaw('status, COUNT(*) as count')

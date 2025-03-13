@@ -15,82 +15,6 @@
             </x-tooltip>
         @endcan
 
-        <x-tooltip text="View" dir="top">
-            <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'view-payment-{{ $row->id }}')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
-            </x-icon-button>
-        </x-tooltip>
-        
-        <x-modal.full name='view-payment-{{ $row->id }}' maxWidth='sm'>
-            <div x-data="{ 
-                amount: @js((int) $row->amount), 
-                payment_date: @js($row->payment_date),
-                payment_method: @js($row->payment_method),
-                transaction_id: @js($row->transaction_id),
-                }" class="p-5 space-y-5" x-on:payment-edited.window="show = false">
-                <hgroup>
-                    <h2 class="text-lg font-semibold">View Payment</h2>
-                    <p class="text-xs">Edit payment details here</p>
-                </hgroup>
-        
-                @if (!empty($row->proof_image_path))
-                    <div class="col-span-2 overflow-auto border rounded-md aspect-square border-slate-200">
-                        <img src="{{ asset('storage/' . $row->proof_image_path) }}" alt="">
-                    </div>
-                @endif
-    
-                <div class="grid grid-cols-2 gap-5 p-5 bg-white border rounded-md border-slate-200">
-                    @if (!empty($row->transaction_id))
-                        <div class="col-span-2">
-                            <p class="font-semibold">{{ $row->transaction_id }}</p>
-                            <p class="text-xs">Reference No.</p>
-                        </div>
-                    @endif
-                    <div>
-                        <p class="font-semibold"><x-currency />{{ number_format($row->amount, 2) }}</p>
-                        <p class="text-xs">Amount Paid</p>
-                    </div>
-    
-                    <div>
-                        <p class="font-semibold">{{ date_format(date_create($row->payment_date), 'F j, Y') }}</p>
-                        <p class="text-xs">Payment Date</p>
-                    </div>
-                </div>
-    
-                <div class="grid grid-cols-2 gap-5">
-                    @if ($row->payment_method != 'CASH')
-                        <x-form.input-group class="col-span-2">
-                            <x-form.input-label for='transaction_id-{{ $row->id }}'>Reference No.</x-form.input-label>
-                            <x-form.input-text x-model="transaction_id" id="transaction_id-{{ $row->id }}" name="transaction_id-{{ $row->id }}" label="Reference No." />
-                            <x-form.input-error field="transaction_id" />
-                        </x-form.input-group>
-                    @endif
-                    <x-form.input-group>
-                        <x-form.input-label for='amount-{{ $row->id }}'>Amount Paid</x-form.input-label>
-                        <x-form.input-currency x-model="amount" id="amount-{{ $row->id }}" name="amount-{{ $row->id }}" label="amount" />
-                        <x-form.input-error field="amount" />
-                    </x-form.input-group>
-                    <x-form.input-group>
-                        <x-form.input-label for='payment_date-{{ $row->id }}'>Payment Date</x-form.input-label>
-                        <x-form.input-date x-model="payment_date" id="payment_date-{{ $row->id }}" name="payment_date-{{ $row->id }}" label="payment_date" class="w-full" />
-                        <x-form.input-error field="payment_date" />
-                    </x-form.input-group>
-                </div>
-        
-                <div class="flex justify-end gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
-                    <x-primary-button type="button"
-                        x-on:click="$dispatch('edit-payment', {
-                            'id': {{ $row->id }},
-                            'amount': amount,
-                            'payment_date': payment_date,
-                            'transaction_id': transaction_id, 
-                            'payment_method': payment_method 
-                            })">Edit</x-primary-button>
-                </div>
-            </div>
-        </x-modal.full>
-    
         <x-modal.full name='delete-payment-modal-{{ $row->id }}' maxWidth='sm'>
             <div class="p-5 space-y-5" x-on:payment-deleted.window="show = false">
                 <hgroup>
@@ -111,5 +35,87 @@
             </div>
         </x-modal.full>
     @endif
+
+    <x-tooltip text="View" dir="top">
+        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'view-payment-{{ $row->id }}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="{{ $width }}" height="{{ $height }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+        </x-icon-button>
+    </x-tooltip>
+
+    <x-modal.full name='view-payment-{{ $row->id }}' maxWidth='sm'>
+        <div x-data="{ 
+            amount: @js((int) $row->amount), 
+            payment_date: @js($row->payment_date),
+            payment_method: @js($row->payment_method),
+            transaction_id: @js($row->transaction_id),
+            }" class="p-5 space-y-5" x-on:payment-edited.window="show = false">
+            <hgroup>
+                <h2 class="text-lg font-semibold">View Payment</h2>
+                @if ($row->invoice->status != App\Enums\InvoiceStatus::ISSUED->value)
+                    <p class="text-xs">Edit payment details here</p>
+                @else
+                    <p class="text-xs">View payment details here</p>
+                @endif
+            </hgroup>
     
+            @if ($row->invoice->status != App\Enums\InvoiceStatus::ISSUED->value)
+                <div class="col-span-2 overflow-auto border rounded-md aspect-square border-slate-200">
+                    <img src="{{ asset('storage/' . $row->proof_image_path) }}" alt="">
+                </div>
+            @endif
+
+            <div class="grid grid-cols-2 gap-5 p-5 bg-white border rounded-md border-slate-200">
+                @if (!empty($row->transaction_id))
+                    <div class="col-span-2">
+                        <p class="font-semibold">{{ $row->transaction_id }}</p>
+                        <p class="text-xs">Reference No.</p>
+                    </div>
+                @endif
+                <div>
+                    <p class="font-semibold"><x-currency />{{ number_format($row->amount, 2) }}</p>
+                    <p class="text-xs">Amount Paid</p>
+                </div>
+
+                <div>
+                    <p class="font-semibold">{{ date_format(date_create($row->payment_date), 'F j, Y') }}</p>
+                    <p class="text-xs">Payment Date</p>
+                </div>
+            </div>
+
+            @if ($row->invoice->status != App\Enums\InvoiceStatus::ISSUED->value)
+                <div class="grid grid-cols-2 gap-5">
+                    @if ($row->payment_method != 'CASH')
+                        <x-form.input-group class="col-span-2">
+                            <x-form.input-label for='transaction_id-{{ $row->id }}'>Reference No.</x-form.input-label>
+                            <x-form.input-text x-model="transaction_id" id="transaction_id-{{ $row->id }}" name="transaction_id-{{ $row->id }}" label="Reference No." />
+                            <x-form.input-error field="transaction_id" />
+                        </x-form.input-group>
+                    @endif
+                    <x-form.input-group>
+                        <x-form.input-label for='amount-{{ $row->id }}'>Amount Paid</x-form.input-label>
+                        <x-form.input-currency x-model="amount" id="amount-{{ $row->id }}" name="amount-{{ $row->id }}" label="amount" />
+                        <x-form.input-error field="amount" />
+                    </x-form.input-group>
+                    <x-form.input-group>
+                        <x-form.input-label for='payment_date-{{ $row->id }}'>Payment Date</x-form.input-label>
+                        <x-form.input-date x-model="payment_date" id="payment_date-{{ $row->id }}" name="payment_date-{{ $row->id }}" label="payment_date" class="w-full" />
+                        <x-form.input-error field="payment_date" />
+                    </x-form.input-group>
+                </div>
+        
+                
+                <div class="flex justify-end gap-1">
+                    <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
+                    <x-primary-button type="button"
+                        x-on:click="$dispatch('edit-payment', {
+                            'id': {{ $row->id }},
+                            'amount': amount,
+                            'payment_date': payment_date,
+                            'transaction_id': transaction_id, 
+                            'payment_method': payment_method 
+                            })">Edit</x-primary-button>
+                </div>
+            @endif
+        </div>
+    </x-modal.full>
 </div>
