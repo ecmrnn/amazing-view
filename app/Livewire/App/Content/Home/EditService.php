@@ -62,13 +62,13 @@ class EditService extends Component
     public function render()
     {
         return <<<'HTML'
-            <div x-data="{ count : 200 - @js($description_length), max : 200 }"
-                x-on:service-edited.window="show = false; count = 0;"
+            <form wire:submit="submit" x-data="{ count : 200 - @js($description_length), max : 200 }"
+                x-on:service-edited.window="show = false;"
                 x-init="let pond = FilePond.create()"
-                class="block p-5 space-y-5 bg-white" wire:submit="submit">
+                class="block p-5 space-y-5" wire:submit="submit">
                 <hgroup>
-                    <h2 class="font-semibold text-center capitalize">Edit Service</h2>
-                    <p class="max-w-sm text-sm text-center">Update service details here</p>
+                    <h2 class="text-lg font-semibold capitalize">Edit Service</h2>
+                    <p class="max-w-sm text-sm">Update service details here</p>
                 </hgroup>
 
                 <div class="space-y-2">
@@ -102,12 +102,14 @@ class EditService extends Component
                         <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
                     </div>
                 </div>
+
+                <x-loading wire:loading wire:target="submit">Editing featured service, please wait</x-loading>
                 
-                <div class="flex items-center justify-center gap-1">
+                <div class="flex justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="submit">Edit Service</x-primary-button>
+                    <x-primary-button type="submit">Edit</x-primary-button>
                 </div>
-            </div>
+            </form>
         HTML;
     }
 }

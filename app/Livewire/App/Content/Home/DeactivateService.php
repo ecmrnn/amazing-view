@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Content\Home;
 
+use App\Enums\FeaturedServiceStatus;
 use App\Models\FeaturedService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Auth;
@@ -35,41 +36,39 @@ class DeactivateService extends Component
 
         if (Hash::check($this->password, $admin->password)) {
             // delete service
-            $this->service->status = FeaturedService::STATUS_INACTIVE;
+            $this->service->status = FeaturedServiceStatus::INACTIVE->value;
             $this->service->save();
 
             $this->toast('Service Deactivated', 'success', 'Service deactivated successfully!');
             $this->dispatch('service-hidden');
-
-            // reset
             $this->reset('password');
         } else {
-            $this->toast('Deactivating Service Failed', 'info', 'Incorrect password entered');
+            $this->addError('password', 'Password mismatched, try again');
         }
     }
 
     public function render()
     {
         return <<<'HTML'
-        <div>
-            <section class="p-5 space-y-5 bg-white" x-on:service-hidden.window="show = false">
-                <hgroup>
-                    <h2 class="font-semibold text-center text-red-500 capitalize">Deactivate Service</h2>
-                    <p class="max-w-sm text-sm text-center">Are you sure you really want to deactivate this service?</p>
-                </hgroup>
+        <form wire:submit="deactivateService" class="p-5 space-y-5" x-on:service-hidden.window="show = false">
+            <hgroup>
+                <h2 class="text-lg font-semibold text-red-500">Deactivate Service</h2>
+                <p class="max-w-sm text-sm">Are you sure you really want to deactivate this service?</p>
+            </hgroup>
 
-                <div class="space-y-2">
-                    <p class="text-xs">Enter your password to deactivate this service.</p>
-                    <x-form.input-text wire:model.live="password" type="password" label="Password" id="deactivate-{{ $service->id }}-password" />
-                    <x-form.input-error field="password" />
-                </div>
-                
-                <div class="flex items-center justify-center gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
-                    <x-danger-button type="button" wire:click='deactivateService()'>Yes, Deactivate</x-danger-button>
-                </div>
-            </section>
-        </div>
+            <x-form.input-group>
+                <x-form.input-label for="deactivate-{{ $service->id }}-password">Enter your password to deactivate</x-form.input-label>
+                <x-form.input-text wire:model.live="password" type="password" label="Password" id="deactivate-{{ $service->id }}-password" />
+                <x-form.input-error field="password" />
+            </x-form.input-group>
+            
+            <x-loading wire:loading wire:target="deactivateService">Deactivating service, please wait</x-loading>
+            
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                <x-danger-button type="submit">Deactivate</x-danger-button>
+            </div>
+        </form>
         HTML;
     }
 }

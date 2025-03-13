@@ -2,9 +2,11 @@
 
 namespace App\Livewire\App\Content\Home;
 
-use App\Models\Content;
 use App\Models\FeaturedService;
+use App\Models\MediaFile;
 use App\Models\Page;
+use App\Models\PageContent;
+use App\Models\Testimonial;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -25,19 +27,25 @@ class EditHome extends Component
 
     #[Validate] public $heading;
     #[Validate] public $subheading;
-    public $history;
     public $featured_services;
-    public $active_featured_services;
-    public $history_image;
-    public $home_hero_image;
-    public $feature_count;
-    public $status;
+    public $testimonials;
+    public $contents;
+    public $medias;
+    public $page;
 
     public function rules() {
         return [
             'heading' => 'required',
             'subheading' => 'required',
         ];
+    }
+
+    public function mount() {
+        $this->page = Page::whereUrl('/')->first();
+        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
+        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
+        $this->featured_services = FeaturedService::all();
+        $this->testimonials = Testimonial::all();
     }
 
     public function submit() {
@@ -47,11 +55,11 @@ class EditHome extends Component
             'history' => $this->rules()['history'],
         ]);
 
-        $heading = Content::whereName('home_heading')->first();
+        $heading = PageContent::whereKey('home_heading')->first();
         $heading->value = $this->heading;
         $heading->save();
         
-        $subheading = Content::whereName('home_subheading')->first();
+        $subheading = PageContent::whereKey('home_subheading')->first();
         $subheading->value = $this->subheading;
         $subheading->save();
         
@@ -60,19 +68,6 @@ class EditHome extends Component
 
     public function render()
     {
-        $this->featured_services = FeaturedService::all();
-        $this->active_featured_services = FeaturedService::whereStatus(FeaturedService::STATUS_ACTIVE)->get();
-        $this->feature_count = FeaturedService::whereStatus(FeaturedService::STATUS_ACTIVE)->count();
-        $this->home_hero_image = Content::whereName('home_hero_image')->pluck('value')->first();
-        $this->history_image = Content::whereName('about_history_image')->pluck('value')->first();
-        $this->history = Content::whereName('about_history')->pluck('long_value')->first();
-        $this->heading = html_entity_decode(Content::whereName('home_heading')->pluck('value')->first());
-        $this->subheading = html_entity_decode(Content::whereName('home_subheading')->pluck('value')->first());
-        
-        $page = Page::whereTitle('Home')->first();
-        
-        return view('livewire.app.content.home.edit-home', [
-            'page' => $page,
-        ]);
+        return view('livewire.app.content.home.edit-home');
     }
 }

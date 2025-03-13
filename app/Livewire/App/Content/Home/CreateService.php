@@ -60,7 +60,7 @@ class CreateService extends Component
     {
 
         return <<<'HTML'
-            <div x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:service-added.window="show = false; count = 200" class="p-5 space-y-5 bg-white" wire:submit="submit">
+            <form x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:service-added.window="show = false; count = 200" class="p-5 space-y-5" wire:submit="submit">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Add Service</h2>
                     <p class="max-w-sm text-sm">Create a new service to feature here</p>
@@ -102,9 +102,9 @@ class CreateService extends Component
                 
                 <div class="flex items-center justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="submit">Add Service</x-primary-button>
+                    <x-primary-button type="submit">Add</x-primary-button>
                 </div>
-            </div>
+            </form>
         HTML;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FeaturedServiceStatus;
 use App\Models\Content;
 use App\Models\FeaturedService;
 use App\Models\MediaFile;
@@ -18,7 +19,7 @@ class PageController extends Controller
         $page = Page::whereUrl('/')->first();
         $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
         $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
-        $featured_services = FeaturedService::all();
+        $featured_services = FeaturedService::where('status', FeaturedServiceStatus::ACTIVE)->get();
         $testimonials = Testimonial::all();
 
         return view($page->view, [

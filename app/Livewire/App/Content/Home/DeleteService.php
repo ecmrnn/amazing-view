@@ -43,36 +43,34 @@ class DeleteService extends Component
             
             $this->toast('Service Deleted', 'success', 'Service deleted successfully!');
             $this->dispatch('service-deleted');
-
-            // reset
             $this->reset('password');
         } else {
-            $this->toast('Deletion Failed', 'info', 'Incorrect password entered');
+            $this->addError('password', 'Password mismatched, try again');
         }
     }
 
     public function render()
     {
         return <<<'HTML'
-        <div>
-            <section class="p-5 space-y-5 bg-white" x-on:service-deleted.window="show = false">
-                <hgroup>
-                    <h2 class="font-semibold text-center text-red-500 capitalize">Delete Service</h2>
-                    <p class="max-w-sm text-sm text-center">Are you sure you really want this service?</p>
-                </hgroup>
+        <form wire:submit="deleteService" class="p-5 space-y-5" x-on:service-deleted.window="show = false">
+            <hgroup>
+                <h2 class="text-lg font-semibold text-red-500">Delete Service</h2>
+                <p class="max-w-sm text-sm">Are you sure you really want this service?</p>
+            </hgroup>
 
-                <div class="space-y-2">
-                    <p class="text-xs">Enter your password to delete this service.</p>
-                    <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $service->id }}-password" />
-                    <x-form.input-error field="password" />
-                </div>
-                
-                <div class="flex items-center justify-center gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
-                    <x-danger-button type="button" wire:click='deleteService()'>Yes, Delete</x-danger-button>
-                </div>
-            </section>
-        </div>
+            <x-form.input-group>
+                <x-form.input-label for="delete-{{ $service->id }}-password">Enter your password to delete</x-form.input-label>
+                <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $service->id }}-password" />
+                <x-form.input-error field="password" />
+            </x-form.input-group>
+
+            <x-loading wire:loading wire:target='deleteService'>Deleting service, please wait</x-loading>
+            
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                <x-danger-button type="submit">Delete</x-danger-button>
+            </div>
+        </form>
         HTML;
     }
 }
