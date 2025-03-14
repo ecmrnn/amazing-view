@@ -1,8 +1,5 @@
 <div>
     <section class="space-y-5">
-        <x-note>
-            <p>Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview in action button. <strong>Proceed with caution</strong>!</p>
-        </x-note>
         <!-- Heading and Subheading -->
         <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
             <div class="flex items-start justify-between">
@@ -15,12 +12,12 @@
             </div>
 
             <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                <x-img-lg src="{{ asset('storage/' . $rooms_hero_image) }}" />
+                <x-img-lg src="{{ asset('storage/' . $medias['rooms_hero_image']) }}" />
 
                 <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
                     <div>
-                        <p class="font-semibold text-center">{!! $heading !!}</p>
-                        <p class="text-sm text-center">{!! $subheading !!}</p>
+                        <p class="font-semibold text-center">{!! $contents['rooms_heading'] !!}</p>
+                        <p class="text-sm text-center">{!! $contents['rooms_subheading'] !!}</p>
                     </div>
                 </div>
             </div>
@@ -93,13 +90,13 @@
                 </header>
                 
                 <div class="relative w-full rounded-lg before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                    style="background-image: url({{ asset('storage/' . $rooms_hero_image) }});
+                    style="background-image: url({{ asset('storage/' . $medias['rooms_hero_image']) }});
                     background-size: cover;
                     background-position: center;">
                     <section class="relative z-10 grid w-3/4 py-20 mx-auto text-white rounded-md place-items-center">
                         <div class="flex flex-col justify-center gap-3">
-                            <p class="font-bold text-center text-md">{!! $heading !!}</p>
-                            <p class="max-w-xs text-xs text-center">{!! $subheading !!}</p>
+                            <p class="font-bold text-center text-md">{!! $contents['rooms_heading'] !!}</p>
+                            <p class="max-w-xs text-xs text-center">{!! $contents['rooms_subheading'] !!}</p>
                             <x-primary-button class="mx-auto text-xs">...</x-primary-button>
                         </div>
                     </section>
@@ -185,13 +182,14 @@
             </div>
         </section>
     </x-modal.full>
+    
     <x-modal.full name="create-contact-modal" maxWidth="sm">
         <livewire:app.content.contact.create-contact />
     </x-modal.full> 
 
-    <x-modal.full name="edit-hero-modal" maxWidth="sm">
+    {{-- <x-modal.full name="edit-hero-modal" maxWidth="sm">
         <livewire:app.content.edit-hero page="rooms" />
-    </x-modal.full> 
+    </x-modal.full>  --}}
 
     <x-modal.full name="disable-page-modal" maxWidth="sm">
         <livewire:app.content.disable-page :page="$page" />

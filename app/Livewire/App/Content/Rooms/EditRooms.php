@@ -3,6 +3,7 @@
 namespace App\Livewire\App\Content\Rooms;
 
 use App\Models\Content;
+use App\Models\MediaFile;
 use App\Models\Page;
 use App\Models\PageContent;
 use App\Models\RoomType;
@@ -23,22 +24,18 @@ class EditRooms extends Component
         'hero-edited' => '$refresh',
     ];
 
-    public $heading;
-    public $subheading;
-    public $rooms_hero_image;
+    public $page;
+    public $contents;
+    public $medias;
     public $room_types;
 
     public function render()
     {
-        $this->rooms_hero_image = PageContent::where('key', 'rooms_hero_image')->pluck('value')->first();
-        $this->heading = html_entity_decode(PageContent::where('key', 'rooms_heading')->pluck('value')->first());
-        $this->subheading = html_entity_decode(PageContent::where('key', 'rooms_subheading')->pluck('value')->first());
+        $this->page = Page::whereUrl('/rooms')->first();
+        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
+        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
         $this->room_types = RoomType::all();
         
-        $page = Page::whereTitle('Rooms')->first();
-        
-        return view('livewire.app.content.rooms.edit-rooms', [
-            'page' => $page,
-        ]);
+        return view('livewire.app.content.rooms.edit-rooms');
     }
 }

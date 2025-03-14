@@ -1,9 +1,5 @@
 <div>
     <section class="space-y-5">
-        <x-note>
-            <p>Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview in action button. <strong>Proceed with caution</strong>!</p>
-        </x-note>
-        
         <!-- Hero Section -->
         <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
             <div class="flex items-start justify-between">
@@ -216,11 +212,8 @@
             </div>
         </section>
     </x-modal.full>
+    
     <x-modal.full name="create-service-modal" maxWidth="sm">
         <livewire:app.content.home.create-service />
-    </x-modal.full> 
-
-    <x-modal.full name="edit-hero-modal" maxWidth="sm">
-        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
     </x-modal.full> 
 </form>

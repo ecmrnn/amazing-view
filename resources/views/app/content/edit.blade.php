@@ -44,6 +44,10 @@
             </div>
         </div>
 
+        <x-note>
+            <p>Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview in the action button. <strong>Proceed with caution</strong>!</p>
+        </x-note>
+
         {{-- Contents --}}
         @switch($page->id)
             @case(1)
@@ -61,8 +65,10 @@
             @case(5)
                  <livewire:app.content.reservation.edit-reservation />
                 @break
-            @default
-        
         @endswitch
+
+        <x-modal.full name="edit-hero-modal" maxWidth="sm">
+            <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
+        </x-modal.full> 
     </div>
 </x-app-layout>
