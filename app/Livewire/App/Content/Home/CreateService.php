@@ -50,10 +50,7 @@ class CreateService extends Component
         $this->toast('Success!', 'success', 'Service added successfully!');
         $this->dispatch('service-added');
         $this->dispatch('pond-reset');
-        
-        $this->image = null;
-        $this->title = null;
-        $this->description = "Add a brief description of your service";
+        $this->reset();
     }
 
     public function render()

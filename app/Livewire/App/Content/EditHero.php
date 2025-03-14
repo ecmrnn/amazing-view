@@ -3,6 +3,8 @@
 namespace App\Livewire\App\Content;
 
 use App\Models\Content;
+use App\Models\MediaFile;
+use App\Models\PageContent;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
@@ -28,8 +30,8 @@ class EditHero extends Component
 
     public function mount($page) {
         $this->page = $page;
-        $this->heading = Content::whereName($this->page . '_heading')->pluck('value')->first();
-        $this->subheading = Content::whereName($this->page . '_subheading')->pluck('value')->first();
+        $this->heading = PageContent::where('key', $this->page . '_heading')->pluck('value')->first();
+        $this->subheading = PageContent::where('key', $this->page . '_subheading')->pluck('value')->first();
     }
 
     public function submit() {
@@ -43,21 +45,22 @@ class EditHero extends Component
         // If may inupload na image
         if (!empty($this->hero_image)) {
             // delete saved image para di magdoble doble
-            $hero_image = Content::whereName($this->page . '_hero_image')->first();
-            if (!empty($hero_image)) {
+            $hero_image = MediaFile::where('key', $this->page . '_hero_image')->first();
+            
+            if (!empty($hero_image->path)) {
                 Storage::disk('public')->delete($hero_image->value);
             }
             
-            $hero_image->value = $this->hero_image->store('hero', 'public');
+            $hero_image->path = $this->hero_image->store('hero', 'public');
             $hero_image->save();
         }
 
         // Store to database
-        $heading = Content::whereName($this->page . '_heading')->first();
+        $heading = PageContent::where('key', $this->page . '_heading')->first();
         $heading->value = $this->heading;
         $heading->save();
 
-        $subheading = Content::whereName($this->page . '_subheading')->first();
+        $subheading = PageContent::where('key', $this->page . '_subheading')->first();
         $subheading->value = $this->subheading;
         $subheading->save();
 

@@ -40,14 +40,6 @@ class EditHome extends Component
         ];
     }
 
-    public function mount() {
-        $this->page = Page::whereUrl('/')->first();
-        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
-        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
-        $this->featured_services = FeaturedService::all();
-        $this->testimonials = Testimonial::all();
-    }
-
     public function submit() {
         $this->validate([
             'heading' => $this->rules()['heading'],
@@ -68,6 +60,12 @@ class EditHome extends Component
 
     public function render()
     {
+        $this->page = Page::whereUrl('/')->first();
+        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
+        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
+        $this->featured_services = FeaturedService::all();
+        $this->testimonials = Testimonial::all();
+        
         return view('livewire.app.content.home.edit-home');
     }
 }

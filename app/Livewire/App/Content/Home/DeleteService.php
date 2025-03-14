@@ -35,6 +35,13 @@ class DeleteService extends Component
         $admin = Auth::user();
 
         if (Hash::check($this->password, $admin->password)) {
+            $count = FeaturedService::count();
+
+            if ($count <= 3) {
+                $this->toast('Deactivate Failed', 'info', 'Minimum of three services must be featured.');
+                return;
+            }
+            
             // delete image
             Storage::disk('public')->delete($this->service->image);
             

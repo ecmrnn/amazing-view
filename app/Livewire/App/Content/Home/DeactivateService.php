@@ -36,10 +36,17 @@ class DeactivateService extends Component
 
         if (Hash::check($this->password, $admin->password)) {
             // delete service
+            $count = FeaturedService::count();
+            
+            if ($count <= 3) {
+                $this->toast('Deactivate Failed', 'info', 'Minimum of three services must be featured.');
+                return;
+            }
+
             $this->service->status = FeaturedServiceStatus::INACTIVE->value;
             $this->service->save();
-
-            $this->toast('Service Deactivated', 'success', 'Service deactivated successfully!');
+            
+            $this->toast('Service Deactivated', description: 'Service deactivated successfully!');
             $this->dispatch('service-hidden');
             $this->reset('password');
         } else {
