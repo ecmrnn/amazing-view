@@ -4,6 +4,7 @@ namespace App\Livewire\App\Content\Rooms;
 
 use App\Models\Content;
 use App\Models\Page;
+use App\Models\PageContent;
 use App\Models\RoomType;
 use App\Traits\DispatchesToast;
 use Livewire\Component;
@@ -29,9 +30,9 @@ class EditRooms extends Component
 
     public function render()
     {
-        $this->rooms_hero_image = Content::whereName('rooms_hero_image')->pluck('value')->first();
-        $this->heading = html_entity_decode(Content::whereName('rooms_heading')->pluck('value')->first());
-        $this->subheading = html_entity_decode(Content::whereName('rooms_subheading')->pluck('value')->first());
+        $this->rooms_hero_image = PageContent::where('key', 'rooms_hero_image')->pluck('value')->first();
+        $this->heading = html_entity_decode(PageContent::where('key', 'rooms_heading')->pluck('value')->first());
+        $this->subheading = html_entity_decode(PageContent::where('key', 'rooms_subheading')->pluck('value')->first());
         $this->room_types = RoomType::all();
         
         $page = Page::whereTitle('Rooms')->first();

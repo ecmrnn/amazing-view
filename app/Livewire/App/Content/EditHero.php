@@ -72,7 +72,7 @@ class EditHero extends Component
     public function render()
     {
         return <<<'HTML'
-            <form x-on:hero-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white" wire:submit="submit">
+            <form x-on:hero-edited.window="show = false; count = 0;" class="p-5 space-y-5" wire:submit="submit">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Edit Hero</h2>
                     <p class="max-w-sm text-sm">Update hero details here</p>

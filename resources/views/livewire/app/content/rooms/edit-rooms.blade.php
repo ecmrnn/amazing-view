@@ -1,110 +1,84 @@
-<div class="grid grid-cols-1 gap-5 bg-white xl:grid-cols-2">
-    <section>
+<div>
+    <section class="space-y-5">
+        <x-note>
+            <p>Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview in action button. <strong>Proceed with caution</strong>!</p>
+        </x-note>
         <!-- Heading and Subheading -->
-        <x-form.form-section>
-            <x-form.form-header step="1" title="Hero Section" />
+        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-start justify-between">
+                <hgroup>
+                    <h3 class="font-semibold">Heading &amp; Subheading</h3>
+                    <p class="text-xs">Update your hero section here</p>
+                </hgroup>
 
-            <x-form.form-body>
-                <div class="p-3 space-y-3 sm:p-5 sm:space-y-5">
-                    <div class="flex items-start justify-between">
-                        <hgroup>
-                            <h3 class="font-semibold">Heading &amp; Subheading</h3>
-                            <p class="text-xs">Update your hero section here</p>
-                        </hgroup>
+                <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'edit-hero-modal')">Edit Hero</button>
+            </div>
 
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'edit-hero-modal')">Edit Hero</x-primary-button>
-                    </div>
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
+                <x-img-lg src="{{ asset('storage/' . $rooms_hero_image) }}" />
 
-                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                        <x-img-lg src="{{ asset('storage/' . $rooms_hero_image) }}" />
-
-                        <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
-                            <div>
-                                <p class="font-semibold text-center">{!! $heading !!}</p>
-                                <p class="text-sm text-center">{!! $subheading !!}</p>
-                            </div>
-                        </div>
+                <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
+                    <div>
+                        <p class="font-semibold text-center">{!! $heading !!}</p>
+                        <p class="text-sm text-center">{!! $subheading !!}</p>
                     </div>
                 </div>
-            </x-form.form-body>
-        </x-form.form-section>
-
-        <x-line-vertical />
+            </div>
+        </div>
 
         <!-- Contact Details -->
-        <x-form.form-section>
-            <x-form.form-header step="2" title="Room Types" />
-
-            <x-form.form-body>
-                <div class="p-3 space-y-3 sm:p-5 sm:space-y-5">
-                    <div class="flex items-start justify-between">
-                        <hgroup>
-                            <h3 class="font-semibold">Room Types</h3>
-                            <p class="text-xs">Update your room types here</p>
-                        </hgroup>
-
-                        <a href="{{ route('app.rooms.create') }}" wire:navigate.hover>
-                            <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-contact-modal')">Add Room</x-primary-button>
-                        </a>
-                    </div>
-
-                    <div class="space-y-1">
-                        @foreach ($room_types as $room_type)
-                            <div x-data="{ room_count: @js($room_type->rooms->count())}" class="relative flex gap-3 p-5 border rounded-md border-slate-200">
-                                <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" class="w-full md:max-w-[150px]" /> {{-- Fix --}}
-
-                                <div>
-                                    <h4 class="text-sm font-semibold">{{ $room_type->name }}</h4>
-                                    <p class="max-w-sm text-xs">{{ $room_type->description }}</p>
-                                </div>
-
-                                <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
-                                    <x-tooltip text="Edit" dir="bottom">
-                                        <a href="{{ route('app.rooms.edit', ['room' => $room_type->id]) }}" wire.navigate.hover>
-                                            <x-icon-button x-ref="content" type="button">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                                            </x-icon-button>
-                                        </a>
-                                    </x-tooltip>
-                                    
-                                    <x-tooltip text="Delete" dir="bottom">
-                                        <x-icon-button x-bind:disabled="room_count > 0" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-room-type-{{ $room_type->id }}-modal')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                        </x-icon-button>
-                                    </x-tooltip>
-                                </div>
-
-                                {{-- Delete Modal --}}
-                                <x-modal.full name='delete-room-type-{{ $room_type->id }}-modal' maxWidth='sm'>
-                                    <livewire:app.room-type.delete-room-type :room_type="$room_type" />
-                                </x-modal.full>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </x-form.form-body>
-        </x-form.form-section>
-
-        <x-line-vertical />
-
-        <div class="mt-5">
-            <!-- Status Change -->
-            <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
+        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-start justify-between">
                 <hgroup>
-                    <h3 class="font-semibold text-red-500">Change Page Visibility</h3>
-                    <p class="max-w-sm text-xs">If you need to prevent users from accessing this page, click the button below.</p>
+                    <h3 class="font-semibold">Room Types</h3>
+                    <p class="text-xs">Update your room types here</p>
                 </hgroup>
-    
-                <div>
-                    <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'disable-page-modal')">Hide this Page</x-danger-button>
-                </div>
-            </section>
+
+                <a href="{{ route('app.rooms.create') }}" wire:navigate.hover>
+                    <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'create-contact-modal')">Add Room</button>
+                </a>
+            </div>
+
+            <div class="space-y-1">
+                @foreach ($room_types as $room_type)
+                    <div x-data="{ room_count: @js($room_type->rooms->count())}" class="relative flex gap-3 p-5 border rounded-md border-slate-200">
+                        <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" class="w-full md:max-w-[150px]" /> {{-- Fix --}}
+
+                        <div>
+                            <h4 class="text-sm font-semibold">{{ $room_type->name }}</h4>
+                            <p class="max-w-sm text-xs">{{ $room_type->description }}</p>
+                        </div>
+
+                        <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
+                            <x-tooltip text="Edit" dir="bottom">
+                                <a href="{{ route('app.rooms.edit', ['room' => $room_type->id]) }}" wire.navigate.hover>
+                                    <x-icon-button x-ref="content" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                                    </x-icon-button>
+                                </a>
+                            </x-tooltip>
+                            
+                            <x-tooltip text="Delete" dir="bottom">
+                                <x-icon-button x-bind:disabled="room_count > 0" x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-room-type-{{ $room_type->id }}-modal')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                </x-icon-button>
+                            </x-tooltip>
+                        </div>
+
+                        {{-- Delete Modal --}}
+                        <x-modal.full name='delete-room-type-{{ $room_type->id }}-modal' maxWidth='sm'>
+                            <livewire:app.room-type.delete-room-type :room_type="$room_type" />
+                        </x-modal.full>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </section>
     
-    <!-- Visuals -->
-    <section class="hidden space-y-5 xl:block">
-        <section class="overflow-y-scroll border rounded-lg border-slate-200 aspect-video">
+    <!-- Modals -->
+    <x-modal.full name='show-preview-modal' maxWidth='screen-xl'>
+        <!-- Visuals -->
+        <section class="hidden space-y-5 overflow-y-scroll xl:block aspect-video">
             <div class="p-5 space-y-1 min-w-[780px]">
                 <header class="flex justify-between w-3/4 p-2 mx-auto rounded-md">
                     <!-- Logo -->
@@ -133,8 +107,9 @@
 
                 <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
                     <hgroup>
-                        <p class="text-xs font-bold">Amazing View Mountain Resort</p>
-                        <p class="max-w-xs text-xs">A gilmpse of our story</p>
+                        <svg class="mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-open"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg>
+                        <p class="text-xs font-bold text-center">Amazing Rooms</p>
+                        <p class="text-xs text-center">Experience elegant comfort through our rooms!</p>
                     </hgroup>
 
                     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -209,13 +184,7 @@
                 </footer>
             </div>
         </section>
-
-        <x-note>
-            <p class="max-w-sm">Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview above. <strong>Proceed with caution</strong>!</p>
-        </x-note>
-    </section>
-
-    <!-- Modals -->
+    </x-modal.full>
     <x-modal.full name="create-contact-modal" maxWidth="sm">
         <livewire:app.content.contact.create-contact />
     </x-modal.full> 

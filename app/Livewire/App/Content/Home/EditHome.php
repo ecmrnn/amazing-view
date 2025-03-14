@@ -2,6 +2,8 @@
 
 namespace App\Livewire\App\Content\Home;
 
+use App\Enums\FeaturedServiceStatus;
+use App\Enums\TestimonialStatus;
 use App\Models\FeaturedService;
 use App\Models\MediaFile;
 use App\Models\Page;
@@ -18,6 +20,13 @@ class EditHome extends Component
 
     protected $listeners = [
         'hero-edited' => '$refresh',
+        'testimonial-edited' => '$refresh',
+        'testimonial-deleted' => '$refresh',
+        'testimonial-status-updated' => '$refresh',
+        'service-added' => '$refresh',
+        'service-edited' => '$refresh',
+        'service-hidden' => '$refresh',
+        'service-deleted' => '$refresh',
     ];
 
     #[Validate] public $heading;
@@ -25,6 +34,8 @@ class EditHome extends Component
     public $contents;
     public $medias;
     public $page;
+    public $featured_services;
+    public $testimonials;
 
     public function rules() {
         return [
@@ -56,6 +67,8 @@ class EditHome extends Component
         $this->page = Page::whereUrl('/')->first();
         $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
         $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
+        $this->featured_services = FeaturedService::where('status', FeaturedServiceStatus::ACTIVE)->get();
+        $this->testimonials = Testimonial::where('status', TestimonialStatus::ACTIVE)->get();
         
         return view('livewire.app.content.home.edit-home');
     }
