@@ -17,18 +17,11 @@ class EditHome extends Component
     use DispatchesToast, WithFilePond;
 
     protected $listeners = [
-        'service-added' => '$refresh',
-        'service-edited' => '$refresh',
-        'service-hidden' => '$refresh',
-        'service-deleted' => '$refresh',
-        'history-edited' => '$refresh',
         'hero-edited' => '$refresh',
     ];
 
     #[Validate] public $heading;
     #[Validate] public $subheading;
-    public $featured_services;
-    public $testimonials;
     public $contents;
     public $medias;
     public $page;
@@ -63,8 +56,6 @@ class EditHome extends Component
         $this->page = Page::whereUrl('/')->first();
         $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
         $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
-        $this->featured_services = FeaturedService::all();
-        $this->testimonials = Testimonial::all();
         
         return view('livewire.app.content.home.edit-home');
     }

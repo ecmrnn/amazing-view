@@ -48,7 +48,7 @@ class EditHero extends Component
             $hero_image = MediaFile::where('key', $this->page . '_hero_image')->first();
             
             if (!empty($hero_image->path)) {
-                Storage::disk('public')->delete($hero_image->value);
+                Storage::disk('public')->delete($hero_image->path);
             }
             
             $hero_image->path = $this->hero_image->store('hero', 'public');
@@ -72,7 +72,7 @@ class EditHero extends Component
     public function render()
     {
         return <<<'HTML'
-            <div x-on:hero-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white" wire:submit="submit">
+            <form x-on:hero-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white" wire:submit="submit">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Edit Hero</h2>
                     <p class="max-w-sm text-sm">Update hero details here</p>
@@ -98,18 +98,23 @@ class EditHero extends Component
                         <x-form.input-label for="heading">Heading &amp; Subheading</x-form.input-label>
                         <p class="text-xs">Write an amazing story here</p>
                     </div>
-
                     <x-form.input-text id="heading" name="heading" label="Heading" wire:model.live="heading" />
                     <x-form.input-error field="heading" />
+                </x-form.input-group>
+
+                <x-form.input-group>
+                    <!-- <x-form.input-label for='subheading'></x-form.input-label> -->
                     <x-form.input-text id="subheading" name="subheading" label="Subheading" wire:model.live="subheading" />
                     <x-form.input-error field="subheading" />
                 </x-form.input-group>
                 
+                <x-loading wire:loading wire:target='submit'>Editing hero, please wait</x-loading>
+
                 <div class="flex items-center justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="submit">Edit Hero</x-primary-button>
+                    <x-primary-button type="submit">Edit</x-primary-button>
                 </div>
-            </div>
+            </form>
         HTML;
     }
 }
