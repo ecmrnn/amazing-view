@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Content\About;
 
+use App\Enums\MilestoneStatus;
 use App\Models\MediaFile;
 use App\Models\Milestone;
 use App\Models\Page;
@@ -18,6 +19,8 @@ class EditAbout extends Component
         'milestone-added' => '$refresh',
         'milestone-edited' => '$refresh',
         'milestone-hidden' => '$refresh',
+        'milestone-deactivated' => '$refresh',
+        'milestone-activated' => '$refresh',
         'milestone-deleted' => '$refresh',
         'history-edited' => '$refresh',
         'hero-edited' => '$refresh',

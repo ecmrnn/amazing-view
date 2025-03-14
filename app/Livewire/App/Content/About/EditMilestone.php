@@ -4,6 +4,7 @@ namespace App\Livewire\App\Content\About;
 
 use App\Models\FeaturedService;
 use App\Models\Milestone;
+use App\Services\MilestoneService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
@@ -37,26 +38,15 @@ class EditMilestone extends Component
     }
 
     public function submit() {
-        $this->validate([
+        $validated = $this->validate([
             'image' => $this->rules()['image'],
             'title' => $this->rules()['title'],
             'description' => $this->rules()['description'],
             'date_achieved' => $this->rules()['date_achieved'],
         ]);
 
-        if (!empty($this->image)) {
-            // delete saved image
-            if (!empty($this->milestone->milestone_image)) {
-                Storage::disk('public')->delete($this->milestone->milestone_image);
-            }
-            
-            $this->milestone->milestone_image = $this->image->store('milestones', 'public');
-        }
-        
-        $this->milestone->title = $this->title;        
-        $this->milestone->description = $this->description;        
-        $this->milestone->date_achieved = $this->date_achieved;        
-        $this->milestone->save();
+        $service = new MilestoneService;
+        $service->edit($this->milestone, $validated);
 
         $this->toast('Success!', 'success', 'Milestone edited successfully!');
         $this->dispatch('milestone-edited');
@@ -68,8 +58,8 @@ class EditMilestone extends Component
         return <<<'HTML'
             <form wire:submit="submit" x-data="{ count: 200 - @js($description_length), max: 200 }" x-on:milestone-edited.window="show = false" class="p-5 space-y-5">
                 <hgroup>
-                    <h2 class="font-semibold text-center capitalize">Edit Milestone</h2>
-                    <p class="max-w-sm text-sm text-center">Update milestone details here</p>
+                    <h2 class="text-lg font-semibold">Edit Milestone</h2>
+                    <p class="max-w-sm text-sm">Update milestone details here</p>
                 </hgroup>
 
                 <div class="space-y-2">

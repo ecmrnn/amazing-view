@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Testimonial;
+use App\Enums\TestimonialStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +21,7 @@ class TestimonialFactory extends Factory
             'name' => fake()->name(),
             'testimonial' => fake()->realText(fake()->numberBetween(100, 200)),
             'rating' => fake()->numberBetween(3, 5),
-            'status' => Testimonial::STATUS_ACTIVE,
+            'status' => TestimonialStatus::ACTIVE,
         ];
     }
 }

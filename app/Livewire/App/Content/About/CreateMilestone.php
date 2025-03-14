@@ -3,6 +3,7 @@
 namespace App\Livewire\App\Content\About;
 
 use App\Models\Milestone;
+use App\Services\MilestoneService;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -14,7 +15,7 @@ class CreateMilestone extends Component
 
     #[Validate] public $image;
     #[Validate] public $title;
-    #[Validate] public $description = "Add a brief description of your service";
+    #[Validate] public $description = "Add a brief description of your milestone";
     #[Validate] public $date_achieved;
     public $description_length;
 
@@ -31,21 +32,15 @@ class CreateMilestone extends Component
     }
 
     public function submit() {
-        $this->validate([
+        $validated = $this->validate([
             'image' => 'required|mimes:jpg,jpeg,png|image',
             'title' => $this->rules()['title'],
             'description' => $this->rules()['description'],
             'date_achieved' => $this->rules()['date_achieved'],
         ]);
 
-        $image_filename = $this->image->store('milestones', 'public');
-
-        Milestone::create([
-            'milestone_image' => $image_filename,
-            'title' => $this->title,
-            'description' => $this->description,
-            'date_achieved' => $this->date_achieved
-        ]);
+        $service = new MilestoneService;
+        $service->create($validated);
 
         $this->toast('Success!', 'success', 'Milestone added successfully!');
         $this->dispatch('milestone-added');

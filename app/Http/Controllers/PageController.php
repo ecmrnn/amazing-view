@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\FeaturedServiceStatus;
+use App\Enums\MilestoneStatus;
 use App\Enums\TestimonialStatus;
 use App\Models\Content;
 use App\Models\FeaturedService;
@@ -36,7 +37,7 @@ class PageController extends Controller
         $page = Page::whereUrl('/about')->first();
         $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
         $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
-        $milestones = Milestone::all();
+        $milestones = Milestone::where('status', MilestoneStatus::ACTIVE)->get();
 
         $map = array(
             'option' => [

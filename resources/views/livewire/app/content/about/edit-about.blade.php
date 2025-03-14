@@ -54,7 +54,7 @@
 
             <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
                 @foreach ($milestones as $milestone)
-                    <div key="{{ $milestone->id }}" class="relative p-5 space-y-5 border rounded-md border-slate-200">
+                    <div wire:key="milestone-{{ $milestone->id }}" class="relative p-5 space-y-5 border rounded-md border-slate-200">
                         <div class="space-y-5">
                             @if (!empty($milestone->milestone_image))
                                 <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" class="w-full" />
@@ -70,7 +70,7 @@
                         </div>
 
                         <div class="flex items-center justify-between">
-                            <div></div>
+                            <x-status type="milestone" :status="$milestone->status" />
                             
                             <div class="flex justify-center gap-1">
                                 <x-tooltip text="Edit" dir="bottom">
@@ -78,6 +78,19 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
                                     </x-icon-button>
                                 </x-tooltip>
+                                @if ($milestone->status == App\Enums\MilestoneStatus::ACTIVE->value)
+                                    <x-tooltip text="Deactivate" dir="top">
+                                        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'deactivate-milestone-{{ $milestone->id }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                        </x-icon-button>
+                                    </x-tooltip>
+                                @else
+                                    <x-tooltip text="Activate" dir="top">
+                                        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'activate-milestone-{{ $milestone->id }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                                        </x-icon-button>
+                                    </x-tooltip>    
+                                @endif
                                 <x-tooltip text="Delete" dir="bottom">
                                     <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-milestone-modal-{{ $milestone->id }}')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
@@ -88,6 +101,14 @@
 
                         <x-modal.full name="edit-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
                             <livewire:app.content.about.edit-milestone wire:key="edit-{{ $milestone->id }}" :milestone="$milestone" />
+                        </x-modal.full>
+
+                        <x-modal.full name='deactivate-milestone-{{ $milestone->id }}' maxWidth='sm'>
+                            <livewire:app.content.about.deactivate-milestone wire:key="deactivate-{{ $milestone->id }}" :milestone="$milestone" />
+                        </x-modal.full>
+
+                        <x-modal.full name='activate-milestone-{{ $milestone->id }}' maxWidth='sm'>
+                            <livewire:app.content.about.activate-milestone wire:key="activate-{{ $milestone->id }}" :milestone="$milestone" />
                         </x-modal.full>
 
                         <x-modal.full name="delete-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
@@ -121,7 +142,7 @@
                     background-position: center;">
                     <section class="relative z-10 w-3/4 py-20 mx-auto space-y-3 text-white rounded-md">
                         <p class="mx-auto font-bold text-center text-md">{!! $contents['about_heading'] !!}</p>
-                        <p class="max-w-xs mx-auto text-xs text-center">{!! $contents['about_subheading'] !!}</p>
+                        <p class="mx-auto text-xs text-center">{!! $contents['about_subheading'] !!}</p>
                         <div class="flex justify-center gap-1">
                             <x-secondary-button type="button" class="text-xs">...</x-secondary-button>
                             <x-primary-button type="button" class="text-xs">...</x-primary-button>
@@ -133,7 +154,7 @@
                     <hgroup>
                         <svg class="mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open-text"><path d="M12 7v14"/><path d="M16 12h2"/><path d="M16 8h2"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/><path d="M6 12h2"/><path d="M6 8h2"/></svg>
                         <p class="text-xs font-bold text-center">Amazing View Mountain Resort</p>
-                        <p class="max-w-xs text-xs text-center">A gilmpse of our story</p>
+                        <p class="text-xs text-center">A gilmpse of our story</p>
                     </hgroup>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -153,7 +174,7 @@
                     </hgroup>
 
                     <div class="grid grid-cols-3 gap-3">
-                        @foreach ($milestones as $milestone)
+                        @foreach ($milestones->filter(function ($milestone) { return $milestone->status == App\Enums\MilestoneStatus::ACTIVE->value; }) as $milestone)
                             <div class="space-y-2">
                                 <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" />
 

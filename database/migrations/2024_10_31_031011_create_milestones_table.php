@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->date('date_achieved');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }
