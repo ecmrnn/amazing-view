@@ -2,10 +2,10 @@
 
 namespace App\Livewire\App\Content\About;
 
-use App\Models\Content;
-use App\Models\FeaturedService;
+use App\Models\MediaFile;
 use App\Models\Milestone;
 use App\Models\Page;
+use App\Models\PageContent;
 use App\Traits\DispatchesToast;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -23,26 +23,40 @@ class EditAbout extends Component
         'hero-edited' => '$refresh',
     ];
 
-    public $heading;
-    public $subheading;
-    public $history;
+    public $page;
+    public $contents;
+    public $medias;
     public $milestones;
-    public $history_image;
-    public $about_hero_image;
+
+    public $map = array(
+        'option' => [
+            'center' => [
+                'lat' => 14.442312,
+                'lng' => 121.396931
+            ],
+            'zoom' => 14,
+            'zoomControl' => true,
+            'minZoom' => 10,
+            'maxZoom' => 18,
+        ],
+        'marker' => [
+            [
+                'position' => [
+                    'lat' => 14.442312,
+                    'lng' => 121.396931
+                ],
+                'draggable' => false,
+            ]
+        ]
+    );
 
     public function render()
     {
-        $this->about_hero_image = Content::whereName('about_hero_image')->pluck('value')->first();
-        $this->history_image = Content::whereName('about_history_image')->pluck('value')->first();
-        $this->history = Content::whereName('about_history')->pluck('long_value')->first();
-        $this->heading = html_entity_decode(Content::whereName('about_heading')->pluck('value')->first());
-        $this->subheading = html_entity_decode(Content::whereName('about_subheading')->pluck('value')->first());
+        $this->page = Page::whereUrl('/about')->first();
+        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
+        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
         $this->milestones = Milestone::all();
         
-        $page = Page::whereTitle('About')->first();
-        
-        return view('livewire.app.content.about.edit-about', [
-            'page' => $page,
-        ]);
+        return view('livewire.app.content.about.edit-about');
     }
 }

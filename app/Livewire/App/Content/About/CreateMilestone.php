@@ -60,10 +60,10 @@ class CreateMilestone extends Component
     {
 
         return <<<'HTML'
-            <div x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:milestone-added.window="show = false; count = 200" class="block p-5 space-y-5 bg-white" wire:submit="submit">
+            <form x-data="{ count : 200 - @js($description_length), max : 200 }" x-on:milestone-added.window="show = false; count = 200" class="p-5 space-y-5" wire:submit="submit">
                 <hgroup>
-                    <h2 class="font-semibold text-center capitalize">Add Milestone</h2>
-                    <p class="max-w-sm text-sm text-center">Create a new milestone to feature here</p>
+                    <h2 class="font-semibold capitalize">Create Milestone</h2>
+                    <p class="max-w-sm text-sm">Create a new milestone to feature here</p>
                 </hgroup>
 
                 <x-note>
@@ -109,12 +109,14 @@ class CreateMilestone extends Component
                     <x-form.input-date id="date_achieved" name="date_achieved" wire:model.live="date_achieved" class="w-full" />
                     <x-form.input-error field="date_achieved" />
                 </div>
+
+                <x-loading wire:loading wire:target='submit'>Creating milestone, please wait</x-loading>
                 
-                <div class="flex items-center justify-center gap-1">
+                <div class="flex justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="submit">Add Service</x-primary-button>
+                    <x-primary-button type="submit">Add</x-primary-button>
                 </div>
-            </div>
+            </form>
         HTML;
     }
 }

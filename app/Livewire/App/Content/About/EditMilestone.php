@@ -66,8 +66,7 @@ class EditMilestone extends Component
     public function render()
     {
         return <<<'HTML'
-            <div x-data="{ count: 200 - @js($description_length), max: 200 }" x-on:milestone-edited.window="show = false"
-                class="block p-5 space-y-5 bg-white" wire:submit="submit">
+            <form wire:submit="submit" x-data="{ count: 200 - @js($description_length), max: 200 }" x-on:milestone-edited.window="show = false" class="p-5 space-y-5">
                 <hgroup>
                     <h2 class="font-semibold text-center capitalize">Edit Milestone</h2>
                     <p class="max-w-sm text-sm text-center">Update milestone details here</p>
@@ -114,12 +113,14 @@ class EditMilestone extends Component
                     <x-form.input-date id="edit-{{ $milestone->id }}-date" name="date_achieved" wire:model.live="date_achieved" class="w-full" />
                     <x-form.input-error field="date_achieved" />
                 </div>
+
+                <x-loading wire:loading wire:target='submit'>Editing milestone, please wait</x-loading>
                 
-                <div class="flex items-center justify-center gap-1">
+                <div class="flex justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="submit">Edit Milestone</x-primary-button>
+                    <x-primary-button type="submit">Edit</x-primary-button>
                 </div>
-            </div>
+            </form>
         HTML;
     }
 }

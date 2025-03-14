@@ -54,25 +54,25 @@ class DeleteMilestone extends Component
     public function render()
     {
         return <<<'HTML'
-        <div>
-            <section class="p-5 space-y-5 bg-white" x-on:milestone-deleted.window="show = false">
-                <hgroup>
-                    <h2 class="font-semibold text-center text-red-500 capitalize">Delete Milestone</h2>
-                    <p class="max-w-sm text-sm text-center">Are you sure you really want this milestone?</p>
-                </hgroup>
+        <form wire:submit="deleteMilestone" class="p-5 space-y-5 bg-white" x-on:milestone-deleted.window="show = false">
+            <hgroup>
+                <h2 class="font-semibold text-red-500 capitalize">Delete Milestone</h2>
+                <p class="text-sm">Are you sure you really want this milestone?</p>
+            </hgroup>
 
-                <div class="space-y-2">
-                    <p class="text-xs">Enter your password to delete this milestone.</p>
-                    <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $milestone->id }}-password" />
-                    <x-form.input-error field="password" />
-                </div>
-                
-                <div class="flex items-center justify-center gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
-                    <x-danger-button type="button" wire:click='deleteMilestone()'>Yes, Delete</x-danger-button>
-                </div>
-            </section>
-        </div>
+            <div class="space-y-2">
+                <p class="text-xs">Enter your password to delete this milestone.</p>
+                <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $milestone->id }}-password" />
+                <x-form.input-error field="password" />
+            </div>
+
+            <x-loading wire:loading wire:target='deleteMilestone'>Deleting milestone, please wait</x-loading>
+            
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                <x-danger-button type="submit" wire:loading.attr="disabled">Delete</x-danger-button>
+            </div>
+        </form>
         HTML;
     }
 }

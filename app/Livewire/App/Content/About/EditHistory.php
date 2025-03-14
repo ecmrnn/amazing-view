@@ -2,7 +2,8 @@
 
 namespace App\Livewire\App\Content\About;
 
-use App\Models\Content;
+use App\Models\MediaFile;
+use App\Models\PageContent;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
@@ -18,7 +19,7 @@ class EditHistory extends Component
     #[Validate] public $history_length;
 
     public function mount() {
-        $this->history = Content::whereName('about_history')->pluck('long_value')->first();
+        $this->history = PageContent::where('key', 'about_history')->pluck('value')->first();
         $this->history_length = strlen($this->history);
     }
 
@@ -45,15 +46,18 @@ class EditHistory extends Component
 
         if (!empty($this->history_image)) {
             // delete saved image para di magdoble doble
-            $history_image = Content::whereName('about_history_image')->first();
-            Storage::disk('public')->delete($history_image->value);
+            $history_image = MediaFile::where('key', 'about_history_image')->first();
             
-            $history_image->value = $this->history_image->store('about', 'public');
+            if (!empty($history_image->path)) {
+                Storage::disk('public')->delete($history_image->path);
+            }
+            
+            $history_image->path = $this->history_image->store('about', 'public');
             $history_image->save();
         }
 
-        $history = Content::whereName('about_history')->first();
-        $history->long_value = $this->history;
+        $history = PageContent::where('key', 'about_history')->first();
+        $history->value = $this->history;
         $history->save();
 
         $this->toast('History Updated', 'success', 'History updated successfully!');
@@ -64,7 +68,7 @@ class EditHistory extends Component
     public function render()
     {
         return <<<'HTML'
-            <div x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white" wire:submit="submit">
+            <form x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="p-5 space-y-5" wire:submit="submit">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Edit History</h2>
                     <p class="max-w-sm text-sm">Update history details here</p>
@@ -98,12 +102,14 @@ class EditHistory extends Component
                         <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 1000</p>
                     </div>
                 </x-form.input-group>
+
+                <x-loading wire:loading wire:target='submit'>Editing history, please wait</x-loading>
                 
                 <div class="flex items-center justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="button" wire:click="submit">Edit History</x-primary-button>
+                    <x-primary-button type="submit">Edit</x-primary-button>
                 </div>
-            </div>
+            </form>
         HTML;
     }
 }

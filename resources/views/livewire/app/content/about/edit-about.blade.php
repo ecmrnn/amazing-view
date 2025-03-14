@@ -1,140 +1,107 @@
-<div class="grid grid-cols-1 gap-5 bg-white xl:grid-cols-2">
-    <section>
+<div>
+    <section class="space-y-5">
         <!-- Heading and Subheading -->
-        <x-form.form-section>
-            <x-form.form-header step="1" title="Hero Section" />
+        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-start justify-between">
+                <hgroup>
+                    <h3 class="font-semibold">Heading &amp; Subheading</h3>
+                    <p class="text-xs">Update your hero section here</p>
+                </hgroup>
 
-            <x-form.form-body>
-                <div class="p-3 space-y-3 sm:p-5 sm:space-y-5">
-                    <div class="flex items-start justify-between">
-                        <hgroup>
-                            <h3 class="font-semibold">Heading &amp; Subheading</h3>
-                            <p class="text-xs">Update your hero section here</p>
-                        </hgroup>
+                <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'edit-hero-modal')">Edit Hero</button>
+            </div>
 
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'edit-hero-modal')">Edit Hero</x-primary-button>
-                    </div>
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
+                <x-img-lg src="{{ asset('storage/' . $medias['about_hero_image']) }}" />
 
-                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                        <x-img-lg src="{{ asset('storage/' . $about_hero_image) }}" />
-
-                        <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
-                            <div>
-                                <p class="font-semibold text-center">{!! $heading !!}</p>
-                                <p class="text-sm text-center">{!! $subheading !!}</p>
-                            </div>
-                        </div>
+                <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
+                    <div>
+                        <p class="font-semibold text-center">{!! $contents['about_heading'] !!}</p>
+                        <p class="text-sm text-center">{!! $contents['about_subheading'] !!}</p>
                     </div>
                 </div>
-            </x-form.form-body>
-        </x-form.form-section>
+            </div>
+        </div>
 
-        <x-line-vertical />
-        
         <!-- History -->
-        <x-form.form-section>
-            <x-form.form-header step="2" title="History" />
-            <x-form.form-body>
-                <div class="p-3 space-y-3 sm:p-5 sm:space-y-5">
-                    <div class="flex items-start justify-between">
-                        <hgroup>
-                            <h3 class="font-semibold">Brief History</h3>
-                            <p class="text-xs">Update your history here</p>
-                        </hgroup>
+        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-start justify-between">
+                <hgroup>
+                    <h3 class="font-semibold">Brief History</h3>
+                    <p class="text-xs">Update your history here</p>
+                </hgroup>
 
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'edit-history-modal')">Edit History</x-primary-button>
-                    </div>
+                <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'edit-history-modal')">Edit History</button>
+            </div>
 
-                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                        <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
+                <x-img-lg src="{{ asset('storage/' . $medias['about_history_image']) }}" />
 
-                        <p class="text-sm text-justify indent-16">{!! $history !!}</p>
-                    </div>
-                </div>
-            </x-form.form-body>
-        </x-form.form-section>
-
-        <x-line-vertical />
+                <p class="text-sm text-justify indent-16">{!! $contents['about_history'] !!}</p>
+            </div>
+        </div>
 
         <!-- Milestones -->
-        <x-form.form-section>
-            <x-form.form-header step="3" title="Milestones" />
-            <x-form.form-body>
-                <div class="p-3 space-y-3 sm:p-5">
-                    <div class="flex items-start justify-between">
-                        <hgroup>
-                            <h3 class="font-semibold">Milestones</h3>
-                            <p class="text-xs">Manage your milestones</p>
-                        </hgroup>
-
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'create-milestone-modal')">Add Milestone</x-primary-button>
-                    </div>
-
-                    <div class="space-y-1">
-                        @foreach ($milestones as $milestone)
-                            <div key="{{ $milestone->id }}"
-                                class="relative p-3 border rounded-md border-slate-200"
-                                >
-                                <div class="flex flex-col gap-3 md:flex-row">
-                                    @if (!empty($milestone->milestone_image))
-                                        <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" class="w-full md:max-w-[150px]" />
-                                    @else
-                                        <x-img-lg src="https://picsum.photos/id/{{ $milestone->id + 100 }}/200/300?grayscale" class="w-full md:max-w-[150px]" />
-                                    @endif
-
-                                    <div>
-                                        <h4 class="font-semibold">{{ $milestone->title }}</h4>
-                                        <p class="max-w-sm text-sm">Achieved on: {{ date_format(date_create($milestone->date_achieved), 'F j, Y') }}</p>
-                                        <p class="max-w-sm text-xs">{{ $milestone->description }}</p>
-                                    </div>
-                                </div>
-
-                                <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
-                                    <x-tooltip text="Edit" dir="bottom">
-                                        <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-milestone-modal-{{ $milestone->id }}')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                                        </x-icon-button>
-                                    </x-tooltip>
-                                    
-                                    <x-tooltip text="Delete" dir="bottom">
-                                        <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-milestone-modal-{{ $milestone->id }}')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                        </x-icon-button>
-                                    </x-tooltip>
-                                </div>
-
-                                <x-modal.full name="edit-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
-                                    <livewire:app.content.about.edit-milestone wire:key="edit-{{ $milestone->id }}" :milestone="$milestone" />
-                                </x-modal.full>
-
-                                <x-modal.full name="delete-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
-                                    <livewire:app.content.about.delete-milestone wire:key="delete-{{ $milestone->id }}" :milestone="$milestone" />
-                                </x-modal.full>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </x-form.form-body>
-        </x-form.form-section>
-
-        <div class="mt-5">
-            <!-- Status Change -->
-            <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
+        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-start justify-between">
                 <hgroup>
-                    <h3 class="font-semibold text-red-500">Change Page Visibility</h3>
-                    <p class="max-w-sm text-xs">If you need to prevent users from accessing this page, click the button below.</p>
+                    <h3 class="font-semibold">Milestones</h3>
+                    <p class="text-xs">Manage your milestones</p>
                 </hgroup>
-    
-                <div>
-                    <x-danger-button type="button" x-on:click="$dispatch('open-modal', 'disable-page-modal')">Hide this Page</x-danger-button>
-                </div>
-            </section>
+
+                <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'create-milestone-modal')">Add Milestone</button>
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
+                @foreach ($milestones as $milestone)
+                    <div key="{{ $milestone->id }}" class="relative p-5 space-y-5 border rounded-md border-slate-200">
+                        <div class="space-y-5">
+                            @if (!empty($milestone->milestone_image))
+                                <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" class="w-full" />
+                            @else
+                                <x-img-lg src="https://picsum.photos/id/{{ $milestone->id + 100 }}/200/300?grayscale" class="w-full" />
+                            @endif
+
+                            <div>
+                                <h4 class="mb-5 font-semibold">{{ $milestone->title }}</h4>
+                                <p class="text-sm font-semibold">Achieved on: {{ date_format(date_create($milestone->date_achieved), 'F j, Y') }}</p>
+                                <p class="text-sm text-justify line-clamp-3">{{ $milestone->description }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div></div>
+                            
+                            <div class="flex justify-center gap-1">
+                                <x-tooltip text="Edit" dir="bottom">
+                                    <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'edit-milestone-modal-{{ $milestone->id }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                                    </x-icon-button>
+                                </x-tooltip>
+                                <x-tooltip text="Delete" dir="bottom">
+                                    <x-icon-button x-ref="content" type="button" x-on:click="$dispatch('open-modal', 'delete-milestone-modal-{{ $milestone->id }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                    </x-icon-button>
+                                </x-tooltip>
+                            </div>
+                        </div>
+
+                        <x-modal.full name="edit-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
+                            <livewire:app.content.about.edit-milestone wire:key="edit-{{ $milestone->id }}" :milestone="$milestone" />
+                        </x-modal.full>
+
+                        <x-modal.full name="delete-milestone-modal-{{ $milestone->id }}" maxWidth="sm">
+                            <livewire:app.content.about.delete-milestone wire:key="delete-{{ $milestone->id }}" :milestone="$milestone" />
+                        </x-modal.full>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </section>
-    
-    <!-- Visuals -->
-    <section class="hidden space-y-5 xl:block">
-        <section class="overflow-y-scroll border rounded-lg border-slate-200 aspect-video">
+
+    <!-- Modals -->
+    <x-modal.full name='show-preview-modal' maxWidth='screen-xl'>
+        <section class="hidden space-y-5 overflow-y-scroll xl:block aspect-video">
             <div class="p-5 space-y-1 min-w-[780px]">
                 <header class="flex justify-between w-3/4 p-2 mx-auto rounded-md">
                     <!-- Logo -->
@@ -149,12 +116,12 @@
                 </header>
                 
                 <div class="relative w-full rounded-lg before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                    style="background-image: url({{ asset('storage/' . $about_hero_image) }});
+                    style="background-image: url({{ asset('storage/' . $medias['about_hero_image']) }});
                     background-size: cover;
                     background-position: center;">
                     <section class="relative z-10 w-3/4 py-20 mx-auto space-y-3 text-white rounded-md">
-                        <p class="mx-auto font-bold text-center text-md">{!! $heading !!}</p>
-                        <p class="max-w-xs mx-auto text-xs text-center">{!! $subheading !!}</p>
+                        <p class="mx-auto font-bold text-center text-md">{!! $contents['about_heading'] !!}</p>
+                        <p class="max-w-xs mx-auto text-xs text-center">{!! $contents['about_subheading'] !!}</p>
                         <div class="flex justify-center gap-1">
                             <x-secondary-button type="button" class="text-xs">...</x-secondary-button>
                             <x-primary-button type="button" class="text-xs">...</x-primary-button>
@@ -164,23 +131,25 @@
                 
                 <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
                     <hgroup>
-                        <p class="text-xs font-bold">Amazing View Mountain Resort</p>
-                        <p class="max-w-xs text-xs">A gilmpse of our story</p>
+                        <svg class="mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open-text"><path d="M12 7v14"/><path d="M16 12h2"/><path d="M16 8h2"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/><path d="M6 12h2"/><path d="M6 8h2"/></svg>
+                        <p class="text-xs font-bold text-center">Amazing View Mountain Resort</p>
+                        <p class="max-w-xs text-xs text-center">A gilmpse of our story</p>
                     </hgroup>
 
                     <div class="grid grid-cols-2 gap-3">
                         <p class="text-justify text-xxs indent-8">
-                            {!! $history !!}
+                            {!! $contents['about_history'] !!}
                         </p>
 
-                        <x-img-lg src="{{ asset('storage/' . $history_image) }}" />
+                        <x-img-lg src="{{ asset('storage/' . $medias['about_history_image']) }}" />
                     </div>
                 </section>
 
                 <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
                     <hgroup>
-                        <h3 class="text-xs font-bold">Our Milestones</h3>
-                        <p class="max-w-xs text-xs">Rcent awardsd and achievements of our resort</p>
+                        <svg class="mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trophy"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        <h3 class="text-xs font-bold text-center">Our Milestones</h3>
+                        <p class="text-xs text-center">Recent awards and achievements of our resort</p>
                     </hgroup>
 
                     <div class="grid grid-cols-3 gap-3">
@@ -195,6 +164,21 @@
                                 </div>
                             </div>
                         @endforeach
+                    </div>
+                </section>
+
+                <section class="w-3/4 py-20 mx-auto space-y-3 rounded-md">
+                    <hgroup>
+                        <svg class="mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pinned"><path d="M18 8c0 3.613-3.869 7.429-5.393 8.795a1 1 0 0 1-1.214 0C9.87 15.429 6 11.613 6 8a6 6 0 0 1 12 0"/><circle cx="12" cy="8" r="2"/><path d="M8.714 14h-3.71a1 1 0 0 0-.948.683l-2.004 6A1 1 0 0 0 3 22h18a1 1 0 0 0 .948-1.316l-2-6a1 1 0 0 0-.949-.684h-3.712"/></svg>
+                        <h3 class="text-xs font-bold text-center">Our Location</h3>
+                        <p class="text-xs text-center">Waze your way to Amazing View!</p>
+                    </hgroup>
+
+                    <div>
+                        <x-laravel-map
+                            :initialMarkers="$map['marker']"
+                            :options="$map['option']"
+                        />
                     </div>
                 </section>
 
@@ -244,26 +228,13 @@
                 </footer>
             </div>
         </section>
+    </x-modal.full>
 
-        <x-note>
-            <p class="max-w-sm">Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview above. <strong>Proceed with caution</strong>!</p>
-        </x-note>
-    </section>
-
-    <!-- Modals -->
     <x-modal.full name="create-milestone-modal" maxWidth="sm">
         <livewire:app.content.about.create-milestone />
     </x-modal.full> 
 
     <x-modal.full name="edit-history-modal" maxWidth="sm">
         <livewire:app.content.about.edit-history />
-    </x-modal.full> 
-
-    <x-modal.full name="edit-hero-modal" maxWidth="sm">
-        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
-    </x-modal.full> 
-
-    <x-modal.full name="disable-page-modal" maxWidth="sm">
-        <livewire:app.content.disable-page :page="$page" />
     </x-modal.full> 
 </form>

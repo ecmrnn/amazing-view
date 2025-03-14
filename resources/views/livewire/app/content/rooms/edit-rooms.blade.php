@@ -186,12 +186,4 @@
     <x-modal.full name="create-contact-modal" maxWidth="sm">
         <livewire:app.content.contact.create-contact />
     </x-modal.full> 
-
-    {{-- <x-modal.full name="edit-hero-modal" maxWidth="sm">
-        <livewire:app.content.edit-hero page="rooms" />
-    </x-modal.full>  --}}
-
-    <x-modal.full name="disable-page-modal" maxWidth="sm">
-        <livewire:app.content.disable-page :page="$page" />
-    </x-modal.full> 
 </form>
