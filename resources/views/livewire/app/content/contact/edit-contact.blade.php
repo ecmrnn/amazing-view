@@ -34,10 +34,10 @@
                 <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'create-contact-modal')">Add Contact</button>
             </div>
 
-            <div class="space-y-1">
+            <div class="grid gap-5 md:grid-cols-3 sm:grid-cols-2">
                 @foreach ($contact_details as $contact_detail)
-                    <div class="flex items-center justify-between px-3 py-2 border rounded-lg borborder-slate-200 hover:border-solid">
-                        <p class="text-sm">{{ $contact_detail->value }}</p>
+                    <div class="flex items-center justify-between p-5 border rounded-md border-slate-200">
+                        <p class="text-sm">{{ substr($contact_detail->value, 0, 4) . ' ' . substr($contact_detail->value, 4, 3) . ' ' . substr($contact_detail->value, 7) }}</p>
 
                         <div class="flex gap-1">
                             <x-tooltip text="Edit" dir="bottom">
