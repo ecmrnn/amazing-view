@@ -43,7 +43,12 @@ class PageSeeder extends Seeder
                 'title' => 'Function Hall',
                 'url' => '/function-hall',
                 'view' => 'function-hall',
-            ]
+            ],
+            [
+                'title' => 'Global',
+                'url' => '/global',
+                'view' => 'global',
+            ],
         ]);
 
         foreach ($pages as $page) {

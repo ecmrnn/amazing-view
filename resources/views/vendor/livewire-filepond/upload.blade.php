@@ -29,7 +29,7 @@ $pondLocalizations = __('livewire-filepond::filepond');
 @endphp
 
 <div
-    class="{{ $attributes->get('class') }}"
+    class="{{ $attributes->get('class') }} border-slate-200"
     wire:ignore
     x-cloak
     x-data="{
