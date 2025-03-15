@@ -255,6 +255,10 @@
         <livewire:app.content.about.create-milestone />
     </x-modal.full> 
 
+    <x-modal.full name="edit-hero-modal" maxWidth="sm">
+        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
+    </x-modal.full> 
+
     <x-modal.full name="edit-history-modal" maxWidth="sm">
         <livewire:app.content.about.edit-history />
     </x-modal.full> 

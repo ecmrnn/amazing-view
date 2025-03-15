@@ -66,9 +66,5 @@
                  <livewire:app.content.reservation.edit-reservation />
                 @break
         @endswitch
-
-        <x-modal.full name="edit-hero-modal" maxWidth="sm">
-            <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
-        </x-modal.full> 
     </div>
 </x-app-layout>

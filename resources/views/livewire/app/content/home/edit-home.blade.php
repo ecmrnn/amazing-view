@@ -212,6 +212,10 @@
             </div>
         </section>
     </x-modal.full>
+
+    <x-modal.full name="edit-hero-modal" maxWidth="sm">
+        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
+    </x-modal.full> 
     
     <x-modal.full name="create-service-modal" maxWidth="sm">
         <livewire:app.content.home.create-service />

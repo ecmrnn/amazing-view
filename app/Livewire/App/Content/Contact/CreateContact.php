@@ -2,6 +2,8 @@
 
 namespace App\Livewire\App\Content\Contact;
 
+use App\Models\Page;
+use App\Models\PageContent;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -14,7 +16,7 @@ class CreateContact extends Component
 
     public function rules() {
         return [
-            'contact' => 'required|size:11|starts_with:09'
+            'contact' => 'required|size:11|starts_with:09|unique:page_contents,value'
         ];
     }
 
@@ -23,6 +25,7 @@ class CreateContact extends Component
             'contact.required' => 'Enter a contact number',
             'contact.size' => 'Number must be 11 digits',
             'contact.starts_with' => 'Number must start with "09"',
+            'contact.unique' => 'Number exists already',
         ];
     }
 
@@ -31,11 +34,14 @@ class CreateContact extends Component
             'contact' => $this->rules()['contact']
         ]);
 
-        // ContactDetails::create([
-        //     'name' => 'phone_number',
-        //     'type' => 'phone',
-        //     'value' => $validated['contact']
-        // ]);
+        $page = Page::whereUrl('/contact')->first();
+
+        PageContent::create([
+            'page_id' => $page->id,
+            'key' => 'phone_number',
+            'type' => 'text',
+            'value' => $validated['contact']
+        ]);
 
         $this->toast('Contact Created!', 'success', 'Contact created successfully');
         $this->dispatch('contact-added');
@@ -45,10 +51,10 @@ class CreateContact extends Component
     public function render()
     {
         return <<<'HTML'
-        <div class="block p-5 space-y-5 bg-white" x-on:contact-added.window="show = false">
+        <form wire:submit="submit" class="p-5 space-y-5" x-on:contact-added.window="show = false">
             <hgroup>
-                <h2 class="font-semibold text-center capitalize">Add Contact</h2>
-                <p class="max-w-sm text-sm text-center">Create a new contact to show here</p>
+                <h2 class="text-lg font-semibold">Add Contact</h2>
+                <p class="text-sm">Create a new contact to show here</p>
             </hgroup>
 
             <x-note>
@@ -64,12 +70,14 @@ class CreateContact extends Component
                 <x-form.input-text id="contact" maxlength="11" name="contact" label="Phone Number" wire:model.live="contact" />
                 <x-form.input-error field="contact" />
             </div>
+
+            <x-loading wire:loading wire:target='submit'>Creating contact, please wait</x-loading>
             
-            <div class="flex items-center justify-center gap-1">
+            <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" wire:click="submit">Add Contact</x-primary-button>
+                <x-primary-button type="submit">Add Contact</x-primary-button>
             </div>
-        </div>
+        </form>
         HTML;
     }
 }

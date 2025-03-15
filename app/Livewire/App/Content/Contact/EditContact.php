@@ -2,8 +2,10 @@
 
 namespace App\Livewire\App\Content\Contact;
 
-use App\Models\Content;
+use App\Models\ContactDetails;
+use App\Models\MediaFile;
 use App\Models\Page;
+use App\Models\PageContent;
 use App\Traits\DispatchesToast;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -21,22 +23,18 @@ class EditContact extends Component
         'hero-edited' => '$refresh',
     ];
 
-    public $heading;
-    public $subheading;
-    public $contact_hero_image;
+    public $page;
+    public $contents;
+    public $medias;
     public $contact_details;
 
     public function render()
     {
-        $this->contact_hero_image = Content::whereName('contact_hero_image')->pluck('value')->first();
-        $this->heading = html_entity_decode(Content::whereName('contact_heading')->pluck('value')->first());
-        $this->subheading = html_entity_decode(Content::whereName('contact_subheading')->pluck('value')->first());
-        // $this->contact_details = ContactDetails::whereName('phone_number')->get();
+        $this->page = Page::whereUrl('/contact')->first();
+        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
+        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
+        $this->contact_details = $this->page->contents->where('key', 'phone_number');
         
-        $page = Page::whereTitle('Contact')->first();
-        
-        return view('livewire.app.content.contact.edit-contact', [
-            'page' => $page,
-        ]);
+        return view('livewire.app.content.contact.edit-contact');
     }
 }

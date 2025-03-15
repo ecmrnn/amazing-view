@@ -2,7 +2,6 @@
 
 namespace App\Livewire\App\Content\Contact;
 
-use App\Models\ContactDetails;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -20,17 +19,16 @@ class EditContactDetails extends Component
         ];
     }
 
+    public function mount($contact_detail) {
+        $this->contact = $contact_detail->value;
+    }
+
     public function messages() {
         return [
             'contact.required' => 'Enter a contact number',
             'contact.size' => 'Number must be 11 digits',
             'contact.starts_with' => 'Number must start with "09"',
         ];
-    }
-
-    public function mount(ContactDetails $contact_detail) {
-        $this->contact_detail = $contact_detail;
-        $this->contact = $contact_detail->value;
     }
 
     public function submit() {
@@ -43,16 +41,15 @@ class EditContactDetails extends Component
 
         $this->toast('Contact Edited!', 'success', 'Contact edited successfully');
         $this->dispatch('contact-edited');
-        $this->reset('contact');
     }
     
     public function render()
     {
         return <<<'HTML'
-        <div class="block p-5 space-y-5 bg-white" x-on:contact-edited.window="show = false">
+        <form wire:submit="submit" class="p-5 space-y-5" x-on:contact-edited.window="show = false">
             <hgroup>
-                <h2 class="font-semibold text-center capitalize">Edit Contact</h2>
-                <p class="max-w-sm text-sm text-center">Edit contact details here</p>
+                <h2 class="text-lg font-semibold">Edit Contact</h2>
+                <p class="max-w-sm text-sm">Edit contact details here</p>
             </hgroup>
 
             <div class="space-y-2">
@@ -64,12 +61,14 @@ class EditContactDetails extends Component
                 <x-form.input-text id="edit-contact-{{ $contact_detail->id }}" maxlength="11" name="contact" label="Phone Number" wire:model.live="contact" />
                 <x-form.input-error field="contact" />
             </div>
+
+            <x-loading wire:loading wire:target='submit'>Editing contact, please wait</x-loading>
             
-            <div class="flex items-center justify-center gap-1">
+            <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" wire:click="submit">Edit Contact</x-primary-button>
+                <x-primary-button type="submit">Edit</x-primary-button>
             </div>
-        </div>
+        </form>
         HTML;
     }
 }
