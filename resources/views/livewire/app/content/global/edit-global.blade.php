@@ -81,7 +81,7 @@
 
     <x-modal.full name='show-current-logo' maxWidth='sm'>
         <div class="p-5 space-y-5">
-            <img src="{{ asset('storage/global/application-logo.png') }}" alt="Alternative Logo">
+            <img src="{{ asset('storage/' . $settings['site_logo']) }}" alt="Alternative Logo">
 
             <div class="flex justify-end">
                 <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
