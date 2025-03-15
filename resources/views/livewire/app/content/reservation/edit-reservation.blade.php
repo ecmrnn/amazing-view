@@ -1,38 +1,46 @@
-<div class="grid grid-cols-1 gap-5 bg-white xl:grid-cols-2">
-    <section>
-        <!-- Heading and Subheading -->
-        <x-form.form-section>
-            <x-form.form-header step="1" title="Hero Section" />
+<div>
+    <section class="space-y-5">
+        @foreach ($pages as $page)
+            <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+                <div class="flex items-start justify-between">
+                    <hgroup>
+                        <h3 class="font-semibold">{{ $page->title }} Heading &amp; Subheading</h3>
+                        <p class="text-xs">Update your hero section here</p>
+                    </hgroup>
 
-            <x-form.form-body>
-                <div class="p-3 space-y-3 sm:p-5 sm:space-y-5">
-                    <div class="flex items-start justify-between">
-                        <hgroup>
-                            <h3 class="font-semibold">Heading &amp; Subheading</h3>
-                            <p class="text-xs">Update your hero section here</p>
-                        </hgroup>
+                    <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'edit-hero-modal-{{ $page->id }}')">Edit Hero</button>
+                </div>
 
-                        <x-primary-button class="text-xs" type="button" x-on:click="$dispatch('open-modal', 'edit-hero-modal')">Edit Hero</x-primary-button>
-                    </div>
-
+                @if ($page->title == 'Reservation')
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                        <x-img-lg src="{{ asset('storage/' . $reservation_hero_image) }}" />
+                        <x-img-lg src="{{ asset('storage/' . $medias['reservation_hero_image']) }}" />
 
                         <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
                             <div>
-                                <p class="font-semibold text-center">{!! $heading !!}</p>
-                                <p class="text-sm text-center">{!! $subheading !!}</p>
+                                <p class="font-semibold text-center">{!! $contents['reservation_heading'] !!}</p>
+                                <p class="text-sm text-center">{!! $contents['reservation_subheading'] !!}</p>
                             </div>
                         </div>
                     </div>
-                </div>
-            </x-form.form-body>
-        </x-form.form-section>
+                @else
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
+                        <x-img-lg src="{{ asset('storage/' . $medias['function_hall_hero_image']) }}" />
+
+                        <div class="grid p-5 border rounded-md border-slate-200 place-items-center">
+                            <div>
+                                <p class="font-semibold text-center">{!! $contents['function_hall_heading'] !!}</p>
+                                <p class="text-sm text-center">{!! $contents['function_hall_subheading'] !!}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>            
+        @endforeach
     </section>
 
     <!-- Visuals -->
-    <section class="hidden space-y-5 xl:block">
-        <section class="overflow-y-scroll border rounded-lg border-slate-200 aspect-video">
+    <x-modal.full name='show-preview-modal' maxWidth='screen-xl'>
+        <section class="hidden space-y-5 overflow-y-scroll xl:block aspect-video">
             <div class="p-5 space-y-1 min-w-[780px]">
                 <header class="flex justify-between w-3/4 p-2 mx-auto rounded-md">
                     <!-- Logo -->
@@ -47,12 +55,12 @@
                 </header>
                 
                 <div class="relative w-full rounded-lg before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                    style="background-image: url({{ asset('storage/' . $reservation_hero_image) }});
+                    style="background-image: url({{ asset('storage/' . $medias['reservation_hero_image']) }});
                     background-size: cover;
                     background-position: center;">
                     <section class="relative z-10 w-3/4 py-20 mx-auto space-y-3 text-white rounded-md">
-                        <p class="mx-auto font-bold text-center text-md">{!! $heading !!}</p>
-                        <p class="max-w-xs mx-auto text-xs text-center">{!! $subheading !!}</p>
+                        <p class="mx-auto font-bold text-center text-md">{!! $contents['reservation_heading'] !!}</p>
+                        <p class="max-w-xs mx-auto text-xs text-center">{!! $contents['reservation_subheading'] !!}</p>
                         <div class="flex justify-center gap-1">
                             <x-secondary-button type="button" class="text-xs">...</x-secondary-button>
                             <x-primary-button type="button" class="text-xs">...</x-primary-button>
@@ -106,14 +114,14 @@
                 </footer>
             </div>
         </section>
-
-        <x-note>
-            <p class="max-w-sm">Any update made on this page will be automatically applied to the website. You may view what your changes may look like using the preview above. <strong>Proceed with caution</strong>!</p>
-        </x-note>
-    </section>
+    </x-modal.full>
 
     <!-- Modals -->
-    <x-modal.full name="edit-hero-modal" maxWidth="sm">
-        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
-    </x-modal.full> 
+    @foreach ($pages as $page)
+        <div wire:key='ppage-{{ $page->id }}'>
+            <x-modal.full name="edit-hero-modal-{{ $page->id }}" maxWidth="sm">
+                <livewire:app.content.edit-hero wire:key='{{ $page->id }}' page="{{ str_replace(' ', '_', strtolower($page->title)) }}" />
+            </x-modal.full>
+        </div>
+    @endforeach
 </form>

@@ -111,7 +111,7 @@ class ContentSeeder extends Seeder
                 'type' => ContentType::TEXT->value,
             ],
             /** 
-             * Reservation page's content
+             * Room Reservation page's content
             */
             [
                 'view' => 'reservation',
@@ -129,6 +129,27 @@ class ContentSeeder extends Seeder
                 'view' => 'reservation',
                 'key' => 'reservation_subheading',
                 'value' => 'Where every stay becomes a story, welcome to your perfect escape!',
+                'type' => ContentType::TEXT->value,
+            ],
+            /**
+             * Function Hall's Reservation Content
+             */
+            [
+                'view' => 'function-hall',
+                'key' => 'function_hall_hero_image',
+                'path' => '',
+                'type' => ContentType::IMAGE->value,
+            ],
+            [
+                'view' => 'function-hall',
+                'key' => 'function_hall_heading',
+                'value' => 'Function Hall',
+                'type' => ContentType::TEXT->value,
+            ],
+            [
+                'view' => 'function-hall',
+                'key' => 'function_hall_subheading',
+                'value' => 'Make your events unforgettable with our elegant Function Hall',
                 'type' => ContentType::TEXT->value,
             ],
             /**

@@ -40,8 +40,8 @@ class PageSeeder extends Seeder
                 'view' => 'reservation',
             ],
             [
-                'title' => 'Global',
-                'url' => '/global',
+                'title' => 'Function Hall',
+                'url' => '/function-hall',
                 'view' => 'function-hall',
             ]
         ]);

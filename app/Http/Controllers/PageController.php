@@ -107,13 +107,12 @@ class PageController extends Controller
     }
 
     public function functionHall() {
-        $page = Page::whereUrl('/global')->first();
+        $page = Page::whereUrl('/function-hall')->first();
         $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
         $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
 
         return view('function-hall', [
-            'heading' => 'Function Hall',
-            'subheading' => 'Make your events unforgettable with our elegant Function Hall',
+            'contents' => $contents,
             'medias' => $medias,
         ]);
     }
