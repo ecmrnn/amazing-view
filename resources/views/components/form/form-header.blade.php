@@ -1,10 +1,14 @@
 @props([
     'collapsable' => false,
     'title' => 'This is a default title',
+    'subtitle' => 'This is a default title',
 ])
 
 <div {{ $attributes->merge(['class' => 'flex items-center justify-between overflow-visible']) }}>
-    <h2 class="px-5 py-3 font-semibold text-md">{{ html_entity_decode($title) }}</h2>
+    <div class="px-5 py-3">
+        <h2 class="font-semibold text-md">{{ html_entity_decode($title) }}</h2>
+        <p x-show="expanded" class="text-xs">{{ $subtitle }}</p>
+    </div>
 
     @if ($collapsable)
         <template x-if="expanded">

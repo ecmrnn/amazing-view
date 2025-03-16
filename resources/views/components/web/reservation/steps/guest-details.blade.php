@@ -32,7 +32,7 @@
         {{-- Personal & Contact Information --}}
         <x-form.form-section>
             <div class="relative lg:col-span-2">
-                <x-form.form-header step="1" title="Personal &amp; Contact Information" class="lg:col-span-2" />
+                <x-form.form-header title="Personal &amp; Contact Information" subtitle="Enter your name and contact details" class="lg:col-span-2" />
     
                 <button type="button"
                     :class="can_select_address ? 'scale-100' : 'scale-0'"
@@ -118,7 +118,7 @@
     
         {{-- Address --}}
         <x-form.form-section>
-            <x-form.form-header step="2" title="Address" />
+            <x-form.form-header title="Address" subtitle="Enter your home address" />
     
             <div x-show="can_select_address" x-collapse.duration.1000ms>
                 <x-form.form-body>
@@ -235,7 +235,7 @@
         </x-form.form-section>
     
         <x-form.form-section>
-            <x-form.form-header step="3" title="Additional Details" />
+            <x-form.form-header title="Additional Details" subtitle="Enter your vehicle for parking" />
     
             <div x-show="can_select_address" x-collapse.duration.1000ms>
                 <x-form.form-body>

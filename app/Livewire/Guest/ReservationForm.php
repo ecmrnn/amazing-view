@@ -477,7 +477,8 @@ class ReservationForm extends Component
     }
 
     public function updateReservationType() {
-        $this->reset('date_in', 'date_out', 'reservation_type');
+        $this->reset('date_in', 'date_out', 'reservation_type', 'can_select_a_room');
+        $this->selected_rooms = collect();
         $this->toast('Change Reservation Type', 'info', 'Select your new reservation type');
         $this->resetErrorBag();
     }

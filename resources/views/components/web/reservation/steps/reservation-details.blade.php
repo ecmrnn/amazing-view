@@ -1,5 +1,5 @@
 {{-- Loader --}}
-<div class="fixed top-0 left-0 z-50 w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='submit'>
+<div class="fixed !m-0 top-0 left-0 z-50 w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='submit'>
     <div class="grid h-screen place-items-center">
         <div>
             <p class="text-2xl font-bold text-center">Loading, please wait</p>
@@ -30,7 +30,7 @@
 
     <template x-if='reservation_type == null'>
         <x-form.form-section>
-            <x-form.form-header title='Choose a Reservation Type' />
+            <x-form.form-header title='Reservation Type' subtitle="Choose a Reservation Type" />
         
             <x-form.form-body>
                 <div class="col-span-3 p-5 pt-0">
@@ -58,7 +58,7 @@
             {{-- Reservation Date & Guest Count --}}
             <x-form.form-section class="grid lg:grid-cols-2">
                 <div class="relative lg:col-span-2">
-                    <x-form.form-header step="1" title="Reservation Date &amp; Guest Count" class="lg:col-span-2" />
+                    <x-form.form-header title="Reservation Date &amp; Guest Count" subtitle="Select dates and enter number of guests" class="lg:col-span-2" />
             
                     <button type="button"
                         :class="can_select_a_room ? 'scale-100' : 'scale-0'"
@@ -148,7 +148,7 @@
             
             {{-- Select a Room --}}
             <x-form.form-section>
-                <x-form.form-header class="form-header" step="2" title="Select a Room" />
+                <x-form.form-header class="form-header" title="Select a Room" subtitle="Choose which rooms to reserve" />
             
                 <div x-show="can_select_a_room" x-collapse.duration.1000ms>
                     <x-form.form-body>
@@ -291,7 +291,7 @@
             
             {{-- Add to your Stay --}}
             <x-form.form-section>
-                <x-form.form-header step="3" title="Add to your Stay" />
+                <x-form.form-header title="Add to your Stay" subtitle="Avail our additional services" />
             
                 <div x-show="can_select_a_room" x-collapse.duration.1000ms>
                     <x-form.form-body>

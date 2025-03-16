@@ -12,7 +12,7 @@
 
 <x-form.form-section class="relative h-min">
     {{-- Select Room --}}
-    <x-form.form-header step="3" title="Select a Room" />
+    <x-form.form-header title="Select a Room" subtitle="Choose which rooms to reserve" />
 
     <div x-show="can_select_room" x-collapse.duration.1000ms>
         <x-form.form-body>

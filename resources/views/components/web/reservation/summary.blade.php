@@ -2,11 +2,15 @@
     'capacity' => '',
     'selectedRooms' => '',
     'selectedAmenities' => '',
+    'night_count' => '',
     'step',
 ])
 
 <aside class="sticky self-start p-5 space-y-5 bg-white rounded-lg shadow-sm top-5">
-    <h2 class="text-lg font-semibold">Reservation Summary</h2>
+    <hgroup>
+        <h2 class="text-lg font-semibold">Reservation Summary</h2>
+        <p class="text-sm">View the summary of your reservavtion here</p>
+    </hgroup>
 
     <div>
         {{-- Date and Time --}}
@@ -54,7 +58,7 @@
 
                 <div class="space-y-2">
                     @foreach ($selectedRooms as $room)
-                        <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 border rounded-lg border-slate-200">
+                        <div wire:key="{{ $room->id }}" class="relative gap-2 px-3 py-2 border rounded-lg border-slate-200">
                             {{-- Room Details --}}
                             <div>
                                 <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->roomType->name }}</p>
@@ -86,4 +90,32 @@
             </div>
         @endif
     </div>
+
+    @php
+        $total = 0;
+    @endphp
+
+    @if ($selectedRooms->count() > 0)
+        @foreach ($selectedRooms as $room)
+            @php
+                $total = $total + ($room->rate * $night_count);
+            @endphp
+        @endforeach
+    @endif
+
+    @if ($selectedAmenities->count() > 0)
+        @foreach ($selectedAmenities as $amenity)
+            @php
+                $total = $total + $amenity->price;
+            @endphp
+        @endforeach
+    @endif
+
+    @if ($total > 0)
+        <div class="relative flex items-center justify-between gap-2 px-3 py-2 text-sm text-blue-800 border border-blue-500 rounded-lg bg-blue-50">
+            <p class="font-semibold">Total</p>
+
+            <p><x-currency />{{ number_format($total, 2) }}</p>
+        </div>
+    @endif
 </aside>

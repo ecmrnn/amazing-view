@@ -141,6 +141,7 @@
                 :step=$step
                 :selectedRooms="$selected_rooms"
                 :selectedAmenities="$selected_services"
+                :night_count="$night_count"
             />
         @endif
     </article>
@@ -179,7 +180,7 @@
     </x-modal.full>
 
     {{-- Loader for reset reservation --}}
-    <div class="fixed top-0 left-0 z-50 w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='resetReservation'>
+    <div class="fixed !m-0 top-0 left-0 z-50 w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='resetReservation'>
         <div class="grid h-screen place-items-center">
             <div>
                 <p class="text-2xl font-bold text-center">Resetting Form</p>
