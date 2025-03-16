@@ -134,7 +134,6 @@
                 </x-form.input-group>
             </div>
         </div>
-
         
         <div class="flex items-center justify-between">
             <x-primary-button>Save</x-primary-button>

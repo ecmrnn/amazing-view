@@ -1,27 +1,7 @@
 <div>
     <section class="space-y-5">
-        <!-- Heading and Subheading -->
-        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
-            <div class="flex items-start justify-between">
-                <hgroup>
-                    <h3 class="font-semibold">Heading &amp; Subheading</h3>
-                    <p class="text-xs">Update your hero section here</p>
-                </hgroup>
-
-                <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'edit-hero-modal')">Edit Hero</button>
-            </div>
-
-            <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                <x-img-lg src="{{ asset('storage/' . $medias['contact_hero_image']) }}" />
-
-                <div class="grid p-5 border rounded-md borborder-slate-200 place-items-center">
-                    <div>
-                        <p class="font-semibold text-center">{!! $contents['contact_heading'] !!}</p>
-                        <p class="text-sm text-center">{!! $contents['contact_subheading'] !!}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Hero Section -->
+        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
 
         <!-- Contact Details -->
         <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
@@ -165,10 +145,6 @@
             </div>
         </section>
     </x-modal.full>
-
-    <x-modal.full name="edit-hero-modal" maxWidth="sm">
-        <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
-    </x-modal.full> 
 
     <x-modal.full name="create-contact-modal" maxWidth="sm">
         <livewire:app.content.contact.create-contact />
