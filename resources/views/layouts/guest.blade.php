@@ -50,6 +50,7 @@
                 'h-screen' => ! Request::is('reservation') && ! Request::is('search') && ! Request::is('function-hall'), 
             ])>
             <x-navigations.guest />
+            
             <section class="relative flex-grow">
                 {{ $hero }}
             </section>

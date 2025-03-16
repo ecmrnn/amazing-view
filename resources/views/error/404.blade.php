@@ -1,17 +1,13 @@
-<x-guest-layout>
-    <x-slot:hero>
-        <div class="grid h-screen text-center place-items-center">
-            <div class="space-y-5 text-white">
-                <x-h1>Page not found!</x-h1>
-                <p>The page you are looking for is missing!</p>
-                <a class="inline-block px-4 py-2 font-semibold text-white transition-all duration-200 ease-in-out bg-blue-500 rounded-lg hover:bg-blue-600" href="{{ route('guest.home') }}" wire:navigate>Back to Home</a>
-            </div>
-
-            <div class="absolute w-full h-full rounded-lg -z-10 before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                style="background-image: url({{ asset('storage/global/login.jpg') }});
-                background-size: cover;
-                background-position: center;">
-            </div>
+<x-error-layout>
+    <div class="space-y-5">
+        <div>
+            <svg class="rotate-6" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bug"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>
         </div>
-    </x-slot:hero>
-</x-guest-layout>
+
+        <x-h1>Page not found!</x-h1>
+        <p class="text-sm">Hmmm... The page you are looking for is missing!</p>
+        <a href="{{ route('guest.home') }}" wire:navigate class="inline-flex items-center gap-5">
+            <x-primary-button class="text-xs">Home</x-primary-button>
+        </a>
+    </div>
+</x-error-layout>
