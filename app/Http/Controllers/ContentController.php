@@ -12,7 +12,11 @@ class ContentController extends Controller
      */
     public function index()
     {
-        return view('app.content.index');
+        $statuses = Page::pluck('status');
+        
+        return view('app.content.index', [
+            'statuses' => $statuses,
+        ]);
     }
 
     /**
@@ -20,7 +24,11 @@ class ContentController extends Controller
      */
     public function edit(string $id)
     {
-        $page = Page::findOrfail($id);
+        $page = Page::find($id);
+
+        if (!$page) {
+            return response()->view('error.404', status:404);
+        }
 
         return view('app.content.edit', [
             'page' => $page,

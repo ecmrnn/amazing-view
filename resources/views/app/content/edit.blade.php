@@ -39,12 +39,10 @@
                                 </x-action-button>
                             @endif
 
-                            @if ($page->title != 'Reservation')
-                                <x-action-button x-on:click="$dispatch('open-modal', 'show-preview-modal')" class="hidden xl:flex">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-view"><path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"/><path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><circle cx="12" cy="12" r="1"/><path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/></svg>
-                                    <p>Preview</p>
-                                </x-action-button>
-                            @endif
+                            <x-action-button x-on:click="$dispatch('open-modal', 'show-preview-modal')" class="hidden xl:flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-view"><path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"/><path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><circle cx="12" cy="12" r="1"/><path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/></svg>
+                                <p>Preview</p>
+                            </x-action-button>
                         </div>
                     </x-actions>
                 </div>
@@ -75,7 +73,11 @@
                  <livewire:app.content.contact.edit-contact />
                 @break
             @case(5)
-                 <livewire:app.content.reservation.edit-reservation />
+                 <livewire:app.content.reservation.edit-room-reservation />
+                @break
+            @case(6)
+                @break
+            @case(7)
                 @break
             @default
                  <livewire:app.content.global.edit-global />

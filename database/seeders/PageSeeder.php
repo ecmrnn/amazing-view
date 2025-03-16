@@ -35,14 +35,19 @@ class PageSeeder extends Seeder
                 'view' => 'contact',
             ],
             [
-                'title' => 'Reservation',
+                'title' => 'Room Reservation',
                 'url' => '/reservation',
                 'view' => 'reservation',
             ],
             [
-                'title' => 'Function Hall',
+                'title' => 'Function Hall Reservation',
                 'url' => '/function-hall',
                 'view' => 'function-hall',
+            ],
+            [
+                'title' => 'Find Reservation',
+                'url' => '/search',
+                'view' => 'search',
             ],
             [
                 'title' => 'Global',

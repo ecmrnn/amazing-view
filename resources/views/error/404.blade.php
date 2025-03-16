@@ -6,8 +6,8 @@
 
         <x-h1>Page not found!</x-h1>
         <p class="text-sm">Hmmm... The page you are looking for is missing!</p>
-        <a href="{{ route('guest.home') }}" wire:navigate class="inline-flex items-center gap-5">
-            <x-primary-button class="text-xs">Home</x-primary-button>
+        <a href="{{ url()->previous() }}" wire:navigate class="inline-flex items-center gap-5">
+            <x-primary-button class="text-xs">Take me back</x-primary-button>
         </a>
     </div>
-</x-error-layout>
+</x-error-layout>p

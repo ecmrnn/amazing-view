@@ -9,7 +9,7 @@ use App\Traits\DispatchesToast;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
 
-class EditReservation extends Component
+class EditRoomReservation extends Component
 {
     use DispatchesToast, WithFilePond;
 

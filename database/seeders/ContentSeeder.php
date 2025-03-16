@@ -173,6 +173,21 @@ class ContentSeeder extends Seeder
                 'value' => 'Your amazing journey awaits book now your dream getaway!',
                 'type' => ContentType::TEXT->value,
             ],
+            /** 
+             * Find Reservation page's content
+             */
+            [
+                'view' => 'search',
+                'key' => 'search_heading',
+                'value' => 'Already have a reservation?',
+                'type' => ContentType::TEXT->value,
+            ],
+            [
+                'view' => 'search',
+                'key' => 'search_subheading',
+                'value' => 'Enter your reservation ID below to view the status of your room reservation.',
+                'type' => ContentType::TEXT->value,
+            ],
         ]);
 
         

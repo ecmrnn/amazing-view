@@ -5,7 +5,7 @@
         </div>
 
         <x-h1>Working on it!</x-h1>
-        <p class="text-sm">The page you requested is under maintenance.</p>
+        <p class="text-sm">Sorry! The page you requested is under maintenance.</p>
         <a href="{{ route('guest.home') }}" wire:navigate class="inline-flex items-center gap-5">
             <x-primary-button class="text-xs">Home</x-primary-button>
         </a>
