@@ -17,12 +17,12 @@ class EditHistory extends Component
     #[Validate] public $history;
     #[Validate] public $history_image;
     #[Validate] public $history_length;
-    public $current_history_image;
+    public $current_image;
 
     public function mount() {
         $this->history = PageContent::where('key', 'about_history')->pluck('value')->first();
         $this->history_length = strlen($this->history);
-        $this->current_history_image = MediaFile::where('key', 'about_history_image')->pluck('path')->first();
+        $this->current_image = MediaFile::where('key', 'about_history_image')->pluck('path')->first();
     }
 
     public function rules() {
@@ -56,6 +56,7 @@ class EditHistory extends Component
             
             $history_image->path = $this->history_image->store('about', 'public');
             $history_image->save();
+            $this->current_image = $history_image->fresh()->path;
         }
 
         $history = PageContent::where('key', 'about_history')->first();
@@ -85,8 +86,8 @@ class EditHistory extends Component
                                     <p class="text-xs">Click the button on the right to view current image</p>
                                 </div>
 
-                                @if (!empty($current_history_image))
-                                    <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'show-current-hero-{{ $page }}')">View Image</button>
+                                @if (!empty($current_image))
+                                    <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'show-current-image')">View Image</button>
                                 @endif
                             </div>
                             <x-filepond::upload
@@ -120,6 +121,16 @@ class EditHistory extends Component
                     <x-primary-button type="submit">Save</x-primary-button>
                     <x-loading wire:loading wire:target='submit'>Editing history, please wait</x-loading>
                 </div>
+
+                <x-modal.full name='show-current-image' maxWidth='sm'>
+                    <div class="p-5 space-y-5">
+                        <img src="{{ asset('storage/' . $current_image) }}" alt="History" class="bg-white border rounded-md border-slate-200">
+
+                        <div class="flex justify-end">
+                            <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
+                        </div>
+                    </div>
+                </x-modal.full>
             </form>
         HTML;
     }

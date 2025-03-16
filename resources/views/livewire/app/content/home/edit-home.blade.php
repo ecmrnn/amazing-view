@@ -31,7 +31,7 @@
                     background-size: cover;
                     background-position: center;">
                     <section class="relative z-10 w-3/4 py-20 mx-auto space-y-3 text-white rounded-md">
-                        <p class="mx-auto font-bold text-center text-md">{!! $contents['home_heading'] !!}</p>
+                        <p class="mx-auto font-bold text-center text-md">{!! nl2br(e($contents['home_heading'] ?? '')) !!}</p>
                         <p class="max-w-xs mx-auto text-xs text-center">{!! $contents['home_subheading'] !!}</p>
                         <div class="flex justify-center gap-1">
                             <x-secondary-button type="button" class="text-xs">...</x-secondary-button>
@@ -89,7 +89,7 @@
                         @forelse ($testimonials->chunk(ceil($testimonials->count() / 2)) as $testimonial_chunks)
                             <div class="space-y-4 lg:hidden">
                                 @foreach ($testimonial_chunks as $testimonial)
-                                    <div key="{{ $testimonial->id }}" class="p-4 border rounded-lg border-zinc-200">
+                                    <div key="{{ $testimonial->id }}" class="p-5 border rounded-md border-slate-200 bg-slate-50">
                                         <p class="text-sm font-semibold text-center">{{ $testimonial->name }}</p>
                                         <div class="flex justify-center gap-1 mt-2">
                                             @for ($rating = 0; $rating < 5; $rating++)
@@ -118,7 +118,7 @@
                         @forelse ($testimonials->chunk(ceil($testimonials->count() / 3)) as $testimonial_chunks)
                             <div class="hidden space-y-4 lg:block">
                                 @foreach ($testimonial_chunks as $testimonial)
-                                    <div key="{{ $testimonial->id }}" class="p-4 border rounded-lg border-zinc-200">
+                                    <div key="{{ $testimonial->id }}" class="p-5 border rounded-md border-slate-200 bg-slate-50">
                                         <p class="text-sm font-semibold text-center">{{ $testimonial->name }}</p>
                                         <div class="flex justify-center gap-1 mt-2">
                                             @for ($rating = 0; $rating < 5; $rating++)

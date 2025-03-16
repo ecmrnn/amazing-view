@@ -75,7 +75,7 @@
                     background-position: center;">
                     <section class="relative z-10 grid w-3/4 py-20 mx-auto text-white rounded-md place-items-center">
                         <div class="flex flex-col justify-center gap-3">
-                            <p class="font-bold text-center text-md">{!! $contents['rooms_heading'] !!}</p>
+                            <p class="font-bold text-center text-md">{!! nl2br(e($contents['rooms_heading'] ?? '')) !!}</p>
                             <p class="max-w-xs text-xs text-center">{!! $contents['rooms_subheading'] !!}</p>
                             <x-primary-button class="mx-auto text-xs">...</x-primary-button>
                         </div>

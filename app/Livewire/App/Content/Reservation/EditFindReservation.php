@@ -6,11 +6,11 @@ use App\Models\MediaFile;
 use App\Models\Page;
 use App\Models\PageContent;
 use App\Traits\DispatchesToast;
-use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
 
-class EditRoomReservation extends Component
+class EditFindReservation extends Component
 {
     use DispatchesToast, WithFilePond;
 
@@ -18,29 +18,78 @@ class EditRoomReservation extends Component
         'hero-edited' => '$refresh',
     ];
 
-    #[On('hero-edited')]
-    public function refresh() {
-        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
-        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
-    }
-
+    #[Validate] public $heading;
+    #[Validate] public $subheading;
+    
     public $page;
     public $contents;
     public $medias;
 
-    public function mount() {
-        $this->page = Page::whereUrl('/reservation')->first();
-        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
-        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
+    public function rules() {
+        return [
+            'heading' => 'required',
+            'subheading' => 'required',
+        ];
     }
 
+    public function mount() {
+        $this->page = Page::whereUrl('/search')->first();
+        $this->heading = PageContent::where('key', str_replace(' ', '_', $this->page->title) . '_heading')->pluck('value')->first();
+        $this->subheading = PageContent::where('key', str_replace(' ', '_', $this->page->title) . '_subheading')->pluck('value')->first();
+    }
+
+    public function submit() {
+        // Validate
+        $this->validate();
+
+        // Store to database
+        $heading = PageContent::where('key', str_replace(' ', '_', $this->page->title) . '_heading')->first();
+        $heading->value = $this->heading;
+        $heading->save();
+
+        $subheading = PageContent::where('key', str_replace(' ', '_', $this->page->title) . '_subheading')->first();
+        $subheading->value = $this->subheading;
+        $subheading->save();
+
+        $this->toast('Hero Edited!', 'success', 'Hero edited successfully');
+        $this->dispatch('hero-edited');
+        $this->dispatch('pond-reset');
+    }
+    
     public function render()
     {
         return <<<'HTML'
         <div>
-            <section class="space-y-5">
-                <livewire:app.content.edit-hero page="{{ $page->title }}" />
-            </section>
+            <form class="p-5 space-y-5 bg-white border rounded-lg border-slate-200" wire:submit='submit'>
+                <hgroup>
+                    <h2 class="font-semibold">Find Reservation - Edit Hero Section</h2>
+                    <p class="text-xs">Update hero details here</p>
+                </hgroup>
+                <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                    <x-form.input-group>
+                        <div class="mb-5">
+                            <x-form.input-label for='heading'>Heading</x-form.input-label>
+                            <p class="text-xs">Enter an eye catching tagline</p>
+                        </div>
+                        <x-form.textarea wire:model.live='heading' id="heading" name="heading" label="Heading" class="w-full" rows="2" />
+                        <x-form.input-error field="heading" />
+                    </x-form.input-group>
+            
+                    <x-form.input-group>
+                        <div class="mb-5">
+                            <x-form.input-label for='subheading'>Subheading</x-form.input-label>
+                            <p class="text-xs">This will appear below the heading</p>
+                        </div>
+                        <x-form.input-text wire:model.live='subheading' id="subheading" name="subheading" label="Subheading" class="w-1/2" />
+                        <x-form.input-error field="subheading" />
+                    </x-form.input-group>
+                </div>
+            
+                <div class="flex items-center justify-between">
+                    <x-primary-button>Save</x-primary-button>
+                    <x-loading wire:loading wire:target='submit'>Updating changes, please wait</x-loading>
+                </div>
+            </form>
 
             <x-modal.full name='show-preview-modal' maxWidth='screen-xl'>
                 <section class="hidden space-y-5 overflow-y-scroll xl:block aspect-video">
@@ -57,23 +106,17 @@ class EditRoomReservation extends Component
                             </div>
                         </header>
                         
-                        <div class="relative w-full rounded-lg before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                            style="background-image: url({{ asset('storage/' . $medias['room_reservation_hero_image']) }});
-                            background-size: cover;
-                            background-position: center;">
-                            <section class="relative z-10 grid w-3/4 py-20 mx-auto text-white rounded-md place-items-center">
-                                <div class="flex justify-between w-full px-2">
-                                    <div class="space-y-3">
-                                        <p class="font-bold text-md">{!! nl2br(e($contents['room_reservation_heading'] ?? '')) !!}</p>
-                                        <p class="max-w-xs text-xs">{!! $contents['room_reservation_subheading'] !!}</p>
+                        <div class="relative w-full overflow-hidden rounded-lg">
+                            <section class="relative z-10 grid w-3/4 py-20 mx-auto rounded-md place-items-center">
+                                <div class="flex justify-center w-full px-2">
+                                    <div class="space-y-3 text-center">
+                                        <p class="font-bold text-md">{!! nl2br(e($heading ?? '')) !!}</p>
+                                        <p class="max-w-xs text-xs">{!! $subheading !!}</p>
                                         
-                                        <div class="flex gap-1">
+                                        <div class="flex justify-center gap-1">
+                                            <x-form.input-text id="" disabled name="" label="" />
                                             <x-primary-button type="button" class="text-xs">...</x-primary-button>
-                                            <x-secondary-button type="button" class="text-xs">...</x-secondary-button>
                                         </div>
-                                    </div>
-
-                                    <div>
                                     </div>
                                 </div>
                             </section>
@@ -126,7 +169,7 @@ class EditRoomReservation extends Component
                     </div>
                 </section>
             </x-modal.full>
-        </form>
+        </div>
         HTML;
     }
 }

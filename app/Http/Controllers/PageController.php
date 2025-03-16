@@ -116,4 +116,14 @@ class PageController extends Controller
             'medias' => $medias,
         ]);
     }
+
+    public function findReservation() {
+        $page = Page::whereUrl('/search')->first();
+        $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
+
+        return view('search', [
+            'contents' => $contents,
+        ]);
+    }
+
 }

@@ -76,8 +76,10 @@
                  <livewire:app.content.reservation.edit-room-reservation />
                 @break
             @case(6)
+                <livewire:app.content.reservation.edit-function-hall-reservation />
                 @break
             @case(7)
+                <livewire:app.content.reservation.edit-find-reservation />
                 @break
             @default
                  <livewire:app.content.global.edit-global />

@@ -4,9 +4,9 @@
             <div class="flex flex-col items-center justify-between w-full text-center md:items-start md:flex-row md:text-left">
                 <div class="mx-auto space-y-5 text-center">
                     <x-h1>
-                        Already have a reservation?
+                        {{ $contents['find_reservation_heading'] ?? '' }}
                     </x-h1>
-                    <p class="max-w-sm mx-auto">Enter your reservation ID below to view the status of your room reservation.</p>
+                    <p class="max-w-sm mx-auto">{{ $contents['find_reservation_subheading'] ?? '' }}</p>
                 </div>
             </div>
         </div>

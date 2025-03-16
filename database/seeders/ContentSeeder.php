@@ -115,19 +115,19 @@ class ContentSeeder extends Seeder
             */
             [
                 'view' => 'reservation',
-                'key' => 'reservation_hero_image',
+                'key' => 'room_reservation_hero_image',
                 'path' => 'content/reservation/',
                 'type' => ContentType::IMAGE->value,
             ],
             [
                 'view' => 'reservation',
-                'key' => 'reservation_heading',
+                'key' => 'room_reservation_heading',
                 'value' => 'Book a Room',
                 'type' => ContentType::TEXT->value,
             ],
             [
                 'view' => 'reservation',
-                'key' => 'reservation_subheading',
+                'key' => 'room_reservation_subheading',
                 'value' => 'Where every stay becomes a story, welcome to your perfect escape!',
                 'type' => ContentType::TEXT->value,
             ],
@@ -136,19 +136,19 @@ class ContentSeeder extends Seeder
              */
             [
                 'view' => 'function-hall',
-                'key' => 'function_hall_hero_image',
+                'key' => 'function_hall_reservation_hero_image',
                 'path' => '',
                 'type' => ContentType::IMAGE->value,
             ],
             [
                 'view' => 'function-hall',
-                'key' => 'function_hall_heading',
+                'key' => 'function_hall_reservation_heading',
                 'value' => 'Function Hall',
                 'type' => ContentType::TEXT->value,
             ],
             [
                 'view' => 'function-hall',
-                'key' => 'function_hall_subheading',
+                'key' => 'function_hall_reservation_subheading',
                 'value' => 'Make your events unforgettable with our elegant Function Hall',
                 'type' => ContentType::TEXT->value,
             ],
@@ -178,13 +178,13 @@ class ContentSeeder extends Seeder
              */
             [
                 'view' => 'search',
-                'key' => 'search_heading',
+                'key' => 'find_reservation_heading',
                 'value' => 'Already have a reservation?',
                 'type' => ContentType::TEXT->value,
             ],
             [
                 'view' => 'search',
-                'key' => 'search_subheading',
+                'key' => 'find_reservation_subheading',
                 'value' => 'Enter your reservation ID below to view the status of your room reservation.',
                 'type' => ContentType::TEXT->value,
             ],

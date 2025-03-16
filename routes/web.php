@@ -24,7 +24,7 @@ Route::middleware([CheckPageStatus::class])->name('guest.')->group(function () {
     Route::get('/contact', [PageController::class, 'contact'])->name('contact');
     Route::get('/reservation', [PageController::class, 'reservation'])->name('reservation');
     Route::get('/function-hall', [PageController::class, 'functionHall'])->name('function-hall');
-    Route::view('/search', 'search')->name('search');
+    Route::get('/search', [PageController::class, 'findReservation'])->name('search');
 
     // Add route for specific room details
     // ...

@@ -18,7 +18,7 @@
             </div>
 
             <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
-                @foreach ($milestones as $milestone)
+            @foreach ($milestones as $milestone)
                     <div wire:key="milestone-{{ $milestone->id }}" class="relative p-5 space-y-5 border rounded-md border-slate-200">
                         <div class="space-y-5">
                             @if (!empty($milestone->milestone_image))
@@ -106,7 +106,7 @@
                     background-size: cover;
                     background-position: center;">
                     <section class="relative z-10 w-3/4 py-20 mx-auto space-y-3 text-white rounded-md">
-                        <p class="mx-auto font-bold text-center text-md">{!! $contents['about_heading'] !!}</p>
+                        <p class="mx-auto font-bold text-center text-md">{!! nl2br(e($contents['about_heading'] ?? '')) !!}</p>
                         <p class="mx-auto text-xs text-center">{!! $contents['about_subheading'] !!}</p>
                         <div class="flex justify-center gap-1">
                             <x-secondary-button type="button" class="text-xs">...</x-secondary-button>
@@ -124,7 +124,7 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <p class="text-justify text-xxs indent-8">
-                            {!! $contents['about_history'] !!}
+                            {!! nl2br(e($contents['about_history'] ?? '')) !!}
                         </p>
 
                         <x-img-lg src="{{ asset('storage/' . $medias['about_history_image']) }}" />

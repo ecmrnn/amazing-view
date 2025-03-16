@@ -54,6 +54,7 @@ class EditHero extends Component
             
             $hero_image->path = $this->hero_image->store('hero', 'public');
             $hero_image->save();
+            $this->current_hero_image = $hero_image->fresh()->path;
         }
 
         // Store to database
@@ -64,8 +65,7 @@ class EditHero extends Component
         $subheading = PageContent::where('key', str_replace(' ', '_', $this->page) . '_subheading')->first();
         $subheading->value = $this->subheading;
         $subheading->save();
-
-        $this->current_hero_image = MediaFile::where('key', str_replace(' ', '_', $this->page) . '_hero_image')->pluck('path')->first();
+        
         $this->toast('Hero Edited!', 'success', 'Hero edited successfully');
         $this->dispatch('hero-edited');
         $this->dispatch('pond-reset');
@@ -74,7 +74,7 @@ class EditHero extends Component
     public function render()
     {
         return <<<'HTML'
-            <form x-on:hero-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200" wire:submit="submit">
+            <form class="p-5 space-y-5 bg-white border rounded-lg border-slate-200" wire:submit="submit">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">{{ $page }} - Edit Hero Section</h2>
                     <p class="max-w-sm text-sm">Update hero details here</p>

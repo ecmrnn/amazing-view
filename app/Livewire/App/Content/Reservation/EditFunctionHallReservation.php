@@ -10,7 +10,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
 
-class EditRoomReservation extends Component
+class EditFunctionHallReservation extends Component
 {
     use DispatchesToast, WithFilePond;
 
@@ -18,24 +18,22 @@ class EditRoomReservation extends Component
         'hero-edited' => '$refresh',
     ];
 
+    public $page;
+    public $contents;
+    public $medias;
+
     #[On('hero-edited')]
     public function refresh() {
         $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
         $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
     }
 
-    public $page;
-    public $contents;
-    public $medias;
-
-    public function mount() {
-        $this->page = Page::whereUrl('/reservation')->first();
-        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
-        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
-    }
-
     public function render()
     {
+        $this->page = Page::whereUrl('/function-hall')->first();
+        $this->contents = PageContent::where('page_id', $this->page->id)->pluck('value', 'key');
+        $this->medias = MediaFile::where('page_id', $this->page->id)->pluck('path', 'key');
+        
         return <<<'HTML'
         <div>
             <section class="space-y-5">
@@ -58,14 +56,14 @@ class EditRoomReservation extends Component
                         </header>
                         
                         <div class="relative w-full rounded-lg before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"
-                            style="background-image: url({{ asset('storage/' . $medias['room_reservation_hero_image']) }});
+                            style="background-image: url({{ asset('storage/' . $medias['function_hall_reservation_hero_image']) }});
                             background-size: cover;
                             background-position: center;">
                             <section class="relative z-10 grid w-3/4 py-20 mx-auto text-white rounded-md place-items-center">
                                 <div class="flex justify-between w-full px-2">
                                     <div class="space-y-3">
-                                        <p class="font-bold text-md">{!! nl2br(e($contents['room_reservation_heading'] ?? '')) !!}</p>
-                                        <p class="max-w-xs text-xs">{!! $contents['room_reservation_subheading'] !!}</p>
+                                        <p class="font-bold text-md">{!! nl2br(e($contents['function_hall_reservation_heading'] ?? '')) !!}</p>
+                                        <p class="max-w-xs text-xs">{!! $contents['function_hall_reservation_subheading'] !!}</p>
                                         
                                         <div class="flex gap-1">
                                             <x-primary-button type="button" class="text-xs">...</x-primary-button>

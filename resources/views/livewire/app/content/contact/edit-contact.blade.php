@@ -67,7 +67,7 @@
                     <section class="relative z-10 grid w-3/4 py-20 mx-auto text-white rounded-md place-items-center">
                         <div class="flex justify-between w-full px-2">
                             <div class="space-y-3">
-                                <p class="font-bold text-md">{!! $contents['contact_heading'] !!}</p>
+                                <p class="font-bold text-md">{!! nl2br(e($contents['contact_heading'] ?? '')) !!}</p>
                                 <p class="max-w-xs text-xs">{!! $contents['contact_subheading'] !!}</p>
                                 
                                 <ul class="mx-auto space-y-1 w-max md:mx-0">
