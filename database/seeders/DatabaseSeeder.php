@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             FeaturedServiceSeeder::class,
             MilestoneSeeder::class,
             TestimonialSeeder::class,
+            SettingsSeeder::class,
         ]);
     }
 }

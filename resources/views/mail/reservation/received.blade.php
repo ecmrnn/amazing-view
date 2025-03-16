@@ -2,7 +2,7 @@
     <div class="max-w-2xl p-5 mx-auto bg-white md:shadow-lg md:p-10 md:rounded-lg">
         <header class="flex flex-col items-center gap-5 md:flex-row">
             <div class="w-full max-w-24 aspect-square">
-                <img src="{{ $message->embed(asset('storage/global/application-logo.png')) }}">
+                <img src="{{ $message->embed(asset('storage/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}">
             </div>
         
             <hgroup>
@@ -114,21 +114,23 @@
             <h2 class="text-lg md:*:text-2xl font-bold text-blue-500">Total Amount Due: <x-currency />{{ number_format($reservation->invoice->sub_total, 2) }}</h2>
 
             @if (!empty($reservation->expires_at))
-                <div>
-                    <h2 class="font-bold">Payment Methods</h2>
-                    <p>To confirm your reservation, a minimum amount of Php500.00 must be paid in any of the payment method below on or before <strong class="font-bold text-red-500">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</strong>:</p>
-                </div>
-
-                <div>
-                    <h3 class="font-bold">GCash:</p>
-                    <p class="font-normal"><strong class="font-bold">GCash Number:</strong> 09171399334</p>
-                    <p class="font-normal"><strong class="font-bold">Account Name:</strong> Fabio Basbaño</p>
-                </div>
+                <x-warning-message>
+                    <div class="mb-5">
+                        <h2 class="font-bold">Payment Methods</h2>
+                        <p>To confirm your reservation, a minimum amount of Php500.00 must be paid in the payment method below on or before <strong class="font-bold text-red-500">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</strong>:</p>
+                    </div>
+    
+                    <div>
+                        <h3 class="font-bold">GCash:</p>
+                        <p class="font-normal"><strong class="font-bold">GCash Number:</strong> {{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}</p>
+                        <p class="font-normal"><strong class="font-bold">Account Name:</strong> {{ Arr::get($settings, 'site_gcash_name', 'Fabio Basbaño') }}</p>
+                    </div>
+                </x-warning-message>
             @else
-                <div class="px-3 py-2 mt-5 text-yellow-700 bg-yellow-100 border border-yellow-500 rounded-md">
+                <x-info-message>
                     <p class="font-bold">Proof of Payment Uploaded</p>
                     <p>We have received the image you uploaded on the reservation form. Please wait for our receptionist to confirm your reservation.</p>
-                </div>
+                </x-info-message>
             @endif
         </main>
     

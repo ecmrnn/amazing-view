@@ -2,7 +2,7 @@
     <div class="max-w-2xl p-5 mx-auto bg-white md:shadow-lg md:p-10 md:rounded-lg">
         <header class="flex flex-col items-center gap-5 md:flex-row">
             <div class="w-full max-w-24 aspect-square">
-                <img src="{{ $message->embed(asset('storage/global/application-logo.png')) }}">
+                <img src="{{ $message->embed(asset('storage/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}">
             </div>
         
             <hgroup>
@@ -37,7 +37,7 @@
                 </div>
             @endif
 
-            <p>If you have any questions or need further assistance, please do not hesitate to email us at <strong class="font bold">support@amazingview.com</strong> or give us a call at <strong class="font-bold">09171399334</strong>. We hope to welcome you back to Amazing View Mountain Farm Resort in the future. Thank you for understanding.</p>
+            <p>If you have any questions or need further assistance, please do not hesitate to email us at <strong class="font bold">{{ Arr::get($settings, 'site_email', 'info@amazingviewmountainresort.com') }}</strong> or give us a call at <strong class="font-bold">{{ Arr::get($settings, 'site_phone', '09171399334') }}</strong>. We hope to welcome you back to Amazing View Mountain Farm Resort in the future. Thank you for understanding.</p>
 
             <div>
                 <p class="font-bold">Best regards,</p>

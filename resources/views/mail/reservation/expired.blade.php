@@ -2,7 +2,7 @@
     <div class="max-w-2xl p-5 mx-auto bg-white md:shadow-lg md:p-10 md:rounded-lg">
         <header class="flex flex-col items-center gap-5 md:flex-row">
             <div class="w-full max-w-24 aspect-square">
-                <img src="{{ $message->embed(asset('storage/global/application-logo.png')) }}">
+                <img src="{{ $message->embed(asset('storage/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}">
             </div>
         
             <hgroup>
@@ -38,7 +38,7 @@
 
                 <ul class="list-disc list-inside list-item">
                     <li><span class="font-semibold">Rebooking:</span> If you would still like to stay with us, we encourage you to rebook your reservation. You can do so by visiting our website or contacting us directly.</li>
-                    <li><span class="font-semibold">Assistance:</span> If you need assistance with rebooking or have any questions, please do not hesitate to reach out to our customer support team at <span class="font-semibold">support@amazingview.com</span> or give us a call at <span class="font-semibold">09171399334</span>.</li>
+                    <li><span class="font-semibold">Assistance:</span> If you need assistance with rebooking or have any questions, please do not hesitate to reach out to our customer support team at <span class="font-semibold">{{ Arr::get($settings, 'site_email', 'info@amazingviewmountainresort.com') }}</span> or give us a call at <span class="font-semibold">{{ Arr::get($settings, 'site_phone', '09171399334') }}</span>.</li>
                 </ul>
             </div>
 

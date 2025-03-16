@@ -4,8 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="description" content="{{ Arr::get($settings, 'site_tagline', 'Resort getaway in Laguna') }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ Arr::get($settings, 'site_title', 'Amazing View Mountain Resort') }}</title>
 
         <!-- Favicon -->
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('redketchup/apple-touch-icon.png') }}">

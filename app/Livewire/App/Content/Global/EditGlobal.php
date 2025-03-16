@@ -20,20 +20,52 @@ class EditGlobal extends Component
     ];
 
     public $settings;
+    /** 
+     * Branding and Visual Identity
+     */
     #[Validate] public $site_title;
     #[Validate] public $site_tagline;
     #[Validate] public $site_logo;
+
+    /** 
+     * Contact Information
+     */
     #[Validate] public $site_phone;
     #[Validate] public $site_email;
+
+    /** 
+     * GCash Payment Information
+     */
+    #[Validate] public $site_gcash_phone;
+    #[Validate] public $site_gcash_name;
+    #[Validate] public $site_gcash_qr;
 
     public function rules() {
         return [
             'site_title' => 'required',
             'site_tagline' => 'required',
-            'site_logo' => 'nullable|image',
+            'site_logo' => 'nullable|image|max:1024',
+
             'site_phone' => 'required|digits:11|starts_with:09',
             'site_email' => 'required|email',
+            
+            'site_gcash_phone' => 'required|digits:11|starts_with:09',
+            'site_gcash_name' => 'required',
+            'site_gcash_qr' => 'nullable|image|max:1024',
         ];
+    }
+
+    public function mount() {
+        $this->settings = Settings::pluck('value', 'key');
+
+        $this->site_title = $this->settings['site_title'];
+        $this->site_tagline = $this->settings['site_tagline'];
+
+        $this->site_phone = $this->settings['site_phone'];
+        $this->site_email = $this->settings['site_email'];
+        
+        $this->site_gcash_name = $this->settings['site_gcash_name'];
+        $this->site_gcash_phone = $this->settings['site_gcash_phone'];
     }
 
     public function saveBranding() {
@@ -66,6 +98,7 @@ class EditGlobal extends Component
             }
         });
 
+        $this->settings = Settings::pluck('value', 'key');
         $this->dispatch('pond-reset');
         $this->dispatch('settings-updated');
         $this->toast('Success!', description: 'Branding and Visual Identity updated!');
@@ -91,14 +124,44 @@ class EditGlobal extends Component
         $this->toast('Success!', description: 'Contact Information updated!');
     }
 
+    public function savePayment() {
+        $validated = $this->validate([
+            'site_gcash_phone' => $this->rules()['site_gcash_phone'],
+            'site_gcash_name' => $this->rules()['site_gcash_name'],
+            'site_gcash_qr' => $this->rules()['site_gcash_qr'],
+        ]);
+
+        DB::transaction(function () use ($validated) {
+            Settings::where('key', 'site_gcash_phone')->first()->update([
+                'value' => $validated['site_gcash_phone']
+            ]);
+    
+            Settings::where('key', 'site_gcash_name')->first()->update([
+                'value' => $validated['site_gcash_name']
+            ]);
+            
+            if (!empty($validated['site_gcash_qr'])) {
+                $logo = Settings::where('key', 'site_gcash_qr')->first();
+
+                // Delete the original logo first
+                if (!empty($logo->value)) {
+                    Storage::disk('public')->delete($logo->value);    
+                }
+
+                $logo->update([
+                    'value' => $validated['site_gcash_qr']->store('global', 'public')
+                ]);
+            }
+        });
+
+        $this->settings = Settings::pluck('value', 'key');
+        $this->dispatch('pond-reset');
+        $this->dispatch('settings-updated');
+        $this->toast('Success!', description: 'GCash Payment Information updated!');
+    }
+
     public function render()
     {
-        $this->settings = Settings::pluck('value', 'key');
-        $this->site_title = $this->settings['site_title'];
-        $this->site_tagline = $this->settings['site_tagline'];
-        $this->site_phone = $this->settings['site_phone'];
-        $this->site_email = $this->settings['site_email'];
-        
         return view('livewire.app.content.global.edit-global');
     }
 }

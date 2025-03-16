@@ -2,7 +2,7 @@
     <div class="max-w-2xl p-5 mx-auto bg-white md:shadow-lg md:p-10 md:rounded-lg">
         <header class="flex flex-col items-center gap-5 md:flex-row">
             <div class="w-full max-w-24 aspect-square">
-                <img src="{{ $message->embed(asset('storage/global/application-logo.png')) }}">
+                <img src="{{ $message->embed(asset('storage/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}">
             </div>
         
             <hgroup>

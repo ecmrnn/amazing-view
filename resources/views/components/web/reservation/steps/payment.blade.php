@@ -22,6 +22,8 @@
                 <p class="max-w-sm text-sm leading-tight">Review your reservation details or if you can, you may upload an image of your downpayment</p>
             </div>
         </div>
+
+        <x-note>A minimum of <strong><x-currency />500.00</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we have sent to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </x-note>
     
         <div class="space-y-5">
             <hgroup>
@@ -187,20 +189,24 @@
     <aside class="self-start p-5 space-y-5 bg-white rounded-lg shadow-sm">
         <hgroup>
             <h3 class="text-lg font-semibold">Submit Payment</h3>
-            <p class="text-sm">A minimum of <strong><x-currency />500.00</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we have sent to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </p>
+            <p class="text-sm">Upload your receipt here so that we can our staff can confirm your payment</p>
         </hgroup>
 
         {{-- Payment Methods --}}
         <div class="grid">
             <div class="flex items-center gap-3 p-3 bg-white border rounded-lg border-slate-200">
-                <div class="max-w-[80px] aspect-square w-full rounded-lg"
-                    style="background-image: url({{ asset('storage/global/gcash-qr.png') }});
-                        background-size: cover;">
-                </div>
+                <img src="{{ asset('storage/' . Arr::get($settings, 'site_gcash_qr', 'global/gcash-qr.png')) }}" alt="QR Code" class="object-contain object-center w-full rounded-md max-w-20 aspect-square">
+                
                 <div>
-                    <h3 class="font-semibold">GCash</h3>
-                    <p class="">+63 917 139 9334</p>
-                    <p class="text-xs">Fabio Basbaño</p>
+                    <h3 class="text-xs">GCash</h3>
+
+                    <div class="flex items-center gap-5">
+                        <div>
+                            <p class="font-semibold">{{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}</p>
+                            <p class="text-xs">{{ Arr::get($settings, 'site_gcash_name', 'Fabio Basbaño') }}</p>
+                        </div>
+                        <x-copy text="{{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}" />
+                    </div>
                 </div>
             </div>
         </div>

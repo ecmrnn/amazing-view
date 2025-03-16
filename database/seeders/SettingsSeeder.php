@@ -16,7 +16,7 @@ class SettingsSeeder extends Seeder
         $settings = collect([
             [
                 'key' => 'site_logo',
-                'value' => 'global/application-logo.png',
+                'value' => '',
                 'type' => 'image',
             ],
             [
@@ -38,8 +38,23 @@ class SettingsSeeder extends Seeder
                 'key' => 'site_email',
                 'value' => 'reservation@amazingviewresort.com',
                 'type' => 'text',
-            ],]
-        );
+            ],
+            [
+                'key' => 'site_gcash_phone',
+                'value' => '09171399334',
+                'type' => 'text',
+            ],
+            [
+                'key' => 'site_gcash_name',
+                'value' => 'Fabio Basbaño',
+                'type' => 'text',
+            ],
+            [
+                'key' => 'site_gcash_qr',
+                'value' => '',
+                'type' => 'image',
+            ],
+        ]);
 
         foreach ($settings as $setting) {
             Settings::create($setting);
