@@ -4,10 +4,10 @@
             <div class="flex flex-col items-center justify-between w-full p-5 text-center text-white md:items-start md:flex-row md:text-left">
                 <div class="space-y-5">
                     <x-h1>
-                        {!! $contents['contact_heading'] !!}
+                        {!! nl2br(e($contents['contact_heading'] ?? '')) !!}
                     </x-h1>
                     <p class="max-w-sm mx-auto md:mx-0">
-                        {!! $contents['contact_subheading'] !!}
+                        {!! $contents['contact_subheading'] ?? '' !!}
                         <ul class="mx-auto space-y-2 w-max md:mx-0">
                             @foreach ($contact_details as $contact)
                                 <li class="flex items-center gap-3 px-3 py-2 tracking-wider rounded-lg trac bg-white/25 backdrop-blur-sm">

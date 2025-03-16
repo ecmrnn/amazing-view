@@ -4,10 +4,10 @@
             <div class="flex flex-col items-center justify-between w-full text-center text-white md:items-start md:flex-row md:text-left">
                 <div class="space-y-5">
                     <x-h1>
-                        {!! $contents['function_hall_heading'] !!}
+                        {!! nl2br(e($contents['function_hall_heading'] ?? '')) !!}
                     </x-h1>
                     <p class="max-w-sm mx-auto md:mx-0">
-                        {!! $contents['function_hall_subheading'] !!}
+                        {!! $contents['function_hall_subheading'] ?? '' !!}
                     </p>
 
                     <a class="inline-block" href="#form">

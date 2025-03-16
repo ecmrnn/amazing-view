@@ -8,7 +8,7 @@
         <div class="grid gap-5 md:grid-cols-2">
             <div class="p-5 border rounded-md border-slate-200">
                 <x-form.input-group>
-                    <div class="flex items-start justify-between">
+                    <div class="flex items-start justify-between mb-5">
                         <div>
                             <x-form.input-label for='site_logo'>Upload a new logo for your website</x-form.input-label>
                             <p class="text-xs">Click the button on the right to view current logo</p>
@@ -98,7 +98,7 @@
         <div class="grid gap-5 md:grid-cols-2">
             <div class="p-5 border rounded-md border-slate-200">
                 <x-form.input-group>
-                    <div class="flex items-start justify-between">
+                    <div class="flex items-start justify-between mb-5">
                         <div>
                             <x-form.input-label for='site_gcash_qr'>Upload a new GCash QR Code</x-form.input-label>
                             <p class="text-xs">Click the button on the right to view current QR</p>

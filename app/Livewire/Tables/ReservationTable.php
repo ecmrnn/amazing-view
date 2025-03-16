@@ -83,6 +83,9 @@ final class ReservationTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('rid')
+            ->add('rid_formatted', function ($reservation) {
+                return Blade::render('<div class="flex items-center gap-3"><x-copy text="' . $reservation->rid . '" /> ' . $reservation->rid . '</div>');
+            })
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
@@ -120,7 +123,7 @@ final class ReservationTable extends PowerGridComponent
     public function columns(): array
     {
         $columns = [
-            Column::make('Reservation Id', 'rid', 'rid')
+            Column::make('Reservation Id', 'rid_formatted', 'rid')
                 ->sortable()
                 ->searchable(),
 

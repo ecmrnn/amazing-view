@@ -83,10 +83,10 @@ class EditHero extends Component
                 <div class="grid gap-5 md:grid-cols-2">
                     <div class="p-5 border rounded-md border-slate-200">
                         <x-form.input-group>
-                            <div class="flex items-start justify-between">
+                            <div class="flex items-start justify-between mb-5">
                                 <div>
                                     <x-form.input-label for='hero_image'>Upload a new hero background</x-form.input-label>
-                                    <p class="text-xs">Click the button on the right to view current QR</p>
+                                    <p class="text-xs">Click the button on the right to view current image</p>
                                 </div>
 
                                 @if (!empty($current_hero_image))
@@ -108,7 +108,7 @@ class EditHero extends Component
                                 <x-form.input-label for='heading'>Heading</x-form.input-label>
                                 <p class="text-xs">Enter an eye catching tagline</p>
                             </div>
-                            <x-form.input-text wire:model.live='heading' id="heading" name="heading" label="Heading" class="w-1/2" />
+                            <x-form.textarea wire:model.live='heading' id="heading" name="heading" label="Heading" class="w-full" rows="2" />
                             <x-form.input-error field="heading" />
                         </x-form.input-group>
                         
@@ -122,7 +122,6 @@ class EditHero extends Component
                         </x-form.input-group>
                     </div>
                 </div>
-                
                 
                 <div class="flex items-center justify-between gap-1">
                     <x-primary-button>Save</x-primary-button>

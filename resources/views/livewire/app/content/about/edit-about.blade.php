@@ -1,26 +1,10 @@
 <div>
     <section class="space-y-5">
-        <!-- Heading and Subheading -->
         <!-- Hero Section -->
         <livewire:app.content.edit-hero page="{{ strtolower($page->title) }}" />
 
         <!-- History -->
-        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
-            <div class="flex items-start justify-between">
-                <hgroup>
-                    <h3 class="font-semibold">Brief History</h3>
-                    <p class="text-xs">Update your history here</p>
-                </hgroup>
-
-                <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'edit-history-modal')">Edit History</button>
-            </div>
-
-            <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-5">
-                <x-img-lg src="{{ asset('storage/' . $medias['about_history_image']) }}" />
-
-                <p class="text-sm text-justify indent-16">{!! $contents['about_history'] !!}</p>
-            </div>
-        </div>
+        <livewire:app.content.about.edit-history />
 
         <!-- Milestones -->
         <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">

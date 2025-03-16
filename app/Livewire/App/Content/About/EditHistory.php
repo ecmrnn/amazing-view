@@ -17,10 +17,12 @@ class EditHistory extends Component
     #[Validate] public $history;
     #[Validate] public $history_image;
     #[Validate] public $history_length;
+    public $current_history_image;
 
     public function mount() {
         $this->history = PageContent::where('key', 'about_history')->pluck('value')->first();
         $this->history_length = strlen($this->history);
+        $this->current_history_image = MediaFile::where('key', 'about_history_image')->pluck('path')->first();
     }
 
     public function rules() {
@@ -68,46 +70,55 @@ class EditHistory extends Component
     public function render()
     {
         return <<<'HTML'
-            <form x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="p-5 space-y-5" wire:submit="submit">
+            <form x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200" wire:submit="submit">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Edit History</h2>
                     <p class="max-w-sm text-sm">Update history details here</p>
                 </hgroup>
 
-                <x-form.input-group>
-                    <div>
-                        <x-form.input-label for="edit-history-image">Image</x-form.input-label>
-                        <p class="text-xs">Upload a new image here</p>
+                <div class="grid gap-5 md:grid-cols-2">
+                    <div class="p-5 border rounded-md border-slate-200">
+                        <x-form.input-group>
+                            <div class="flex items-start justify-between mb-5">
+                                <div>
+                                    <x-form.input-label for='history_image'>Upload a new image for your history</x-form.input-label>
+                                    <p class="text-xs">Click the button on the right to view current image</p>
+                                </div>
+
+                                @if (!empty($current_history_image))
+                                    <button class="text-xs font-semibold text-blue-500" type="button" x-on:click="$dispatch('open-modal', 'show-current-hero-{{ $page }}')">View Image</button>
+                                @endif
+                            </div>
+                            <x-filepond::upload
+                                wire:model.live="history_image"
+                                id="history_image"
+                                placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
+                            />
+                            <x-form.input-error field="history_image" />
+                        </x-form.input-group>
                     </div>
 
-                    <x-filepond::upload
-                        wire:model.live="history_image"
-                        id="edit-history-image"
-                        placeholder="<span class='text-xs'>Drag & drop your new image or <span class='filepond--label-action'> Browse </span></span>"
-                    />
+                    <div class="p-5 space-y-5 border rounded-md border-slate-200">
+                        <x-form.input-group>
+                            <div class="mb-5">
+                                <x-form.input-label for="edit-history">History</x-form.input-label>
+                                <p class="text-xs">Write an amazing story here</p>
+                            </div>
 
-                    <x-form.input-error field="history_image" />
-                </x-form.input-group>
-
-                <x-form.input-group>
-                    <div>
-                        <x-form.input-label for="edit-history">History</x-form.input-label>
-                        <p class="text-xs">Write an amazing story here</p>
+                            <x-form.textarea id="edit-history" name="history" wire:model.live="history" class="w-full" x-on:keyup="count = max - $el.value.length" />
+                            
+                            <div class="flex justify-between">
+                                <span><x-form.input-error field="history" /></span>
+                                <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 1000</p>
+                            </div>
+                        </x-form.input-group>
                     </div>
+                </div>
 
-                    <x-form.textarea id="edit-history" name="history" wire:model.live="history" class="w-full" x-on:keyup="count = max - $el.value.length" />
-                    
-                    <div class="flex justify-between">
-                        <span><x-form.input-error field="history" /></span>
-                        <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 1000</p>
-                    </div>
-                </x-form.input-group>
-
-                <x-loading wire:loading wire:target='submit'>Editing history, please wait</x-loading>
                 
-                <div class="flex items-center justify-end gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="submit">Edit</x-primary-button>
+                <div class="flex items-center justify-between gap-1">
+                    <x-primary-button type="submit">Save</x-primary-button>
+                    <x-loading wire:loading wire:target='submit'>Editing history, please wait</x-loading>
                 </div>
             </form>
         HTML;

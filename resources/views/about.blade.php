@@ -4,11 +4,11 @@
         <div class="grid h-full max-w-screen-xl mx-auto rounded-lg place-items-center">
             <div class="space-y-5 text-center text-white">
                 <x-h1>
-                    {!! $contents['about_heading'] !!}
+                    {!! nl2br(e($contents['about_heading'] ?? '')) !!}
                 </x-h1>
         
                 <p class='max-w-sm mx-auto'>
-                    {!! $contents['about_subheading'] !!}
+                    {!! $contents['about_subheading'] ?? '' !!}
                 </p>
         
                 <a class="block" href="#story">
@@ -33,7 +33,7 @@
         <div class="grid gap-5 sm:grid-cols-2">
             <div>
                 <p class="text-justify indent-8">
-                    {!! $contents['about_history'] !!}
+                    {!! nl2br(e($contents['about_history'] ?? '')) !!}
                 </p>
             </div>
             

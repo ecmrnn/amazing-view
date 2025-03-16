@@ -4,11 +4,11 @@
         <div class="grid h-full max-w-screen-xl mx-auto rounded-lg place-items-center">
             <div class="space-y-5 text-center text-white">
                 <x-h1>
-                    {!! $contents['home_heading'] !!}
+                    {!! nl2br(e($contents['home_heading'] ?? '')) !!}
                 </x-h1>
             
                 <p class="max-w-xs mx-auto">
-                    {{ $contents['home_subheading'] }}
+                    {{ $contents['home_subheading'] ?? '' }}
                 </p>
             
                 <div class="flex items-center justify-center gap-1">
@@ -82,12 +82,12 @@
         <x-slot:heading>Testimonials</x-slot:heading>
         <x-slot:subheading>Read feedbacks from our previous guests!</x-slot:subheading>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 place-items-start">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 place-items-start">
             {{-- 2 Chunks --}}
             @forelse ($testimonials->chunk(ceil($testimonials->count() / 2)) as $testimonial_chunks)
-                <div class="space-y-4 lg:hidden">
+                <div class="space-y-5 lg:hidden">
                     @foreach ($testimonial_chunks as $testimonial)
-                        <div key="{{ $testimonial->id }}" class="p-4 border rounded-lg border-zinc-200">
+                        <div wire:key="{{ $testimonial->id }}" class="p-5 border rounded-lg border-slate-200 bg-slate-50">
                             <p class="text-lg font-semibold text-center">{{ $testimonial->name }}</p>
                             <div class="flex justify-center gap-1 mt-2">
                                 @for ($rating = 0; $rating < 5; $rating++)
@@ -102,7 +102,7 @@
                                     @endif
                                 @endfor
                             </div>
-                            <p class="mt-4 text-sm text-justify indent-4">{{ $testimonial->testimonial }}</p>
+                            <p class="mt-5 text-sm text-justify indent-4">{!! nl2br(e($testimonial->testimonial ?? '')) !!}</p>
                         </div>
                     @endforeach
                 </div>
@@ -114,9 +114,9 @@
 
             {{-- 3 Chunks --}}
             @forelse ($testimonials->chunk(ceil($testimonials->count() / 3)) as $testimonial_chunks)
-                <div class="hidden space-y-4 lg:block">
+                <div class="hidden space-y-5 lg:block">
                     @foreach ($testimonial_chunks as $testimonial)
-                        <div key="{{ $testimonial->id }}" class="p-4 border rounded-lg border-zinc-200">
+                        <div key="{{ $testimonial->id }}" class="p-5 border rounded-md border-slate-200 bg-slate-50">
                             <p class="text-lg font-semibold text-center">{{ $testimonial->name }}</p>
                             <div class="flex justify-center gap-1 mt-2">
                                 @for ($rating = 0; $rating < 5; $rating++)
@@ -131,7 +131,7 @@
                                     @endif
                                 @endfor
                             </div>
-                            <p class="mt-4 text-sm text-justify indent-4">{{ $testimonial->testimonial }}</p>
+                            <p class="mt-5 text-sm text-justify indent-4">{!! nl2br(e($testimonial->testimonial ?? '')) !!}</p>
                         </div>
                     @endforeach
                 </div>
