@@ -54,6 +54,10 @@
                     $label = 'Paid';
                     $class = 'text-blue-800 border-blue-500 bg-blue-50';
                     break;
+                case 'page':
+                    $label = 'Disabled';
+                    $class = 'text-red-800 border-red-500 bg-red-50';
+                    break;
                 case 'featured_service':
                     $label = 'Inactive';
                     $class = 'text-red-800 border-red-500 bg-red-50';
@@ -81,6 +85,10 @@
                 case 'invoice':
                     $label = 'Pending';
                     $class = 'text-blue-800 border-blue-500 bg-blue-50';
+                    break;
+                case 'page':
+                    $label = 'Maintenance';
+                    $class = 'text-amber-800 border-amber-500 bg-amber-50';
                     break;
             }
             break;

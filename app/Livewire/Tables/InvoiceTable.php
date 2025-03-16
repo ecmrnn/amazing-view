@@ -68,6 +68,14 @@ final class InvoiceTable extends PowerGridComponent
         return PowerGrid::fields()
             ->add('id')
             ->add('iid')
+            ->add('iid_formatted', function ($invoice) {
+                return Blade::render('
+                    <div class="flex items-center gap-3">
+                        <x-copy text="' . $invoice->iid . '" />
+                        ' . $invoice->iid . '
+                    </div>
+                ');
+            })
 
             ->add('name', fn($invoice) => e(ucwords(strtolower($invoice->reservation->first_name)) . ' ' . ucwords(strtolower($invoice->reservation->last_name))))
 
@@ -103,7 +111,7 @@ final class InvoiceTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Invoice ID', 'iid', 'iid')
+            Column::make('Invoice ID', 'iid_formatted', 'iid')
                 ->sortable()
                 ->searchable(),
             Column::make('Name', 'name'),

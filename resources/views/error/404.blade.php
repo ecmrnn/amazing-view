@@ -4,7 +4,7 @@
             <div class="space-y-5 text-white">
                 <x-h1>Page not found!</x-h1>
                 <p>The page you are looking for is missing!</p>
-                <a class="inline-block px-4 py-2 font-semibold text-white transition-all duration-200 ease-in-out bg-blue-500 rounded-lg hover:bg-blue-600" href="/">Back to Home</a>
+                <a class="inline-block px-4 py-2 font-semibold text-white transition-all duration-200 ease-in-out bg-blue-500 rounded-lg hover:bg-blue-600" href="{{ route('guest.home') }}" wire:navigate>Back to Home</a>
             </div>
 
             <div class="absolute w-full h-full rounded-lg -z-10 before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"

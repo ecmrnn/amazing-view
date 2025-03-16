@@ -13,10 +13,11 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\CheckPageStatus;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
-Route::name('guest.')->group(function () {
+Route::middleware([CheckPageStatus::class])->name('guest.')->group(function () {
     Route::get('/', [PageController::class, 'index'])->name('home');
     Route::get('/rooms', [PageController::class, 'rooms'])->name('rooms');
     Route::get('/about', [PageController::class, 'about'])->name('about');
