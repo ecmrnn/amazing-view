@@ -191,14 +191,4 @@ final class RoomTable extends PowerGridComponent
             $this->toast('Deletion Failed', 'info', 'Incorrect password entered');
         }
     }
-
-    #[On('statusChanged')]
-    public function statusChanged($status, $id) {
-        $room = Room::findOrFail($id);
-
-        if (Auth::user()->role == User::ROLE_FRONTDESK || Auth::user()->role == User::ROLE_ADMIN) {
-            $room->status = $status;
-            $room->save();
-        }
-    }
 }

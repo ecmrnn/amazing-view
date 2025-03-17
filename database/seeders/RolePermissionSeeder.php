@@ -79,7 +79,7 @@ class RolePermissionSeeder extends Seeder
             'read reservations',
         ];
 
-        $frontdesk_permissions = [
+        $receptionist_permissions = [
             'read guests',
             'update guest',
 
@@ -153,12 +153,12 @@ class RolePermissionSeeder extends Seeder
 
         // Create Roles
         $guest = Role::create(['name' => 'guest']);
-        $frontdesk = Role::create(['name' => 'frontdesk']);
+        $receptionist = Role::create(['name' => 'receptionist']);
         $admin = Role::create(['name' => 'admin']);
 
         // Sync Permissions with Roles
         $guest->syncPermissions($guest_permissions);
-        $frontdesk->syncPermissions($frontdesk_permissions);
+        $receptionist->syncPermissions($receptionist_permissions);
         $admin->syncPermissions($admin_permissions);
     }
 }

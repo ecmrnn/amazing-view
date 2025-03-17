@@ -47,10 +47,10 @@
         @endcan
     </div>
 
-    @if (Auth::user()->role == \App\Models\User::ROLE_ADMIN)
+    @role('admin')
         <div class="pt-2 border-t border-slate-200">
             <x-tooltip text="Users" dir="right">
-                <x-app-nav-link x-ref="content" :active="Request::is('app/users*')" href="{{ route('app.users.index') }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-3 p-3">
+                <x-app-nav-link x-ref="content" :active="Request::is('app/users*')" href="{{ route('app.users.index', ['role' => \App\Enums\UserRole::ALL->value, 'status' => \App\Enums\UserStatus::ACTIVE->value]) }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-3 p-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     <span x-show="expanded" class="text-xs font-semibold">Users</span>
                 </x-app-nav-link>
@@ -70,7 +70,7 @@
                 </x-app-nav-link>
             </x-tooltip>
         </div>
-    @endif
+    @endrole
 @elseif ($screen == 'mobile')
     <div class="grid w-full">
         <x-app-nav-link x-ref="content" :active="Request::is('dashboard')" href="{{ route('dashboard') }}" class="flex items-center gap-3 p-3">
@@ -104,7 +104,7 @@
         @endcan
     </div>
 
-    @if (Auth::user()->role == \App\Models\User::ROLE_ADMIN)
+    @role('admin')
         <div class="grid w-full pt-2 my-2 border-t border-slate-200">
             <x-app-nav-link x-ref="content" :active="Request::is('app/users*')" href="{{ route('app.users.index') }}" class="flex items-center gap-3 p-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -126,5 +126,5 @@
                 <span class="text-xs font-semibold">Profile</span>
             </x-app-nav-link>
         </div>
-    @endif
+    @endrole
 @endif

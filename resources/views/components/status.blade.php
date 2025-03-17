@@ -1,6 +1,17 @@
 @props([
     'status' => '',
-    'type' => '', /* reservation | room | invoice | page | featured_service | testimonial | milestone */
+    'type' => '',
+    /**
+     * Possible values for 'type' are:
+     * - reservation
+     * - room
+     * - invoice
+     * - page
+     * - featured_service
+     * - testimonial
+     * - milestone
+     * - user
+      */
 ])
 
 @php

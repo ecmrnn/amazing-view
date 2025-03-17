@@ -7,6 +7,7 @@ namespace App\Models;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -14,13 +15,7 @@ use Illuminate\Validation\Rules\Password;
 
 class User extends Authenticatable
 {
-    use HasRoles, HasFactory, Notifiable;
-
-    public const ROLE_GUEST = 0;
-    public const ROLE_FRONTDESK = 1;
-    public const ROLE_ADMIN = 2;
-    public const STATUS_ACTIVE = 0;
-    public const STATUS_INACTIVE = 1;
+    use HasRoles, HasFactory, Notifiable, SoftDeletes;
     
     protected $guarded = [];
 

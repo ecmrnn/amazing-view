@@ -8,7 +8,6 @@ use Livewire\Component;
 class ShowUsers extends Component
 {
     public $user_by_status = [
-        'all' => 0,
         'active' => 0,
         'inactive' => 0,
     ];

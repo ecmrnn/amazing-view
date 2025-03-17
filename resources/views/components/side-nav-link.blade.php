@@ -1,8 +1,16 @@
-@props(['status'])
+@props([
+    'status' => null,
+    'role' => 999,
+])
 
 <a 
     @php
         $active_status = isset($_GET['status']) ? $_GET['status'] : '';
+
+        if (isset($_GET['role']) && empty($status)) {
+            $active_status = isset($_GET['role']) ? $_GET['role'] : '';
+            $status = $role;
+        }
     @endphp
 
     wire:navigate

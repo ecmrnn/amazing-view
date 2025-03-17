@@ -2,7 +2,7 @@
     <border class="flex items-center justify-between p-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center gap-3 sm:gap-5">
             <x-tooltip text="Back" dir="bottom">
-                <a x-ref="content" href="{{ route('app.users.index')}}" wire:navigate>
+                <a x-ref="content" href="{{ route('app.users.index', ['role' => \App\Enums\UserRole::ALL->value, 'status' => \App\Enums\UserStatus::ACTIVE->value]) }}" wire:navigate>
                     <x-icon-button>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
                     </x-icon-button>
@@ -72,9 +72,9 @@
                         <x-form.input-label for="role">Select a role</x-form.input-label>
                         <x-form.select wire:model.live='role' id="role">
                             <option value="">Select a Role</option>
-                            <option value="0">Guest</option>
-                            <option value="1">Receptionist</option>
-                            <option value="2">Admin</option>
+                            <option value="{{ \App\Enums\UserRole::GUEST->value }}">Guest</option>
+                            <option value="{{ \App\Enums\UserRole::RECEPTIONIST->value }}">Receptionist</option>
+                            <option value="{{ \App\Enums\UserRole::ADMIN->value }}">Admin</option>
                         </x-form.select>
                         <x-form.input-error field="role" />
                     </x-form.input-group>

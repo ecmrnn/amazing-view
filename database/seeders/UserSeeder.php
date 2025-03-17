@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\User;
 use Faker\Factory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -21,21 +23,21 @@ class UserSeeder extends Seeder
             'last_name' => 'dela cruz',
             'address' => $faker->address(),
             'phone' => '09' . $faker->randomNumber(9, true),
-            'role' => 0,
-            'status' => 0,
+            'role' => UserRole::GUEST,
+            'status' => UserStatus::ACTIVE,
             'email' => 'guest@test.com',
             'password' => bcrypt('guest123'),
         ]);
         
-        $frontdesk = User::create([
+        $receptionist = User::create([
             'first_name' => 'ec',
             'last_name' => 'maranan',
             'address' => $faker->address(),
             'phone' => '09' . $faker->randomNumber(9, true),
-            'role' => 1,
-            'status' => 0,
-            'email' => 'frontdesk@test.com',
-            'password' => bcrypt('frontdesk123'),
+            'role' => UserRole::RECEPTIONIST,
+            'status' => UserStatus::ACTIVE,
+            'email' => 'receptionist@test.com',
+            'password' => bcrypt('receptionist123'),
         ]);
 
         $admin = User::create([
@@ -43,8 +45,8 @@ class UserSeeder extends Seeder
             'last_name' => 'maranan',
             'address' => $faker->address(),
             'phone' => '09' . $faker->randomNumber(9, true),
-            'role' => 2,
-            'status' => 0,
+            'role' => UserRole::ADMIN,
+            'status' => UserStatus::ACTIVE,
             'email' => 'admin@test.com',
             'password' => bcrypt('admin123'),
         ]);
@@ -54,31 +56,15 @@ class UserSeeder extends Seeder
             'last_name' => 'doe',
             'address' => $faker->address(),
             'phone' => '09' . $faker->randomNumber(9, true),
-            'role' => 2,
-            'status' => 0,
+            'role' => UserRole::ADMIN,
+            'status' => UserStatus::ACTIVE,
             'email' => 'admin2@test.com',
             'password' => bcrypt('admin123'),
         ]);
 
         $guest->assignRole('guest');
-        $frontdesk->assignRole('frontdesk');
+        $receptionist->assignRole('receptionist');
         $admin->assignRole('admin');
         $admin2->assignRole('admin');
-
-        // $users = User::factory(20)->create();
-
-        // foreach ($users as $user) {
-        //     switch ($user->role) {
-        //         case 0:
-        //             $user->assignRole('guest');
-        //             break;
-        //         case 1:
-        //             $user->assignRole('frontdesk');
-        //             break;
-        //         case 2:
-        //             $user->assignRole('admin');
-        //             break;
-        //     }
-        // }
     }
 }

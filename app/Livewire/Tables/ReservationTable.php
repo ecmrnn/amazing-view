@@ -173,33 +173,6 @@ final class ReservationTable extends PowerGridComponent
         ]);
     }
 
-    #[On('statusChanged')]
-    public function statusChanged($status, $id) {
-        $reservation = Reservation::findOrFail($id);
-
-        if (!empty($reservation)) {
-            if (Auth::user()->role == User::ROLE_FRONTDESK || Auth::user()->role == User::ROLE_ADMIN) {
-                $reservation->status = $status;
-                
-                $reservation->save();
-    
-                if ($reservation->status == ReservationStatus::CHECKED_IN) {
-                    foreach ($reservation->rooms as $room) {
-                        $room->status = RoomStatus::OCCUPIED;
-                        $room->save();
-                    }
-                }
-    
-                $this->toast('Success!', description: 'Reservation status updated successfully.');
-                $this->dispatch('status-changed');
-                $this->dispatch('pg:eventRefresh-ReservationTable');
-                $this->redirect(route('app.reservations.index', ['status' => $this->status]));
-            }
-        } else {
-            $this->toast('Error!', description: 'Reservation not found.');
-        }
-    }
-
     #[On('delete-reservation')]
     public function deleteReservation($id) {
         $this->validate(['password' => $this->rules()['password']]);

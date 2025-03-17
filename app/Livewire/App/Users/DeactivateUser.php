@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Users;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Auth;
@@ -35,10 +36,10 @@ class DeactivateUser extends Component
         $admin = Auth::user();
 
         if (Hash::check($this->password_deactivate, $admin->password)) {
-            // deactivate user
-            $user = User::query()->find($this->user->id)->update([
-                'status' => User::STATUS_INACTIVE
-            ]);
+            $user = User::query()->find($this->user->id);
+            $user->status = UserStatus::INACTIVE;
+            $user->save();
+            $user->delete();
 
             if ($user) {
                 $this->toast('User Deactivated', 'success', 'User successfully deactivated!');

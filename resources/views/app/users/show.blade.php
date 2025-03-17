@@ -104,7 +104,7 @@
                     </article>
                 </section>
 
-                @if ($user->status == App\Models\User::STATUS_INACTIVE)
+                @if ($user->status == App\Enums\UserStatus::INACTIVE->value)
                     <x-note>
                         <p class="max-w-xs">This user is deactivated and does not have access to any resources of the system.</p>
                     </x-note>
@@ -120,7 +120,7 @@
                 <livewire:tables.guest-reservation-table :user="$user" />
             </div>
 
-            @if ($user->status == App\Models\User::STATUS_ACTIVE)
+            @if ($user->status == App\Enums\UserStatus::ACTIVE->value)
                 {{-- Deactivate --}}
                 <section class="p-3 space-y-5 rounded-lg bg-red-200/50 sm:p-5">
                     <hgroup>

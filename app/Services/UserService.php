@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\UserRole;
 use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -22,11 +23,11 @@ class UserService
 
             // Assign permission to roles
             switch ($data['role']) {
-                case User::ROLE_ADMIN:
+                case UserRole::ADMIN->value:
                     $user->assignRole('admin');
                     break;
-                case User::ROLE_FRONTDESK:
-                    $user->assignRole('frontdesk');
+                case UserRole::RECEPTIONIST->value:
+                    $user->assignRole('receptionist');
                     break;
                 default:
                     $user->assignRole('guest');

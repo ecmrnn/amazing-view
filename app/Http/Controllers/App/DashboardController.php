@@ -39,7 +39,9 @@ class DashboardController extends Controller
         ];
 
         // Dashboard content for frontdesks
-        if (Auth::user()->role == User::ROLE_FRONTDESK) {
+        $user = Auth::user();
+
+        if ($user->hasRole('receptionist')) {
             $guest_in = Reservation::where('status', ReservationStatus::CHECKED_IN)->count();
             $available_rooms = Room::where('status', RoomStatus::AVAILABLE)
                 ->count();
@@ -84,7 +86,7 @@ class DashboardController extends Controller
             ];
 
             $view = 'app.dashboard.frontdesk';
-        } elseif (Auth::user()->role == User::ROLE_ADMIN) {
+        } elseif ($user->hasRole('admin')) {
             $view = 'app.dashboard.admin';            
             $months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
             $reservation_count = Reservation::whereStatus(ReservationStatus::PENDING)->count();

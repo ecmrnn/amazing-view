@@ -19,7 +19,7 @@ class CreateUser extends Component
     #[Validate] public $phone;
     #[Validate] public $email;
     #[Validate] public $address;
-    #[Validate] public $role = 0;
+    #[Validate] public $role = 1;
     #[Validate] public $password;
     #[Validate] public $password_confirmation;
 

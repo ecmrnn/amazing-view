@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\User;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
@@ -10,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
@@ -29,6 +32,8 @@ final class UserTable extends PowerGridComponent
     public $user;
     public $key;
     #[Validate] public $password;
+    #[Url] public $status;
+    #[Url] public $role;
 
     public string $tableName = 'UserTable';
 
@@ -55,8 +60,21 @@ final class UserTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return User::query()->whereStatus(User::STATUS_ACTIVE)->orderByDesc('created_at');
+        $query = User::query();
+
+        // Handle status filtering
+        if (isset($this->status) && $this->status == UserStatus::INACTIVE->value) {
+            $query->onlyTrashed();
+        }
+
+        // Handle role filtering
+        if (isset($this->role) && $this->role != UserRole::ALL->value) {
+            $query->whereRole($this->role);
+        }
+
+        return $query->orderByDesc('created_at');
     }
+
 
     public function relationSearch(): array
     {
@@ -151,8 +169,9 @@ final class UserTable extends PowerGridComponent
                 return;
             }
 
-            $user->status = User::STATUS_INACTIVE;
+            $user->status = UserStatus::INACTIVE;
             $user->save();
+            $user->delete();
 
             if ($user) {
                 $this->fillData();
