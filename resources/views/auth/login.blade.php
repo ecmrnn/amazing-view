@@ -10,38 +10,25 @@
                 <x-application-logo />
             </hgroup>
             <!-- Email Address -->
-            <div class="space-y-2">
-                <x-form.input-text
-                    label="Email"
-                    id="email"
-                    class="block w-full mt-1"
-                    type="text"
-                    name="email"
-                    :value="old('email')"
-                />
+            <x-form.input-group>
+                <x-form.input-label for="email">Enter your email</x-form.input-label>
+                <x-form.input-text label="amazing@view.com" id="email" class="block w-full mt-1" type="text" name="email" :value="old('email')" />
                 <x-form.input-error field="email" />
-            </div>
+            </x-form.input-group>
             
             <!-- Password -->
-            <div class="space-y-2">
-                <x-form.input-text
-                    label="Password"
-                    id="password"
-                    class="block w-full mt-1"
-                    type="password"
-                    name="password"
-                />
+            <x-form.input-group>
+                <x-form.input-label for="password">Enter your password</x-form.input-label>
+                <x-form.input-text label="••••••••" id="password" class="block w-full mt-1" type="password" name="password" />
                 <x-form.input-error field="password" />
-            </div>
+            </x-form.input-group>
             
             <!-- Remember Me -->
             <div class="block">
                 <x-form.input-checkbox id="remember_me" label="Remember me" />
             </div>
             
-            <x-primary-button class="block w-full">
-                Sign in
-            </x-primary-button>
+            <x-primary-button class="block w-full">Sign in</x-primary-button>
 
             <div>
                 @if (Route::has('password.request'))

@@ -629,18 +629,20 @@
                 <p class="text-xs">The number of seniors and PWDs are limited to the number of guests you have.</p>
             </hgroup>
 
-            <x-form.input-group>
-                <x-form.input-label for='senior_count'>Number of Seniors</x-form.input-label>
-                <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Seniors" />
-                <x-form.input-error field="senior_count" />
-            </x-form.input-group>
-
-            <x-form.input-group>
-                <x-form.input-label for='pwd_count'>Number of PWDs</x-form.input-label>
-                <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="PWD" />
-                <x-form.input-error field="pwd_count" />
-            </x-form.input-group>
-
+            <div class="grid grid-cols-2 gap-5">
+                <x-form.input-group>
+                    <x-form.input-label for='senior_count'>Number of Seniors</x-form.input-label>
+                    <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Seniors" />
+                </x-form.input-group>
+                <x-form.input-group>
+                    <x-form.input-label for='pwd_count'>Number of PWDs</x-form.input-label>
+                    <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="PWD" />
+                </x-form.input-group>
+            </div>
+            
+            <x-form.input-error field="senior_count" />
+            <x-form.input-error field="pwd_count" />
+            
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
                 <x-primary-button type="button" wire:click='applyDiscount'>Save</x-primary-button>

@@ -6,7 +6,7 @@
                 <x-form.input-error field="reservation_id" />
             </div>
 
-            <x-primary-button type="submit" class="w-full">Search</x-primary-button>
+            <x-primary-button type="submit">Search</x-primary-button>
         </form>
     @endif
 

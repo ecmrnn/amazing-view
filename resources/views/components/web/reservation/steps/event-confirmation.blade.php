@@ -1,5 +1,5 @@
 {{-- Loader --}}
-<div class="fixed top-0 left-0 z-50 w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='submit'>
+<div class="fixed top-0 left-0 z-[9999] w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='submit'>
     <div class="grid h-screen place-items-center">
         <div>
             <p class="text-2xl font-bold text-center">Loading, please wait</p>

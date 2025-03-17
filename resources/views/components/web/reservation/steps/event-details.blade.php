@@ -1,5 +1,5 @@
 {{-- Loader --}}
-<div class="fixed top-0 left-0 z-50 w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='submit'>
+<div class="fixed top-0 left-0 z-[9999] w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='submit'>
     <div class="grid h-screen place-items-center">
         <div>
             <p class="text-2xl font-bold text-center">Loading, please wait</p>
@@ -29,7 +29,7 @@
     </div>
 
     <x-form.form-section>
-        <x-form.form-header title='Event Details' />
+        <x-form.form-header title='Event Details' subtitle="Describe your event" />
     
         <x-form.form-body>
             <div class="p-5 pt-0 space-y-3">
@@ -52,7 +52,7 @@
     </x-form.form-section>
     
     <x-form.form-section>
-        <x-form.form-header title='Contact Details' />
+        <x-form.form-header title='Contact Details' subtitle="Enter your information" />
     
         <x-form.form-body>
             <div class="p-5 pt-0 space-y-3">
