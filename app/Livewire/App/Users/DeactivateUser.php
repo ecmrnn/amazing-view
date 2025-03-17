@@ -55,23 +55,23 @@ class DeactivateUser extends Component
     public function render()
     {
         return <<<'HTML'
-        <section class="p-5 space-y-5 bg-white" x-on:user-deactivated.window="show = false">
+        <form wire:submit="deactivateUser" class="p-5 space-y-5" x-on:user-deactivated.window="show = false">
             <hgroup>
-                <h2 class="font-semibold text-center text-red-500 capitalize">Deactivate User</h2>
-                <p class="max-w-sm text-sm text-center">Are you sure you really want to deactivate <strong class="text-blue-500">{{ ucwords($user->first_name) }}</strong>?</p>
+                <h2 class="text-lg font-semibold text-red-500">Deactivate User</h2>
+                <p class="text-sm">Are you sure you really want to deactivate <strong class="text-blue-500">{{ ucwords($user->first_name) }}</strong>?</p>
             </hgroup>
 
-            <div class="space-y-2">
-                <p class="text-xs">Enter your password to deactivate this user.</p>
-                <x-form.input-text wire:model="password_deactivate" type="password" label="Password" id="password-{{ $user->id }}" />
+            <x-form.input-group>
+                <x-form.input-label for="password-deactivate-{{ $user->id }}">Enter your password</x-form.input-label>
+                <x-form.input-text wire:model="password_deactivate" type="password" label="Password" id="password-deactivate-{{ $user->id }}" />
                 <x-form.input-error field="password_deactivate" />
-            </div>
+            </x-form.input-group>
             
-            <div class="flex items-center justify-center gap-1">
-                <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
-                <x-danger-button type="button" wire:click='deactivateUser'>Yes, Deactivate</x-danger-button>
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                <x-danger-button>Deactivate</x-danger-button>
             </div>
-        </section>
+        </form>
         HTML;
     }
 }

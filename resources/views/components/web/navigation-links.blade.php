@@ -108,7 +108,7 @@ class="relative z-10 w-auto">
                     </div>
                 </a>
             </div>
-            <div class="flex flex-col justify-between p-5 bg-slate-50">
+            <div class="flex flex-col justify-between p-5 bg-slate-50 rounded-e-lg">
                 @auth
                     <hgroup>
                         <h2 class="font-semibold capitalize">Hello, {{ Auth::user()->first_name }}!</h2>

@@ -45,8 +45,6 @@ final class UserTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckBox();
-
         return [
             Header::make()
                 ->showSearchInput(),
@@ -72,6 +70,13 @@ final class UserTable extends PowerGridComponent
             ->add('first_name', fn($user) => e(ucwords($user->first_name)))
             ->add('last_name', fn($user) => e(ucwords($user->last_name)))
             ->add('address')
+            ->add('address_formatted', function ($user) {
+                if (!empty($user->address)) {
+                    return Blade::render('<span class="line-clamp-1 hover:line-clamp-none">' . $user->address . '</span>');
+                }
+
+                return Blade::render('<span class="text-xs text-zinc-800/50">---</span>');
+            })
             ->add('phone')
             ->add('email')
             ->add('role')
@@ -93,14 +98,12 @@ final class UserTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
             
-            Column::make('Address', 'address', 'address'),
+            Column::make('Address', 'address_formatted', 'address'),
 
             Column::make('Phone', 'phone', 'phone')
-                ->sortable()
                 ->searchable(),
             
             Column::make('Email', 'email', 'email')
-                ->sortable()
                 ->searchable(),
             
             Column::make('Role', 'role_formatted', 'role')
@@ -141,19 +144,25 @@ final class UserTable extends PowerGridComponent
         $admin = Auth::user();
 
         if (Hash::check($this->password, $admin->password)) {
-            // deactivate user
-            $user = User::query()->find($id)->update([
-                'status' => User::STATUS_INACTIVE
-            ]);
+            $user = User::find($id);
+
+            if ($user->id == Auth::user()->id) {
+                $this->toast('Deactivation Failed', 'warning', 'Action not allowed!');
+                return;
+            }
+
+            $user->status = User::STATUS_INACTIVE;
+            $user->save();
 
             if ($user) {
                 $this->fillData();
                 $this->toast('User Deactivated', 'success', 'User successfully deactivated!');
                 $this->dispatch('pg:eventRefresh-UserTable');
                 $this->dispatch('user-deactivated');
-                // reset
                 $this->reset('password');
             }
+        } else {
+            $this->addError('password', 'Password mismatched, try again!');
         }
     }
 

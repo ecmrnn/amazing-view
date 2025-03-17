@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Validation\Rules\Password;
 
 class User extends Authenticatable
 {
@@ -36,7 +37,12 @@ class User extends Authenticatable
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'nullable',
             'role' => 'required',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'confirmed', Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+            ],
         ];
 
         if (!empty($excepts)) {

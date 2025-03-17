@@ -11,9 +11,9 @@
             <div class="flex items-center">
                 @can('create reservation')
                     <x-tooltip text="Check-in Guest" dir="bottom">
-                        <button x-ref="content" x-on:click="$dispatch('open-modal', 'show-check-in-modal')" class="grid w-10 my-1 rounded-md aspect-square place-items-center hover:bg-slate-50 focus:text-zinc-800 focus:border-blue-500">
+                        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'show-check-in-modal')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
-                        </button>
+                        </x-icon-button>
                     </x-tooltip>
                 @endcan
 

@@ -3,9 +3,12 @@
 namespace App\Livewire\App\Users;
 
 use App\Models\User;
+use App\Services\UserService;
 use App\Traits\DispatchesToast;
+use Livewire\Attributes\Renderless;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use phpDocumentor\Reflection\Types\This;
 
 class CreateUser extends Component
 {
@@ -19,8 +22,15 @@ class CreateUser extends Component
     #[Validate] public $role = 0;
     #[Validate] public $password;
     #[Validate] public $password_confirmation;
+
     // Operations
-    public $account_details = false;
+    public $checks = [
+        'min' => false,
+        'uppercase' => false,
+        'lowercase' => false,
+        'numbers' => false,
+        'symbols' => false,
+    ];
 
     public function rules() {
         return User::rules();
@@ -34,14 +44,12 @@ class CreateUser extends Component
         return User::validationAttributes();
     }
 
-    public function accountDetails() {
-        $this->validate([
-            'first_name' => $this->rules()['first_name'],
-            'last_name' => $this->rules()['last_name'],
-            'phone' => $this->rules()['phone'],
-        ]);
+    public function validatePassword() {
+        $service = new UserService;
+        $this->checks = $service->validatePassword($this->password);
 
-        $this->account_details = true;
+        // Prevent triggering validation of other fields
+        $this->resetErrorBag('password', 'password_confirmation');
     }
 
     public function createUser() {
@@ -58,7 +66,7 @@ class CreateUser extends Component
     }
     
     public function store() {
-        $user = $this->validate([
+        $validated = $this->validate([
             'first_name' => $this->rules()['first_name'],
             'last_name' => $this->rules()['last_name'],
             'phone' => $this->rules()['phone'],
@@ -67,9 +75,11 @@ class CreateUser extends Component
             'password' => $this->rules()['password'],
         ]);
 
-        User::create($user);
+        $service = new UserService;
+        $service->create($validated);
 
-        $this->toast('User Created!', 'success', 'User created successfully');    
+        $this->toast('User Created!', description: 'User created successfully');    
+        $this->dispatch('user-created');
         $this->reset();
     }
 
