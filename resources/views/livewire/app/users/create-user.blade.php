@@ -16,7 +16,10 @@
         </div>
 
         <x-actions>
-            Hello
+            <x-action-button x-on:click="$dispatch('open-modal', 'reset-user')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <p>Reset</p>
+            </x-action-button>
         </x-actions>
     </border>
 
@@ -166,4 +169,20 @@
             </div>
         </x-modal.full> 
     </form>
+
+    <x-modal.full name='reset-user' maxWidth='sm'>
+        <form wire:submit='resetUser' class="p-5 space-y-5" x-on:form-reset.window="show = false">
+            <hgroup>
+                <h2 class="text-lg font-semibold text-red-500">Reset User</h2>
+                <p class="text-xs">Are you sure you want to reset this form?</p>
+            </hgroup>
+
+            <x-loading wire:loading wire:target='resetUser'>Resetting form, please wait</x-loading>
+            
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button">Cancel</x-secondary-button>
+                <x-danger-button>Reset</x-danger-button>
+            </div>
+        </form>
+    </x-modal.full>
 </div>

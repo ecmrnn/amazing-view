@@ -44,6 +44,13 @@ class CreateUser extends Component
         return User::validationAttributes();
     }
 
+    public function resetUser() {
+        $this->reset();
+        $this->resetErrorBag();
+        $this->dispatch('form-reset');
+        $this->toast('Success!', description: 'Enter a new user details');
+    }
+
     public function validatePassword() {
         $service = new UserService;
         $this->checks = $service->validatePassword($this->password);
