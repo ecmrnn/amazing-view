@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -75,4 +76,23 @@ class UserService
         return $checks;
     }
     
+    public function deactivate(User $user) {
+        DB::transaction(function () use ($user) {
+            $user->status = UserStatus::INACTIVE;
+            $user->save();
+            $user->delete();
+
+            return $user;
+        });
+    }
+
+    public function activate(User $user) {
+        DB::transaction(function () use ($user) {
+            $user->restore();
+            
+            $user->status = UserStatus::ACTIVE;
+            $user->save();
+            return $user;
+        });
+    }
 }

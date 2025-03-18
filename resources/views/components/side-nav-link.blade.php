@@ -5,10 +5,11 @@
 
 <a 
     @php
-        $active_status = isset($_GET['status']) ? $_GET['status'] : '';
+        logger(request()->query());
+        $active_status = request('status') ? request('status') : '';
 
-        if (isset($_GET['role']) && empty($status)) {
-            $active_status = isset($_GET['role']) ? $_GET['role'] : '';
+        if (request('role') && empty($status)) {
+            $active_status = request('role') ? request('role') : '';
             $status = $role;
         }
     @endphp

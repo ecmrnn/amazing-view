@@ -22,7 +22,7 @@
             </x-tooltip>
         
             <div>
-                <h2 class="text-lg font-semibold">{{ $user->name() }}</h2>
+                <h2 class="text-lg font-semibold">{{ $user->first_name . ' ' . $user->last_name }}</h2>
                 <p class="max-w-sm text-xs">{{ $user->email }}</p>
             </div>
         </div>

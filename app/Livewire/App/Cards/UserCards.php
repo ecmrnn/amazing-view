@@ -10,15 +10,15 @@ use Livewire\Component;
 
 class UserCards extends Component
 {
-    protected $listeners = ['user-deactivated' => '$refresh'];
+    protected $listeners = [
+        'user-status-changed' => '$refresh'
+    ];
 
     public function render()
     {
-        $total_accounts = User::count();
-        $active_accounts = User::select(DB::raw('count(*) as count'))
-            ->whereStatus(UserStatus::ACTIVE)
-            ->first();
-        $deactivated_accounts = $total_accounts - $active_accounts->count;
+        $total_accounts = User::withTrashed()->count();
+        $active_accounts = User::count();
+        $deactivated_accounts = User::onlyTrashed()->count();
         $guest_accounts = User::select(DB::raw('count(*) as count'))
             ->whereRole(UserRole::GUEST)
             ->first();

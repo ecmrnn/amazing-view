@@ -1,18 +1,7 @@
 <div class="flex flex-col gap-5 md:flex-row">
     <aside class="space-y-5 shrink-0 min-w-52">
         <p class="text-xs font-semibold">Filter User Status</p>
-
-        @php
-            $status = 0;
-            $role = 4;
-            
-            if (isset($_GET['status'])) {
-                $status = $_GET['status'];
-            }
-            if (isset($_GET['role'])) {
-                $role = $_GET['role'];
-            }
-        @endphp
+        
         <ul>
             <li>
                 <x-side-nav-link :status="\App\Enums\UserStatus::ACTIVE->value" href="{{ route('app.users.index', ['role' => $role, 'status' => \App\Enums\UserStatus::ACTIVE->value]) }}">
@@ -87,7 +76,13 @@
         
         {{-- Room  Table --}}
         <div class="p-5 bg-white border rounded-lg border-slate-200">
-            <livewire:tables.user-table />
+            @if ($user_count > 0)
+                <livewire:tables.user-table />
+            @else
+                <div class="font-semibold text-center">
+                    <x-table-no-data.user />
+                </div>
+            @endif
         </div>
     </div>
 </div>

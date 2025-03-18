@@ -5,18 +5,17 @@ namespace App\Livewire\Tables;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
+use App\Services\AuthService;
+use App\Services\UserService;
 use App\Traits\DispatchesToast;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Hash;
-use Livewire\Attributes\On;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
-use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
@@ -75,6 +74,10 @@ final class UserTable extends PowerGridComponent
         return $query->orderByDesc('created_at');
     }
 
+    public function noDataLabel(): string|View
+    { 
+        return view('components.table-no-data.user');
+    }
 
     public function relationSearch(): array
     {
@@ -96,6 +99,9 @@ final class UserTable extends PowerGridComponent
                 return Blade::render('<span class="text-xs text-zinc-800/50">---</span>');
             })
             ->add('phone')
+            ->add('phone_formatted', function ($user) {
+                return substr($user->phone, 0, 4) . ' ' . substr($user->phone, 4, 3) . ' ' . substr($user->phone, 7);
+            })
             ->add('email')
             ->add('role')
             ->add('role_formatted', function($user) {
@@ -108,17 +114,17 @@ final class UserTable extends PowerGridComponent
     {
         return [
             // Column::make('Id', 'id'),
-            Column::make('First Name', 'first_name')
+            Column::make('First Name', 'first_name', 'first_name')
                 ->sortable()
                 ->searchable(),
             
-            Column::make('Last Name', 'last_name')
+            Column::make('Last Name', 'last_name', 'last_name')
                 ->sortable()
                 ->searchable(),
             
             Column::make('Address', 'address_formatted', 'address'),
 
-            Column::make('Phone', 'phone', 'phone')
+            Column::make('Phone', 'phone_formatted', 'phone')
                 ->searchable(),
             
             Column::make('Email', 'email', 'email')
@@ -149,35 +155,32 @@ final class UserTable extends PowerGridComponent
     {
         return view('components.table-actions.user', [
             'row' => $row,
-            'edit_link' => 'app.users.edit',
-            'view_link' => 'app.users.show',
         ]);
     }
 
-    public function deactivateUser($id) {
+    public function deactivateUser(Request $request, $id) {
         $this->validate([
             'password' => $this->rules()['password'],
         ]);
 
-        $admin = Auth::user();
+        $auth = new AuthService;
 
-        if (Hash::check($this->password, $admin->password)) {
+        if ($auth->validatePassword($this->password)) {
             $user = User::find($id);
-
+            $service = new UserService;
+            
             if ($user->id == Auth::user()->id) {
-                $this->toast('Deactivation Failed', 'warning', 'Action not allowed!');
+                $this->toast('Deactivation Failed', 'warning', 'You cannot deactivate your own account!');
+                $this->reset('password');
                 return;
             }
 
-            $user->status = UserStatus::INACTIVE;
-            $user->save();
-            $user->delete();
+            $service->deactivate($user);
 
             if ($user) {
                 $this->fillData();
-                $this->toast('User Deactivated', 'success', 'User successfully deactivated!');
-                $this->dispatch('pg:eventRefresh-UserTable');
-                $this->dispatch('user-deactivated');
+                $this->toast('User Deactivated', description: 'User successfully deactivated!');
+                $this->dispatch('user-status-changed');
                 $this->reset('password');
             }
         } else {
@@ -185,15 +188,26 @@ final class UserTable extends PowerGridComponent
         }
     }
 
-    /*
-    public function actionRules($row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
+    public function activateUser($id) {
+        $this->validate([
+            'password' => $this->rules()['password'],
+        ]);
+
+        $auth = new AuthService;
+
+        if ($auth->validatePassword($this->password)) {
+            $user = User::withTrashed()->find($id);
+            $service = new UserService;
+            $service->activate($user);
+            
+            if ($user) {
+                $this->fillData();
+                $this->toast('User Activated', description: 'User successfully activated!');
+                $this->dispatch('user-status-changed');
+                $this->reset('password');
+            }
+        } else {
+            $this->addError('password', 'Password mismatched, try again!');
+        }
     }
-    */
 }

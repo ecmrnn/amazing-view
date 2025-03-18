@@ -90,7 +90,7 @@ class Report extends Model
             $model->rid = IdGenerator::generate([
                 'table' => 'reports',
                 'field' => 'rid',
-                'length' => 12,
+                'length' => 10,
                 'prefix' => date('REymd'),
                 'reset_on_prefix_change' => true
             ]);

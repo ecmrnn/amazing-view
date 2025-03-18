@@ -13,8 +13,10 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AppendDefaultUserFilters;
 use App\Http\Middleware\CheckPageStatus;
 use Illuminate\Support\Facades\Route;
+use League\CommonMark\Extension\DefaultAttributes\ApplyDefaultAttributesProcessor;
 
 // Public Routes
 Route::middleware([CheckPageStatus::class])->name('guest.')->group(function () {
@@ -39,7 +41,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:frontdesk|admin')->prefix('app')->name('app.')->group(function () {
         // Guests type route
         Route::resource('/guests', GuestController::class);
-        Route::get('/guests/check-out/{reservation}', [ReservationController::class, 'checkOut'])->name('reservation.check-out');
 
         // Reservation type route
         Route::resource('/reservations', ReservationController::class);
@@ -56,7 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Admin specific routes
         Route::middleware('role:admin')->group(function () {
             // User route
-            Route::resource('/users', UserController::class);
+            Route::resource('/users', UserController::class)->middleware([AppendDefaultUserFilters::class]);
 
             // Report route
             Route::resource('/reports', ReportController::class);

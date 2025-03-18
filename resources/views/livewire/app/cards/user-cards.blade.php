@@ -9,7 +9,7 @@
         </x-slot:icon>
     </x-app.card>
     <x-app.card
-        :data="$active_accounts->count"
+        :data="$active_accounts"
         label="Active Accounts"
         :hasLink="false"
         >
