@@ -40,7 +40,7 @@
             <section class="p-5 space-y-5" x-on:user-status-changed.window="show = false">
                 <hgroup>
                     <h2 class="text-lg font-semibold text-red-500">Deactivate User</h2>
-                    <p class="text-sm">This user is about to lose access to the system</p>
+                    <p class="text-xs">This user is about to lose access to the system</p>
                 </hgroup>
     
                 <x-form.input-group>
@@ -64,7 +64,7 @@
             <section class="p-5 space-y-5" x-on:user-status-changed.window="show = false">
                 <hgroup>
                     <h2 class="text-lg font-semibold">Activate User</h2>
-                    <p class="text-sm">This user is about to gain access to your system.</p>
+                    <p class="text-xs">This user is about to gain access to your system.</p>
                 </hgroup>
     
                 <x-form.input-group>

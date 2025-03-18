@@ -81,6 +81,10 @@
                     $label = 'Inactive';
                     $class = 'text-red-800 border-red-500 bg-red-50';
                     break;
+                case 'user':
+                    $label = 'Active';
+                    $class = 'text-green-800 border-green-500 bg-green-50';
+                    break;
             }
             break;
         case 2:
@@ -100,6 +104,10 @@
                 case 'page':
                     $label = 'Maintenance';
                     $class = 'text-amber-800 border-amber-500 bg-amber-50';
+                    break;
+                case 'user':
+                    $label = 'Inactive';
+                    $class = 'text-red-800 border-red-500 bg-red-50';
                     break;
             }
             break;

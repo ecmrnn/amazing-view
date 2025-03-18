@@ -3,6 +3,8 @@
 namespace App\Livewire\App\Users;
 
 use App\Models\User;
+use App\Services\AuthService;
+use App\Services\UserService;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -11,24 +13,32 @@ class EditUser extends Component
 {
     use DispatchesToast;
 
+    protected $listeners = [
+        'user-deactivated' => '$refresh',  
+        'user-activated' => '$refresh',  
+    ];
+
     public $user;
     #[Validate] public $first_name;
     #[Validate] public $last_name;
     #[Validate] public $phone;
     #[Validate] public $email;
     #[Validate] public $address;
-    #[Validate] public $role = 0;
+    #[Validate] public $role;
+    #[Validate] public $password;
 
     public function rules() {
-        return User::rules(['password']);
+        $rules = User::rules();
+        $rules['password'] = 'required';
+        return $rules;
     }
 
     public function messages() {
-        return User::messages(['password']);
+        return User::messages();
     }
 
     public function validationAttributes() {
-        return User::validationAttributes(['password']);
+        return User::validationAttributes();
     }
 
     public function mount(User $user) {
@@ -41,11 +51,12 @@ class EditUser extends Component
         $this->role = $user->role;
     }
 
-    public function createUser() {
+    public function submit() {
         $this->validate([
             'first_name' => $this->rules()['first_name'],
             'last_name' => $this->rules()['last_name'],
             'phone' => $this->rules()['phone'],
+            'address' => $this->rules()['address'],
             'role' => $this->rules()['role'],
         ]);
 
@@ -53,20 +64,31 @@ class EditUser extends Component
     }
     
     public function update() {
-        $this->validate([
+        $validated = $this->validate([
             'first_name' => $this->rules()['first_name'],
             'last_name' => $this->rules()['last_name'],
             'phone' => $this->rules()['phone'],
+            'address' => $this->rules()['address'],
             'role' => $this->rules()['role'],
         ]);
 
-        $this->user->first_name = $this->first_name;
-        $this->user->last_name = $this->last_name;
-        $this->user->phone = $this->phone;
-        $this->user->role = $this->role;
-        $this->user->save();
+        $this->validate([
+            'password' => $this->rules()['password']
+        ]);
 
-        $this->toast('Success!', 'success', 'User details updated successfully');    
+        $auth = new AuthService;
+
+        if ($auth->validatePassword($this->password)) {
+            $service = new UserService;
+            $service->update($this->user, $validated);
+
+            $this->toast('Success!', 'success', 'User details updated successfully');    
+            $this->dispatch('user-updated');
+            $this->reset('password');
+            return;
+        } 
+
+        $this->addError('password', 'Password mismatched, try again!');
     }
 
     public function render()

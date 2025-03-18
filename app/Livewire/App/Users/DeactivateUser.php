@@ -4,6 +4,7 @@ namespace App\Livewire\App\Users;
 
 use App\Enums\UserStatus;
 use App\Models\User;
+use App\Services\UserService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -36,15 +37,19 @@ class DeactivateUser extends Component
         $admin = Auth::user();
 
         if (Hash::check($this->password_deactivate, $admin->password)) {
-            $user = User::query()->find($this->user->id);
-            $user->status = UserStatus::INACTIVE;
-            $user->save();
-            $user->delete();
+            $user = User::find($this->user->id);
 
+            if ($user->id == Auth::user()->id) {
+                $this->toast('Deactivation Failed', 'warning', 'You cannot deactivate your own account!');
+                $this->reset('password_deactivate');
+                return;
+            }
+            
             if ($user) {
+                $service = new UserService;
+                $service->deactivate($user);
                 $this->toast('User Deactivated', 'success', 'User successfully deactivated!');
                 $this->dispatch('user-deactivated');
-                // reset
                 $this->reset('password_deactivate');
             }
         }       
@@ -59,7 +64,7 @@ class DeactivateUser extends Component
         <form wire:submit="deactivateUser" class="p-5 space-y-5" x-on:user-deactivated.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold text-red-500">Deactivate User</h2>
-                <p class="text-sm">Are you sure you really want to deactivate <strong class="text-blue-500">{{ ucwords($user->first_name) }}</strong>?</p>
+                <p class="text-xs">This user is about to lose access to the system</p>
             </hgroup>
 
             <x-form.input-group>
@@ -67,6 +72,8 @@ class DeactivateUser extends Component
                 <x-form.input-text wire:model="password_deactivate" type="password" label="Password" id="password-deactivate-{{ $user->id }}" />
                 <x-form.input-error field="password_deactivate" />
             </x-form.input-group>
+
+            <x-loading wire:loading wire:target='deactivateUser'>Deactivating user, please wait</x-loading>
             
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>

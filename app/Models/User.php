@@ -4,19 +4,21 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\RateLimiter;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Validation\Rules\Password;
 
 class User extends Authenticatable
 {
     use HasRoles, HasFactory, Notifiable, SoftDeletes;
-    
+
     protected $guarded = [];
 
     protected $hidden = [
@@ -26,8 +28,8 @@ class User extends Authenticatable
 
     public static function rules(array $excepts = []) {
         $rules = [
-            'first_name' => 'required|min:2',
-            'last_name' => 'required|min:2',
+            'first_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-]+$/u|max:255',
+            'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-]+$/u|max:255',
             'email' => 'required|unique:users,email|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'nullable',
@@ -45,7 +47,7 @@ class User extends Authenticatable
                 unset($rules[$field]);
             }
         } 
-
+        
         return $rules ;
     }
 
@@ -53,9 +55,11 @@ class User extends Authenticatable
         $messages = [
             'first_name.required' => 'Enter a :attribute',
             'first_name.min' => 'Minimum length of :attribute is 2',
-
+            'first_name.regex' => 'Name can only contain letters, hyphens, and apostrophes',
+            
             'last_name.required' => 'Enter a :attribute',
             'last_name.min' => 'Minimum length of :attribute is 2',
+            'last_name.regex' => 'Name can only contain letters, hyphens, and apostrophes',
 
             'phone.required' => 'Enter a :attribute',
             'phone.min' => 'The length of :attribute must be 11',

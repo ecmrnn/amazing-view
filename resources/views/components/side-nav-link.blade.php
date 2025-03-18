@@ -5,7 +5,6 @@
 
 <a 
     @php
-        logger(request()->query());
         $active_status = request('status') ? request('status') : '';
 
         if (request('role') && empty($status)) {
