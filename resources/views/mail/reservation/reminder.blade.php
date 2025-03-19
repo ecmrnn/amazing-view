@@ -14,7 +14,7 @@
         <main class="py-10 space-y-5">
             <h1 class="font-bold text-md">Amazing vacation ahead!</h1>
 
-            <p>Hi <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>!
+            <p>Hi <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>!
                 <br></br>
                 We are excited to welcome you to Amazing View Mountain Farm Resort soon! This is a friendly reminder about your upcoming stay with us.
             </p>

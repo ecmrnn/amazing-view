@@ -14,7 +14,7 @@
         <main class="py-10 space-y-5">
             <h1 class="text-lg"><span class="font-bold">Your reservation has expired!</h1>
 
-            <p>Hi <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>!
+            <p>Hi <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>!
                 <br /><br />
                 We hope this message finds you well. We are writing to inform you that your reservation at Amazing View Mountain Farm Resort has expired.
                 <br /><br />

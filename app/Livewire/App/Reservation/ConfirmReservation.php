@@ -69,7 +69,7 @@ class ConfirmReservation extends Component
         $service->confirm($this->reservation, $data);
 
         // Send email about confirmed reservation
-        Mail::to($this->reservation->email)->queue(new Confirmed($this->reservation));
+        Mail::to($this->reservation->user->email)->queue(new Confirmed($this->reservation));
 
         $this->toast('Success!', description: 'Reservation confirmed!');
         $this->dispatch('reservation-confirmed');

@@ -159,14 +159,14 @@ class Reservation extends Model
                 'reset_on_prefix_change' => true
             ]);
 
-            $reservation->first_name = trim(strtolower($reservation->first_name));
-            $reservation->last_name = trim(strtolower($reservation->last_name));
+            $reservation->user->first_name = trim(strtolower($reservation->user->first_name));
+            $reservation->user->last_name = trim(strtolower($reservation->user->last_name));
             $reservation->note = htmlentities(str_replace('"', "'", $reservation->note));
         });
 
         self::updating(function ($reservation) {
-            $reservation->first_name = trim(strtolower($reservation->first_name));
-            $reservation->last_name = trim(strtolower($reservation->last_name));
+            $reservation->user->first_name = trim(strtolower($reservation->user->first_name));
+            $reservation->user->last_name = trim(strtolower($reservation->user->last_name));
             $reservation->note = htmlentities(str_replace('"', "'", $reservation->note));
 
             if (empty($reservation->rid)) {

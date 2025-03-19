@@ -24,12 +24,12 @@
     <section x-data="{ show: false }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center gap-5">
             <div class="grid font-bold text-white bg-blue-500 rounded-md aspect-square w-14 place-items-center">
-                <p class="text-xl">{{ ucwords($invoice->reservation->first_name[0]) . ucwords($invoice->reservation->last_name[0]) }}</p>
+                <p class="text-xl">{{ ucwords($invoice->reservation->user->first_name[0]) . ucwords($invoice->reservation->user->last_name[0]) }}</p>
             </div>
 
             <hgroup>
                 <h2 class="text-lg font-semibold capitalize">
-                    {{ $invoice->reservation->first_name . ' ' . $invoice->reservation->last_name }}</h2>
+                    {{ $invoice->reservation->user->first_name . ' ' . $invoice->reservation->user->last_name }}</h2>
                 <p class="text-xs">Full Name</p>
             </hgroup>
         </div>
@@ -37,16 +37,16 @@
         <div class="grid gap-5 lg:grid-cols-2">
             <div class="grid gap-5 p-5 border rounded-md lg:grid-cols-2 border-slate-200">
                 <div>
-                    <p class="font-semibold">{{ $invoice->reservation->email }}</p>
+                    <p class="font-semibold">{{ $invoice->reservation->user->email }}</p>
                     <p class="text-xs">Email</p>
                 </div>
 
                 <div>
-                    <p class="font-semibold">{{ $invoice->reservation->phone }}</p>
+                    <p class="font-semibold">{{ $invoice->reservation->user->phone }}</p>
                     <p class="text-xs">Contact No.</p>
                 </div>
                 <div class="lg:hidden">
-                    <p class="font-semibold">{{ $invoice->reservation->address }}</p>
+                    <p class="font-semibold">{{ $invoice->reservation->user->address }}</p>
                     <p class="text-xs">Address</p>
                 </div>
             </div>

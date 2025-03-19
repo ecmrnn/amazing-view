@@ -36,7 +36,7 @@ class EditInvoice extends Component
         $this->invoice = $invoice;
         $this->issue_date = $invoice->issue_date;
         $this->due_date = $invoice->due_date;
-        $this->email = $invoice->reservation->email;
+        $this->email = $invoice->reservation->user->email;
         $this->items = collect();
     }
 

@@ -110,8 +110,8 @@ class DashboardController extends Controller
                 ->get();
 
             // Monthly New Guests
-            $monthly_new_guests = Reservation::select(DB::raw('count(email) as new_guests'))
-                ->whereMonth('date_in', Carbon::now()->format('m'))
+            $monthly_new_guests = User::select(DB::raw('count(email) as new_guests'))
+                ->whereMonth('created_at', Carbon::now()->format('m'))
                 ->distinct()
                 ->first();
 

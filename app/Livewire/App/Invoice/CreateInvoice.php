@@ -42,7 +42,7 @@ class CreateInvoice extends Component
         if ($this->reservation) {
             $date_out = $this->reservation->resched_date_out ?? $this->reservation->date_out;
 
-            $this->email = $this->reservation->email;
+            $this->email = $this->reservation->user->email;
             $this->due_date = Carbon::parse($date_out)->addWeek()->format('Y-m-d');
             $this->toast('Success!', description: 'Reservation found!');
             $this->dispatch('reservation-found', $this->reservation);

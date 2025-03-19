@@ -25,7 +25,7 @@ class SendReservationEmail extends Component
     public function mount($reservation)
     {
         $this->reservation = $reservation;
-        $this->email = $reservation->email;
+        $this->email = $reservation->user->email;
     }
 
     public function rules() {

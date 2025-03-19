@@ -14,7 +14,7 @@
         <main class="py-10 space-y-5">
             <h1 class="text-lg"><span class="font-bold">You have missed your reservation.</h1>
 
-            <p>Hi <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>!</p>
+            <p>Hi <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>!</p>
                 
             <p>We hope this message finds you well. We regret to inform you that we noticed you did not check in for your reservation at Amazing View Mountain Farm Resort on October 26, 2024.</p>
 

@@ -60,19 +60,19 @@
         <div>
             <div class="grid grid-cols-2 gap-5 p-5 rounded-md bg-slate-50">
                 <div>
-                    <p class="font-semibold capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</p>
+                    <p class="font-semibold capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</p>
                     <p class="text-xs">Name</p>
                 </div>
                 <div>
-                    <p class="font-semibold">{{ $reservation->address }}</p>
+                    <p class="font-semibold">{{ $reservation->user->address }}</p>
                     <p class="text-xs">Address</p>
                 </div>
                 <div>
-                    <p class="font-semibold">{{ $reservation->email }}</p>
+                    <p class="font-semibold">{{ $reservation->user->email }}</p>
                     <p class="text-xs">Email</p>
                 </div>
                 <div>
-                    <p class="font-semibold">{{ $reservation->phone }}</p>
+                    <p class="font-semibold">{{ $reservation->user->phone }}</p>
                     <p class="text-xs">Contact Number</p>
                 </div>
             </div>

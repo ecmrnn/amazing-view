@@ -269,7 +269,7 @@ class BillingService
     }
 
     public function downloadPdf(Invoice $invoice) {
-        $filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->last_name) . '_' . strtoupper($invoice->reservation->first_name) . '.pdf';
+        $filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->user->last_name) . '_' . strtoupper($invoice->reservation->user->first_name) . '.pdf';
         $path = 'public/pdf/invoice/' . $filename;
 
         if (Storage::exists($path)) {

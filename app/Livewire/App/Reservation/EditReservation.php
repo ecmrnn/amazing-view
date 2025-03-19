@@ -127,11 +127,11 @@ class EditReservation extends Component
         $this->senior_count = $this->reservation->senior_count;
         $this->pwd_count = $this->reservation->pwd_count;
         // Guest Details
-        $this->first_name = $this->reservation->first_name;
-        $this->last_name = $this->reservation->last_name;
-        $this->phone = $this->reservation->phone;
-        $this->email = $this->reservation->email;
-        $this->address = $this->reservation->address;
+        $this->first_name = $this->reservation->user->first_name;
+        $this->last_name = $this->reservation->user->last_name;
+        $this->phone = $this->reservation->user->phone;
+        $this->email = $this->reservation->user->email;
+        $this->address = $this->reservation->user->address;
         $this->cars = collect();
 
         if (!empty($this->reservation->cars)) {

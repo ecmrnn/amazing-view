@@ -14,15 +14,15 @@
         <main class="py-10 space-y-5">
             <h1 class="text-md"><span class="font-bold">Reservation ID:</span> {{ $reservation->rid }}</h1>
 
-            <p>Good day, <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
+            <p>Good day, <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
 
             <h2 class="font-bold">Guest Details</h2>
 
             <div>
-                <p><strong class="font-bold capitalize">Name:</strong> <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span></p>
-                <p><strong class="font-bold">Contact Number:</strong> {{ $reservation->phone }}</p>
-                <p><strong class="font-bold">Email:</strong> {{ $reservation->email }}</p>
-                <p><strong class="font-bold capitalize">Address:</strong> {{ $reservation->address }}</p>
+                <p><strong class="font-bold capitalize">Name:</strong> <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span></p>
+                <p><strong class="font-bold">Contact Number:</strong> {{ $reservation->user->phone }}</p>
+                <p><strong class="font-bold">Email:</strong> {{ $reservation->user->email }}</p>
+                <p><strong class="font-bold capitalize">Address:</strong> {{ $reservation->user->address }}</p>
             </div>
 
             <h2 class="font-bold">Reservation Details</h2>

@@ -112,11 +112,11 @@ final class ReservationTable extends PowerGridComponent
             })
             ->add('first_name')
             ->add('first_name_formatted', function ($reservation) {
-                return ucwords(strtolower($reservation->first_name));
+                return ucwords(strtolower($reservation->user->first_name));
             })
             ->add('last_name')
             ->add('last_name_formatted', function ($reservation) {
-                return ucwords(strtolower($reservation->last_name));
+                return ucwords(strtolower($reservation->user->last_name));
             });
     }
 

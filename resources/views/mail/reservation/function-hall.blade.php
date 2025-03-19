@@ -14,7 +14,7 @@
         <main class="py-10 space-y-5">
             <h1 class="text-lg font-semibold">We have received your request for reservation!</h1>
 
-            <p>Hello, <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>!</p>
+            <p>Hello, <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>!</p>
             <p>We are thrilled to inform you that we have received your request to reserve our function hall for your upcoming event. We are excited to be a part of your special occasion!</p>
 
             <h2 class="font-bold">Reservation Details</h2>

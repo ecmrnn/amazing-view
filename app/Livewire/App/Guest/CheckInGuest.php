@@ -96,7 +96,7 @@ class CheckInGuest extends Component
 
                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                         <div>
-                            <p class="font-semibold capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</p>
+                            <p class="font-semibold capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</p>
                             <p class="flex justify-between text-xs capitalize">Name</p>
                         </div>
 

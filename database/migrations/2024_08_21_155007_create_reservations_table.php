@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->string('rid')->nullable();
-            $table->foreignIdFor(User::class)->nullable()->constrained();
+            $table->foreignIdFor(User::class)->constrained();
             $table->date('date_in');
             $table->date('date_out');
 
@@ -36,11 +36,11 @@ return new class extends Migration
             $table->text('note')->nullable();
             
             // Optional parameter for reservation records
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('address')->nullable();
-            $table->string('email')->nullable();
+            // $table->string('first_name')->nullable();
+            // $table->string('last_name')->nullable();
+            // $table->string('phone')->nullable();
+            // $table->string('address')->nullable();
+            // $table->string('email')->nullable();
             $table->timestamp('canceled_at')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->softDeletes();

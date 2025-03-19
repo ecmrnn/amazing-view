@@ -31,7 +31,7 @@ class GenerateInvoicePDF implements ShouldQueue
      */
     public function __construct(public Invoice $invoice)
     {
-        $this->filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->last_name) . '_' . strtoupper($invoice->reservation->first_name) . '.pdf';
+        $this->filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->last_name) . '_' . strtoupper($invoice->reservation->user->first_name) . '.pdf';
         $this->path = 'storage/app/public/pdf/invoice/' . $this->filename;
     }
 

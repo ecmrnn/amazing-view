@@ -17,15 +17,15 @@
                 <p class="text-xs">Updated at: {{ date_format(date_create($reservation->updated_at), 'F j, Y - h:i A') }}</p>
             </div>
 
-            <p>Hi <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>! <br/><br /> We are pleased to confirm the updates to your reservation at Amazing View Mountain Farm Resort. Below are the revised details of your stay:</p>
+            <p>Hi <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>! <br/><br /> We are pleased to confirm the updates to your reservation at Amazing View Mountain Farm Resort. Below are the revised details of your stay:</p>
 
             <h2 class="font-bold">Guest Details</h2>
 
             <div>
-                <p><strong class="font-bold">Name: </strong> <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span></p>
-                <p><strong class="font-bold">Contact Number:</strong> {{ $reservation->phone }}</p>
-                <p><strong class="font-bold">Email:</strong> {{ $reservation->email }}</p>
-                <p><strong class="font-bold">Address:</strong> {{ $reservation->address }}</p>
+                <p><strong class="font-bold">Name: </strong> <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span></p>
+                <p><strong class="font-bold">Contact Number:</strong> {{ $reservation->user->phone }}</p>
+                <p><strong class="font-bold">Email:</strong> {{ $reservation->user->email }}</p>
+                <p><strong class="font-bold">Address:</strong> {{ $reservation->user->address }}</p>
             </div>
 
             <h2 class="font-bold">Reservation Details</h2>

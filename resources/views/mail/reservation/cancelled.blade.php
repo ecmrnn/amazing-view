@@ -15,9 +15,9 @@
             <h1 class="text-lg"><span class="font-bold">Your reservation has been cancelled.</h1>
 
             @if ($reservation->cancelled->canceled_by == 'guest')
-                <p>Hi <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>! We have successfully processed your cancellation request for your reservation at Amazing View Mountain Farm Resort. We are sorry to see you go and hope to welcome you back in the future.</p>
+                <p>Hi <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>! We have successfully processed your cancellation request for your reservation at Amazing View Mountain Farm Resort. We are sorry to see you go and hope to welcome you back in the future.</p>
             @else
-                <p>Dear <span class="capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>, <br /></p>
+                <p>Dear <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>, <br /></p>
                 <p>We regret to inform you that your reservation has been cancelled by our management. The reason for this cancellation is: <strong class="font-bold">{{ $reservation->cancelled->reason }}</strong>.</p>
                 <p>We sincerely apologize for any inconvenience this may cause. If you have any questions or need further assistance, please do not hesitate to reach out to us. We are here to help and hope to have the opportunity to welcome you to Amazing View Mountain Resort in the future.</p>
             @endif

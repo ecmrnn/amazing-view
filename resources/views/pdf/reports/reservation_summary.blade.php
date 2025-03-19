@@ -21,11 +21,11 @@
                     @foreach ($reservations as $reservation)
                         <tr class="border-b border-slate-200 last:border-b-0 odd:bg-slate-100">
                             <td class="px-4 py-3 text-xs font-semibold text-center border-x border-slate-200">{{ $reservation->rid }}</td>
-                            <td class="px-2 py-3 text-xs capitalize border-r border-slate-200">{{ $reservation->first_name }}</td>
-                            <td class="px-2 py-3 text-xs capitalize border-r border-slate-200">{{ $reservation->last_name }}</td>
+                            <td class="px-2 py-3 text-xs capitalize border-r border-slate-200">{{ $reservation->user->first_name }}</td>
+                            <td class="px-2 py-3 text-xs capitalize border-r border-slate-200">{{ $reservation->user->last_name }}</td>
                             <td class="px-2 py-3 text-xs border-r border-slate-200">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</td>
                             <td class="px-2 py-3 text-xs border-r border-slate-200">{{ date_format(date_create($reservation->date_our), 'F j, Y') }}</td>
-                            <td class="px-2 py-3 text-xs border-r border-slate-200">{{ substr($reservation->phone, 0, 4) . ' ' . substr($reservation->phone, 4, 3) . ' ' . substr($reservation->phone, 7) }}</td>
+                            <td class="px-2 py-3 text-xs border-r border-slate-200">{{ substr($reservation->user->phone, 0, 4) . ' ' . substr($reservation->user->phone, 4, 3) . ' ' . substr($reservation->user->phone, 7) }}</td>
                         </tr>
                     @endforeach
                     <td class="px-2 py-3 text-xs text-center" colspan="6">Nothing follows...</td>

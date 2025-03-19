@@ -51,11 +51,11 @@
                                 
                                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                                     <div>
-                                        <p class="text-sm font-semibold capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</p>
+                                        <p class="text-sm font-semibold capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</p>
                                         <p class="text-xs">Name</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-semibold capitalize">{{ $reservation->phone }}</p>
+                                        <p class="text-sm font-semibold capitalize">{{ $reservation->user->phone }}</p>
                                         <p class="text-xs">Phone Number</p>
                                     </div>
                                 </div>

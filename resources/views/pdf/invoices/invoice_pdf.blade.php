@@ -26,13 +26,13 @@
         <div class="p-5 space-y-5 rounded-lg bg-slate-50">
             <div>
                 <h2 class="text-xs font-semibold">Bill to</h2>
-                <p class="text-lg font-semibold capitalize">{{ $invoice->reservation->first_name . ' ' . $invoice->reservation->last_name }}</p>
+                <p class="text-lg font-semibold capitalize">{{ $invoice->reservation->user->first_name . ' ' . $invoice->reservation->user->last_name }}</p>
             </div>
             
             <div>
-                <p class="capitalize">{{ $invoice->reservation->address }}</p>
-                <p>{{ $invoice->reservation->phone }}</p>
-                <p>{{ $invoice->reservation->email }}</p>
+                <p class="capitalize">{{ $invoice->reservation->user->address }}</p>
+                <p>{{ $invoice->reservation->user->phone }}</p>
+                <p>{{ $invoice->reservation->user->email }}</p>
             </div>
         </div>
 

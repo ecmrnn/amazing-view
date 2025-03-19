@@ -132,7 +132,7 @@
                 <p class="text-xs">Reservation ID</p>
             </div>
             <div class="w-full">
-                <h2 class="font-semibold">{{ $invoice->reservation->email }}</h2>
+                <h2 class="font-semibold">{{ $invoice->reservation->user->email }}</h2>
                 <p class="text-xs">Billing Recepient</p>
             </div>
             @if ($invoice->status != App\Enums\InvoiceStatus::ISSUED->value)

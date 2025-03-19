@@ -70,7 +70,7 @@ class FindReservation extends Component
         $otp = implode($this->otp_input);
         
         if (implode($this->otp_input) >= 100000 && implode($this->otp_input) <= 999999) {
-            if (MailOtp::check($this->reservation->email, $otp)) {
+            if (MailOtp::check($this->reservation->user->email, $otp)) {
                 $this->is_authorized = 'authorized';
                 $this->toast('Success!', 'success', 'OTP is correct.');
                 $this->dispatch('otp-checked');
@@ -102,7 +102,7 @@ class FindReservation extends Component
     }
     
     public function sendOtp() {
-        $otp_record = Otp::where('email', $this->reservation->email)
+        $otp_record = Otp::where('email', $this->reservation->user->email)
             ->whereDate('created_at', now()->toDateString())
             ->first();
 
@@ -113,7 +113,7 @@ class FindReservation extends Component
 
         $this->remaining_otp = $otp_record ? ($this->otp_per_day - $otp_record->request_count) : $this->otp_per_day;
 
-        $this->otp = MailOtp::send($this->reservation->email);
+        $this->otp = MailOtp::send($this->reservation->user->email);
         $this->toast('Success!', description: 'OTP sent successfully.');
         $this->dispatch('otp-sent');
         $this->timer = 300;
@@ -157,7 +157,7 @@ class FindReservation extends Component
         $this->reservation = Reservation::where('rid', $this->reservation_id)->first();
         
         if ($this->reservation != null) {
-            $otp_record = Otp::where('email', $this->reservation->email)
+            $otp_record = Otp::where('email', $this->reservation->user->email)
                 ->whereDate('created_at', now()->toDateString())
                 ->first();
 
@@ -166,7 +166,7 @@ class FindReservation extends Component
                 return;
             }
 
-            $this->encrypted_email = preg_replace('/(?<=...).(?=.*@)/u', '*', $this->reservation->email);
+            $this->encrypted_email = preg_replace('/(?<=...).(?=.*@)/u', '*', $this->reservation->user->email);
 
             if (!empty($this->reservation->expires_at)) {
                 $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');

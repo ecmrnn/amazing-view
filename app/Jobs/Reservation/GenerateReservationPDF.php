@@ -29,7 +29,7 @@ class GenerateReservationPDF implements ShouldQueue
      */
     public function __construct(public Reservation $reservation)
     {
-        $this->filename = $reservation->rid . ' - ' . strtoupper($reservation->last_name) . '_' . strtoupper($reservation->first_name) . '.pdf';
+        $this->filename = $reservation->rid . ' - ' . strtoupper($reservation->user->last_name) . '_' . strtoupper($reservation->user->first_name) . '.pdf';
         $this->path = 'storage/app/public/pdf/reservation/' . $this->filename;
     }
 

@@ -77,12 +77,12 @@ final class InvoiceTable extends PowerGridComponent
                 ');
             })
 
-            ->add('name', fn($invoice) => e(ucwords(strtolower($invoice->reservation->first_name)) . ' ' . ucwords(strtolower($invoice->reservation->last_name))))
+            ->add('name', fn($invoice) => e(ucwords(strtolower($invoice->reservation->user->first_name)) . ' ' . ucwords(strtolower($invoice->reservation->user->last_name))))
 
             ->add('email')
             ->add('email_formatted', function ($invoice) {
                 return Blade::render('
-                    <a class="text-blue-500 underline underline-offset-4" href="mailto:' . $invoice->reservation->email . '">' . $invoice->reservation->email . '</a>
+                    <a class="text-blue-500 underline underline-offset-4" href="mailto:' . $invoice->reservation->user->email . '">' . $invoice->reservation->user->email . '</a>
                 ');
             })
 
