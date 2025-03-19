@@ -11,6 +11,7 @@
      * - testimonial
      * - milestone
      * - user
+     * - session
       */
 ])
 
@@ -20,7 +21,6 @@
     switch ($status) {
         case 0:
             switch ($type) {
-                // Green
                 case 'reservation':
                     $label = 'Confirmed';
                     $class = 'text-green-800 border-green-500 bg-green-50';
@@ -47,6 +47,10 @@
                     break;
                 case 'milestone':
                     $label = 'Active';
+                    $class = 'text-green-800 border-green-500 bg-green-50';
+                    break;
+                case 'session':
+                    $label = 'Online';
                     $class = 'text-green-800 border-green-500 bg-green-50';
                     break;
             }
@@ -84,6 +88,10 @@
                 case 'user':
                     $label = 'Active';
                     $class = 'text-green-800 border-green-500 bg-green-50';
+                    break;
+                case 'session':
+                    $label = 'Offline';
+                    $class = 'text-stone-800 border-stone-500 bg-stone-200';
                     break;
             }
             break;
@@ -178,9 +186,6 @@
         case 10:
             $label = 'Rescheduled';
             $class = 'text-indigo-800 border-indigo-500 bg-indigo-50';
-            break;
-        default:
-            # code...
             break;
     }
 @endphp

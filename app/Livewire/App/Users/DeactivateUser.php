@@ -50,6 +50,7 @@ class DeactivateUser extends Component
                 $service->deactivate($user);
                 $this->toast('User Deactivated', 'success', 'User successfully deactivated!');
                 $this->dispatch('user-deactivated');
+                $this->dispatch('force-logout-user');
                 $this->reset('password');
             }
         }       

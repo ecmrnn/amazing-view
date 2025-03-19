@@ -2,10 +2,13 @@
 
 namespace App\Livewire\App\Users;
 
+use App\Enums\SessionStatus;
 use App\Models\User;
 use App\Services\AuthService;
 use App\Services\UserService;
 use App\Traits\DispatchesToast;
+use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -19,6 +22,7 @@ class EditUser extends Component
     ];
 
     public $user;
+    public $session_status;
     #[Validate] public $first_name;
     #[Validate] public $last_name;
     #[Validate] public $phone;
@@ -42,13 +46,25 @@ class EditUser extends Component
     }
 
     public function mount(User $user) {
-        $this->user = $user;
         $this->first_name = $user->first_name;
         $this->last_name = $user->last_name;
         $this->phone = $user->phone;
         $this->email = $user->email;
         $this->address = $user->address;
         $this->role = $user->role;
+        
+        $this->getSessionStatus();
+    }
+
+    #[On('force-logout-user')]
+    public function getSessionStatus() {
+        $this->session_status = SessionStatus::OFFLINE->value;
+        
+        $session = DB::table('sessions')->where('user_id', $this->user->id)->first();
+        
+        if (!empty($session)) {
+            $this->session_status = SessionStatus::ONLINE->value;
+        }
     }
 
     public function submit() {

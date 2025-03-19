@@ -86,6 +86,8 @@ class UserService
     }
     
     public function deactivate(User $user) {
+        $this->forceLogout($user);
+        
         DB::transaction(function () use ($user) {
             $user->status = UserStatus::INACTIVE;
             $user->save();
@@ -122,5 +124,9 @@ class UserService
                     ? back()->with('status', __($status))
                     : back()->withInput($request->only('email'))
                             ->withErrors(['email' => __($status)]);
+    }
+
+    public function forceLogout(User $user) {
+        DB::table('sessions')->where('user_id', $user->id)->delete();
     }
 }

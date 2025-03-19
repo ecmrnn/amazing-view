@@ -9,9 +9,13 @@
                         </x-icon-button>
                     </a>
                 </x-tooltip>
-                <div>
-                    <h2 class="text-lg font-semibold capitalize">{{ $user->first_name . ' ' . $user->last_name }}</h2>
-                    <p class="max-w-sm text-xs">{{ $user->email }}</p>
+                <div class="flex items-center gap-5">
+                    <div>
+                        <h2 class="text-lg font-semibold capitalize">{{ $user->first_name . ' ' . $user->last_name }}</h2>
+                        <p class="max-w-sm text-xs">{{ $user->email }}</p>
+                    </div>
+
+                    <x-status type="session" :status="$session_status" />
                 </div>
             </div>
 
@@ -21,10 +25,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                         <p>Reset Password</p>
                     </x-action-button>
-                    <x-action-button>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                        <p>Force Logout</p>
-                    </x-action-button>
+                    @if ($session_status == \App\Enums\SessionStatus::ONLINE->value)
+                        <x-action-button x-on:click="$dispatch('open-modal', 'force-logout'); dropdown = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                            <p>Force Logout</p>
+                        </x-action-button>
+                    @endif
                     @if ($user->status == \App\Enums\UserStatus::INACTIVE->value)
                         <x-action-button x-on:click="$dispatch('open-modal', 'activate-user'); dropdown = false">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole-open"><circle cx="12" cy="16" r="1"/><rect width="18" height="12" x="3" y="10" rx="2"/><path d="M7 10V7a5 5 0 0 1 9.33-2.5"/></svg>
@@ -165,5 +171,10 @@
     {{-- Resetting password --}}
     <x-modal.full name='reset-password' maxWidth='sm'>
         <livewire:app.users.reset-password :user="$user" />
+    </x-modal.full>
+
+    {{-- Force Logout --}}
+    <x-modal.full name='force-logout' maxWidth='sm'>
+        <livewire:app.users.force-logout :user="$user" />
     </x-modal.full>
 </div>
