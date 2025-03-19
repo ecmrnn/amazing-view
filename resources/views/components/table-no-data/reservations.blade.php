@@ -6,7 +6,7 @@
     @can('create reservation')
         <a class="inline-block text-xs" href="{{ route('app.reservations.create') }}" wire:navigate.hover>
             <x-primary-button>
-                Click here to create one
+                Create Reservation
             </x-primary-button>
         </a>
     @endcan

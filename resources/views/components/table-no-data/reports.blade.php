@@ -6,7 +6,7 @@
     @can('create report')
         <div class="inline-block text-xs">
             <x-primary-button x-on:click="$dispatch('generate-report', { type: '' })">
-                Click here to create one
+                Generate Report
             </x-primary-button>
         </div>
     @endcan

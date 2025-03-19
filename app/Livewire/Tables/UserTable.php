@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\SessionStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
@@ -113,13 +115,20 @@ final class UserTable extends PowerGridComponent
             ->add('role_formatted', function($user) {
                 return Blade::render('<x-role role="{{ $user->role }}" />', ['user' => $user]);
             })
+            ->add('session_status', function ($user) {
+                $session = DB::table('sessions')->where('user_id', $user->id)->first();
+                $status = $session ? SessionStatus::ONLINE->value : SessionStatus::OFFLINE->value;
+                
+                return Blade::render('<x-status type="session" :status="' . $status . '" />');
+            })
             ->add('created_at');
     }
 
     public function columns(): array
     {
         return [
-            // Column::make('Id', 'id'),
+            Column::make('Status', 'session_status'),
+
             Column::make('First Name', 'first_name', 'first_name')
                 ->sortable()
                 ->searchable(),
