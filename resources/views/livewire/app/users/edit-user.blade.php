@@ -9,6 +9,7 @@
                         </x-icon-button>
                     </a>
                 </x-tooltip>
+                
                 <div class="flex items-center gap-5">
                     <div>
                         <h2 class="text-lg font-semibold capitalize">{{ $user->first_name . ' ' . $user->last_name }}</h2>

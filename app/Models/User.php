@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -114,11 +115,11 @@ class User extends Authenticatable
 
     public function role() {
         switch ($this->role) {
-            case 0:
+            case UserRole::GUEST->value:
                 return 'Guest';
-            case 1:
+            case UserRole::RECEPTIONIST->value:
                 return 'Receptionist';
-            case 2:
+            case UserRole::ADMIN->value:
                 return 'Admin';
         }
     }
@@ -131,7 +132,7 @@ class User extends Authenticatable
             $model->uid = IdGenerator::generate([
                 'table' => 'users',
                 'field' => 'uid',
-                'length' => 12,
+                'length' => 10,
                 'prefix' => 'U' . date('ymd'),
                 'reset_on_prefix_change' => true
             ]);

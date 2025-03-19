@@ -38,7 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Frontdesk & Admin
-    Route::middleware('role:frontdesk|admin')->prefix('app')->name('app.')->group(function () {
+    Route::middleware('role:receptionist|admin')->prefix('app')->name('app.')->group(function () {
         // Guests type route
         Route::resource('/guests', GuestController::class);
 

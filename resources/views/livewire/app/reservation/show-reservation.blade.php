@@ -19,32 +19,32 @@
                         App\Enums\ReservationStatus::CHECKED_IN->value,
                     ]))
                     <a href="{{ route('app.reservations.edit', ['reservation' => $reservation->rid]) }}" wire:navigate>
-                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
+                        <x-action-button>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
                             <p>Edit</p>
-                        </button>
+                        </x-action-button>
                     </a>
                 @endif
 
                 <a href="{{ route('app.billings.show' , ['billing' => $reservation->invoice->iid]) }}" wire:navigate>
-                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
+                    <x-action-button>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>
                         <p>View Bill</p>
-                    </button>
+                    </x-action-button>
                 </a>
 
                 @if ($reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT->value)
-                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-payment-reservation'); dropdown = false">
+                    <x-action-button x-on:click="$dispatch('open-modal', 'show-payment-reservation'); dropdown = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
                         <p>Add Payment</p>
-                    </button>
+                    </x-action-button>
                 @endif
 
                 @if ($reservation->status == App\Enums\ReservationStatus::PENDING->value)
-                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-downpayment-modal'); dropdown = false">
+                    <x-action-button x-on:click="$dispatch('open-modal', 'show-downpayment-modal'); dropdown = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
                         <p>Confirm</p>
-                    </button>
+                    </x-action-button>
                 @endif
                 
                 <button type="button" wire:click='downloadPdf' class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
@@ -52,27 +52,27 @@
                     <p>Download PDF</p>
                 </button>
     
-                <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-send-email-modal'); dropdown = false">
+                <x-action-button x-on:click="$dispatch('open-modal', 'show-send-email-modal'); dropdown = false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                     <p>Send Email</p>
-                </button>
+                </x-action-button>
             </div>
 
             <div class="w-full h-px bg-slate-200"></div>
 
             <div class="space-y-1">
                 @if ($reservation->status == App\Enums\ReservationStatus::CONFIRMED->value && $reservation->date_in == date_format(date_create(), 'Y-m-d'))
-                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-check-in-modal'); dropdown = false">
+                    <x-action-button x-on:click="$dispatch('open-modal', 'show-check-in-modal'); dropdown = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
                         <p>Check-in</p>
-                    </button>
+                    </x-action-button>
                 @endif
                 @if ($reservation->status == App\Enums\ReservationStatus::CHECKED_IN->value)
                     <a href="{{ route('app.reservation.check-out', ['reservation' => $reservation->rid]) }}" wire:navigate>
-                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
+                        <x-action-button>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
                             <p>Check-out</p>
-                        </button>
+                        </x-action-button>
                     </a>
                 @endif
 
@@ -82,18 +82,18 @@
                         App\Enums\ReservationStatus::AWAITING_PAYMENT->value
                     ]))
                     @can('cancel reservation')
-                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-cancel-reservation'); dropdown = false">
+                        <x-action-button x-on:click="$dispatch('open-modal', 'show-cancel-reservation'); dropdown = false">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
                             <p>Cancel</p>
-                        </button>
+                        </x-action-button>
                     @endcan
                 @endif
 
                 @if ($reservation->status == \App\Enums\ReservationStatus::EXPIRED->value)
-                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-reactivate-modal'); dropdown = false">
+                    <x-action-button x-on:click="$dispatch('open-modal', 'show-reactivate-modal'); dropdown = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                         <p>Reactivate</p>
-                    </button>
+                    </x-action-button>
                 @endif
 
                 @can('delete reservation')
