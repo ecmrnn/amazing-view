@@ -15,33 +15,33 @@ class DeactivateUser extends Component
     use DispatchesToast;
     
     public $user;
-    public $password_deactivate;
+    public $password;
 
     public function rules() {
-        return User::rules();
+        return [
+            'password' => 'required',
+        ];
     }
 
     public function messages() {
-        return User::messages();
+        return [
+            'password.required' => 'Enter your password',
+        ];
     }
     
-    public function validationAttributes() {
-        return User::validationAttributes();
-    }
-
     public function deactivateUser() {
         $this->validate([
-            'password_deactivate' => 'required',
+            'password' => $this->rules()['password'],
         ]);
 
         $admin = Auth::user();
 
-        if (Hash::check($this->password_deactivate, $admin->password)) {
+        if (Hash::check($this->password, $admin->password)) {
             $user = User::find($this->user->id);
 
             if ($user->id == Auth::user()->id) {
                 $this->toast('Deactivation Failed', 'warning', 'You cannot deactivate your own account!');
-                $this->reset('password_deactivate');
+                $this->reset('password');
                 return;
             }
             
@@ -50,7 +50,7 @@ class DeactivateUser extends Component
                 $service->deactivate($user);
                 $this->toast('User Deactivated', 'success', 'User successfully deactivated!');
                 $this->dispatch('user-deactivated');
-                $this->reset('password_deactivate');
+                $this->reset('password');
             }
         }       
     }
@@ -69,8 +69,8 @@ class DeactivateUser extends Component
 
             <x-form.input-group>
                 <x-form.input-label for="password-deactivate-{{ $user->id }}">Enter your password</x-form.input-label>
-                <x-form.input-text wire:model="password_deactivate" type="password" label="Password" id="password-deactivate-{{ $user->id }}" />
-                <x-form.input-error field="password_deactivate" />
+                <x-form.input-text wire:model="password" type="password" label="Password" id="password-deactivate-{{ $user->id }}" />
+                <x-form.input-error field="password" />
             </x-form.input-group>
 
             <x-loading wire:loading wire:target='deactivateUser'>Deactivating user, please wait</x-loading>

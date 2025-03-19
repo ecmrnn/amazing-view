@@ -4,10 +4,13 @@ namespace App\Services;
 
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
-use App\Models\Reservation;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class UserService
 {
@@ -100,5 +103,24 @@ class UserService
             $user->save();
             return $user;
         });
+    }
+
+    public function sendPasswordResetLink(Request $request, User $user) {
+        /**
+         *  This code is from a built-in controller
+         * 
+         *  @see \app\Http\Controllers\Auth\PasswordResetLinkController@store
+         * */
+        
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        logger($status . ' == ' . Password::RESET_LINK_SENT);
+
+        return $status == Password::RESET_LINK_SENT
+                    ? back()->with('status', __($status))
+                    : back()->withInput($request->only('email'))
+                            ->withErrors(['email' => __($status)]);
     }
 }

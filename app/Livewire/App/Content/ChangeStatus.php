@@ -24,6 +24,13 @@ class ChangeStatus extends Component
         ];
     }
 
+    public function messages() {
+        return [
+            'password.required' => 'Enter your password',
+            'status.required' => 'Select a status',
+        ];
+    }
+
     public function mount($page) {
         $this->page = $page;
         $this->statuses = collect([

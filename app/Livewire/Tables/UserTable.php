@@ -42,6 +42,12 @@ final class UserTable extends PowerGridComponent
         ];
     }
 
+    public function messages() {
+        return [
+            'password.required' => 'Enter your password',
+        ];
+    }
+
     public function boot(): void
     {
         config(['livewire-powergrid.filter' => 'outside']);

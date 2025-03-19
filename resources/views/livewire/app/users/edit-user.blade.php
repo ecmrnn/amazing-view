@@ -17,7 +17,7 @@
 
             <x-actions>
                 <div class="space-y-1">
-                    <x-action-button>
+                    <x-action-button x-on:click="$dispatch('open-modal', 'reset-password'); dropdown = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                         <p>Reset Password</p>
                     </x-action-button>
@@ -26,12 +26,12 @@
                         <p>Force Logout</p>
                     </x-action-button>
                     @if ($user->status == \App\Enums\UserStatus::INACTIVE->value)
-                        <x-action-button x-on:click="$dispatch('open-modal', 'activate-user')">
+                        <x-action-button x-on:click="$dispatch('open-modal', 'activate-user'); dropdown = false">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole-open"><circle cx="12" cy="16" r="1"/><rect width="18" height="12" x="3" y="10" rx="2"/><path d="M7 10V7a5 5 0 0 1 9.33-2.5"/></svg>
                             <p>Activate</p>
                         </x-action-button>
                     @else
-                        <x-action-button x-on:click="$dispatch('open-modal', 'deactivate-user')">
+                        <x-action-button x-on:click="$dispatch('open-modal', 'deactivate-user'); dropdown = false">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
                             <p>Deactivate</p>
                         </x-action-button>
@@ -154,11 +154,16 @@
 
     {{-- Deactivating user --}}
     <x-modal.full name='deactivate-user' maxWidth='sm'>
-        <livewire:app.users.deactivate-user :user="$user"  />
+        <livewire:app.users.deactivate-user :user="$user" />
     </x-modal.full>
 
     {{-- Activating user --}}
     <x-modal.full name='activate-user' maxWidth='sm'>
-        <livewire:app.users.activate-user :user="$user"  />
+        <livewire:app.users.activate-user :user="$user" />
+    </x-modal.full>
+
+    {{-- Resetting password --}}
+    <x-modal.full name='reset-password' maxWidth='sm'>
+        <livewire:app.users.reset-password :user="$user" />
     </x-modal.full>
 </div>

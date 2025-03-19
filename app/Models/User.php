@@ -67,6 +67,9 @@ class User extends Authenticatable
             
             'email.required' => 'Enter an :attribute',
             'email.email' => 'Enter a valid :attribute',
+
+            'password.required' => 'Enter your password',
+            'password.confirmed' => 'Password confirmation mismatched',
         ];
 
         if (!empty($excepts)) {
