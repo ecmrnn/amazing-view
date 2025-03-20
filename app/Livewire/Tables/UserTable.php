@@ -68,17 +68,13 @@ final class UserTable extends PowerGridComponent
     public function datasource(): Builder
     {
         $query = User::query();
-
-        // Handle status filtering
-        if (isset($this->status) && $this->status == UserStatus::INACTIVE->value) {
-            $query->onlyTrashed();
-        }
+        $query->whereStatus($this->status);
 
         // Handle role filtering
         if (isset($this->role) && $this->role != UserRole::ALL->value) {
             $query->whereRole($this->role);
         }
-
+        
         return $query->orderByDesc('created_at');
     }
 

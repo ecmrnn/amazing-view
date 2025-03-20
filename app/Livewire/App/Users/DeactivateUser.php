@@ -68,6 +68,12 @@ class DeactivateUser extends Component
                 <p class="text-xs">This user is about to lose access to the system</p>
             </hgroup>
 
+            @if ($user->hasRole('guest'))
+                <x-danger-message>
+                    <p class="text-xs">Deactivating this user will cancel all of their in process reservations</p>
+                </x-danger-message>
+            @endif
+
             <x-form.input-group>
                 <x-form.input-label for="password-deactivate-{{ $user->id }}">Enter your password</x-form.input-label>
                 <x-form.input-text wire:model="password" type="password" label="Password" id="password-deactivate-{{ $user->id }}" />

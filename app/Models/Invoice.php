@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InvoiceStatus;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -61,6 +62,11 @@ class Invoice extends Model
                     'reset_on_prefix_change' => true
                 ]);
             }
+        });
+
+        self::deleting(function ($invoice) {
+            $invoice->status = InvoiceStatus::CANCELED;
+            $invoice->save();
         });
     }
 }

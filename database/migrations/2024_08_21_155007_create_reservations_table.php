@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->string('rid')->nullable();
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->date('date_in');
             $table->date('date_out');
 

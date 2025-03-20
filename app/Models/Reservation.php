@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\InvoiceStatus;
+use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
+use App\Services\AmenityService;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -181,7 +185,26 @@ class Reservation extends Model
         });
 
         self::deleting(function ($reservation) {
+            // Sync the amenities
+            foreach ($reservation->rooms as $room) {
+                $room->pivot->status = ReservationStatus::CANCELED;
+                $room->pivot->save();
+                
+                $room->status = RoomStatus::AVAILABLE;
+                $room->save();                
+                
+                $amenity = new AmenityService;
+                $amenity->release($reservation, $room);
+            }
+
+            // Set the status of the invoice to cancelled, then delete
+            $reservation->invoice->status = InvoiceStatus::CANCELED;
+            $reservation->invoice->save();
             $reservation->invoice()->delete();
+
+            // Set the status of reservation to cancelled
+            $reservation->status = ReservationStatus::CANCELED;
+            $reservation->save();
         });
     }
 }

@@ -62,11 +62,7 @@ class ShowUsers extends Component
         }
 
         $query = User::query();
-
-        // Handle status filtering
-        if (isset($this->status) && $this->status == UserStatus::INACTIVE->value) {
-            $query->onlyTrashed();
-        }
+        $query->whereStatus($this->status);
 
         // Handle role filtering
         if (isset($this->role) && $this->role != UserRole::ALL->value) {

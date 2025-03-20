@@ -66,6 +66,9 @@ class RoomService
         $rooms = $reservation->rooms->whereIn('id', $selected_rooms->pluck('id'));
         
         foreach ($rooms as $room) {
+            $room->pivot->status = ReservationStatus::CANCELED->value;
+            $room->pivot->save();
+            
             $room->status = RoomStatus::AVAILABLE->value;
             $room->save();
         }

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\InvoiceStatus;
+use App\Enums\ReservationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
@@ -89,9 +91,26 @@ class UserService
         $this->forceLogout($user);
         
         DB::transaction(function () use ($user) {
-            $user->status = UserStatus::INACTIVE;
-            $user->save();
-            $user->delete();
+            $user->update([
+                'status' => UserStatus::INACTIVE,
+            ]);
+
+            foreach ($user->reservations as $reservation) {
+                $reservation->update([
+                    'status' => ReservationStatus::CANCELED,
+                    'canceled_at' => now(),
+                ]);
+
+                $amenity = new AmenityService;
+                $amenity->release($reservation, $reservation->rooms);
+
+                $room = new RoomService;
+                $room->release($reservation, $reservation->rooms);
+
+                $reservation->invoice->update([
+                    'status' => InvoiceStatus::CANCELED,
+                ]);
+            }
 
             return $user;
         });
@@ -99,11 +118,9 @@ class UserService
 
     public function activate(User $user) {
         DB::transaction(function () use ($user) {
-            $user->restore();
-            
-            $user->status = UserStatus::ACTIVE;
-            $user->save();
-            return $user;
+            return $user->update([
+                'status' => UserStatus::ACTIVE,
+            ]);
         });
     }
 
@@ -117,8 +134,6 @@ class UserService
         $status = Password::sendResetLink(
             $request->only('email')
         );
-
-        logger($status . ' == ' . Password::RESET_LINK_SENT);
 
         return $status == Password::RESET_LINK_SENT
                     ? back()->with('status', __($status))

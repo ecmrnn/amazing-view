@@ -63,15 +63,23 @@ final class ReservationTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        if (isset($this->status)) {
+        if ($this->status) {
             return Reservation::query()
+                ->with('rooms')
+                ->whereHas('user', function ($query) {
+                    $query->withTrashed();
+                })
                 ->whereStatus($this->status)
-                ->orderByDesc('rid');
-        } else {
-            return Reservation::query()->with('rooms')
-                ->orderByDesc('rid');
+                ->orderByDesc('id');
         }
-        
+
+        return Reservation::query()
+            ->with('rooms')
+            ->whereHas('user', function ($query) {
+                $query->withTrashed();
+            })
+            ->with('user')
+            ->orderByDesc('id');
     }
 
     public function relationSearch(): array

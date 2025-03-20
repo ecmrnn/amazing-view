@@ -138,14 +138,21 @@ class User extends Authenticatable
             ]);
         });
 
-        User::creating(function ($user) {
+        self::creating(function ($user) {
             $user->first_name = trim(strtolower($user->first_name));
             $user->last_name = trim(strtolower($user->last_name));
         });
 
-        User::updating(function ($user) {
+        self::updating(function ($user) {
             $user->first_name = trim(strtolower($user->first_name));
             $user->last_name = trim(strtolower($user->last_name));
+        });
+
+        self::deleting(function ($user) {
+            $user->reports()->delete();
+            foreach ($user->reservations as $reservation) {
+                $reservation->delete();
+            }
         });
     }
 

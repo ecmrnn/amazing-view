@@ -161,9 +161,12 @@ class ConfirmReservation extends Component
 
                             <x-loading wire:loading wire:target="confirm">Confirming reservation, please wait</x-loading>
 
-                            <div class="flex justify-end gap-1">
-                                <x-secondary-button type="button" x-on:click="$wire.set('can_confirm', false)">Back</x-secondary-button>
-                                <x-primary-button type="submit">Confirm</x-primary-button>
+                            <div class="flex justify-betweem">
+                                <x-danger-button type="button" wire:click="discard">Discard</x-danger-button>
+                                <div class="flex gap-1">
+                                    <x-secondary-button type="button" x-on:click="$wire.set('can_confirm', false)">Back</x-secondary-button>
+                                    <x-primary-button type="submit">Confirm</x-primary-button>
+                                </div>
                             </div>
                         </div>
                     @endif

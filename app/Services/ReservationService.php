@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
 use App\Enums\UserRole;
 use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
@@ -298,7 +299,14 @@ class ReservationService
         // Send email to guests with expired reservations
         Mail::to($reservation->user->email)->queue(new Expire($reservation));
 
-        $this->handlers->get('room')->sync($reservation, null);
+        foreach ($reservation->rooms as $room) {
+            $room->pivot->status = ReservationStatus::EXPIRED;
+            $room->pivot->save();
+            
+            $room->status = RoomStatus::AVAILABLE;
+            $room->save();
+        }
+
         $this->handlers->get('amenity')->sync($reservation, null);
         $this->handlers->get('billing')->cancel($reservation->invoice);
 
