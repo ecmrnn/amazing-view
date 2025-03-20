@@ -15,6 +15,7 @@ use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -307,9 +308,14 @@ class ReservationForm extends Component
             'address' => $this->rules()['address'],
         ]);
 
+        if ($this->guest_found) {
+            $this->can_select_address = true;
+            return;
+        }
+        
         // Check if guest already have an account
         $guest = User::where('email', $this->email)->first();
-    
+
         if ($guest) {
             $this->dispatch('open-modal', 'show-guest-confirmation');
             return;
@@ -319,17 +325,19 @@ class ReservationForm extends Component
     }
 
     public function guestFound() {
-        $guest = User::where('email', $this->email)->first();
-
-        $this->first_name = $guest->first_name;
-        $this->last_name = $guest->last_name;
-        $this->email = $guest->email;
-        $this->phone = $guest->phone;
-        $this->address = $guest->address;
-
-        $this->guest_found = true;
-        $this->can_select_address = true;
-        $this->dispatch('guest-found');
+        if (!$this->guest_found) {
+            $guest = User::where('email', $this->email)->first();
+    
+            $this->first_name = $guest->first_name;
+            $this->last_name = $guest->last_name;
+            $this->email = $guest->email;
+            $this->phone = $guest->phone;
+            $this->address = $guest->address;
+    
+            $this->guest_found = true;
+            $this->can_select_address = true;
+            $this->dispatch('guest-found');
+        }
     }
 
     public function viewRoom(Room $room) {
@@ -406,6 +414,16 @@ class ReservationForm extends Component
                         $this->toast('Oops!', 'warning', 'Selected rooms cannot accommodate the number of guests.');
                         $this->addError('selected_rooms', 'Selected rooms cannot accommodate the number of guests.');
                         return;
+                    }
+
+                    // Initialize guest if authorized (logged in)
+                    if (Auth::check()) {
+                        $this->first_name = Auth::user()->first_name;
+                        $this->last_name = Auth::user()->last_name;
+                        $this->email = Auth::user()->email;
+                        $this->phone = Auth::user()->phone;
+                        $this->address = Auth::user()->address;
+                        $this->guest_found = true;
                     }
 
                     // Fetch regions and districts from from https://psgc.cloud

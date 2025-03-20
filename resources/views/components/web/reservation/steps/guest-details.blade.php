@@ -325,7 +325,7 @@
                 <p class="text-xs">We found that your email is already used in a previous reservation, do you wish to use your old account or proceed with a new one?</p>
             </hgroup>
 
-            <x-note>Creating a new account will override your personal </x-note>
+            <x-note>Creating a new account will override your old account</x-note>
 
             <x-loading wire:loading wire:target='guestFound'>Using old account, please wait</x-loading>
 

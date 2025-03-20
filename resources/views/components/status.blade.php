@@ -54,8 +54,8 @@
             \App\Enums\UserStatus::INACTIVE->value => ['Inactive', 'text-red-800 border-red-500 bg-red-50'],
         ],
         'session' => [
-            \App\Enums\SessionStatus::ACTIVE->value => ['Online', 'text-green-800 border-green-500 bg-green-50'],
-            \App\Enums\SessionStatus::INACTIVE->value => ['Offline', 'text-stone-800 border-stone-500 bg-stone-200'],
+            \App\Enums\SessionStatus::ONLINE->value => ['Online', 'text-green-800 border-green-500 bg-green-50'],
+            \App\Enums\SessionStatus::OFFLINE->value => ['Offline', 'text-stone-800 border-stone-500 bg-stone-200'],
         ],
     ];
 
@@ -66,6 +66,6 @@
     [$label, $class] = $statusLabels[$type][$status] ?? $default;
 @endphp
 
-<strong class="px-3 py-1 text-xs font-semibold border rounded-full {{ $class }}">
+<strong class="px-3 py-1 text-xs w-max inline-block font-semibold border rounded-full {{ $class }}">
     {{ $label }}
 </strong>
