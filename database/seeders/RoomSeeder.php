@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RoomStatus;
 use App\Models\Room;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,7 +23,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 4,
             'rate' => 2500,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -34,7 +35,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 5,
             'rate' => 2700,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -46,7 +47,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 6,
             'rate' => 3000,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -58,7 +59,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 5,
             'rate' => 2700,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -70,7 +71,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 5,
             'rate' => 2700,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -82,7 +83,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 6,
             'rate' => 2500,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -94,7 +95,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 4,
             'rate' => 2000,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -106,7 +107,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 7,
             'rate' => 2700,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -118,7 +119,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 4,
             'rate' => 2400,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
 
         Room::create([
@@ -130,7 +131,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 6,
             'rate' => 2800,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
         Room::create([
             'room_type_id' => 2,
@@ -141,7 +142,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 9,
             'rate' => 4000,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
         Room::create([
             'room_type_id' => 2,
@@ -152,7 +153,7 @@ class RoomSeeder extends Seeder
             'max_capacity' => 8,
             'rate' => 3500,
             'image_1_path' => 'https://placehold.co/300',
-            'status' => 0,
+            'status' => RoomStatus::AVAILABLE,
         ]);
     }
 }

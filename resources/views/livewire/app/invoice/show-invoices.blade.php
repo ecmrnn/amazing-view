@@ -65,6 +65,16 @@
                     </div>
                 </x-side-nav-link>
             </li>
+            <li>
+                <x-side-nav-link :status="\App\Enums\InvoiceStatus::CANCELED->value" href="{{ route('app.billings.index', ['status' => \App\Enums\InvoiceStatus::CANCELED->value]) }}">
+                    <div class="flex items-center gap-1">
+                        <span>Canceled</span>
+                        @if ($invoice_by_status['canceled'] > 0)
+                            <div class="text-xs">( {{ $invoice_by_status['canceled'] }} )</div>
+                        @endif
+                    </div>
+                </x-side-nav-link>
+            </li>
         </ul>
     </aside>
 

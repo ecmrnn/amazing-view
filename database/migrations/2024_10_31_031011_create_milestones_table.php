@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\MilestoneStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->date('date_achieved');
-            $table->integer('status')->default(0);
+            $table->integer('status')->default(MilestoneStatus::ACTIVE);
             $table->timestamps();
         });
     }

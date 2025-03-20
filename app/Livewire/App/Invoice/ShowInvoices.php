@@ -16,6 +16,7 @@ class ShowInvoices extends Component
         'paid' => 0,
         'pending' => 0,
         'due' => 0,
+        'canceled' => 0,
     ];
     #[Url] public $status;
 
@@ -25,6 +26,7 @@ class ShowInvoices extends Component
             'paid' => InvoiceStatus::PAID->value,
             'pending' => InvoiceStatus::PENDING->value,
             'due' => InvoiceStatus::DUE->value,
+            'canceled' => InvoiceStatus::CANCELED->value,
         ];
 
         $counts = Invoice::selectRaw('status, COUNT(*) as count')
