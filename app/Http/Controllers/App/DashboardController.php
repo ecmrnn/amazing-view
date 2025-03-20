@@ -4,6 +4,7 @@ namespace App\Http\Controllers\App;
 
 use App\Enums\RoomStatus;
 use App\Enums\ReservationStatus;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Livewire\tables\ReservationTable;
 use App\Models\Invoice;
@@ -112,6 +113,7 @@ class DashboardController extends Controller
             // Monthly New Guests
             $monthly_new_guests = User::select(DB::raw('count(email) as new_guests'))
                 ->whereMonth('created_at', Carbon::now()->format('m'))
+                ->whereRole(UserRole::GUEST)
                 ->distinct()
                 ->first();
 

@@ -107,22 +107,7 @@
                                 </x-form.input-group>
                             </div>
                         </div>
-    
-                        <x-loading wire:loading.block wire:target='selectAddress()' class="text-xs font-semibold">Please wait while we load the next form.</x-loading>
-                        
-                        <x-primary-button type="button" wire:click="selectAddress()">Select Address</x-primary-button>
-                    </div>
-                </x-form.form-body>
-            </div>
-        </x-form.form-section>
-    
-        {{-- Address --}}
-        <x-form.form-section>
-            <x-form.form-header title="Address" subtitle="Enter your home address" />
-    
-            <div x-show="can_select_address" x-collapse.duration.1000ms>
-                <x-form.form-body>
-                    <div class="p-5 pt-0 space-y-5">
+
                         <div class="space-y-5 overflow-auto"
                                 x-init="
                                 $watch('region', value => {
@@ -142,8 +127,11 @@
                             ">
     
     
-                            @if (!empty($regions))
-                                <p class="max-w-sm text-sm">Kindly select your home address using the dropdown options below starting with your region.</p>
+                            @if (!empty($regions) && $guest_found == false)
+                                <hgroup>
+                                    <h2 class="font-semibold">Home Address</h2>
+                                    <p class="max-w-sm text-xs">Kindly select your home address using the dropdown options below starting with your region.</p>
+                                </hgroup>
     
                                 {{-- Regions & Provinces --}}
                                 <div class="flex flex-col gap-5 sm:flex-row">
@@ -213,10 +201,15 @@
                                     id="street"
                                 />
                             @else
-                                <div class="space-y-5">
-                                    <p class="max-w-sm text-sm">Kindly enter your home address in the input field below.</p>
-                                    <x-form.input-text wire:model.live='street' x-model="street" id="street" name="street" label="Address" />
-                                </div>
+                                <x-form.input-group>
+                                    <div>
+                                        <h2 class="font-semibold">Home Address</h2>
+                                        <p class="max-w-sm text-xs">Kindly enter your home address in the input field below.</p>
+                                    </div>
+
+                                    <x-form.input-text wire:model.live='address' x-model="address" id="address" name="address" label="Address" />
+                                    <x-form.input-error field="address" />
+                                </x-form.input-group>
                             @endif
                             <x-form.input-error field="address" />
     
@@ -229,6 +222,9 @@
                             <x-loading wire:loading wire:target="getDistrictBaranggays">Loading Baranggay...</x-loading>
                         </div>
     
+                        <x-loading wire:loading.block wire:target='additionalDetails()' class="text-xs font-semibold">Please wait while we load the next form.</x-loading>
+                        
+                        <x-primary-button type="button" wire:click="additionalDetails()">Additional Details</x-primary-button>
                     </div>
                 </x-form.form-body>
             </div>
@@ -321,4 +317,22 @@
             <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="submit">Continue</x-primary-button>
         </div>
     </div>
+
+    <x-modal.full name='show-guest-confirmation' maxWidth='sm'>
+        <div class="p-5 space-y-5" x-on:guest-found.window="show = false">
+            <hgroup>
+                <h2 class="font-semibold">Welcome back!</h2>
+                <p class="text-xs">We found that your email is already used in a previous reservation, do you wish to use your old account or proceed with a new one?</p>
+            </hgroup>
+
+            <x-note>Creating a new account will override your personal </x-note>
+
+            <x-loading wire:loading wire:target='guestFound'>Using old account, please wait</x-loading>
+
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" wire:loading.attr='disabled' wire:click='guestFound'>Use Old Account</x-secondary-button>
+                <x-primary-button type="button" wire:loading.attr='disabled' x-on:click="can_select_address = true; show = false">Create New Account</x-primary-button>
+            </div>
+        </div>
+    </x-modal.full>
 </div>

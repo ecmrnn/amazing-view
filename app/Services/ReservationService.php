@@ -39,14 +39,15 @@ class ReservationService
     public function create($data) {
         $reservation = DB::transaction(function () use ($data) {
             // Assuming the $data is already validated prior to this point
-            // Generate password for guest
+            // Generate password for guest format: SurnameYYYY!
             $password = ucwords(strtolower($data['last_name'])) . now()->format('Y') . '!';
 
-            // Check if the guest already have an account
-            $user = User::where('email', $data['email'] ?? '')->firstOrCreate([
+            // Create or update the guest
+            $user = User::where('email', $data['email'] ?? '')->updateOrCreate([
+                'email' => $data['email'],
+                ],[
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
-                'email' => $data['email'],
                 'phone' => $data['phone'],
                 'role' => UserRole::GUEST,
                 'address' => $data['address'],

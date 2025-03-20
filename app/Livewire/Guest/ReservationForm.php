@@ -8,6 +8,7 @@ use App\Models\AdditionalServices;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Models\User;
 use App\Services\AdditionalServiceHandler;
 use App\Services\BillingService;
 use App\Services\ReservationService;
@@ -77,6 +78,7 @@ class ReservationForm extends Component
     public $can_select_address = false;
     public $show_available_rooms = false;
     public $available_room_types;
+    public $guest_found = false;
     public $room_types;
     public $selected_type;
     public $reservation_rid;
@@ -284,16 +286,50 @@ class ReservationForm extends Component
         $this->suggested_rooms = [];
     }
 
-    public function selectAddress() {
+    public function additionalDetails() {
+        if (is_array($this->address)) {
+            $this->address = [
+                'street' => $this->street,
+                'baranggay' => $this->baranggay,
+                'district' => $this->district,
+                'city' => $this->city,
+                'province' => $this->province,
+            ];
+            $this->address = array_filter($this->address);
+        }
+
         // Validate the following variables
         $this->validate([
             'first_name' => $this->rules()['first_name'],
             'last_name' => $this->rules()['last_name'],
             'email' => $this->rules()['email'],
             'phone' => $this->rules()['phone'],
+            'address' => $this->rules()['address'],
         ]);
 
+        // Check if guest already have an account
+        $guest = User::where('email', $this->email)->first();
+    
+        if ($guest) {
+            $this->dispatch('open-modal', 'show-guest-confirmation');
+            return;
+        }
+
         $this->can_select_address = true;
+    }
+
+    public function guestFound() {
+        $guest = User::where('email', $this->email)->first();
+
+        $this->first_name = $guest->first_name;
+        $this->last_name = $guest->last_name;
+        $this->email = $guest->email;
+        $this->phone = $guest->phone;
+        $this->address = $guest->address;
+
+        $this->guest_found = true;
+        $this->can_select_address = true;
+        $this->dispatch('guest-found');
     }
 
     public function viewRoom(Room $room) {
