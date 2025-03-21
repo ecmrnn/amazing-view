@@ -36,10 +36,12 @@
             <div class="p-5 space-y-5 rounded-md bg-slate-50">
                 <p class="font-semibold">Next Steps:</p>
 
-                <ul class="list-disc list-inside list-item">
-                    <li><span class="font-semibold">Rebooking:</span> If you would still like to stay with us, we encourage you to rebook your reservation. You can do so by visiting our website or contacting us directly.</li>
-                    <li><span class="font-semibold">Assistance:</span> If you need assistance with rebooking or have any questions, please do not hesitate to reach out to our customer support team at <span class="font-semibold">{{ Arr::get($settings, 'site_email', 'info@amazingviewmountainresort.com') }}</span> or give us a call at <span class="font-semibold">{{ Arr::get($settings, 'site_phone', '09171399334') }}</span>.</li>
-                </ul>
+                <div>
+                    <ul class="list-disc list-inside list-item">
+                        <li><span class="font-semibold">Rebooking:</span> If you would still like to stay with us, we encourage you to rebook your reservation. You can do so by visiting our website or contacting us directly.</li>
+                        <li><span class="font-semibold">Assistance:</span> If you need assistance with rebooking or have any questions, please do not hesitate to reach out to our customer support team at <span class="font-semibold">{{ Arr::get($settings, 'site_email', 'info@amazingviewmountainresort.com') }}</span> or give us a call at <span class="font-semibold">{{ Arr::get($settings, 'site_phone', '09171399334') }}</span>.</li>
+                    </ul>
+                </div>
             </div>
 
             <p>We value your interest in staying at Amazing View Mountain Farm Resort and hope to welcome you soon. Thank you for your understanding.</p>
