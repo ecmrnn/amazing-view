@@ -38,12 +38,17 @@ class ReactivateReservation extends Component
         
         if ($auth->validatePassword($this->password)) {
             $service = new ReservationService;
-            $this->reservation = $service->reactivate($this->reservation);
-            
-            $this->toast('Success!', description:'Reservation reactivated!');
-            $this->reset();
-            
-            $this->dispatch('reservation-reactivated');
+            $reservation = $service->reactivate($this->reservation);
+
+            if ($reservation) {
+                $this->reservation = $reservation;
+                $this->toast('Success!', description:'Reservation reactivated!');
+                $this->reset();
+                $this->dispatch('reservation-reactivated');
+                return;
+            }
+
+            $this->addError('password', 'Reactivation failed, reserved rooms in this reservation is not available.');
         } else {
             $this->addError('password', 'Password mismatch, try again.');
         }

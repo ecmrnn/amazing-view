@@ -5,6 +5,7 @@ namespace App\Mail\reservation;
 use App\Models\Reservation;
 use App\Models\RoomAmenity;
 use App\Models\RoomReservation;
+use App\Models\Settings;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

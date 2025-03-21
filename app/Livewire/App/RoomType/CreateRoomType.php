@@ -35,17 +35,16 @@ class CreateRoomType extends Component
         $validated = $this->validate();
 
         // Store images
-        $validated['image_1_path'] = $this->image_1_path->store('room-types', 'public');
-        $validated['image_2_path'] = $this->image_2_path->store('room-types', 'public');
-        $validated['image_3_path'] = $this->image_3_path->store('room-types', 'public');
-        $validated['image_4_path'] = $this->image_4_path->store('room-types', 'public');
+        !$validated['image_1_path'] ?: $validated['image_1_path'] = $this->image_1_path->store('room-types', 'public');
+        !$validated['image_2_path'] ?: $validated['image_2_path'] = $this->image_2_path->store('room-types', 'public');
+        !$validated['image_3_path'] ?: $validated['image_3_path'] = $this->image_3_path->store('room-types', 'public');
+        !$validated['image_4_path'] ?: $validated['image_4_path'] = $this->image_4_path->store('room-types', 'public');
 
         // Store to database
         RoomType::create($validated);
         
         $this->toast('Room Type Created!', 'success', 'Successfully created a room type');
         $this->reset();
-        $this->description = 'Add a brief description of your new room';
         $this->dispatch('pond-reset');
     }
 

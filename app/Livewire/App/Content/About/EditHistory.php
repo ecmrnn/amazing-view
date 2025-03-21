@@ -71,7 +71,7 @@ class EditHistory extends Component
     public function render()
     {
         return <<<'HTML'
-            <form x-data="{ count : 1000 - @js($history_length), max : 1000 }" x-on:history-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200" wire:submit="submit">
+            <form x-on:history-edited.window="show = false; count = 0;" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200" wire:submit="submit">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Edit History</h2>
                     <p class="max-w-sm text-sm">Update history details here</p>
@@ -106,12 +106,8 @@ class EditHistory extends Component
                                 <p class="text-xs">Write an amazing story here</p>
                             </div>
 
-                            <x-form.textarea id="edit-history" name="history" wire:model.live="history" class="w-full" x-on:keyup="count = max - $el.value.length" />
-                            
-                            <div class="flex justify-between">
-                                <span><x-form.input-error field="history" /></span>
-                                <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 1000</p>
-                            </div>
+                            <x-form.textarea id="edit-history" name="history" wire:model.live="history" class="w-full" max="1000" />
+                            <x-form.input-error field="history" />
                         </x-form.input-group>
                     </div>
                 </div>

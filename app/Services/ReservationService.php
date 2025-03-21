@@ -16,6 +16,7 @@ use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
 use App\Models\FunctionHallReservations;
 use App\Models\Reservation;
+use App\Models\Room;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
@@ -261,85 +262,104 @@ class ReservationService
     }
 
     public function confirm(Reservation $reservation, $data) {
-        $reservation->status = ReservationStatus::CONFIRMED;
-        $reservation->save();
-
-        $filename = $reservation->rid . ' - ' . strtoupper($reservation->user->last_name) . '_' . strtoupper($reservation->user->first_name) . '.pdf';
-        $path = 'public/pdf/reservation/' . $filename;
-
-        if ($data['amount'] > 0) {
-            $reservation->invoice->payments()->updateOrCreate(
-                ['orid' => $data['orid']],
-                [
-                    'invoice_id' => $reservation->invoice->id,
-                    'amount' => Arr::get($data, 'amount', 0),
-                    'transaction_id' => Arr::get($data, 'transaction_id', null),
-                    'payment_date' => Arr::get($data, 'payment_date', null),
-                    'purpose' => 'downpayment',
-                ]
-                );
-
-            $reservation->invoice->balance -= Arr::get($data, 'amount', 0);
-            $reservation->invoice->status = $reservation->invoice->balance > 0 ? InvoiceStatus::PARTIAL : InvoiceStatus::PAID;
-            $reservation->invoice->save();
-        }
-
-        if (!Storage::exists($path)) {
-            GenerateReservationPDF::dispatch($reservation);
-        }
-
-        return $reservation;
+        DB::transaction(function () use ($reservation, $data) {
+            $reservation->status = ReservationStatus::CONFIRMED;
+            $reservation->save();
+    
+            $filename = $reservation->rid . ' - ' . strtoupper($reservation->user->last_name) . '_' . strtoupper($reservation->user->first_name) . '.pdf';
+            $path = 'public/pdf/reservation/' . $filename;
+    
+            if ($data['amount'] > 0) {
+                $reservation->invoice->payments()->updateOrCreate(
+                    ['orid' => $data['orid']],
+                    [
+                        'invoice_id' => $reservation->invoice->id,
+                        'amount' => Arr::get($data, 'amount', 0),
+                        'transaction_id' => Arr::get($data, 'transaction_id', null),
+                        'payment_date' => Arr::get($data, 'payment_date', null),
+                        'purpose' => 'downpayment',
+                    ]
+                    );
+    
+                $reservation->invoice->balance -= Arr::get($data, 'amount', 0);
+                $reservation->invoice->status = $reservation->invoice->balance > 0 ? InvoiceStatus::PARTIAL : InvoiceStatus::PAID;
+                $reservation->invoice->save();
+            }
+    
+            if (!Storage::exists($path)) {
+                GenerateReservationPDF::dispatch($reservation);
+            }
+    
+            return $reservation;
+        });
     }
 
     public function expire(Reservation $reservation) {
-        // Update the status of the reservation
-        $reservation->status = ReservationStatus::EXPIRED;
-        $reservation->save();
-
-        // Send email to guests with expired reservations
-        Mail::to($reservation->user->email)->queue(new Expire($reservation));
-
-        foreach ($reservation->rooms as $room) {
-            $room->pivot->status = ReservationStatus::EXPIRED;
-            $room->pivot->save();
-            
-            $room->status = RoomStatus::AVAILABLE;
-            $room->save();
-        }
-
-        $this->handlers->get('amenity')->sync($reservation, null);
-        $this->handlers->get('billing')->cancel($reservation->invoice);
-
-        return $reservation;
+        DB::transaction(function () use ($reservation) {
+            // Update the status of the reservation
+            $reservation->status = ReservationStatus::EXPIRED;
+            $reservation->save();
+    
+            // Send email to guests with expired reservations
+            Mail::to($reservation->user->email)->queue(new Expire($reservation));
+    
+            foreach ($reservation->rooms as $room) {
+                $room->pivot->status = ReservationStatus::EXPIRED;
+                $room->pivot->save();
+                
+                $room->status = RoomStatus::AVAILABLE;
+                $room->save();
+            }
+    
+            $this->handlers->get('amenity')->sync($reservation, null);
+            $this->handlers->get('billing')->cancel($reservation->invoice);
+    
+            return $reservation;
+        });
     }
 
     public function reactivate(Reservation $reservation) {
-        $reservation->status = ReservationStatus::AWAITING_PAYMENT->value;
-        $reservation->expires_at = Carbon::now()->addHour();
-        $reservation->save();
+        $reserved_rooms = Room::reservedRooms($reservation->date_in, $reservation->date_out)->pluck('id')->toArray();
+        
+        if ($reservation->rooms()->whereIn('rooms.id', $reserved_rooms)->count() > 0) {
+            return null;
+        } 
 
-        return $reservation;
+        return DB::transaction(function () use ($reservation) {
+            $reservation->status = ReservationStatus::AWAITING_PAYMENT->value;
+            $reservation->expires_at = Carbon::now()->addHour();
+            $reservation->save();
+
+            $reservation->invoice->status = InvoiceStatus::PENDING;
+            $reservation->invoice->save();
+    
+            return $reservation;
+        });
     }
 
     public function noShow(Reservation $reservation) {
-        $reservation->status = ReservationStatus::NO_SHOW;
-        $reservation->save();
-
-        // Send email to guests with no-show reservations
-        Mail::to($reservation->user->email)->queue(new NoShow($reservation));
-
-        $this->handlers->get('room')->sync($reservation, null);
-        $this->handlers->get('amenity')->sync($reservation, null);
-
-        return $reservation;
+        DB::transaction(function () use ($reservation) {
+            $reservation->status = ReservationStatus::NO_SHOW;
+            $reservation->save();
+    
+            // Send email to guests with no-show reservations
+            Mail::to($reservation->user->email)->queue(new NoShow($reservation));
+    
+            $this->handlers->get('room')->sync($reservation, null);
+            $this->handlers->get('amenity')->sync($reservation, null);
+    
+            return $reservation;
+        });
     }
 
     public function delete(Reservation $reservation) {
-        $this->handlers->get('room')->sync($reservation, null);
-        $this->handlers->get('amenity')->sync($reservation, null);
-        $this->handlers->get('service')->sync($reservation, null);
-
-        $reservation->delete();
+        DB::transaction(function () use ($reservation) {
+            $this->handlers->get('room')->sync($reservation, null);
+            $this->handlers->get('amenity')->sync($reservation, null);
+            $this->handlers->get('service')->sync($reservation, null);
+    
+            $reservation->delete();
+        });
     }
 
     public function reschedule(Reservation $reservation, $data) {

@@ -37,7 +37,7 @@ class EmailForm extends Component
     public function render()
     {
         return <<<'HTML'
-            <form x-data="{ count : 200, max : 200 }" x-on:client-email-sent.window="count = 200" class="p-5 mx-auto space-y-3 rounded-lg shadow-[0_2px_0_0_rgba(23,37,84,1)] bg-gradient-to-b from-white to-white/90  backdrop-blur-md text-zinc-800 md:ml-auto md:mx-0" wire:submit="sendEmail">
+            <form x-on:client-email-sent.window="count = 200" class="p-5 mx-auto space-y-3 rounded-lg shadow-[0_2px_0_0_rgba(23,37,84,1)] bg-gradient-to-b from-white to-white/90  backdrop-blur-md text-zinc-800 md:ml-auto md:mx-0" wire:submit="sendEmail">
                 <h2 class="text-lg font-semibold text-left">Send us an email here!</h2>
 
                 <div class="space-y-3">
@@ -53,10 +53,8 @@ class EmailForm extends Component
                 <div class="space-y-3 text-left">
                     <x-form.input-label for="message">Message</x-form.input-label>
                     <x-form.input-error field="message" />
-                    <x-form.textarea wire:model.live="message" x-on:keyup="count = max - $el.value.length" x-bind:maxlength="max" name="message" id="message" class="max-h-[200px]"></x-form.textarea>
+                    <x-form.textarea wire:model.live="message" max="200" name="message" id="message"></x-form.textarea>
                 </div>
-
-                <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
 
                 <div class="flex justify-end">
                     <x-primary-button class="inline-block ml-auto">Send Email</x-primary-button>
