@@ -129,8 +129,9 @@
     </aside>
 
     {{-- Cards --}}
-    <div class="w-full space-y-5">
+    <div class="w-full space-y-5 overflow-x-hidden">
         <livewire:app.cards.reservation-cards />
+        
         {{-- Room  Table --}}
         <div class="p-5 bg-white border rounded-lg border-slate-200">
             @if ($reservation_count > 0)

@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-5 md:flex-row">
+<div class="relative flex flex-col gap-5 md:flex-row">
     <aside class="space-y-5 shrink-0 min-w-52">
         <p class="text-xs font-semibold">Filter User Status</p>
         
@@ -70,7 +70,7 @@
         </ul>
     </aside>
 
-    <div class="w-full space-y-5">
+    <div class="w-full space-y-5 overflow-x-hidden">
         {{-- Cards --}}
         <livewire:app.cards.user-cards />
         

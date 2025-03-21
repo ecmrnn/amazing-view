@@ -78,7 +78,7 @@
         </ul>
     </aside>
 
-    <div class="w-full space-y-5">
+    <div class="w-full space-y-5 overflow-x-hidden">
         <livewire:app.cards.invoice-cards />
     
         <div class="p-5 bg-white border rounded-lg border-slate-200">

@@ -25,6 +25,7 @@ class UserService
                 'email' => $data['email'],
                 'role' => $data['role'],
                 'password' => $data['password'],
+                'status' => UserStatus::ACTIVE,
             ]);
 
             // Assign permission to roles

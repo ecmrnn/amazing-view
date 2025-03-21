@@ -34,7 +34,7 @@ class AmazingTheme extends Tailwind
             ->tdAction('')
             ->tr('')
             ->trFilters('')
-            ->th('font-semibold px-5 pr-4 py-3 text-left')
+            ->th('font-semibold px-5 py-3 text-left')
             ->tbody('text-sm')
             ->trBody('border-b border-dashed hover:border-solid hover:bg-slate-50')
             ->tdBody('px-5 py-2')
@@ -54,7 +54,7 @@ class AmazingTheme extends Tailwind
     {
         return Theme::actions()
             ->headerBtn('block w-full bg-pg-primary-50 text-pg-primary-700 border border-pg-primary-200 rounded py-2 px-3 leading-tight focus:outline-none focus:bg-white focus:border-pg-primary-600 dark:bg-pg-primary-800 dark:text-pg-primary-200 dark:placeholder-pg-primary-300 dark:border-pg-primary-600')
-            ->rowsBtn('focus:outline-none text-sm py-2.5 px-5 rounded border');
+            ->rowsBtn('focus:outline-none text-sm py-2.5 px-5');
     }
 
     public function cols(): Cols

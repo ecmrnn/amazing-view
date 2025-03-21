@@ -17,10 +17,6 @@ class DeleteRoomType extends Component
     #[Validate] public $password;
     public $room_type;
 
-    public function mount(RoomType $room_type) {
-        $this->room_type = $room_type;
-    }
-
     public function rules() {
         return [
             'password' => 'required'
@@ -57,25 +53,23 @@ class DeleteRoomType extends Component
     public function render()
     {
         return <<<'HTML'
-        <div>
-            <section class="p-5 space-y-5 bg-white" x-on:room-type-deleted.window="show = false">
-                <hgroup>
-                    <h2 class="font-semibold text-center text-red-500 capitalize">Delete Room Type</h2>
-                    <p class="max-w-sm text-sm text-center">Are you sure you really want this room type?</p>
-                </hgroup>
+        <form wire:submit="deleteRoomType" class="p-5 space-y-5" x-on:room-type-deleted.window="show = false">
+            <hgroup>
+                <h2 class="text-lg font-semibold text-red-500">Delete Room Type</h2>
+                <p class="text-sm">Are you sure you really want this room type?</p>
+            </hgroup>
 
-                <div class="space-y-2">
-                    <p class="text-xs">Enter your password to delete this room type.</p>
-                    <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $room_type->id }}-password" />
-                    <x-form.input-error field="password" />
-                </div>
-                
-                <div class="flex items-center justify-center gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
-                    <x-danger-button type="button" wire:click='deleteRoomType()'>Yes, Delete</x-danger-button>
-                </div>
-            </section>
-        </div>
+            <x-form.input-group>
+                <x-form.input-label for="delete-{{ $room_type->id }}-password">Enter your password</x-form.input-label>
+                <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $room_type->id }}-password" name="delete-{{ $room_type->id }}-password" />
+                <x-form.input-error field="password" />
+            </x-form.input-group>
+            
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                <x-danger-button>Delete</x-danger-button>
+            </div>
+        </form>
         HTML;
     }
 }

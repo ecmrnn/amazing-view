@@ -104,7 +104,7 @@ final class UserTable extends PowerGridComponent
             })
             ->add('phone')
             ->add('phone_formatted', function ($user) {
-                return substr($user->phone, 0, 4) . ' ' . substr($user->phone, 4, 3) . ' ' . substr($user->phone, 7);
+                return Blade::render('<span class="inline-block w-max">' . substr($user->phone, 0, 4) . ' ' . substr($user->phone, 4, 3) . ' ' . substr($user->phone, 7) . '</span>');
             })
             ->add('email')
             ->add('role')

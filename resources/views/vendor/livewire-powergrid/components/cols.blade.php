@@ -43,7 +43,7 @@
         @class(['flex gap-2' => !isBootstrap5(), data_get($theme, 'cols.divClass')])
         style="{{ data_get($theme, 'cols.divStyle') }}"
     >
-        <span data-value>{!! $column->title !!}</span>
+        <span data-value class="w-max">{!! $column->title !!}</span>
 
         @if ($column->sortable)
             <x-dynamic-component
