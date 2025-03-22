@@ -16,17 +16,19 @@
                 </a>
             </div>
 
-            <div class="space-y-1">
+            <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
                 @foreach ($room_types as $room_type)
-                    <div x-data="{ room_count: @js($room_type->rooms->count())}" class="relative flex gap-3 p-5 border rounded-md border-slate-200">
-                        <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" class="w-full md:max-w-[150px]" /> {{-- Fix --}}
-
-                        <div>
-                            <h4 class="text-sm font-semibold">{{ $room_type->name }}</h4>
-                            <p class="max-w-sm text-xs">{{ $room_type->description }}</p>
+                    <div x-data="{ room_count: @js($room_type->rooms->count())}" class="relative flex flex-col justify-between p-5 space-y-5 border rounded-md border-slate-200">
+                        <div class="space-y-5">
+                            <x-img src="{{ $room_type->image_1_path }}" class="w-full" />
+        
+                            <div>
+                                <h4 class="font-semibold">{{ $room_type->name }}</h4>
+                                <p class="text-sm text-justify line-clamp-3">{{ $room_type->description }}</p>
+                            </div>
                         </div>
 
-                        <div class="absolute flex gap-1 top-5 right-5 md:top-3 md:right-3">
+                        <div class="flex items-center justify-end gap-1">
                             <x-tooltip text="Edit" dir="bottom">
                                 <a href="{{ route('app.rooms.edit', ['room' => $room_type->id]) }}" wire.navigate.hover>
                                     <x-icon-button x-ref="content" type="button">
@@ -93,12 +95,12 @@
                         @foreach ($room_types as $room_type)
                             <div class="space-y-2">
                                 <div>
-                                    <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" />
+                                    <x-img src="{{ $room_type->image_1_path }}" />
                                     
                                     <div class="grid grid-cols-3 gap-1 mt-1">
-                                        <x-img-lg src="{{ asset('storage/' . $room_type->image_2_path) }}" />
-                                        <x-img-lg src="{{ asset('storage/' . $room_type->image_3_path) }}" />
-                                        <x-img-lg src="{{ asset('storage/' . $room_type->image_4_path) }}" />
+                                        <x-img src="{{ $room_type->image_2_path }}" />
+                                        <x-img src="{{ $room_type->image_3_path }}" />
+                                        <x-img src="{{ $room_type->image_4_path }}" />
                                     </div>
                                 </div>
                                 

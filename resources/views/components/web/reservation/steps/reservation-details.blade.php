@@ -167,7 +167,7 @@
                                 <div class="grid-cols-3 gap-5 space-y-5 lg:space-y-0 lg:grid">
                                     @forelse ($suggested_rooms as $key => $room)
                                         <div key="{{ $key }}" class="flex gap-3 border-slate-200 lg:block lg:space-y-2">
-                                            <x-img-lg class="w-full max-w-[200px] lg:max-w-full" src="{{ asset('storage/' . $room->image_1_path) }}" />
+                                            <x-img class="w-full max-w-[200px] lg:max-w-full" src="{{ $room->image_1_path }}" />
                 
                                             <div class="w-full space-y-2">
                                                 <hgroup>
@@ -228,7 +228,7 @@
                                     <div key="{{ $room->id }}" class="flex flex-col items-start justify-between gap-3 p-3 bg-white border rounded-lg shadow-sm sm:flex-row">
                                         <div class="flex flex-col items-start w-full gap-3 sm:flex-row">
                                             <div class="w-full lg:max-w-[150px]">
-                                                <x-img-lg src="{{ $room->image_1_path }}" />
+                                                <x-img src="{{ $room->image_1_path }}" />
                                             </div>
                                             <div>
                                                 <h3 class="text-sm font-semibold">{{ $room->name }}</h3>
@@ -367,7 +367,7 @@
                         <div x-data="{ show_rooms: false }" class="flex flex-col items-start justify-between gap-3 p-3 bg-white border rounded-md sm:flex-row">
                             <div class="flex flex-col w-full gap-3 sm:flex-row">
                                 <div class="sm:max-w-[150px] w-full relative">
-                                    <x-img-lg src="{{ asset('storage/' . $thumbnail) }}" class="w-full" />
+                                    <x-img src="{{ $thumbnail }}" class="w-full" />
                                     @if ($selected_room_count > 0)
                                         <p class="absolute px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-md top-1 left-1 w-max">{{ $selected_room_count }} Selected</p>
                                     @endif

@@ -72,7 +72,7 @@
                             <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 border rounded-lg">
                                 <div class="flex items-start w-full gap-5">
                                     <div class="w-full max-w-[150px]">
-                                        <x-img-lg src="{{ asset('storage/' . $room->image_1_path) }}" />
+                                        <x-img src="{{ $room->image_1_path }}" />
                                     </div>
                                     <div>
                                         <h3 class="text-sm font-semibold">{{ $room->name }}</h3>
@@ -279,7 +279,7 @@
                         <div x-data="{ show_rooms: false }" class="flex items-start justify-between gap-3 p-3 bg-white border rounded-md">
                             <div class="flex w-full gap-3">
                                 <div class="max-w-[150px] w-full relative">
-                                    <x-img-lg src="{{ $thumbnail }}" class="w-full" />
+                                    <x-img src="{{ $thumbnail }}" class="w-full" />
                                     @if ($selected_room_count > 0)
                                         <p class="absolute px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-md top-1 left-1 w-max">{{ $selected_room_count }} Selected</p>
                                     @endif
@@ -352,7 +352,7 @@
                         <div key="{{ $room->id }}" class="flex items-start justify-between gap-3 p-3 bg-white border rounded-md">
                             <div class="flex items-center w-full gap-3">
                                 <div class="hidden w-full sm:block max-w-20">
-                                    <x-img-lg src="{{ $room->image_1_path }}" />
+                                    <x-img src="{{ $room->image_1_path }}" />
                                 </div>
                                 <hgroup>
                                     <h3 class="text-sm font-semibold">{{ $room->roomType->name }} {{ $room->room_number }}</h3>

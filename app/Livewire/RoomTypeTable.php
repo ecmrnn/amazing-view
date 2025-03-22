@@ -8,6 +8,7 @@ use App\Traits\DispatchesToast;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use PowerComponents\LivewirePowerGrid\Column;
@@ -128,6 +129,22 @@ final class RoomTypeTable extends PowerGridComponent
                 $this->dispatch('room-type-deleted');
                 $this->reset('password');
                 return;
+            }
+
+            if ($room_type->image_1_path) {
+                Storage::disk('public')->delete($room_type->image_1_path);
+            }
+            
+            if ($room_type->image_2_path) {
+                Storage::disk('public')->delete($room_type->image_2_path);
+            }
+
+            if ($room_type->image_3_path) {
+                Storage::disk('public')->delete($room_type->image_3_path);
+            }
+
+            if ($room_type->image_4_path) {
+                Storage::disk('public')->delete($room_type->image_4_path);
             }
             
             $this->toast('Success', description: 'Room type deleted successfully!');

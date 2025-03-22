@@ -38,11 +38,7 @@
         <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
             @foreach ($featured_services as $key => $featured_service)
                 <div class="space-y-5">
-                    @if (!empty($featured_service->image))
-                        <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" />
-                    @else
-                        <x-img-lg src="https://picsum.photos/id/{{ $featured_service->id + 100 }}/200/300?grayscale" />
-                    @endif
+                    <x-img src="{{ $featured_service->image }}" />
                 
                     <hgroup>
                         <span class="text-xs">{{ sprintf("%02d", $key + 1) }}</span>

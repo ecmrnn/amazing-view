@@ -327,7 +327,7 @@ class RescheduleReservation extends Component
                                     <div key="{{ $room->id }}" class="flex items-start justify-between gap-5 p-3 border rounded-lg">
                                         <div class="flex items-start w-full gap-5">
                                             <div class="w-full max-w-[150px] hidden sm:block">
-                                                <x-img-lg src="{{ asset('storage/', $room->image_1_path) }}" />
+                                                <x-img src="{{ $room->image_1_path }}" />
                                             </div>
                                             <div>
                                                 <h3 class="font-semibold text-md">{{ $room->name }}</h3>

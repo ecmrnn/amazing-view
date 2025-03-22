@@ -21,11 +21,7 @@
             @foreach ($milestones as $milestone)
                     <div wire:key="milestone-{{ $milestone->id }}" class="relative p-5 space-y-5 border rounded-md border-slate-200">
                         <div class="space-y-5">
-                            @if (!empty($milestone->milestone_image))
-                                <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" class="w-full" />
-                            @else
-                                <x-img-lg src="https://picsum.photos/id/{{ $milestone->id + 100 }}/200/300?grayscale" class="w-full" />
-                            @endif
+                            <x-img src="{{ $milestone->milestone_image }}" class="w-full" />
 
                             <div>
                                 <h4 class="mb-5 font-semibold">{{ $milestone->title }}</h4>
@@ -127,7 +123,7 @@
                             {!! nl2br(e($contents['about_history'] ?? '')) !!}
                         </p>
 
-                        <x-img-lg src="{{ asset('storage/' . $medias['about_history_image']) }}" />
+                        <x-img src="{{ $medias['about_history_image'] }}" />
                     </div>
                 </section>
 
@@ -141,7 +137,7 @@
                     <div class="grid grid-cols-3 gap-3">
                         @foreach ($milestones->filter(function ($milestone) { return $milestone->status == App\Enums\MilestoneStatus::ACTIVE->value; }) as $milestone)
                             <div class="space-y-2">
-                                <x-img-lg src="{{ asset('storage/' . $milestone->milestone_image) }}" />
+                                <x-img src="{{ $milestone->milestone_image }}" />
 
                                 <h4 class="text-sm font-semibold line-clamp-1">{{ $milestone->title }}</h4>
                                 <div>

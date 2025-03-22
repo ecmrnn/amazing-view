@@ -4,7 +4,7 @@
 ])
 
 <div key="{{ $key }}" class="relative w-full space-y-3">
-    <x-img-lg class="w-full" src="{{ $room->image_1_path }}" />
+    <x-img class="w-full" src="{{ $room->image_1_path }}" />
     <div class="absolute px-3 py-2 text-xs font-semibold rounded-lg bg-white/90 backdrop-blur-md top-2 left-2">
         {{--  --}}
     </div>

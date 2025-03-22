@@ -64,16 +64,16 @@
     </div>
 
     <div class="p-5 bg-white border rounded-lg border-slate-200">
-        <div>
-            <x-form.input-label for="image_1_path">Thumbnail</x-form.input-label>
-            <p class="text-xs">Upload an image for your thumbnail</p>
-        </div>
+        <hgroup>
+            <h2 class="font-semibold">Image Gallery</h2>
+            <p class="text-xs">Upload an image for your thumbnail and rooms</p>
+        </hgroup>
 
         <div class="grid gap-5 mt-5 sm:grid-cols-2 xl:grid-cols-4">
             <div>
                 <x-filepond::upload
                     wire:model.live="image_1_path"
-                    placeholder="Room Thumbnail"
+                    placeholder="<span class='filepond--label-action'> Browse </span> Room Thumbnail"
                 />
                 <x-form.input-error field="image_1_path" />
             </div>
@@ -81,7 +81,7 @@
             <div>
                 <x-filepond::upload
                     wire:model.live="image_2_path"
-                    placeholder="Room Image"
+                    placeholder="<span class='filepond--label-action'> Browse </span> Room Image"
                 />
                 <x-form.input-error field="image_2_path" />
             </div>
@@ -89,7 +89,7 @@
             <div>
                 <x-filepond::upload
                     wire:model.live="image_3_path"
-                    placeholder="Room Image"
+                    placeholder="<span class='filepond--label-action'> Browse </span> Room Image"
                 />
                 <x-form.input-error field="image_3_path" />
             </div>
@@ -97,7 +97,7 @@
             <div>
                 <x-filepond::upload
                     wire:model.live="image_4_path"
-                    placeholder="Room Image"
+                    placeholder="<span class='filepond--label-action'> Browse </span> Room Image"
                 />
                 <x-form.input-error field="image_4_path" />
             </div>

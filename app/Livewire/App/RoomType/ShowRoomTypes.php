@@ -41,7 +41,7 @@ class ShowRoomTypes extends Component
                 @forelse ($room_types as $room_type)
                     <div wire:key="{{ $room_type->id }}" x-data="{ rooms_count: @js($room_type->rooms_count) }" class="flex flex-col justify-between p-5 space-y-5 bg-white border rounded-lg border-slate-200 group">
                         <div class="space-y-5">
-                            <x-img-lg src="{{ asset('storage/' . $room_type->image_1_path) }}" />
+                            <x-img src="{{ $room_type->image_1_path }}" />
 
                             <hgroup>
                                 <h2 class="font-semibold">{{ $room_type->name }}</h2>

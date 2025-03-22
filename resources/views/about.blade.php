@@ -37,7 +37,7 @@
                 </p>
             </div>
             
-            <x-img-lg src="{{ asset('storage/' . $medias['about_history_image']) }}" />
+            <x-img src="{{ $medias['about_history_image'] }}" />
         </div>
     </x-section>
 
@@ -50,7 +50,7 @@
         <div class="grid gap-5 sm:grid-cols-3">
             @foreach ($milestones as $milestone)
                 <div class="space-y-5">
-                    <x-img-lg src="{{ $milestone->milestone_image }}" />
+                    <x-img src="{{ $milestone->milestone_image }}" />
                 
                     <div class="space-y-5">
                         <hgroup>

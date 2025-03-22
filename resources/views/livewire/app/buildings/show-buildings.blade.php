@@ -2,7 +2,7 @@
     @foreach ($buildings as $building)
         <div wire:key="{{ $building->id }}" x-data="{ rooms_count: @js($building->rooms_count) }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200 group">
             <div class="relative">
-                <x-img-lg src="{{ asset('storage/' . $building->image) }}" />
+                <x-img src="{{ $building->image }}" />
 
                 <div class="absolute hidden gap-1 top-3 right-3 group-hover:flex">
                     <x-tooltip text="Edit" dir="bottom">

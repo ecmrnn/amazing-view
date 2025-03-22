@@ -14,7 +14,7 @@
                 @class(['relative p-5 border space-y-5 border-slate-200 rounded-md', 'bg-slate-50' => $featured_service->status == App\Enums\FeaturedServiceStatus::INACTIVE->value])
                 >
                 <div class="space-y-5">
-                    <x-img-lg src="{{ asset('storage/' . $featured_service->image) }}" class="w-full" />
+                    <x-img src="{{ $featured_service->image }}" class="w-full" />
 
                     <div>
                         <h4 class="font-semibold">{{ $featured_service->title }}</h4>
