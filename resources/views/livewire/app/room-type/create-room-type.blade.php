@@ -63,47 +63,49 @@
         </div>
     </div>
 
-    <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
-        <div class="space-y-3">
-            <div>
-                <x-form.input-label for="image_1_path">Thumbnail</x-form.input-label>
-                <p class="text-xs">Upload an image for your thumbnail</p>
-            </div>
-
-            <x-note>
-                <div class="max-w-xs">Upload a thumbnail and three high definition images that will showcase your new room here</div>
-            </x-note>
-
-            <x-filepond::upload
-                wire:model.live="image_1_path"
-                placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
-            />
-            <x-form.input-error field="image_1_path" />
+    <div class="p-5 bg-white border rounded-lg border-slate-200">
+        <div>
+            <x-form.input-label for="image_1_path">Thumbnail</x-form.input-label>
+            <p class="text-xs">Upload an image for your thumbnail</p>
         </div>
 
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid gap-5 mt-5 sm:grid-cols-2 xl:grid-cols-4">
+            <div>
+                <x-filepond::upload
+                    wire:model.live="image_1_path"
+                    placeholder="Room Thumbnail"
+                />
+                <x-form.input-error field="image_1_path" />
+            </div>
+
             <div>
                 <x-filepond::upload
                     wire:model.live="image_2_path"
-                    placeholder="Image 2"
+                    placeholder="Room Image"
                 />
                 <x-form.input-error field="image_2_path" />
             </div>
+
             <div>
                 <x-filepond::upload
                     wire:model.live="image_3_path"
-                    placeholder="Image 3"
+                    placeholder="Room Image"
                 />
                 <x-form.input-error field="image_3_path" />
             </div>
+            
             <div>
                 <x-filepond::upload
                     wire:model.live="image_4_path"
-                    placeholder="Image 4"
+                    placeholder="Room Image"
                 />
                 <x-form.input-error field="image_4_path" />
             </div>
         </div>
+
+        <x-note>
+            <div class="max-w-xs">Upload a thumbnail and three high definition images that will showcase your new room here</div>
+        </x-note>
     </div>
 
     <x-primary-button>Add Room Type</x-primary-button> 
