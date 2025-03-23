@@ -13,6 +13,10 @@ class EditRoom extends Component
 {
     use DispatchesToast, WithFilePond;
 
+    protected $listeners = [
+        'status-updated' => '$refresh',
+    ];
+
     #[Validate] public $room;
     #[Validate] public $min_capacity;
     #[Validate] public $max_capacity;

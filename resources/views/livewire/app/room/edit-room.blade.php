@@ -15,13 +15,26 @@
             </hgroup>
         </div>
 
-        @if ($room->status == App\Enums\RoomStatus::AVAILABLE->value)
-            <x-actions>
-                <x-action-button>
-                    Hello
-                </x-action-button>
-            </x-actions>
-        @endif
+        <div class="flex items-center gap-5">
+            <x-status type="room" :status="$room->status" />
+            @if (in_array($room->status, [
+                    App\Enums\RoomStatus::AVAILABLE->value,
+                    App\Enums\RoomStatus::UNAVAILABLE->value,
+                ]))
+                <x-actions>
+                    <div class="space-y-1">
+                        <x-action-button type="button" x-on:click="$dispatch('open-modal', 'change-status-modal'); dropdown = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+                            <p>Change Status</p>
+                        </x-action-button>
+                        <x-action-button type="button" x-on:click="$dispatch('open-modal', 'disable-room-modal'); dropdown = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                            <p>Disable Room</p>
+                        </x-action-button>
+                    </div>
+                </x-actions>
+            @endif
+        </div>
     </div>
 
     <form x-data="{

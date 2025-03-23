@@ -11,4 +11,8 @@
     </x-slot:header>
 
     <livewire:app.room.edit-room room="{{ $room->id }}" />
+
+    <x-modal.full name='change-status-modal' maxWidth='sm'>
+        <livewire:app.room.change-status :room="$room" />
+    </x-modal.full>
 </x-app-layout>

@@ -6,6 +6,7 @@ use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
 use App\Models\Reservation;
 use App\Models\Room;
+use Illuminate\Support\Facades\DB;
 
 class RoomService
 {
@@ -72,5 +73,19 @@ class RoomService
             $room->status = RoomStatus::AVAILABLE->value;
             $room->save();
         }
+    }
+
+    public function changeStatus(Room $room) {
+        DB::transaction(function () use ($room) {
+            if ($room->status == RoomStatus::AVAILABLE->value) {
+                return $room->update([
+                    'status' => RoomStatus::UNAVAILABLE,
+                ]);
+            }
+
+            return $room->update([
+                'status' => RoomStatus::AVAILABLE,
+            ]);
+        });
     }
 }

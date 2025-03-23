@@ -33,7 +33,7 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'create room']);
         Permission::create(['name' => 'read rooms']);
         Permission::create(['name' => 'update room']);
-        Permission::create(['name' => 'delete room']);
+        Permission::create(['name' => 'deactivate room']);
 
         Permission::create(['name' => 'create room type']);
         Permission::create(['name' => 'read rooms type']);
@@ -106,7 +106,7 @@ class RolePermissionSeeder extends Seeder
             'create room',
             'read rooms',
             'update room',
-            'delete room',
+            'deactivate room',
 
             'create room type',
             'read rooms type',
