@@ -23,6 +23,7 @@
             \App\Enums\RoomStatus::UNAVAILABLE->value => ['Unavailable', 'text-red-800 border-red-500 bg-red-50'],
             \App\Enums\RoomStatus::OCCUPIED->value => ['Occupied', 'text-orange-800 border-orange-500 bg-orange-50'],
             \App\Enums\RoomStatus::RESERVED->value => ['Reserved', 'text-green-800 border-green-500 bg-green-50'],
+            \App\Enums\RoomStatus::DISABLED->value => ['Disabled', 'text-stone-800 border-stone-500 bg-stone-200'],
         ],
         'invoice' => [
             \App\Enums\InvoiceStatus::PARTIAL->value => ['Partial', 'text-yellow-800 border-yellow-500 bg-yellow-50'],

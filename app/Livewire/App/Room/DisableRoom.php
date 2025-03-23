@@ -8,10 +8,10 @@ use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class ChangeStatus extends Component
+class DisableRoom extends Component
 {
     use DispatchesToast;
-    
+
     public $room;
     #[Validate] public $password;
 
@@ -34,41 +34,25 @@ class ChangeStatus extends Component
 
         if ($auth->validatePassword($this->password)) {
             $service = new RoomService;
-            $service->changeStatus($this->room);
+            $service->disable($this->room);
 
-            $this->toast('Success!', description: 'Room status updated!');
-            $this->dispatch('status-updated');
+            $this->toast('Success!', description: 'Room disabled!');
+            $this->dispatch('room-disabled');
             $this->reset('password');
             return;
         }
 
         $this->addError('password', 'Password mismatched, try again!');
     }
-    
+
     public function render()
     {
         return <<<'HTML'
-        <form class="p-5 space-y-5" wire:submit="submit" x-on:status-updated.window="show = false">
+        <form class="p-5 space-y-5" wire:submit="submit" x-on:room-disabled.window="show = false">
             <hgroup>
-                <h2 class="text-lg font-semibold">Change Room Status</h2>
-                <p class="text-xs">Update the room status here</p>
+                <h2 class="text-lg font-semibold text-red-500">Disable Room</h2>
+                <p class="text-xs">This room will not be able to be reserved</p>
             </hgroup>
-
-            @if ($room->status == App\Enums\RoomStatus::UNAVAILABLE->value)
-                <x-info-message>
-                    <div>
-                        <h3 class="font-semibold">Note!</h3>
-                        <p class="text-xs">This room will be available for reservation, the room&apos;s status will be set to <strong>Available</strong></p>
-                    </div>
-                </x-info-message>
-            @else
-                <x-danger-message>
-                    <div>
-                        <h3 class="font-semibold">Note!</h3>
-                        <p class="text-xs">This room will not be available for reservation, the room&apos;s status will be set to <strong>Unavailable</strong></p>
-                    </div>
-                </x-danger-message>
-            @endif
 
             <x-form.input-group>
                 <x-form.input-label for='password'>Enter your password</x-form.input-label>
@@ -76,11 +60,11 @@ class ChangeStatus extends Component
                 <x-form.input-error field="password" />
             </x-form.input-group>
 
-            <x-loading wire:loading wire:target='submit'>Updating room status, please wait</x-loading>
+            <x-loading wire:loading wire:target='submit'>Disabling room, please wait</x-loading>
 
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button>Edit</x-primary-button>
+                <x-danger-button>Disable</x-danger-button>
             </div>
         </form>
         HTML;

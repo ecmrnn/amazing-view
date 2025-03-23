@@ -15,6 +15,7 @@ class EditRoom extends Component
 
     protected $listeners = [
         'status-updated' => '$refresh',
+        'room-disabled' => '$refresh',
     ];
 
     #[Validate] public $room;

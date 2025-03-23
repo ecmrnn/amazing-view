@@ -88,4 +88,12 @@ class RoomService
             ]);
         });
     }
+
+    public function disable(Room $room) {
+        DB::transaction(function () use ($room) {
+            return $room->update([
+                'status' => RoomStatus::DISABLED,
+            ]);
+        });
+    }
 }

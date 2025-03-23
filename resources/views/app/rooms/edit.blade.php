@@ -15,4 +15,8 @@
     <x-modal.full name='change-status-modal' maxWidth='sm'>
         <livewire:app.room.change-status :room="$room" />
     </x-modal.full>
+
+    <x-modal.full name='disable-room-modal' maxWidth='sm'>
+        <livewire:app.room.disable-room :room="$room" />
+    </x-modal.full>
 </x-app-layout>

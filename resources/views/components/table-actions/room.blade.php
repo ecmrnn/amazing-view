@@ -14,13 +14,6 @@
             </x-tooltip>
         </a>
     @endcan
-    @can('deactivate room')
-        <x-tooltip text="Disable" dir="top">
-            <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'delete-room-{{ $row->id }}-modal')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
-            </x-icon-button>
-        </x-tooltip>
-    @endcan
 
     {{-- Modals --}}
     <x-modal.full name='delete-room-{{ $row->id }}-modal' maxWidth='sm'>

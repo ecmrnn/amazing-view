@@ -20,6 +20,7 @@
             @if (in_array($room->status, [
                     App\Enums\RoomStatus::AVAILABLE->value,
                     App\Enums\RoomStatus::UNAVAILABLE->value,
+                    App\Enums\RoomStatus::DISABLED->value,
                 ]))
                 <x-actions>
                     <div class="space-y-1">
