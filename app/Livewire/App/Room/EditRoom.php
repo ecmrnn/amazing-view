@@ -32,7 +32,7 @@ class EditRoom extends Component
         $this->room = $room;
         $this->min_capacity = $room->min_capacity;
         $this->max_capacity = $room->max_capacity;
-        $this->rate = $room->rate;
+        $this->rate = (int) $room->rate;
     }
 
     public function submit() {
@@ -61,6 +61,7 @@ class EditRoom extends Component
 
         $this->toast('Success!', 'success', 'Room edited successfully!');
         $this->dispatch('room-edited');
+        $this->dispatch('pond-reset');
     }
 
     public function render()
