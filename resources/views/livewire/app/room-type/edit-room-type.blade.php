@@ -13,12 +13,15 @@
                 <p class="max-w-sm text-xs">Update {{ $room_type->name }} details here</p>
             </hgroup>
         </div>
-        <x-actions>
-            <x-action-button x-on:click="$dispatch('open-modal', 'reset-modal')" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                <p>Reset</p>
-            </x-action-button>
-        </x-actions>
+
+        @if ($room_type->rooms->count() == 0)
+            <x-actions>
+                <x-action-button x-on:click="$dispatch('open-modal', 'delete-room-type-modal')" type="button" class="text-red-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                    <p>Delete Room Type</p>
+                </x-action-button>
+            </x-actions>
+        @endif
     </div>
 
     <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">

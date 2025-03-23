@@ -11,4 +11,9 @@
     </x-slot:header>
 
     <livewire:app.room-type.edit-room-type :room_type="$room_type" />
+
+    {{-- Modal --}}
+    <x-modal.full name='delete-room-type-modal' maxWidth='sm'>
+        <livewire:app.room-type.delete-room-type :room_type="$room_type" />
+    </x-modal.full>
 </x-app-layout>  
