@@ -15,7 +15,7 @@ class AmenityService
     public function attach(Reservation $reservation, $amenities) {
         foreach ($reservation->rooms as $room) {
             foreach ($amenities as $amenity) {
-                if ($amenity['room_number'] == $room->building->prefix . ' ' . $room->room_number) {
+                if ($amenity['room_number'] == $room->room_number) {
                     $_amenity = Amenity::find($amenity['id']);
         
                     $room->amenities()->attach($amenity['id'], [

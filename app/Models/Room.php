@@ -20,8 +20,8 @@ class Room extends Model
     public static function rules(array $excepts = []) {
         $rules = [
             'room_type' => 'required',
-            'building' => 'nullable',
-            'room_number' => 'required|unique:rooms,room_number',
+            'building' => 'required',
+            'room_number' => 'required',
             'floor_number' => 'required|numeric|min:1|lte:max_floor_number',
             'min_capacity' => 'required|numeric|min:1',
             'max_capacity' => 'required|numeric|gte:min_capacity',
@@ -86,4 +86,12 @@ class Room extends Model
                 ]);
         });
     }   
+
+    public static function boot() {
+        parent::boot();
+
+        self::creating(function ($room) {
+            $room->room_number = $room->building->prefix . ' ' . $room->room_number;
+        });
+    }
 }

@@ -168,7 +168,7 @@
                         @forelse ($reservation->rooms as $room)
                             <div class="grid grid-cols-2 gap-5 p-5 border rounded-md border-slate-200">
                                 <div>
-                                    <p class="font-semibold">{{ $room->building->prefix }} {{ $room->room_number }}
+                                    <p class="font-semibold">{{ $room->room_number }}
                                     </p>
                                     <p class="text-xs">Room Number</p>
                                 </div>
@@ -484,7 +484,7 @@
                             x-on:click="$dispatch('add-room', { room: {{ $room->id }} })" class="select-none">
                             <div class="grid w-full rounded-lg select-none min-w-28 place-items-center aspect-square">
                                 <div>
-                                    <p class="text-xs font-semibold text-center">{{ $room->building->prefix }}</p>
+                                    <p class="text-xs font-semibold text-center">{{ $room->building->name }}</p>
                                     <p class="text-lg font-semibold text-center">{{ $room->room_number }}</p>
                                 </div>
                             </div>
@@ -699,7 +699,7 @@
 
                                         <div class="flex items-start justify-between">
                                             <hgroup>
-                                                <h3 class="font-semibold">{{ $room->building->prefix . ' ' . $room->room_number }}</h3>
+                                                <h3 class="font-semibold">{{ $room->room_number }}</h3>
                                                 <p class="text-xs">Rate: <x-currency />{{ number_format($room->rate, 2) }}</p>
                                             </hgroup>
                                             <x-status type="reservation" status="{{ $room->pivot->status }}" />

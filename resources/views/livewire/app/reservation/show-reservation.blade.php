@@ -249,7 +249,7 @@
                 @forelse ($reservation->rooms as $room)
                     <div class="grid grid-cols-2 gap-5 p-5 border rounded-md border-slate-200">
                         <div>
-                            <p class="font-semibold">{{ $room->building->prefix }} {{ $room->room_number }}</p>
+                            <p class="font-semibold">{{ $room->room_number }}</p>
                             <p class="text-xs">Room Number</p>
                         </div>
 

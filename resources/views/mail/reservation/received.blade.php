@@ -62,7 +62,7 @@
                         <tbody>
                             @foreach ($reservation->rooms as $room)
                                 <tr class="border-b border-slate-200 last:border-b-0">
-                                    <td class="px-3 py-2">{{ $room->building->prefix . ' ' . $room->room_number }}</td>
+                                    <td class="px-3 py-2">{{ $room->room_number }}</td>
                                     <td class="px-3 py-2"><x-currency />{{ number_format($room->pivot->rate, 2) }}</td>
                                 </tr>
                             @endforeach

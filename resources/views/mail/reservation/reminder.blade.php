@@ -32,7 +32,7 @@
                         </div>
                         @foreach ($reservation->rooms as $room)
                             <div class="grid grid-cols-3 px-3 py-2">
-                                <p>{{ $room->building->prefix . ' ' . $room->room_number }}</p>
+                                <p>{{ $room->room_number }}</p>
                                 <p class="capitalize">{{ $room->building->name }}</p>
                                 <p>{{ $room->floor_number }}</p>
                             </div>

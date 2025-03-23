@@ -16,7 +16,7 @@ class CreateRoom extends Component
     
     public $room;
     #[Validate] public $room_type;
-    #[Validate] public $building_id;
+    #[Validate] public $building;
     #[Validate] public $room_number;
     #[Validate] public $floor_number = 1;
     #[Validate] public $min_capacity = 1;
@@ -26,7 +26,7 @@ class CreateRoom extends Component
     public $max_floor_number = 1;
     public $room_number_input;
     public $buildings;
-    public $building;
+    public $selected_building;
 
     public function mount(RoomType $room) {
         $this->room = $room;
@@ -39,11 +39,11 @@ class CreateRoom extends Component
     }
     
     public function selectBuilding() {
-        if (!empty($this->building_id)) {
-            $this->building = Building::find($this->building_id);
-            $this->max_floor_number = $this->building->floor_count;
+        if (!empty($this->building)) {
+            $this->selected_building = Building::find($this->building);
+            $this->max_floor_number = $this->selected_building->floor_count;
         } else {
-            $this->reset('building');
+            $this->reset('selected_building');
             $this->max_floor_number = 1;
         }
 
@@ -52,11 +52,13 @@ class CreateRoom extends Component
         }
     }
 
-    public function formatRoomNumber() {
-        if (!empty($this->building)) {
-            $this->room_number = $this->building->prefix . ' ' . $this->room_number_input;
-        } else {
-            $this->room_number = $this->room_number_input;
+    public function checkRoomNumber() {
+        if ($this->building) {
+            $count = Room::where('room_number', $this->selected_building->prefix . ' ' . $this->room_number)->count();
+    
+            if ($count > 0) {
+                $this->addError('room_number', 'Room with the same number already exists');
+            }
         }
     }
 
@@ -69,7 +71,7 @@ class CreateRoom extends Component
 
         Room::create([
             'room_type_id' => $this->room_type,
-            'building_id' => $this->building_id,
+            'building_id' => $this->building,
             'room_number' => $this->room_number,
             'floor_number' => $this->floor_number,
             'min_capacity' => $this->min_capacity,
@@ -80,6 +82,8 @@ class CreateRoom extends Component
 
         $this->toast('Success!', 'success', 'Room added successfully!');
         $this->reset([
+            'room_number',
+            'room_number_input',
             'floor_number',
             'min_capacity',
             'max_capacity',

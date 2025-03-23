@@ -50,11 +50,8 @@ final class RoomTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckBox();
-        
         return [
             Header::make()
-                ->showToggleColumns()
                 ->showSearchInput(),
 
             Footer::make()
@@ -113,20 +110,12 @@ final class RoomTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
             
-            Column::make('Building', 'building_formatted', 'building_id')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Min. Capacity', 'min_capacity'),
-
             Column::make('Max. Capacity', 'max_capacity'),
 
             Column::make('Rate', 'rate_formatted', 'rate')
                 ->sortable(),
 
             Column::make('Status', 'status_formatted', 'status'),
-
-            Column::make('Update Status', 'status_update'),
 
             Column::action('')
         ];

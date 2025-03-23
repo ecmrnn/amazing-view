@@ -138,7 +138,7 @@
                                         
                                         <div class="flex items-start justify-between">
                                             <hgroup>
-                                                <h3 class="font-semibold">{{ $room->building->prefix . ' ' . $room->room_number }}</h3>
+                                                <h3 class="font-semibold">{{ $room->room_number }}</h3>
                                                 <p class="text-xs">Rate: <x-currency />{{ number_format($room->rate, 2) }}</p>
                                             </hgroup>
                                             <x-status type="reservation" status="{{ $room->pivot->status }}" />
@@ -166,7 +166,7 @@
         
                                                         <div class="flex items-start justify-between">
                                                             <hgroup>
-                                                                <h3 class="font-semibold">{{ $room->building->prefix . ' ' . $room->room_number }}</h3>
+                                                                <h3 class="font-semibold">{{ $room->room_number }}</h3>
                                                                 <p class="text-xs">Rate: <x-currency />{{ number_format($room->rate, 2) }}</p>
                                                             </hgroup>
                                                             <x-status type="reservation" status="{{ $room->pivot->status }}" />
@@ -251,7 +251,7 @@
                                     <img src="{{ asset('storage/' . $room->image_1_path) }}" alt="selected room for check out" class="object-cover object-center rounded-md aspect-video">
                                     <div class="flex items-start justify-between gap-5">
                                         <hgroup>
-                                            <h3 class="font-semibold">{{ $room->building->prefix . ' ' . $room->room_number }}</h3>
+                                            <h3 class="font-semibold">{{ $room->room_number }}</h3>
                                             <p class="text-xs">Rate: <x-currency />{{ number_format($room->rate, 2) }}</p>
                                         </hgroup>
 
@@ -277,7 +277,7 @@
                                         <div class="p-5 space-y-5">
                                             <hgroup>
                                                 <h2 class="text-lg font-semibold">Room Amenities</h2>
-                                                <p class="text-xs">Here are the availed amenities for room {{ $room->building->prefix . ' ' . $room->room_number }}</p>
+                                                <p class="text-xs">Here are the availed amenities for room {{ $room->room_number }}</p>
                                             </hgroup>
                                             <div class="overflow-hidden bg-white border rounded-md border-slate-200">
                                                 <div class="grid grid-cols-4 px-5 py-3 text-sm font-semibold text-zinc-800/60 bg-slate-50">
@@ -303,7 +303,7 @@
                                         <div class="p-5 space-y-5">
                                             <hgroup>
                                                 <h2 class="text-lg font-semibold">Room Items</h2>
-                                                <p class="text-xs">Here are the additional items for room {{ $room->building->prefix . ' ' . $room->room_number }}</p>
+                                                <p class="text-xs">Here are the additional items for room {{ $room->room_number }}</p>
                                             </hgroup>
                                             <div class="overflow-hidden bg-white border rounded-md border-slate-200">
                                                 <div class="grid grid-cols-4 px-5 py-3 text-sm font-semibold text-zinc-800/60 bg-slate-50">

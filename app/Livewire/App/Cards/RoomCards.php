@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Cards;
 
+use App\Enums\RoomStatus;
 use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class RoomCards extends Component
     
     public $available_rooms = 0;
     public $occupied_rooms = 0;
-    public $removed_rooms = 0;
+    public $reserved_rooms = 0;
     public $total_rooms_count = 0;
     public $roomType;
 
@@ -28,9 +29,9 @@ class RoomCards extends Component
     
     public function render()
     {
-        $this->available_rooms = Room::whereBelongsTo($this->roomType)->whereStatus(Room::STATUS_AVAILABLE)->count();
-        $this->occupied_rooms = Room::whereBelongsTo($this->roomType)->whereStatus(Room::STATUS_OCCUPIED)->count();
-        $this->removed_rooms = Room::onlyTrashed()->whereBelongsTo($this->roomType)->count();
+        $this->available_rooms = Room::whereBelongsTo($this->roomType)->whereStatus(RoomStatus::AVAILABLE)->count();
+        $this->occupied_rooms = Room::whereBelongsTo($this->roomType)->whereStatus(RoomStatus::OCCUPIED)->count();
+        $this->reserved_rooms = Room::whereBelongsTo($this->roomType)->whereStatus(RoomStatus::RESERVED)->count();
         $this->total_rooms_count = Room::whereBelongsTo($this->roomType)->count();
 
         return view('livewire.app.cards.room-cards');

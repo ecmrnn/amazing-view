@@ -92,7 +92,7 @@
                         <td class="capitalize">
                             @foreach ($selected_rooms as $room)
                                 <p>
-                                    {{ $room->building->prefix . " " . $room->room_number . ' - ' . $room->roomType->name }}
+                                    {{ $room->room_number . ' - ' . $room->roomType->name }}
                                 </p>
                             @endforeach
                         </td>
@@ -121,7 +121,7 @@
                                 <?php $counter++ ?>
                                 <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
                                     <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                    <p>{{ $room->building->prefix . ' ' . $room->room_number}}</p>
+                                    <p>{{ $room->room_number}}</p>
                                     <p>Room</p>
                                     <p class="text-center">{{ $night_count }}</p>
                                     <p class="text-right"><x-currency />{{ number_format($room->rate, 2) }}</p>

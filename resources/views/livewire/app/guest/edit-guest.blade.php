@@ -490,7 +490,7 @@
                         >
                         <div class="grid w-full rounded-lg select-none min-w-28 place-items-center aspect-square">
                             <div>
-                                <p class="text-xs font-semibold text-center">{{ $room->building->prefix }}</p>
+                                <p class="text-xs font-semibold text-center">{{ $room->building->name }}</p>
                                 <p class="text-lg font-semibold text-center">{{ $room->room_number }}</p>
                             </div>
                         </div>

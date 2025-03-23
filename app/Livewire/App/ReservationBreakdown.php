@@ -53,7 +53,7 @@ class ReservationBreakdown extends Component
                                 <?php $counter++ ?>
                                 <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid first:border-t-0 hover:bg-slate-50 border-slate-200">
                                     <p class="font-semibold opacity-50">{{ $counter }}</p>
-                                    <p>{{ $room->building->prefix . ' ' . $room->room_number}}</p>
+                                    <p>{{ $room->room_number}}</p>
                                     <p>Room</p>
                                     <p class="text-center">{{ $night_count }}</p>
                                     <p class="text-right"><x-currency />{{ number_format($room->pivot->rate, 2) }}</p>
@@ -83,7 +83,7 @@ class ReservationBreakdown extends Component
                                     <p class="font-semibold opacity-50">{{ $counter }}</p>
                                     <div class="flex items-center gap-3">
                                         <p>{{ $amenity->name }}</p>
-                                        <p class="px-2 py-1 text-xs font-semibold border rounded-md bg-slate-50 border-slate-200">{{ $room->building->prefix . ' ' . $room->room_number }}</p>
+                                        <p class="px-2 py-1 text-xs font-semibold border rounded-md bg-slate-50 border-slate-200">{{ $room->room_number }}</p>
                                     </div>
                                     <p>Amenity</p>
                                     <p class="text-center">{{ $amenity->pivot->quantity }}</p>

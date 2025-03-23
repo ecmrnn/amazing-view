@@ -328,7 +328,7 @@
                             <x-form.select wire:model.live='room_number' id="room_number" name="room_number" wire:change='selectRoom'>
                                 @foreach ($invoice->reservation->rooms as $room)
                                     @if ($room->pivot->status == App\Enums\ReservationStatus::CHECKED_IN->value)
-                                        <option value="{{ $room->building->prefix . ' ' . $room->room_number }}">{{ $room->building->prefix . ' ' . $room->room_number }}</option>
+                                        <option value="{{ $room->room_number }}">{{ $room->room_number }}</option>
                                     @endif
                                 @endforeach
                             </x-form.select>

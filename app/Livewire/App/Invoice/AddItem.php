@@ -93,7 +93,7 @@ class AddItem extends Component
         foreach ($reservation->rooms as $room) {
             $this->items->push([
                 'id' => $room->id,
-                'name' => $room->building->prefix . ' ' .$room->room_number,
+                'name' => $room->room_number,
                 'type' => 'room',
                 'quantity' => $this->night_count,
                 'price' => $room->pivot->rate,
@@ -120,7 +120,7 @@ class AddItem extends Component
             foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
                 $this->items->push([
                     'id' => $amenity->id,
-                    'room_number' => $room->building->prefix . ' ' . $room->room_number,
+                    'room_number' => $room->room_number,
                     'name' => $amenity->name,
                     'type' => 'amenity',
                     'quantity' => $amenity->pivot->quantity,
@@ -134,7 +134,7 @@ class AddItem extends Component
                 if ($item->invoice_id == $reservation->invoice->id) {
                     $this->items->push([
                         'id' => $item->id,
-                        'room_number' => $room->building->prefix . ' ' . $room->room_number,
+                        'room_number' => $room->room_number,
                         'name' => $item->name,
                         'type' => 'others',
                         'quantity' => $item->quantity,
@@ -229,7 +229,7 @@ class AddItem extends Component
         if (!empty($this->invoice)) {
             if ($this->item_type == 'others') {
                 foreach ($this->invoice->reservation->rooms as $room) {
-                    if ($this->room_number == $room->building->prefix . ' ' . $room->room_number) {
+                    if ($this->room_number == $room->room_number) {
                         $item = $this->invoice->items()->create([
                             'name' => $this->name,
                             'room_id' => $room->id,

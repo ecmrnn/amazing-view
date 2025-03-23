@@ -149,7 +149,7 @@ class EditReservation extends Component
             foreach ($room->amenitiesForReservation($this->reservation->id)->get() as $amenity) {
                 $this->selected_amenities->push([
                     'id' => $amenity->id,
-                    'room_number' => $room->building->prefix . ' ' . $room->room_number,
+                    'room_number' => $room->room_number,
                     'name' => $amenity->name,
                     'quantity' => $amenity->pivot->quantity,
                     'price' => $amenity->pivot->price,
@@ -255,7 +255,7 @@ class EditReservation extends Component
 
         $amenity = Amenity::find($this->amenity);
         $room = $this->reservation->rooms->get($this->amenity_room_id);
-        $room_number = $room->building->prefix . ' ' . $room->room_number;
+        $room_number = $room->room_number;
         
         if (in_array($room->pivot->status, [
             ReservationStatus::CONFIRMED->value,
@@ -318,7 +318,7 @@ class EditReservation extends Component
 
         $amenity = $this->amenity;
         $room = $this->reservation->rooms->get($this->amenity_room_id);
-        $room_number = $room->building->prefix . ' ' . $room->room_number;
+        $room_number = $room->room_number;
 
         if ($this->selected_amenities->contains(function ($_amenity) use ($room_number, $amenity) {
             return $_amenity['room_number'] == $room_number && $_amenity['id'] == $amenity;
@@ -336,7 +336,7 @@ class EditReservation extends Component
 
         $amenity = $this->amenity;
         $room = $this->reservation->rooms->get($this->amenity_room_id);
-        $room_number = $room->building->prefix . ' ' . $room->room_number;
+        $room_number = $room->room_number;
 
         if ($this->selected_amenities->contains(function ($_amenity) use ($room_number, $amenity) {
             return $_amenity['room_number'] == $room_number && $_amenity['id'] == $amenity;

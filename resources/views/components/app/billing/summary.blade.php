@@ -116,7 +116,7 @@
         <div class="space-y-1">
             @forelse ($selected_rooms as $room)
                 <div class="grid grid-cols-2 text-xs">
-                    <p>{{ $room->building->prefix . ' ' . $room->room_number }}</p>
+                    <p>{{ $room->room_number }}</p>
 
                     <div class="grid grid-cols-3 place-items-end">
                         <p>&lpar;night<span x-show="night_count > 1">s</span>&rpar; {{ $night_count }}</p>

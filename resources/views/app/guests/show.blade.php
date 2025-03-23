@@ -109,7 +109,7 @@
                                 <span class="space-x-1">
                                     @foreach ($reservation->rooms as $room)
                                         <span key="{{ $room->id }}" class="inline-block px-2 py-1 font-semibold capitalize rounded-md bg-slate-100">
-                                            {{ $room->building->prefix . " " . $room->room_number }}
+                                            {{ $room->room_number }}
                                         </span>
                                     @endforeach
                                 </span>
@@ -144,7 +144,7 @@
                     <div class="space-y-1">
                         @forelse ($reservation->rooms as $room)
                             <div class="grid grid-cols-2 text-sm">
-                                <p>{{ $room->building->prefix . ' ' . $room->room_number }}</p>
+                                <p>{{ $room->room_number }}</p>
             
                                 <div class="grid grid-cols-3 place-items-end">
                                     <p class="text-sm">&lpar;night<span x-show="night_count > 1">s</span>&rpar; {{ $night_count }}</p>
@@ -171,7 +171,7 @@
                                 @endphp
 
                                 <div class="grid grid-cols-2">
-                                    <p class="text-sm uppercase">{{ $room->building->prefix . ' ' . $room->room_number . ' - ' . $amenity->name }}</p>
+                                    <p class="text-sm uppercase">{{ $room->room_number . ' - ' . $amenity->name }}</p>
                                     
                                     <div class="grid grid-cols-3 place-items-end">
                                         <p class="text-sm">{{ $quantity }}</p>

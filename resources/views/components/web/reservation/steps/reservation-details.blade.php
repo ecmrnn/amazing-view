@@ -198,7 +198,7 @@
 
                                                     <div class="flex items-start justify-between">
                                                         <div>
-                                                            <h3 class="text-lg font-semibold">{{ $room->roomType->name }} {{ $room->building->prefix . ' ' . $room->room_number }}</h3>
+                                                            <h3 class="text-lg font-semibold">{{ $room->roomType->name }} {{ $room->room_number }}</h3>
                                                             <p class="text-sm font-semibold"><x-currency />{{ $room->rate }} &#47; night</p>
                                                         </div>
 
@@ -264,7 +264,7 @@
                                         <div>
                                             <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->roomType->name }}</p>
                                             <p class="text-sm">
-                                                <span class="uppercase">{{ $room->building->prefix }}</span>
+                                                <span class="uppercase">{{ $room->building->name }}</span>
                                                 {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
                                             <p class="text-xs text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
                                         </div>

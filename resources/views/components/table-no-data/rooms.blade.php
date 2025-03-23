@@ -4,7 +4,7 @@
     <p class="text-sm font-semibold text-center">No rooms found!</p>
 
     @can('create room')
-        <x-primary-button>
+        <x-primary-button type="button" x-on:click="$dispatch('open-modal', 'add-room-modal')">
             Add Room
         </x-primary-button>
     @endcan

@@ -340,7 +340,7 @@ class EditReservationDetails extends Component
                                 <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
                                     {{-- Room Details --}}
                                     <div>
-                                        <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->building->prefix . ' ' . $room->room_number}}</p>
+                                        <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->room_number}}</p>
                                         <p class="text-sm">Room Rate: <x-currency />{{ $room->rate }} &#47; night</p>
                                         <p class="text-sm text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
                                     </div>

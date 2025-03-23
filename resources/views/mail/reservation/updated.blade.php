@@ -67,7 +67,7 @@
                             <tbody>
                                 @foreach ($reservation->rooms as $room)
                                     <tr class="border-b border-slate-200 last:border-b-0">
-                                        <td class="px-3 py-2">{{ $room->building->prefix . ' ' . $room->room_number }}</td>
+                                        <td class="px-3 py-2">{{ $room->room_number }}</td>
                                         <td class="px-3 py-2 capitalize">{{ $room->building->name }}</td>
                                         <td class="px-3 py-2">{{ $room->floor_number }}</td>
                                         <td class="px-3 py-2"><x-currency />{{ number_format($room->pivot->rate, 2) }}</td>
@@ -106,7 +106,7 @@
                             @foreach ($reservation->rooms as $room)
                                 @foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity)
                                     <tr class="border-t border-slate-200">
-                                        <td class="px-3 py-2 capitalize">{{ $room->building->prefix . ' ' . $room->room_number . ' - ' . $amenity->name }}</td>
+                                        <td class="px-3 py-2 capitalize">{{ $room->room_number . ' - ' . $amenity->name }}</td>
                                         <td class="px-3 py-2 capitalize">Amenity</td>
                                         <td class="px-3 py-2 capitalize">{{ $amenity->pivot->quantity }}</td>
                                         <td class="px-3 py-2"><x-currency />{{ number_format($amenity->pivot->price, 2) }}</td>
