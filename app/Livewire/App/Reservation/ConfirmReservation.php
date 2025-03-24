@@ -5,6 +5,7 @@ namespace App\Livewire\App\Reservation;
 use App\Enums\ReservationStatus;
 use App\Mail\Reservation\Confirmed;
 use App\Models\Reservation;
+use App\Services\BillingService;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Mail;
@@ -22,16 +23,26 @@ class ConfirmReservation extends Component
 
     public $reservation;
     public $payment;
+    public $is_valid = false;
     public $can_confirm = false;
+    public $can_discard = false;
     #[Validate] public $amount = 0;
     #[Validate] public $transaction_id;
     #[Validate] public $payment_date;
+    #[Validate] public $password;
 
     public function rules() {
         return [
             'amount' => 'required|integer|gt:500',
             'transaction_id' => 'nullable',
             'payment_date' => 'date|required',
+            'password' => 'required',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'password.required' => 'Enter your password',
         ];
     }
 
@@ -54,7 +65,23 @@ class ConfirmReservation extends Component
             'payment_date' => $this->rules()['payment_date'],
         ]);
 
+        $this->is_valid = true;
         $this->can_confirm = true;
+        $this->can_discard = false;
+    }
+    
+    public function discard() {
+        $this->is_valid = true;
+        $this->can_discard = true;
+        $this->can_confirm = false;
+    }
+
+    public function discardPayment() {
+        $service = new BillingService;
+        $service->discardPayment($this->payment);
+
+        $this->toast('Success!', description: 'The payment has been discarded');
+        $this->dispatch('reservation-confirmed');
     }
 
     public function confirm() {
@@ -81,7 +108,7 @@ class ConfirmReservation extends Component
         <div>
             <x-modal.full name="show-downpayment-modal" maxWidth="sm">
                 <form wire:submit="confirm" x-data="{ checked: false, amount: @entangle('amount') }" x-on:reservation-confirmed.window="show = false">
-                    @if(! $can_confirm)
+                    @if(!$is_valid)
                         <section class="p-5 space-y-5">
                             <hgroup>
                                 <h2 class="font-semibold capitalize text">Confirm Reservation</h2>
@@ -145,30 +172,47 @@ class ConfirmReservation extends Component
 
                             <x-loading wire:loading wire:target="validateReservation">Checking payment details</x-loading>
                             
-                            <div class="flex justify-end gap-1">
-                                <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
-                                @if ($reservation->status == 1)
+                            <div class="flex justify-between gap-1">
+                                <x-danger-button type="button" wire:click="discard" wire:loading.attr="disabled">Discard</x-danger-button>
+                                
+                                <div class="flex gap-1">
+                                    <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
                                     <x-primary-button type="button" wire:loading.attr="disabled" wire:click="validateReservation">Confirm</x-primary-button>
-                                @endif
+                                </div>
                             </div>
                         </section>
                     @else
-                        <div class="p-5 space-y-5" x-on:reservation-confirmed.window="show = false">
-                            <hgroup>
-                                <h2 class="font-semibold">Confirm Reservation</h2>
-                                <p class="text-xs">This reservation is about to be confirmed</p>
-                            </hgroup>
+                        @if ($can_confirm)
+                            <div class="p-5 space-y-5" x-on:reservation-confirmed.window="show = false">
+                                <hgroup>
+                                    <h2 class="font-semibold">Confirm Reservation</h2>
+                                    <p class="text-xs">This reservation is about to be confirmed</p>
+                                </hgroup>
 
-                            <x-loading wire:loading wire:target="confirm">Confirming reservation, please wait</x-loading>
+                                <x-loading wire:loading wire:target="confirm">Confirming reservation, please wait</x-loading>
 
-                            <div class="flex justify-betweem">
-                                <x-danger-button type="button" wire:click="discard">Discard</x-danger-button>
-                                <div class="flex gap-1">
-                                    <x-secondary-button type="button" x-on:click="$wire.set('can_confirm', false)">Back</x-secondary-button>
+                                <div class="flex justify-end gap-1">
+                                    <x-secondary-button type="button" x-on:click="$wire.set('is_valid', false)">Back</x-secondary-button>
                                     <x-primary-button type="submit">Confirm</x-primary-button>
                                 </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="p-5 space-y-5" x-on:reservation-confirmed.window="show = false">
+                                <hgroup>
+                                    <h2 class="font-semibold">Discard Payment</h2>
+                                    <p class="text-xs">This payment is about to be discarded</p>
+                                </hgroup>
+
+                                <x-note>Discarding the payment for this reservation will revert its status to <strong>Awaiting Payment</strong>. Notify the guest to send another payment.</x-note>
+
+                                <x-loading wire:loading wire:target="discard">Discarding payment, please wait</x-loading>
+
+                                <div class="flex justify-end gap-1">
+                                    <x-secondary-button type="button" x-on:click="$wire.set('is_valid', false)">Back</x-secondary-button>
+                                    <x-danger-button type="button" wire:click="discardPayment" wire:loading.attr="disabled">Discard</x-danger-button>
+                                </div>
+                            </div>
+                        @endif
                     @endif
                 </form>
             </x-modal.full> 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\App;
 
+use App\Enums\InvoiceStatus;
 use App\Enums\RoomStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\UserRole;
@@ -47,7 +48,7 @@ class DashboardController extends Controller
             $available_rooms = Room::where('status', RoomStatus::AVAILABLE)
                 ->count();
             $pending_reservations = Reservation::where('status', ReservationStatus::PENDING)->count();
-            $due_invoices = Invoice::where('status', Invoice::STATUS_DUE)->count();
+            $due_invoices = Invoice::where('status', InvoiceStatus::DUE)->count();
             $area_chart = (new areaChartModel())
                 ->setColor('#2563EB')
                 ->addPoint('Jan', 10)

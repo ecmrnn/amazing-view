@@ -16,7 +16,6 @@ class ShowUser extends Component
 
     public function mount(User $user) {
         $this->user = $user;
-        $this->reservation_count = $user->reservations->count();
         $this->getSessionStatus();
     }
 

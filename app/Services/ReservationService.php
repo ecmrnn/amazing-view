@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationService
 {
@@ -44,17 +45,27 @@ class ReservationService
             // Generate password for guest format: SurnameYYYY!
             $password = ucwords(strtolower($data['last_name'])) . now()->format('Y') . '!';
 
-            // Create or update the guest
-            $user = User::where('email', $data['email'] ?? '')->updateOrCreate([
-                'email' => $data['email'],
+            // Check if the email corresponds to a user that is admin or receptionist
+            $auth_user = User::whereEmail($data['email'] ?? '')->first();
+
+            if (!in_array($auth_user->role ?? UserRole::GUEST->value, [
+                UserRole::ADMIN->value,
+                UserRole::RECEPTIONIST->value,
+            ])) {
+                // Create or update the guest
+                $user = User::where('email', $data['email'] ?? '')->updateOrCreate([
+                    'email' => $data['email'],
                 ],[
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'phone' => $data['phone'],
-                'role' => UserRole::GUEST,
-                'address' => $data['address'],
-                'password' => $password,
-            ]);
+                    'first_name' => $data['first_name'],
+                    'last_name' => $data['last_name'],
+                    'phone' => $data['phone'],
+                    'role' => UserRole::GUEST,
+                    'address' => $data['address'],
+                    'password' => $password,
+                ]);
+            } else {
+                $user = $auth_user;
+            }
 
             $expires_at = Carbon::now()->addHour();
             $status = ReservationStatus::AWAITING_PAYMENT->value;
@@ -109,7 +120,7 @@ class ReservationService
     
             // Create the invoice
             $invoice = $this->handlers->get('billing')->create($reservation, $breakdown);
-    
+            
             // Create the downpayment
             if ((int) Arr::get($data, 'downpayment', 0) > 0 || !empty($data['proof_image_path'])) {
                 $invoice->payments()->create([

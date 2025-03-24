@@ -132,7 +132,7 @@ class CheckOutGuest extends Component
         ]);
 
         $auth = new AuthService;
-
+        
         if ($auth->validatePassword($this->password)) {
             $service = new ReservationService;
             $service->checkOut($this->reservation, $this->selected_rooms);
@@ -147,11 +147,10 @@ class CheckOutGuest extends Component
 
             $this->toast('Check-out Success!', description: $description);
             $this->dispatch('checked-out');
+            return;
+        } 
 
-        } else {
-            $this->addError('password', 'Password mismatched, try again');
-        }
-
+        $this->addError('password', 'Password mismatched, try again');
     }
 
     public function render()

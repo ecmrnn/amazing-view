@@ -130,11 +130,9 @@
                                             label="Check-out this room" wire:click='toggleRoom({{ $room->id }})'
                                         />
         
-                                        <img src="{{ asset('storage/' . $room->image_1_path) }}" alt="room" 
-                                            @class(['object-cover object-center rounded-md aspect-video',
-                                                'opacity-50 grayscale' => $room->pivot->status != App\Enums\ReservationStatus::CHECKED_IN->value
-                                            ])
-                                        >
+                                        <x-img src="{{ $room->image_1_path }}"
+                                            @class(['opacity-50 grayscale' => $room->pivot->status != App\Enums\ReservationStatus::CHECKED_IN->value])
+                                        />
                                         
                                         <div class="flex items-start justify-between">
                                             <hgroup>
@@ -248,7 +246,7 @@
                         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             @foreach ($selected_rooms as $room)
                                 <div wire:key='selected-{{ $room->id }}' class="p-5 space-y-5 border rounded-md border-slate-200">
-                                    <img src="{{ asset('storage/' . $room->image_1_path) }}" alt="selected room for check out" class="object-cover object-center rounded-md aspect-video">
+                                    <x-img src="{{ $room->image_1_path }}" />
                                     <div class="flex items-start justify-between gap-5">
                                         <hgroup>
                                             <h3 class="font-semibold">{{ $room->room_number }}</h3>

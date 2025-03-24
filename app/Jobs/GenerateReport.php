@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Events\ReportDeleted;
 use App\Events\ReportGenerated;
@@ -138,7 +139,7 @@ class GenerateReport implements ShouldQueue
             })
             ->get();
         $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
-            ->whereStatus(Invoice::STATUS_PAID)
+            ->whereStatus(InvoiceStatus::PAID)
             ->sum('total_amount');
         $total_room_nights_occupied = Reservation::whereBetween('date_in', [$report->start_date, $report->end_date])
             ->orWhereBetween('date_out', [$report->start_date, $report->end_date])
@@ -183,10 +184,10 @@ class GenerateReport implements ShouldQueue
         $reservations = Reservation::whereBetween('date_in', [$report->start_date, $report->end_date])
             ->get();
         $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
-            ->whereStatus(Invoice::STATUS_PAID)
+            ->whereStatus(InvoiceStatus::PAID)
             ->sum('total_amount');
         $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
-            ->whereStatus(Invoice::STATUS_PAID)
+            ->whereStatus(InvoiceStatus::PAID)
             ->sum('total_amount');
         $revenue_per_room_type = Invoice::whereIn('invoices.reservation_id', $reservations->pluck('id'))
             ->join('room_reservations', 'invoices.reservation_id', '=', 'room_reservations.reservation_id')

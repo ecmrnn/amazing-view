@@ -121,31 +121,25 @@
         </article>
     </section>
 
-    @if ($user->hasRole('guest'))
+    @if ($user->reservations->count() > 0)
         <section class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
             <hgroup>
                 <h3 class="font-semibold">Reservations</h3>
                 <p class="text-xs">List of {{ ucwords($user->first_name) }}&apos;s reservations</p>
             </hgroup>
 
-            @if ($reservation_count > 0)
-                <livewire:tables.guest-reservation-table :user="$user" />
-            @else
-                <div class="font-semibold text-center">
-                    <x-table-no-data.user />
-                </div>
-            @endif
-        </section>
-    @else
-        <section class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
-            <hgroup>
-                <h3 class="font-semibold">Recent Activities</h3>
-                <p class="text-xs">List of {{ ucwords($user->first_name) }}&apos;s activities</p>
-            </hgroup>
-
-            {{-- Insert logged activities table here --}}
+            <livewire:tables.guest-reservation-table :user="$user" />
         </section>
     @endif
+
+    <section class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+        <hgroup>
+            <h3 class="font-semibold">Recent Activities</h3>
+            <p class="text-xs">List of {{ ucwords($user->first_name) }}&apos;s activities</p>
+        </hgroup>
+
+        {{-- Insert logged activities table here --}}
+    </section>
     
     {{-- Force Logout --}}
     <x-modal.full name='force-logout' maxWidth='sm'>

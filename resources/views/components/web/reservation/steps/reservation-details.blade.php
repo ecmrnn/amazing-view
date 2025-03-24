@@ -264,7 +264,6 @@
                                         <div>
                                             <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->roomType->name }}</p>
                                             <p class="text-sm">
-                                                <span class="uppercase">{{ $room->building->name }}</span>
                                                 {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
                                             <p class="text-xs text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
                                         </div>

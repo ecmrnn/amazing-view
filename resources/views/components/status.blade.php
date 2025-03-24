@@ -28,7 +28,7 @@
         'invoice' => [
             \App\Enums\InvoiceStatus::PARTIAL->value => ['Partial', 'text-yellow-800 border-yellow-500 bg-yellow-50'],
             \App\Enums\InvoiceStatus::PAID->value => ['Paid', 'text-blue-800 border-blue-500 bg-blue-50'],
-            \App\Enums\InvoiceStatus::PENDING->value => ['Pending', 'text-blue-800 border-blue-500 bg-blue-50'],
+            \App\Enums\InvoiceStatus::PENDING->value => ['Pending', 'text-orange-800 border-orange-500 bg-orange-50'],
             \App\Enums\InvoiceStatus::DUE->value => ['Due', 'text-red-800 border-red-500 bg-red-50'],
             \App\Enums\InvoiceStatus::CANCELED->value => ['Canceled', 'text-stone-800 border-stone-500 bg-stone-200'],
             \App\Enums\InvoiceStatus::ISSUED->value => ['Issued', 'text-green-800 border-green-500 bg-green-50'],

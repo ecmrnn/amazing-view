@@ -6,6 +6,7 @@ use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Jobs\Invoice\GenerateInvoicePDF;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -19,7 +20,7 @@ class BillingService
             'total_amount' => Arr::get($breakdown, 'taxes.net_total', 0),
             'sub_total' => Arr::get($breakdown, 'sub_total', 0),
             'balance' => Arr::get($breakdown, 'taxes.net_total', 0),
-            'status' => Invoice::STATUS_PENDING,
+            'status' => InvoiceStatus::PENDING,
             'due_date' => Carbon::parse((string) $reservation->date_out)->addWeek(),
         ]);
 
@@ -278,5 +279,24 @@ class BillingService
 
         GenerateInvoicePDF::dispatch($invoice);
         return null;
+    }
+
+    public function discardPayment(InvoicePayment $payment) {
+        DB::transaction(function () use ($payment) {
+            if ($payment->proof_image_path) {
+                if (Storage::exists($payment->proof_image_path)) {
+                    Storage::disk('public')->delete($payment->proof_image_path);
+                }
+            }
+
+            $payment->invoice->reservation->status = ReservationStatus::AWAITING_PAYMENT->value;
+            $payment->invoice->reservation->expires_at = Carbon::now()->addHour();
+            $payment->invoice->reservation->save();
+
+            $payment->invoice->status = InvoiceStatus::PENDING;
+            $payment->invoice->save();
+
+            $payment->delete();
+        });
     }
 }
