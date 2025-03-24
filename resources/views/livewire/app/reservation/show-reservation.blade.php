@@ -219,23 +219,29 @@
             </div>
             <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
                 <div>
-                    <p class="font-semibold">{{ $reservation->adult_count }}</p>
-                    <p class="text-xs">Number of Adults</p>
+                    <p class="font-semibold">
+                        {{ $reservation->adult_count > 1 ? $reservation->adult_count . ' Adults' : $reservation->adult_count . ' Adult' }}
+                        @if ($reservation->children_count > 0)
+                            {{ ' & ' }}
+                            {{ $reservation->children_count > 1 ?  $reservation->children_count . ' Children' : $reservation->children_count . ' Child' }}
+                        @endif
+                    </p>
+                    <p class="text-xs">Total Number of Guests</p>
                 </div>
-                <div>
-                    <p class="font-semibold">{{ $reservation->children_count }}</p>
-                    <p class="text-xs">Number of Children</p>
-                </div>
-                @if ($reservation->senior_count > 0)
+                @if ($reservation->senior_count > 0 || $reservation->pwd_count > 0)
                     <div>
-                        <p class="font-semibold">{{ $reservation->senior_count }}</p>
-                        <p class="text-xs">Number of Senior</p>
-                    </div>
-                @endif
-                @if ($reservation->pwd_count > 0)
-                    <div>
-                        <p class="font-semibold">{{ $reservation->pwd_count }}</p>
-                        <p class="text-xs">Number of PWD</p>
+                        <p class="font-semibold">
+                            @if ($reservation->senior_count > 0)
+                                {{ $reservation->senior_count > 1 ?  $reservation->senior_count . ' Seniors' : $reservation->senior_count . ' Senior' }}
+                            @endif
+                            @if ($reservation->pwd_count > 0)
+                                @if ($reservation->senior_count > 0)
+                                    {{ ' & ' }}
+                                @endif
+                                {{ $reservation->pwd_count > 1 ?  $reservation->pwd_count . ' PWDs' : $reservation->pwd_count . ' PWD' }}
+                            @endif
+                        </p>
+                        <p class="text-xs">Seniors and PWDs</p>
                     </div>
                 @endif
             </div>

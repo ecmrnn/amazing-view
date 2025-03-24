@@ -195,7 +195,7 @@
         {{-- Payment Methods --}}
         <div class="grid">
             <div class="flex items-center gap-3 p-3 bg-white border rounded-lg border-slate-200">
-                <img src="{{ asset('storage/' . Arr::get($settings, 'site_gcash_qr', 'global/gcash-qr.png')) }}" alt="QR Code" class="object-contain object-center w-full rounded-md max-w-20 aspect-square">
+                <x-img src="{{ $settings['site_gcash_qr'] ?? '' }}" alt="QR Code" class="max-w-20" aspect="square" />
                 
                 <div>
                     <h3 class="text-xs">GCash</h3>

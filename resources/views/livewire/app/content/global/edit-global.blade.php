@@ -143,7 +143,7 @@
 
     <x-modal.full name='show-current-logo' maxWidth='sm'>
         <div class="p-5 space-y-5">
-            <img src="{{ asset('storage/' . $settings['site_logo']) }}" alt="Logo of Amazing View" class="p-5 bg-white border rounded-lg border-slate-200">
+            <x-img src="{{ $settings['site_logo'] }}" alt="Logo of Amazing View" aspect="square" />
 
             <div class="flex justify-end">
                 <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
@@ -153,7 +153,7 @@
 
     <x-modal.full name='show-current-qr' maxWidth='sm'>
         <div class="p-5 space-y-5">
-            <img src="{{ asset('storage/' . $settings['site_gcash_qr']) }}" alt="QR Code" class="p-5 bg-white border rounded-lg border-slate-200">
+            <x-img src="{{ $settings['site_gcash_qr'] }}" alt="QR Code" aspect="square" />
 
             <div class="flex justify-end">
                 <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>

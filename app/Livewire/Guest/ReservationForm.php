@@ -526,6 +526,7 @@ class ReservationForm extends Component
         // Dispatch event
         $this->reservation_rid = $reservation->rid;
         $this->dispatch('reservation-created');
+        $this->reset('can_select_a_room', 'can_select_address');
         $this->toast('Success!', description: 'Reservation sent!');
         $this->step++;
     }
