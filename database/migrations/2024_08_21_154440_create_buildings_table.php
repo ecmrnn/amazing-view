@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BuildingStatus;
 use App\Models\Building;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->smallInteger('floor_count');
             $table->smallInteger('room_row_count')->nullable();
             $table->smallInteger('room_col_count')->nullable();
-            $table->smallInteger('status')->default(Building::STATUS_ACTIVE);
+            $table->smallInteger('status')->default(BuildingStatus::ACTIVE);
             $table->timestamps();
         });
     }

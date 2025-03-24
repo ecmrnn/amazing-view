@@ -9,9 +9,6 @@ class Milestone extends Model
 {
     use HasFactory;
 
-    public const STATUS_ACTIVE = 0;
-    public const STATUS_INACTIVE = 1;
-
     protected $guarded = [];
 
     public static function rules() {

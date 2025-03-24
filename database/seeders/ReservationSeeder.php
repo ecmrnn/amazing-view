@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Reservation;
@@ -27,15 +29,15 @@ class ReservationSeeder extends Seeder
             $reservation->rooms()->attach($faker->numberBetween(1, 12));
 
             if ($reservation->date_in <= Carbon::now()->format('Y-m-d')) {
-                $reservation->statuss = Reservation::STATUS_CHECKED_IN;
+                $reservation->statuss = ReservationStatus::CHECKED_IN;
 
                 foreach ($reservation->rooms as $room) {
-                    $room->status = Room::STATUS_OCCUPIED;
+                    $room->status = RoomStatus::OCCUPIED;
                     $room->save();
                 }
             }
 
-            if ($reservation->status == Reservation::STATUS_CHECKED_OUT) {
+            if ($reservation->status == ReservationStatus::CHECKED_OUT) {
                 $downpayment = $faker->randomElement([500, 750, 1000]);
                 $total_amount = 0;
         
