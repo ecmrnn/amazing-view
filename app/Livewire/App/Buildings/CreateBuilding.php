@@ -3,6 +3,7 @@
 namespace App\Livewire\App\Buildings;
 
 use App\Models\Building;
+use App\Services\BuildingService;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -45,15 +46,14 @@ class CreateBuilding extends Component
     public function store() {
         $validated = $this->validate();
 
-        // Store the image in the disk
-        $validated['image'] = $this->image->store('buildings', 'public');
-
         // Store the data in database
-        Building::create($validated);
+        $service = new BuildingService;
+        $service->create($validated);
+
         $this->toast('Building Created!', 'success', 'New building added successfully');
-        $this->reset();
         $this->dispatch('building-created');
         $this->dispatch('pond-reset');
+        $this->reset();
     }
 
     public function render()

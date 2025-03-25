@@ -4,6 +4,7 @@ namespace App\Livewire\App\Buildings;
 
 use App\Models\Building;
 use App\Services\AuthService;
+use App\Services\BuildingService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -43,12 +44,9 @@ class DeleteBuilding extends Component
 
         if ($auth->validatePassword($this->password)) {
             if ($this->building->rooms->count() == 0) {
-                if ($this->building->image) {
-                    // delete image
-                    Storage::disk('public')->delete($this->building->image);
-                }
-                
-                $this->building->delete();            
+                $service = new BuildingService;
+                $service->delete($this->building);
+
                 $this->toast('Building Deleted', 'success', 'building deleted successfully!');
                 $this->dispatch('building-deleted');
                 $this->reset('password');

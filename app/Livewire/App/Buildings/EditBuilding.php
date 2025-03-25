@@ -3,6 +3,7 @@
 namespace App\Livewire\App\Buildings;
 
 use App\Models\Building;
+use App\Services\BuildingService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
@@ -54,24 +55,8 @@ class EditBuilding extends Component
     public function store() {
         $validated = $this->validate();
 
-        if (!empty($this->image)) {
-            // Delete previous image
-            if (!empty($this->building->image)) {
-                Storage::disk('public')->delete($this->building->image);
-            }
-            
-            // Store the image in the disk
-            $validated['image'] = $this->image->store('buildings', 'public');
-            $this->building->image = $validated['image'];
-        }
-
-        // Update the building
-        $this->building->name = $validated['name'];
-        $this->building->description = $validated['description'];
-        // $this->building->floor_count = $validated['floor_count'];
-        // $this->building->room_row_count = $validated['room_row_count'];
-        // $this->building->room_col_count = $validated['room_col_count'];
-        $this->building->save();
+        $service = new BuildingService;
+        $service->update($this->building, $validated);
 
         $this->toast('Building Edited!', 'success', 'Building details updated');
         $this->dispatch('building-edited');
