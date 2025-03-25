@@ -82,6 +82,7 @@ class EditReservation extends Component
     public $services;
     public $rooms;
     public $reservation;
+    public $slots;
 
     public function mount(Reservation $reservation)
     {
@@ -187,6 +188,7 @@ class EditReservation extends Component
         $this->selected_building = Building::where('id', $data['building'])->first();
         $this->floor_count = $this->selected_building->floor_count;
         $this->column_count = $this->selected_building->room_col_count;
+        $this->slots = $this->selected_building->slots;
 
         $this->reserved_rooms = Room::whereHas('reservations', function ($query) {
             return $query->where('reservations.id', '!=', $this->reservation->id)

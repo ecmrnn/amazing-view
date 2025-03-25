@@ -106,7 +106,7 @@ class UserService
                 $amenity->release($reservation, $reservation->rooms);
 
                 $room = new RoomService;
-                $room->release($reservation, $reservation->rooms);
+                $room->release($reservation, $reservation->rooms, ReservationStatus::CANCELED->value);
 
                 $reservation->invoice->update([
                     'status' => InvoiceStatus::CANCELED,

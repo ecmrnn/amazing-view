@@ -84,9 +84,6 @@ class CreateReservation extends Component
     public $column_count = 1;
     public $night_count = 1;
     public $rooms;
-    public $net_total = 0;
-    public $vat = 0;
-    public $vatable_sales = 0;
     public $payment_online = false;
     public $services;
     public $selected_services;
@@ -94,7 +91,9 @@ class CreateReservation extends Component
     public $make; 
     public $model; 
     public $color; 
-
+    public $slots;
+    public $net_total;
+    
     public function mount()
     {
         $this->min_date = Carbon::now()->format('Y-m-d');
@@ -197,6 +196,7 @@ class CreateReservation extends Component
         $this->selected_building = $id;
         $this->floor_count = $this->selected_building->floor_count;
         $this->column_count = $this->selected_building->room_col_count;
+        $this->slots = $this->selected_building->slots;
 
         $this->reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
         

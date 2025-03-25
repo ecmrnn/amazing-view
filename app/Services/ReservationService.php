@@ -210,7 +210,7 @@ class ReservationService
     
             // Update amenity's quantity and room's availability tables
             $this->handlers->get('amenity')->release($reservation, $reservation->rooms);
-            $this->handlers->get('room')->release($reservation, $reservation->rooms);
+            $this->handlers->get('room')->release($reservation, $reservation->rooms, ReservationStatus::CANCELED->value);
     
             // Send cancellation email to the guests
             Mail::to($reservation->user->email)->queue(new Cancelled($reservation));
@@ -251,7 +251,7 @@ class ReservationService
             }
 
             $this->handlers->get('amenity')->release($reservation->fresh(), $selected_rooms);
-            $this->handlers->get('room')->release($reservation->fresh(), $selected_rooms);
+            $this->handlers->get('room')->release($reservation->fresh(), $selected_rooms, ReservationStatus::CHECKED_OUT->value);
 
             // Issue invoice if not yet issued
             if (empty($reservation->invoice->issue_date)) {
@@ -411,6 +411,7 @@ class ReservationService
             $reservation->status = ReservationStatus::RESCHEDULED->value;
             $reservation->rescheduled_to = $new_reservation->id;
             $reservation->save();
+            $this->handlers->get('room')->release($reservation, $reservation->rooms, ReservationStatus::RESCHEDULED->value);
 
             // Update the invoice of the old reservation
             $reservation->invoice->status = InvoiceStatus::CANCELED->value;

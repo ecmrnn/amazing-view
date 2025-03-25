@@ -35,6 +35,7 @@ class EditReservationDetails extends Component
         $this->children_count = $reservation->children_count;
         $this->pwd_count = $reservation->pwd_count;
         $this->senior_count = $reservation->senior_count;
+        $this->selected_rooms = $reservation->rooms;
     }
 
     public function rules() {
