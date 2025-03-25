@@ -16,6 +16,10 @@ class Building extends Model
         return $this->hasMany(Room::class);
     }
 
+    public function slots(): HasMany {
+        return $this->hasMany(BuildingSlot::class);
+    }
+
     public static function boot() {
         parent::boot();
 

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Room extends Model
@@ -40,6 +41,10 @@ class Room extends Model
 
     public function building(): BelongsTo {
         return $this->belongsTo(Building::class);
+    }
+
+    public function slot(): HasOne {
+        return $this->hasOne(BuildingSlot::class);
     }
     
     public function roomType(): BelongsTo {

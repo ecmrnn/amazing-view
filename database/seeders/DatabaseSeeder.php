@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             BuildingSeeder::class,
+            BuildingSlotSeeder::class,
             RoomTypeSeeder::class,
             RoomSeeder::class,
             AdditionalServicesSeeder::class,

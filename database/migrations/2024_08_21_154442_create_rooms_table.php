@@ -2,6 +2,7 @@
 
 use App\Enums\RoomStatus;
 use App\Models\Building;
+use App\Models\BuildingSlot;
 use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Database\Migrations\Migration;
