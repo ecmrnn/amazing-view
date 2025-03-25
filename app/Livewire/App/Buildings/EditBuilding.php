@@ -44,7 +44,7 @@ class EditBuilding extends Component
     }
 
     public function messages() {
-        return [
+    return [
             'name.required' => 'Enter a name',
             'description.required' => 'Enter a description',
             'image.required' => 'Upload an image',

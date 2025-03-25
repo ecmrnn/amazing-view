@@ -3,10 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\Building;
+use App\Services\AuthService;
+use App\Traits\DispatchesToast;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Validate;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -20,7 +24,21 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class BuildingTable extends PowerGridComponent
 {
-    use WithExport;
+    use WithExport, DispatchesToast;
+
+    #[Validate] public $password;
+
+    public function rules() {
+        return [
+            'password' => 'required',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'password.required' => 'Enter your password',
+        ];
+    }
 
     public function setUp(): array
     {
@@ -47,6 +65,9 @@ final class BuildingTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
+            ->add('rooms_count', function ($building) {
+                return $building->rooms->count();
+            })
             ->add('name')
             ->add('name_formatted', function ($building) {
                 return Blade::render('<span class="inline-block min-w-max">' . $building->name . '</span>');
@@ -66,6 +87,7 @@ final class BuildingTable extends PowerGridComponent
     {
         return [
             Column::make('Name', 'name_formatted', 'name'),
+            Column::make('Rooms', 'rooms_count', 'rooms_count'),
             Column::make('Prefix', 'prefix'),
             Column::make('Description', 'description_formatted', 'description'),
             Column::make('Status', 'status_formatted', 'status'),
@@ -90,5 +112,32 @@ final class BuildingTable extends PowerGridComponent
         return view('components.table-actions.building', [
             'row' => $row,
         ]);
+    }
+
+    public function delete(Building $building) {
+        $this->validate([
+            'password' => $this->rules()['password']
+        ]);
+
+        $auth = new AuthService;
+
+        if ($auth->validatePassword($this->password)) {
+            if ($building->rooms->count() == 0) {
+                if ($building->image) {
+                    // delete image
+                    Storage::disk('public')->delete($building->image);
+                }
+                
+                $building->delete();            
+                $this->toast('Building Deleted', 'success', 'building deleted successfully!');
+                $this->dispatch('building-deleted');
+                $this->reset('password');
+                return;
+            }
+
+            $this->addError('password', 'Building has rooms, cannot be deleted');
+        } 
+
+        $this->addError('password', 'Password mismatched, try again!');
     }
 }

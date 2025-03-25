@@ -174,7 +174,7 @@
                                 </div>
 
                                 <div>
-                                    <p class="font-semibold"><x-currency />{{ number_format($room->rate, 2) }}</p>
+                                    <p class="font-semibold"><x-currency />{{ number_format($room->pivot->rate, 2) }}</p>
                                     <p class="text-xs">Room Rate</p>
                                 </div>
                             </div>

@@ -52,9 +52,9 @@ class AddItem extends Component
             $checked_in_rooms = $this->invoice->reservation->rooms()->where('room_reservations.status', ReservationStatus::CHECKED_IN->value)->get();
             
             if ($checked_in_rooms->count() > 0) {
-                $this->room_number = $checked_in_rooms->first()->building->prefix . ' ' . $checked_in_rooms->first()->room_number;
+                $this->room_number = $checked_in_rooms->first()->room_number;
             } else {
-                $this->room_number = $this->invoice->reservation->rooms()->first()->building->prefix . ' ' . $this->invoice->reservation->rooms()->first()->room_number;
+                $this->room_number = $this->invoice->reservation->rooms()->first()->room_number;
             }
 
             $this->setItems($this->invoice->reservation);
@@ -110,11 +110,6 @@ class AddItem extends Component
                 'max' => 99999
             ]);
         }
-
-        // $amenities = RoomAmenity::where('reservation_id', $reservation->id)->get();
-        // foreach ($amenities as $amenity) {
-            
-        // }
 
         foreach ($reservation->rooms as $room) {
             foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
@@ -225,7 +220,7 @@ class AddItem extends Component
 
         $id = uniqid();
         $collect = null;
-
+        
         if (!empty($this->invoice)) {
             if ($this->item_type == 'others') {
                 foreach ($this->invoice->reservation->rooms as $room) {
@@ -393,7 +388,6 @@ class AddItem extends Component
             });
 
             if ($item_type == 'amenity') {
-                // dd($items);
                 $service->sync($this->invoice->reservation, $items);
             } else {
                 foreach ($items as $item) {

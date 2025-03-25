@@ -19,11 +19,11 @@ class Building extends Model
     public static function boot() {
         parent::boot();
 
-        Building::creating(function ($building) {
+        self::creating(function ($building) {
             $building->prefix = strtoupper($building->prefix);
         });
 
-        Building::updating(function ($building) {
+        self::updating(function ($building) {
             $building->prefix = strtoupper($building->prefix);
         });
     }

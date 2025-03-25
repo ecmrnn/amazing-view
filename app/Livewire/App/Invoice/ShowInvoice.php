@@ -34,7 +34,7 @@ class ShowInvoice extends Component
     public function download() {
         $billing = new BillingService;
         $pdf = $billing->downloadPdf($this->invoice);
-
+        
         if (!$pdf) {
             $this->toast('Generating PDF', 'info', 'Please wait for a few seconds');
         } else {

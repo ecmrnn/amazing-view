@@ -5,7 +5,7 @@
     <div class="space-y-5">
         <header class="flex items-start justify-between">
             <div class="flex items-center gap-5">
-                <x-application-logo width="w-14" />
+                <x-img src="{{ $settings['site_logo'] ?? '' }}" aspect="square" class="w-12" />
     
                 <div>
                     <h1 class="text-base font-semibold">Amazing View Mountain Resort</h1>

@@ -100,6 +100,7 @@ class DashboardController extends Controller
             
             // Outstanding Balances
             $outstanding_balance = Invoice::select(DB::raw('sum(balance) as balance'))
+                ->whereIn('status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE])
                 ->first();
 
             $monthly_reservations = Reservation::select(DB::raw('count(*) as reservation_count'))

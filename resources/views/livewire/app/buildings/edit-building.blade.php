@@ -14,7 +14,7 @@
         </a>
 
         <hgroup>
-            <h2 class="font-semibold capitalize">Edit Building</h2>
+            <h2 class="font-semibold capitalize">Edit <span class="capitalize">{{ $building->name }}</span></h2>
             <p class="text-xs">Edit building details here</p>
         </hgroup>
     </div>
@@ -33,7 +33,7 @@
                 </div>
 
                 {{-- Name --}}
-                <div class="flex gap-1">
+                <div class="flex gap-2">
                     <div class="max-w-12">
                         <x-form.input-text id="prefix" class="text-center uppercase" label="Prefix" wire:model.live='prefix' disabled />    
                     </div>

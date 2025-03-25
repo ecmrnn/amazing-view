@@ -127,7 +127,7 @@
                                                     <p>{{ $item['name'] }}</p>
                                                     <p class="px-2 py-1 text-xs font-semibold border rounded-md bg-slate-50 border-slate-200">{{ $item['room_number'] }}</p>
                                                 </div>
-                                                <p class="capitalize">{{ $item['type'] }}</p>
+                                                <p class="capitalize"></p>
                                                 @if (Arr::get($item, 'status', null) == App\Enums\ReservationStatus::CHECKED_IN->value)
                                                     <x-form.input-number x-model="quantity" min="1" id="quantity" name="quantity" class="text-center" />
                                                 @else

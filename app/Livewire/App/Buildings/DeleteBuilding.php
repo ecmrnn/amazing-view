@@ -3,6 +3,7 @@
 namespace App\Livewire\App\Buildings;
 
 use App\Models\Building;
+use App\Services\AuthService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -27,52 +28,61 @@ class DeleteBuilding extends Component
         ];
     }
 
+    public function messages() {
+        return [
+            'password.required' => 'Enter your password',
+        ];
+    }
+
     public function deleteBuilding() {
         $this->validate([
             'password' => $this->rules()['password']
         ]);
 
-        $admin = Auth::user();
+        $auth = new AuthService;
 
-        if (Hash::check($this->password, $admin->password)) {
-            if ($this->building->image) {
-                // delete image
-                Storage::disk('public')->delete($this->building->image);
+        if ($auth->validatePassword($this->password)) {
+            if ($this->building->rooms->count() == 0) {
+                if ($this->building->image) {
+                    // delete image
+                    Storage::disk('public')->delete($this->building->image);
+                }
+                
+                $this->building->delete();            
+                $this->toast('Building Deleted', 'success', 'building deleted successfully!');
+                $this->dispatch('building-deleted');
+                $this->reset('password');
+                return;
             }
-            
-            // delete building
-            $this->building->delete();
-            
-            $this->toast('Building Deleted', 'success', 'building deleted successfully!');
-            $this->dispatch('building-deleted');
 
-            // reset
-            $this->reset('password');
-        } else {
-            $this->toast('Deletion Failed', 'info', 'Incorrect password entered');
-        }
+            $this->addError('password', 'Building has rooms, cannot be deleted');
+        } 
+
+        $this->addError('password', 'Password mismatched, try again!');
     }
 
     public function render()
     {
         return <<<'HTML'
-            <section class="p-5 space-y-5 bg-white" x-on:building-deleted.window="show = false">
+            <form class="p-5 space-y-5" x-on:building-deleted.window="show = false" wire:submit="deleteBuilding">
                 <hgroup>
-                    <h2 class="font-semibold text-center text-red-500 capitalize">Delete Building</h2>
-                    <p class="max-w-sm text-sm text-center">Are you sure you really want this building?</p>
+                    <h2 class="text-lg font-semibold text-red-500">Delete Building</h2>
+                    <p class="text-xs">Are you sure you really want to delete this building?</p>
                 </hgroup>
 
-                <div class="space-y-2">
-                    <p class="text-xs">Enter your password to delete this building.</p>
+                <x-form.input-group>
+                    <x-form.input-label for="delete-{{ $building->id }}-password">Enter your password</x-form.input-label>
                     <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $building->id }}-password" />
                     <x-form.input-error field="password" />
-                </div>
+                </x-form.input-group>
+
+                <x-loading wire:loading wire:target='deleteBuilding'>Deleting building, please wait</x-loading>
                 
-                <div class="flex items-center justify-center gap-1">
-                    <x-secondary-button type="button" x-on:click="show = false">No, Cancel</x-secondary-button>
-                    <x-danger-button type="button" wire:click='deleteBuilding()'>Yes, Delete</x-danger-button>
+                <div class="flex justify-end gap-1">
+                    <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                    <x-danger-button>Delete</x-danger-button>
                 </div>
-            </section>
+            </form>
         HTML;
     }
 }

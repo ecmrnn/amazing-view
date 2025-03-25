@@ -17,7 +17,7 @@
 
     <div x-show="grid_view" class="grid gap-5 lg:grid-cols-3 sm:grid-cols-2">
         @foreach ($buildings as $building)
-            <div wire:key="{{ $building->id }}" x-data="{ rooms_count: @js($building->rooms_count) }" class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
+            <div wire:key="{{ $building->id }}" x-data="{ rooms_count: @js($building->rooms->count()) }" class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                 <div class="flex flex-col justify-between h-full gap-5">
                     <div class="space-y-5">
                         <x-img src="{{ $building->image }}" />
@@ -26,7 +26,7 @@
                             <h2 class="text-lg font-semibold">{{ $building->name }}</h2>
                             <p class="text-sm line-clamp-3">{{ $building->description }}</p>
                             <p class="mt-5 text-sm"><strong>Prefix</strong>: {{ $building->prefix }}</p>
-                            @if ($building->rooms_count)
+                            @if ($building->rooms->count())
                                 <p class="text-sm"><strong>Rooms</strong>: {{ $building->rooms_count }}</p>
                             @endif
                         </div>
