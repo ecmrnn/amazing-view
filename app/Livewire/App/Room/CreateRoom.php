@@ -3,8 +3,10 @@
 namespace App\Livewire\App\Room;
 
 use App\Models\Building;
+use App\Models\BuildingSlot;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Services\RoomService;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -14,9 +16,12 @@ class CreateRoom extends Component
 {
     use DispatchesToast, WithFilePond;
     
+    public $step = 1;
     public $room;
-    #[Validate] public $room_type;
     #[Validate] public $building;
+    #[Validate] public $slot;
+
+    #[Validate] public $room_type;
     #[Validate] public $room_number;
     #[Validate] public $floor_number = 1;
     #[Validate] public $min_capacity = 1;
@@ -27,15 +32,36 @@ class CreateRoom extends Component
     public $room_number_input;
     public $buildings;
     public $selected_building;
+    public $selected_slot;
+    public $slots;
 
     public function mount(RoomType $room) {
         $this->room = $room;
         $this->room_type = $room->id; 
         $this->buildings = Building::all();
+        $this->building = Building::first()->id;
+        $this->selected_building = Building::first();
+        $this->max_floor_number = Building::first()->floor_count;
+        $this->slots = Building::first()->slots;
     }
 
     public function rules() {
-        return Room::rules();
+        return [
+            'building' => 'required',
+            'selected_slot' => 'required',
+            'room_number' => 'required',
+            'floor_number' => 'required|min:1',
+            'min_capacity' => 'required|min:1',
+            'max_capacity' => 'required|min:1',
+            'rate' => 'required|integer',
+            'image_1_path' => 'required|image|max:1024',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'selected_slot.required' => 'Select a slot',
+        ];
     }
     
     public function selectBuilding() {
@@ -50,6 +76,8 @@ class CreateRoom extends Component
         if ($this->floor_number > $this->max_floor_number) {
             $this->floor_number = $this->max_floor_number;
         }
+
+        $this->slots = $this->selected_building->slots;
     }
 
     public function checkRoomNumber() {
@@ -62,36 +90,42 @@ class CreateRoom extends Component
         }
     }
 
-    public function submit() {
-        $this->validate();
-
-        if (!empty($this->image_1_path)) {
-            $this->image_1_path = $this->image_1_path->store('rooms', 'public');
-        }
-
-        Room::create([
-            'room_type_id' => $this->room_type,
-            'building_id' => $this->building,
-            'room_number' => $this->room_number,
-            'floor_number' => $this->floor_number,
-            'min_capacity' => $this->min_capacity,
-            'max_capacity' => $this->max_capacity,
-            'rate' => $this->rate,
-            'image_1_path' => $this->image_1_path,
+    public function checkBuilding() {
+        $this->validate([
+            'building' => $this->rules()['building'],
+            'selected_slot' => $this->rules()['selected_slot'],
         ]);
 
+        $this->step = 2;
+    }
+
+    public function selectSlot(BuildingSlot $slot) {
+        $this->reset('selected_slot');
+        $this->selected_slot = $slot;
+    }
+
+    public function submit() {
+        $validated = $this->validate();
+        $validated['room_type'] = $this->room_type;
+
+        $service = new RoomService;
+        $room = $service->create($validated);
+
+        $this->slots = $room->building->slots;
         $this->toast('Success!', 'success', 'Room added successfully!');
+        $this->dispatch('pond-reset');
+        $this->dispatch('pg:eventRefresh-RoomTable');
+        $this->dispatch('room-created');
         $this->reset([
             'room_number',
             'room_number_input',
             'floor_number',
             'min_capacity',
             'max_capacity',
+            'step',
+            'selected_slot',
             'rate',
         ]);
-        $this->dispatch('pond-reset');
-        $this->dispatch('pg:eventRefresh-RoomTable');
-        $this->dispatch('room-created');
     }
 
     public function render()

@@ -153,7 +153,7 @@ class RoomSeeder extends Seeder
         foreach ($rooms as $room) {
             // Find the building and the first empty slot
             $building = Building::find($room['building_id']);
-            $slot = $building->slots()->whereNull('room_id')->first();
+            $slot = $building->slots()->whereNull('room_id')->where('floor', $room['floor_number'])->first();
 
             // Assign the first empty slot to the room, then create it
             $room['building_slot_id'] = $slot->id;

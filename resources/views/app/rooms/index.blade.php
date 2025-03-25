@@ -25,8 +25,8 @@
         <livewire:app.room.show-rooms :room="$room" />
         
         {{-- Modals --}}
-        <x-modal.full name='add-room-modal' maxWidth='lg'>
+        <x-modal.drawer name='add-room-modal' maxWidth='lg'>
             <livewire:app.room.create-room room="{{ $room->id }}" />
-        </x-modal.full>
+        </x-modal.drawer>
     </div>
 </x-app-layout>

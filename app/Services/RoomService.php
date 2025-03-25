@@ -4,12 +4,38 @@ namespace App\Services;
 
 use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
+use App\Models\BuildingSlot;
 use App\Models\Reservation;
 use App\Models\Room;
 use Illuminate\Support\Facades\DB;
 
 class RoomService
 {
+    public function create($data) {
+        return DB::transaction(function () use ($data) {
+            if ($data['image_1_path']) {
+                $data['image_1_path'] = $data['image_1_path']->store('rooms', 'public');
+            }
+    
+            $room = Room::create([
+                'room_type_id' => $data['room_type'],
+                'building_id' => $data['building'],
+                'building_slot_id' => $data['selected_slot']['id'],
+                'room_number' => $data['room_number'],
+                'floor_number' => $data['floor_number'],
+                'min_capacity' => $data['min_capacity'],
+                'max_capacity' => $data['max_capacity'],
+                'rate' => $data['rate'],
+                'image_1_path' => $data['image_1_path'],
+            ]);
+
+            $slot = BuildingSlot::find($data['selected_slot']['id']);
+            $slot->room_id = $room->id;
+            $slot->save();
+            
+            return $room;
+        });
+    }
     // For attaching selected rooms on the reservation, to be stored on room_reservations pivot table
     // Accepts the following arguments:
     // - Reservation instance

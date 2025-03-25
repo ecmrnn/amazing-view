@@ -2,6 +2,7 @@
         min_capacity: @entangle('min_capacity'),
         max_capacity: @entangle('max_capacity'),
         floor_number: @entangle('floor_number'),
+        step: @entangle('step'),
     }" class="p-5 space-y-5" x-on:room-created.window="show = false" wire:submit='submit'>
     <hgroup>
         <h2 class="text-lg font-bold">Add Room</h2>
@@ -9,8 +10,12 @@
     </hgroup>
 
     <!-- Building -->
-    <div class="space-y-5">
-        <h3 class="text-sm font-semibold">Building Details</h3>
+    <div x-show="step == 1" class="space-y-5">
+        <hgroup>
+            <h3 class="text-sm font-semibold">Building Details</h3>
+            <p class="text-xs">Identify which building the room belongs to</p>
+        </hgroup>
+
         <div class="grid grid-cols-2 gap-5 p-5 bg-white border rounded-md border-slate-200">
             <x-form.input-group>
                 <div>
@@ -18,7 +23,6 @@
                     <p class="text-xs">Choose a building that this room belongs to</p>
                 </div>
                 <x-form.select class="flex-grow" id="building" name="building" wire:model.live="building" wire:change="selectBuilding()">
-                    <option value="">Select a Building</option>
                     @foreach($buildings as $bldg)
                         <option value="{{ $bldg->id }}">{{ $bldg->name }}</option>
                     @endforeach
@@ -36,9 +40,53 @@
                 <x-form.input-error field="floor_number" />
             </x-form.input-group>
         </div>
+
+        <div class="p-5 space-y-5 border rounded-md border-slate-200">
+            <x-form.input-group>
+                <div>
+                    <x-form.input-label for='selected_slot'>Building Slot</x-form.input-label>
+                    <p class="text-xs">Select a slot in the building for your room</p>
+                </div>
+                <x-form.input-error field="selected_slot" />
+            </x-form.input-group>
+
+            <div class="overflow-auto max-h-56">
+                @php
+                    $floor_slots = $slots->filter(function ($slot) {
+                        return $slot->floor == $this->floor_number;
+                    })    
+                @endphp
+
+                <div class="grid gap-1 mt-1 text-xs font-semibold first-of-type:mt-0" style="grid-template-columns: repeat({{ $floor_slots->max('col') }}, 1fr)">
+                    @foreach ($floor_slots as $slot)
+                        @if ($slot->room_id)
+                        <div wire:key='na-{{ $slot->id }}' class="grid border rounded-md aspect-square bg-slate-50 border-slate-200 place-items-center" type="button">{{ $slot->room->room_number }}</div>
+                        @else
+                            <button
+                                wire:key='a-{{ $slot->id }}'
+                                @class([
+                                    'border rounded-md aspect-square',
+                                    'bg-blue-50 border-blue-500 text-blue-800' => $slot == $selected_slot ?? null,
+                                    'border-dashed border-slate-200' => $slot != $selected_slot ?? null,
+                                ])
+                                wire:click='selectSlot({{ $slot->id }})' type="button">
+                                Available
+                            </button>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <x-loading wire:loading wire:target='checkBuilding'>Checking form, please wait</x-loading>
+
+        <div class="flex justify-end gap-1">
+            <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+            <x-primary-button type="button" wire:loading.attr='disabled' wire:click='checkBuilding()'>Continue</x-primary-button>
+        </div>
     </div>
 
-    <div class="space-y-5">
+    <div x-show="step == 2" class="space-y-5">
         <h3 class="text-sm font-semibold">General Room Details</h3>
 
         <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
@@ -98,10 +146,11 @@
                 <x-form.input-error field="rate" />
             </x-form.input-group>
         </div>
+        
+        <div class="flex justify-end gap-1">
+            <x-secondary-button type="button" x-on:click="$wire.set('step', 1)">Back</x-secondary-button>
+            <x-primary-button>Add Room</x-primary-button>
+        </div>
     </div>
 
-    <div class="flex justify-end gap-1">
-        <x-secondary-button x-on:click="show = false">Cancel</x-secondary-button>
-        <x-primary-button>Add Room</x-primary-button>
-    </div>
 </form>
