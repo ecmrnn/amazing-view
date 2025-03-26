@@ -8,6 +8,7 @@ use App\Models\BuildingSlot;
 use App\Models\Reservation;
 use App\Models\Room;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class RoomService
 {
@@ -36,6 +37,31 @@ class RoomService
             return $room;
         });
     }
+
+    public function delete(Room $room, $data) {
+        if ($room->reservations->count() > 0) {
+            return;
+        }
+        
+        DB::transaction(function () use ($room, $data) {
+            // If the room has an image, delete it
+            if ($room->image_1_path) {
+                Storage::disk('public')->delete($room->image_1_path);
+            }
+
+            // Remove the room from the alloted building slot
+            $room->update([
+                'building_slot_id' => null
+            ]);
+
+            $room->slot->update([
+                'room_id' => null
+            ]);
+            
+            $room->delete();
+        });
+    }
+
     // For attaching selected rooms on the reservation, to be stored on room_reservations pivot table
     // Accepts the following arguments:
     // - Reservation instance

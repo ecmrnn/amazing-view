@@ -98,5 +98,9 @@ class Room extends Model
         self::creating(function ($room) {
             $room->room_number = $room->building->prefix . ' ' . $room->room_number;
         });
+
+        self::updating(function ($room) {
+            $room->room_number = $room->building->prefix . ' ' . $room->room_number;
+        });
     }
 }

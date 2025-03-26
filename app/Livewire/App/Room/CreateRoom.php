@@ -100,7 +100,6 @@ class CreateRoom extends Component
     }
 
     public function selectSlot(BuildingSlot $slot) {
-        $this->reset('selected_slot');
         $this->selected_slot = $slot;
     }
 

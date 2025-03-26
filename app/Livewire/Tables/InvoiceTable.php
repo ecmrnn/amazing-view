@@ -77,7 +77,9 @@ final class InvoiceTable extends PowerGridComponent
                 ');
             })
 
-            ->add('name', fn($invoice) => e(ucwords(strtolower($invoice->reservation->user->first_name)) . ' ' . ucwords(strtolower($invoice->reservation->user->last_name))))
+            ->add('name', function ($invoice) {
+                return Blade::render('<span class="inline-block w-max">' . ucwords(strtolower($invoice->reservation->user->first_name)) . ' ' . ucwords(strtolower($invoice->reservation->user->last_name)) . '</span>');
+            })
 
             ->add('email')
             ->add('email_formatted', function ($invoice) {
@@ -89,7 +91,7 @@ final class InvoiceTable extends PowerGridComponent
             ->add('issue_date')
             ->add('issue_date_formatted', function ($invoice) {
                 if (!empty($invoice->issue_date)) {
-                    return Carbon::parse($invoice->issue_date)->format('F j, Y');
+                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($invoice->issue_date), 'F j, Y') . '</span>');
                 } else {
                     return Blade::render('<span class="text-xs text-zinc-800/50">---</span>');
                 }
@@ -97,7 +99,7 @@ final class InvoiceTable extends PowerGridComponent
 
             ->add('due_date')
             ->add('due_date_formatted', function ($invoice) {
-                return Carbon::parse($invoice->due_date)->format('F j, Y');
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($invoice->due_date), 'F j, Y') . '</span>');
             })
 
             ->add('status')

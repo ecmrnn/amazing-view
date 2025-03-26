@@ -97,12 +97,12 @@ final class ReservationTable extends PowerGridComponent
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
-                return Carbon::parse($reservation->date_in)->format('F j, Y');
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($reservation->date_in), 'F j, Y') . '</span>');
             })
 
             ->add('date_out')
             ->add('date_out_formatted', function ($reservation) {
-                return Carbon::parse($reservation->date_out)->format('F j, Y');
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($reservation->date_out), 'F j, Y') . '</span>');
             })
 
             ->add('status')

@@ -19,4 +19,8 @@
     <x-modal.full name='disable-room-modal' maxWidth='sm'>
         <livewire:app.room.disable-room :room="$room" />
     </x-modal.full>
+
+    <x-modal.full name='delete-room-modal' maxWidth='sm'>
+        <livewire:app.room.delete-room :room="$room" />
+    </x-modal.full>
 </x-app-layout>

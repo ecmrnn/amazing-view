@@ -107,10 +107,10 @@ final class GuestTable extends PowerGridComponent
                 $date_out = $reservation->date_out;
 
                 if ($date_in == $date_out) {
-                    return Carbon::parse($date_in)->format('F j, Y') . ' - ' . '8:00 AM';
+                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_in), 'F j, Y') . ' - 8:00 AM</span>');
                 } 
-
-                return Carbon::parse($date_in)->format('F j, Y') . ' - ' . '2:00 PM';
+                
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_in), 'F j, Y') . ' - 2:00 PM</span>');
             })
 
             ->add('date_out')
@@ -119,10 +119,10 @@ final class GuestTable extends PowerGridComponent
                 $date_out = $reservation->date_out;
 
                 if ($date_in == $date_out) {
-                    return Carbon::parse($date_out)->format('F j, Y') . ' - ' . '6:00 PM';
+                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_out), 'F j, Y') . ' - 6:00 AM</span>');
                 } 
 
-                return Carbon::parse($date_out)->format('F j, Y') . ' - ' . '12:00 PM';
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_out), 'F j, Y') . ' - 12:00 PM</span>');
             })
 
             ->add('status_formatted', function ($reservation) {

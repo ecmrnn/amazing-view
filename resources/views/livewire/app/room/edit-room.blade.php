@@ -32,6 +32,12 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
                             <p>Disable Room</p>
                         </x-action-button>
+                        @empty($room->reservations->count())
+                            <x-action-button type="button" x-on:click="$dispatch('open-modal', 'delete-room-modal'); dropdown = false" class="text-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                <p>Delete Room</p>
+                            </x-action-button>
+                        @endempty
                     </div>
                 </x-actions>
             @endif
@@ -48,6 +54,18 @@
                     <h3 class="font-semibold">General Room Details</h3>
                     <p class="text-xs">Edit room details here</p>
                 </hgroup>
+
+                <x-form.input-group>
+                    <x-form.input-label for='room_number'>Room Number</x-form.input-label>
+
+                    <div class="flex gap-2">
+                        <div class="grid px-3 text-sm font-semibold border rounded-md border-slate-200 place-items-center text-zinc-800/75">{{ $room->building->prefix  }}</div>
+                        <x-form.input-text id="room_number" name="room_number" label="room_number" wire:model.live='room_number' wire:keypress.debounce.200ms='checkRoomNumber' />
+                    </div>
+                    
+                    <x-form.input-error field="room_number" />
+                </x-form.input-group>
+
                 <!-- Capacity -->
                 <div class="grid grid-cols-2 gap-5">
                     <x-form.input-group>

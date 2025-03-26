@@ -129,7 +129,7 @@
     </aside>
 
     {{-- Cards --}}
-    <div class="w-full space-y-5 overflow-x-hidden">
+    <div class="self-start w-full space-y-5 overflow-x-hidden ">
         <livewire:app.cards.reservation-cards />
         
         {{-- Room  Table --}}

@@ -128,7 +128,7 @@
         </ul>
     </aside>
 
-    <div class="self-start w-full p-5 bg-white border rounded-lg border-slate-200">
+    <div class="self-start w-full p-5 overflow-x-hidden bg-white border rounded-lg border-slate-200">
         {{-- Guest Table --}}
         @if (!empty($reservation_count))
             <livewire:tables.guest-table />
