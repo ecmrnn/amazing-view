@@ -7,4 +7,12 @@
     </x-slot:header>
 
     <livewire:app.buildings.edit-building :building="$building" />
+
+    <x-modal.full name='disable-rooms-modal' maxWidth='sm'>
+        <livewire:app.buildings.disable-rooms :building="$building" />
+    </x-modal.full>
+
+    <x-modal.full name='enable-rooms-modal' maxWidth='sm'>
+        <livewire:app.buildings.enable-rooms :building="$building" />
+    </x-modal.full>
 </x-app-layout>

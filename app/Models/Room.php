@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Room extends Model
 {
@@ -100,7 +101,8 @@ class Room extends Model
         });
 
         self::updating(function ($room) {
-            $room->room_number = $room->building->prefix . ' ' . $room->room_number;
+            $room_number = trim(Str::after($room->room_number, $room->building->prefix));
+            $room->room_number = $room->building->prefix . ' ' . $room_number;
         });
     }
 }

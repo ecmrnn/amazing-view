@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\BuildingStatus;
+use App\Enums\RoomStatus;
 use App\Models\Building;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -59,6 +60,26 @@ class BuildingService
             }
             
             $building->delete();   
+        });
+    }
+
+    public function disableRooms(Building $building) {
+        return DB::transaction(function () use ($building) {
+            $rooms = $building->rooms()->whereIn('status', [RoomStatus::AVAILABLE, RoomStatus::UNAVAILABLE])->update([
+                'status' => RoomStatus::DISABLED
+            ]);
+
+            return $rooms;
+        });
+    }
+
+    public function enableRooms(Building $building) {
+        return DB::transaction(function () use ($building) {
+            $rooms = $building->rooms()->whereIn('status', [RoomStatus::DISABLED, RoomStatus::UNAVAILABLE])->update([
+                'status' => RoomStatus::AVAILABLE
+            ]);
+
+            return $rooms;
         });
     }
 }
