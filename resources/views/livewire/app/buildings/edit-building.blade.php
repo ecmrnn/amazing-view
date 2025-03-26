@@ -19,18 +19,20 @@
             </hgroup>
         </div>
 
-        <x-actions>
-            <div class="space-y-1">
-                <x-action-button x-on:click="$dispatch('open-modal', 'enable-rooms-modal'); dropdown = false">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-icon lucide-circle-check"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-                    <p>Enable Rooms</p>
-                </x-action-button>
-                <x-action-button x-on:click="$dispatch('open-modal', 'disable-rooms-modal'); dropdown = false">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-off-icon lucide-circle-off"><path d="m2 2 20 20"/><path d="M8.35 2.69A10 10 0 0 1 21.3 15.65"/><path d="M19.08 19.08A10 10 0 1 1 4.92 4.92"/></svg>
-                    <p>Disable Rooms</p>
-                </x-action-button>
-            </div>
-        </x-actions>
+        @if ($building->rooms->count() > 0)
+            <x-actions>
+                <div class="space-y-1">
+                    <x-action-button x-on:click="$dispatch('open-modal', 'enable-rooms-modal'); dropdown = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-icon lucide-circle-check"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                        <p>Enable Rooms</p>
+                    </x-action-button>
+                    <x-action-button x-on:click="$dispatch('open-modal', 'disable-rooms-modal'); dropdown = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-off-icon lucide-circle-off"><path d="m2 2 20 20"/><path d="M8.35 2.69A10 10 0 0 1 21.3 15.65"/><path d="M19.08 19.08A10 10 0 1 1 4.92 4.92"/></svg>
+                        <p>Disable Rooms</p>
+                    </x-action-button>
+                </div>
+            </x-actions>
+        @endif
     </div>
 
     <div class="p-5 bg-white border rounded-lg border-slate-200">

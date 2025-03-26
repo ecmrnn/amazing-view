@@ -33,7 +33,9 @@
                     </div>
                     
                     <div class="flex justify-between">
-                        <x-primary-button>View Rooms</x-primary-button>
+                        <a href="{{ route('app.buildings.show', ['building' => $building->id]) }}" wire:navigate>
+                            <x-primary-button>View Rooms</x-primary-button>
+                        </a>
 
                         <div class="flex gap-1">
                             <a href="{{ route('app.buildings.edit', ['building' => $building->id]) }}" wire:navigate>

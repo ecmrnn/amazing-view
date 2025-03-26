@@ -37,6 +37,7 @@ class EnableRooms extends Component
             $rooms = $service->enableRooms($this->building);
 
             $this->dispatch('rooms-disabled');
+            $this->dispatch('pg:eventRefresh-RoomBuildingTable');
             $this->reset('password');
 
             if ($rooms) {

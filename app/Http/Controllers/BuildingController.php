@@ -26,9 +26,11 @@ class BuildingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Building $building)
     {
-        //
+        return view('app.buildings.show', [
+            'building' => $building,
+        ]);
     }
 
     /**
