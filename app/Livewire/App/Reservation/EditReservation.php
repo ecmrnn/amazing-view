@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Reservation;
 
+use App\Enums\AmenityStatus;
 use App\Enums\ReservationStatus;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
@@ -258,7 +259,7 @@ class EditReservation extends Component
         $amenity = Amenity::find($this->amenity);
         $room = $this->reservation->rooms->get($this->amenity_room_id);
         $room_number = $room->room_number;
-        
+
         if (in_array($room->pivot->status, [
             ReservationStatus::CONFIRMED->value,
             ReservationStatus::PENDING->value,
@@ -286,6 +287,13 @@ class EditReservation extends Component
     }
 
     public function updateQuantity($amenity, $quantity, $room_number) {
+        $_amenity = Amenity::find($amenity);
+        
+        if ($_amenity->status == AmenityStatus::INACTIVE->value) {
+            $this->toast('Update Amenity Failed!', 'warning', 'The amenity you are trying to update is disabled!');
+            return;
+        }
+
         $amenity = $this->selected_amenities->first(function ($_amenity) use ($amenity, $room_number) {
             if ($_amenity['id'] == $amenity && $_amenity['room_number'] == $room_number) {
                 return $_amenity;
@@ -500,7 +508,7 @@ class EditReservation extends Component
 
     public function render()
     {
-        $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
+        $this->available_amenities = Amenity::where('quantity', '>', 0)->where('status', AmenityStatus::ACTIVE)->orderBy('name')->get();
         $this->services = AdditionalServices::where('is_active', true)->get();
 
         return view('livewire.app.reservation.edit-reservation', [

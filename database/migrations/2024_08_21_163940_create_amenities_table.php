@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AmenityStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->smallInteger('quantity')->nullable();
             $table->decimal('price');
-            $table->boolean('is_active');
+            $table->integer('status')->default(AmenityStatus::ACTIVE);
             $table->softDeletes();
             $table->timestamps();
         });

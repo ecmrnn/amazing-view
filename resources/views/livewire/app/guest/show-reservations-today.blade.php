@@ -72,16 +72,6 @@
                 </x-side-nav-link>
             </li>
             <li>
-                <x-side-nav-link :status="\App\Enums\ReservationStatus::COMPLETED->value" href="{{ route('app.guests.index', ['status' => \App\Enums\ReservationStatus::COMPLETED->value]) }}">
-                    <div class="flex items-center gap-1">
-                        <span>Completed</span>
-                        @if ($reservation_by_status['completed'] > 0)
-                            <div class="text-xs">( {{ $reservation_by_status['completed'] }} )</div>
-                        @endif
-                    </div>
-                </x-side-nav-link>
-            </li>
-            <li>
                 <x-side-nav-link :status="\App\Enums\ReservationStatus::RESCHEDULED->value" href="{{ route('app.guests.index', ['status' => \App\Enums\ReservationStatus::RESCHEDULED->value]) }}">
                     <div class="flex items-center gap-1">
                         <span>Rescheduled</span>

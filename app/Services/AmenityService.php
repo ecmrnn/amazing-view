@@ -2,12 +2,44 @@
 
 namespace App\Services;
 
+use App\Enums\AmenityStatus;
 use App\Enums\ReservationStatus;
 use App\Models\Amenity;
 use App\Models\Reservation;
+use Illuminate\Support\Facades\DB;
 
 class AmenityService
 {
+    public function create($data) {
+        return DB::transaction(function () use ($data) {
+            return Amenity::create($data);
+        });
+    }
+
+    public function update(Amenity $amenity, $data) {
+        return DB::transaction(function () use ($amenity, $data) {
+            return $amenity->update([
+                'name' => $data['name'],
+                'quantity' => $data['quantity'],
+                'price' => $data['price'],
+            ]);
+        });
+    }
+
+    public function toggleStatus(Amenity $amenity) {
+        return DB::transaction(function () use ($amenity) {
+            if ($amenity->status == AmenityStatus::ACTIVE->value) {
+                return $amenity->update([
+                    'status' => AmenityStatus::INACTIVE
+                ]);
+            } else {
+                return $amenity->update([
+                    'status' => AmenityStatus::ACTIVE
+                ]);
+            }
+        });
+    }
+
     // For attaching selected amenities on the reservation, to be stored on reservation_amenities pivot table
     // Accepts the following arguments:
     // - Reservation instance

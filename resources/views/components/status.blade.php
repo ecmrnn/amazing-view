@@ -54,6 +54,10 @@
             \App\Enums\UserStatus::ACTIVE->value => ['Active', 'text-green-800 border-green-500 bg-green-50'],
             \App\Enums\UserStatus::INACTIVE->value => ['Inactive', 'text-red-800 border-red-500 bg-red-50'],
         ],
+        'amenity' => [
+            \App\Enums\AmenityStatus::ACTIVE->value => ['Active', 'text-green-800 border-green-500 bg-green-50'],
+            \App\Enums\AmenityStatus::INACTIVE->value => ['Inactive', 'text-red-800 border-red-500 bg-red-50'],
+        ],
         'building' => [
             \App\Enums\BuildingStatus::ACTIVE->value => ['Active', 'text-green-800 border-green-500 bg-green-50'],
             \App\Enums\BuildingStatus::INACTIVE->value => ['Inactive', 'text-red-800 border-red-500 bg-red-50'],

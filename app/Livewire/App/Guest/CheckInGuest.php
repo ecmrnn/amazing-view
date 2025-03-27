@@ -15,6 +15,10 @@ class CheckInGuest extends Component
 {
     use DispatchesToast;
 
+    protected $listeners = [
+        'reservation-confirmed' => '$refresh',
+    ];
+
     public $reservation;
     public $reservation_rid;
     public $date_in;

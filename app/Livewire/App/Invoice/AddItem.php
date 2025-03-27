@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Invoice;
 
+use App\Enums\AmenityStatus;
 use App\Enums\ReservationStatus;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
@@ -388,6 +389,13 @@ class AddItem extends Component
             });
 
             if ($item_type == 'amenity') {
+                $_amenity = Amenity::find($item['id']);
+
+                if ($_amenity->status == AmenityStatus::INACTIVE->value) {
+                    $this->toast('Update Amenity Failed!', 'warning', 'The amenity you are trying to update is disabled!');
+                    return;
+                }
+
                 $service->sync($this->invoice->reservation, $items);
             } else {
                 foreach ($items as $item) {

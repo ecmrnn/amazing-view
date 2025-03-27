@@ -223,6 +223,9 @@ class ReservationService
             $reservation->save();
 
             foreach ($reservation->rooms as $room) {
+                $room->status = RoomStatus::OCCUPIED;
+                $room->save();
+
                 $room->pivot->status = ReservationStatus::CHECKED_IN;
                 $room->pivot->save();
             }
@@ -255,7 +258,7 @@ class ReservationService
 
             // Issue invoice if not yet issued
             if (empty($reservation->invoice->issue_date)) {
-                $this->handlers->get('billing')->issueInvoice($reservation->invoice->fresh());
+                $this->handlers->get('billing')->issueInvoice($reservation->invoice);
             }
         });
     }
@@ -276,6 +279,11 @@ class ReservationService
         DB::transaction(function () use ($reservation, $data) {
             $reservation->status = ReservationStatus::CONFIRMED;
             $reservation->save();
+
+            foreach ($reservation->rooms as $room) {
+                $room->pivot->status = ReservationStatus::CONFIRMED;
+                $room->pivot->save();
+            }
     
             $filename = $reservation->rid . ' - ' . strtoupper($reservation->user->last_name) . '_' . strtoupper($reservation->user->first_name) . '.pdf';
             $path = 'public/pdf/reservation/' . $filename;

@@ -28,7 +28,14 @@
     <section class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
         <div class="flex items-center justify-between p-5 bg-white border rounded-lg border-slate-200">
             <div class="flex items-center gap-5">
-                <x-back />
+                <x-tooltip text="Back" dir="bottom">
+                    <a x-ref="content" href="{{ route('app.reservations.index')}}" wire:navigate>
+                        <x-icon-button>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                        </x-icon-button>
+                    </a>
+                </x-tooltip>
+
                 <div>
                     <h2 class="text-lg font-semibold">Edit Reservation</h2>
                     <p class="max-w-sm text-xs">Update reservation details here</p>
@@ -679,28 +686,30 @@
                 <p class="text-xs">Select an amenity you want to add then enter their quantity.</p>
             </hgroup>
 
-            <x-form.input-group>
-                <x-form.select wire:model.live='amenity' x-on:change="$wire.selectAmenity()">
-                    <option value="">Select an Amenity</option>
-                    @foreach ($available_amenities as $amenity)
-                        @if ($selected_amenities->doesntContain(function ($_amenity) use ($amenity, $reservation, $amenity_room_id) {
-                            return $_amenity['room_number'] == $reservation->rooms->get($amenity_room_id)->building->prefix . ' ' . $reservation->rooms->get($amenity_room_id)->room_number && $_amenity['id'] == $amenity['id'];
-                        }))
-                            <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
-                        @endif
-                    @endforeach
-                </x-form.select>
-                <x-form.input-error field="amenity" />
-            </x-form.input-group>
-
-            <div class="space-y-2">
+            <div class="grid grid-cols-2 gap-5 p-5 bg-white border rounded-md border-slate-200">
                 <x-form.input-group>
-                    <x-form.input-number x-model="quantity" wire:model.live='quantity' :max="$max_quantity" id="quantity"
-                        name="quantity" label="Quantity" />
-                    <x-form.input-error field="quantity" />
+                    <x-form.input-label for="amenity">Select an Amenity</x-form.input-label>
+                    <x-form.select id="amenity" wire:model.live='amenity' x-on:change="$wire.selectAmenity()">
+                        <option value="">Select Amenity</option>
+                        @foreach ($available_amenities as $amenity)
+                            @if ($selected_amenities->doesntContain(function ($_amenity) use ($amenity, $reservation, $amenity_room_id) {
+                                return $_amenity['room_number'] == $reservation->rooms->get($amenity_room_id)->room_number && $_amenity['id'] == $amenity['id'];
+                            }))
+                                <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
+                            @endif
+                        @endforeach
+                    </x-form.select>
+                    <x-form.input-error field="amenity" />
                 </x-form.input-group>
-
-                <p x-show="max_quantity > 0" class="text-xs">Remaining stock: <span x-text="max_quantity"></span></p>
+                <div class="space-y-2">
+                    <x-form.input-group>
+                        <x-form.input-label for="quantity">Quantity</x-form.input-label>
+                        <x-form.input-number x-model="quantity" wire:model.live='quantity' :max="$max_quantity" id="quantity"
+                            name="quantity" label="Quantity" />
+                        <x-form.input-error field="quantity" />
+                    </x-form.input-group>
+                    <p x-show="max_quantity > 0" class="text-xs">Remaining stock: <span x-text="max_quantity"></span></p>
+                </div>
             </div>
 
             {{-- Select Room --}}
@@ -716,7 +725,7 @@
                             @if ($key == $amenity_room_id)
                                 <div wire:key='gallery-{{ $room->id}}'>
                                     <div class="space-y-5">
-                                        <img src="{{ asset('storage/' . $room->image_1_path) }}" alt="room" class="object-cover object-center rounded-md aspect-video">
+                                        <x-img src="{{ $room->image_1_path }}" alt="room" />
 
                                         <div class="flex items-start justify-between">
                                             <hgroup>
@@ -764,10 +773,10 @@
                     </hgroup>
 
                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
-                        <img src="{{ asset('storage/' . $reservation->rooms->get($amenity_room_id)->image_1_path) }}" class="object-cover object-center rounded-md aspect-video" />
+                        <x-img src="{{ $reservation->rooms->get($amenity_room_id)->image_1_path }}" />
                         
                         <hgroup>
-                            <h2 class="text-sm font-semibold">{{ $reservation->rooms->get($amenity_room_id)->building->prefix . ' ' . $reservation->rooms->get($amenity_room_id)->room_number }}</h2>
+                            <h2 class="text-sm font-semibold">{{ $reservation->rooms->get($amenity_room_id)->room_number }}</h2>
                             <p class="text-xs">Capacity: {{ $reservation->rooms->get($amenity_room_id)->max_capacity }}</p>
                         </hgroup>
                     </div>

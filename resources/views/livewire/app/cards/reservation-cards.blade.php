@@ -1,4 +1,4 @@
-<div class="grid gap-3 md:grid-cols-2 lg:gap-5 lg:grid-cols-4">
+<div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
     <x-app.card
         :data="$pending_reservations"
         label="Pending Reservations"

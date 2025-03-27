@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\AmenityStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +21,7 @@ class AmenityFactory extends Factory
             'name' => fake()->word(),
             'quantity' => fake()->numberBetween(10, 20),
             'price' => fake()->randomElement([0, 50, 100]),
-            'is_active' => fake()->boolean(),
+            'status' => AmenityStatus::ACTIVE,
         ];
     }
 }
