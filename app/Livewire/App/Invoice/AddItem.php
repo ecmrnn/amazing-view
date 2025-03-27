@@ -4,6 +4,7 @@ namespace App\Livewire\App\Invoice;
 
 use App\Enums\AmenityStatus;
 use App\Enums\ReservationStatus;
+use App\Enums\ServiceStatus;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Invoice;
@@ -163,7 +164,9 @@ class AddItem extends Component
             }
         } elseif ($this->item_type == 'service') {
             $selected_services = $this->invoice->reservation->services()->pluck('additional_services.id');
-            $this->services = AdditionalServices::whereNotIn('additional_services.id', $selected_services)->get();
+            $this->services = AdditionalServices::whereNotIn('additional_services.id', $selected_services)
+                ->whereStatus(ServiceStatus::ACTIVE)
+                ->get();
            
             if ($this->services->count() > 0) {
                 $this->name = $this->services->first()->name;

@@ -120,7 +120,7 @@ class EditHistory extends Component
 
                 <x-modal.full name='show-current-image' maxWidth='sm'>
                     <div class="p-5 space-y-5">
-                        <img src="{{ asset('storage/' . $current_image) }}" alt="History" class="bg-white border rounded-md border-slate-200">
+                        <x-img src="{{ $current_image }}" alt="History" />
 
                         <div class="flex justify-end">
                             <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>

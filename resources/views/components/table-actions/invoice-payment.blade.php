@@ -60,7 +60,7 @@
     
             @if (!empty($row->proof_image_Path))
                 <div class="col-span-2 overflow-auto border rounded-md aspect-square border-slate-200">
-                    <img src="{{ asset('storage/' . $row->proof_image_path) }}" alt="">
+                    <x-img src="{{ $row->proof_image_path }}" alt="payment" />
                 </div>
             @endif
 

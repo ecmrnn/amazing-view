@@ -4,6 +4,7 @@ namespace App\Livewire\App\Reservation;
 
 use App\Enums\AmenityStatus;
 use App\Enums\ReservationStatus;
+use App\Enums\ServiceStatus;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Building;
@@ -509,7 +510,7 @@ class EditReservation extends Component
     public function render()
     {
         $this->available_amenities = Amenity::where('quantity', '>', 0)->where('status', AmenityStatus::ACTIVE)->orderBy('name')->get();
-        $this->services = AdditionalServices::where('is_active', true)->get();
+        $this->services = AdditionalServices::where('status', ServiceStatus::ACTIVE)->get();
 
         return view('livewire.app.reservation.edit-reservation', [
             'buildings' => $this->buildings,

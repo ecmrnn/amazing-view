@@ -3,6 +3,7 @@
 namespace App\Livewire\Guest;
 
 use App\Enums\RoomStatus;
+use App\Enums\ServiceStatus;
 use App\Http\Controllers\AddressController;
 use App\Models\AdditionalServices;
 use App\Models\Reservation;
@@ -94,7 +95,7 @@ class ReservationForm extends Component
         $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
         
         $this->room_types = RoomType::all();
-        $this->additional_services = AdditionalServices::where('is_active', true)->get();
+        $this->additional_services = AdditionalServices::where('status', ServiceStatus::ACTIVE)->get();
     }
 
     public function setMinDateOut($date_in) {
@@ -111,7 +112,7 @@ class ReservationForm extends Component
         $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
         
         $this->room_types = RoomType::all();
-        $this->additional_services = AdditionalServices::where('is_active', true)->get();
+        $this->additional_services = AdditionalServices::where('status', ServiceStatus::ACTIVE)->get();
         $this->dispatch('reservation-reset');
         sleep(2);
     }

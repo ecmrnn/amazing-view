@@ -13,6 +13,6 @@ class AdditionalServices extends Model
     protected $guarded = [];
 
     public function reservations(): BelongsToMany {
-        return $this->belongsToMany(Reservation::class, 'additional_service_reservations')->withPivot('rate');
+        return $this->belongsToMany(Reservation::class, 'additional_service_reservations')->withPivot('price');
     }
 }

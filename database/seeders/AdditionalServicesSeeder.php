@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ServiceStatus;
 use App\Models\AdditionalServices;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,13 +17,15 @@ class AdditionalServicesSeeder extends Seeder
         AdditionalServices::create([
             'name' => 'Corkage',
             'price' => 250,
-            'is_active' => true
+            'description' => 'Applies for bringing outside foods or drinks.',
+            'status' => ServiceStatus::ACTIVE
         ]);
 
         AdditionalServices::create([
             'name' => 'Pet',
             'price' => 250,
-            'is_active' => true
+            'description' => 'Allowed pets are limited only for dogs, cats, or any small household animals.',
+            'status' => ServiceStatus::ACTIVE
         ]);
     }
 }

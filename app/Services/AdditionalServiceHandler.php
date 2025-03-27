@@ -2,11 +2,38 @@
 
 namespace App\Services;
 
+use App\Enums\ServiceStatus;
 use App\Models\AdditionalServices;
 use App\Models\Reservation;
+use Illuminate\Support\Facades\DB;
 
 class AdditionalServiceHandler
 {
+    public function create($data) {
+        return DB::transaction(function () use ($data) {
+            return AdditionalServices::create($data);
+        });    
+    }
+
+    public function delete(AdditionalServices $service) {
+        return DB::transaction(function () use ($service) {
+            return $service->delete();
+        });
+    }
+
+    public function toggleStatus(AdditionalServices $service) {
+        return DB::transaction(function () use ($service) {
+            if ($service->status == ServiceStatus::ACTIVE->value) {
+                return $service->update([
+                    'status' => ServiceStatus::INACTIVE
+                ]);
+            }  
+
+            return $service->update([
+                'status' => ServiceStatus::ACTIVE
+            ]);
+        });
+    }
     // For attaching selected services on the reservation, to be stored on additional_service_reservations pivot table
     // Accepts the following arguments:
     // - Reservation instance

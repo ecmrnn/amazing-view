@@ -62,7 +62,7 @@ class EditService extends Component
     public function render()
     {
         return <<<'HTML'
-            <form wire:submit="submit" x-data="{ count : 200 - @js($description_length), max : 200 }"
+            <form wire:submit="submit"
                 x-on:service-edited.window="show = false;"
                 x-init="let pond = FilePond.create()"
                 class="block p-5 space-y-5" wire:submit="submit">
@@ -95,12 +95,7 @@ class EditService extends Component
                     <x-form.input-text id="edit-{{ $service->id }}-title" name="title" label="Title" wire:model.live="title" />
                     <x-form.input-error field="title" />
 
-                    <x-form.textarea id="edit-{{ $service->id }}-desription" name="description" wire:model.live="description" class="w-full" rows="5" x-on:keyup="count = max - $el.value.length" />
-                    
-                    <div class="flex justify-between">
-                        <span><x-form.input-error field="description" /></span>
-                        <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
-                    </div>
+                    <x-form.textarea id="edit-{{ $service->id }}-desription" name="description" wire:model.live="description" class="w-full" rows="5" />
                 </div>
 
                 <x-loading wire:loading wire:target="submit">Editing featured service, please wait</x-loading>

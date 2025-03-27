@@ -119,7 +119,7 @@ final class AmenityTable extends PowerGridComponent
 
     public function noDataLabel(): string|View
     { 
-        return view('components.table-no-data.reservations');
+        return view('components.table-no-data.amenity');
     }
 
     public function boot(): void

@@ -9,5 +9,4 @@
 
         <livewire:tables.amenity-table />
     </div>
-
 </div>

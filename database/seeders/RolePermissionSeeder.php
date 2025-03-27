@@ -75,6 +75,11 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'update payment']);
         Permission::create(['name' => 'delete payment']);
 
+        Permission::create(['name' => 'create service']);
+        Permission::create(['name' => 'read services']);
+        Permission::create(['name' => 'update service']);
+        Permission::create(['name' => 'delete service']);
+
         $guest_permissions = [
             'read reservations',
         ];
@@ -149,6 +154,11 @@ class RolePermissionSeeder extends Seeder
             'read payments',
             'update payment',
             'delete payment',
+
+            'create service',
+            'read services',
+            'update service',
+            'delete service',
         ];
 
         // Create Roles

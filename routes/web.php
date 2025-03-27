@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoomTypeController;
+use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AppendDefaultUserFilters;
 use App\Http\Middleware\CheckPageStatus;
@@ -34,51 +35,31 @@ Route::middleware([CheckPageStatus::class])->name('guest.')->group(function () {
 
 // Authenticated Routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Global Auth routes
+    // Global authenticated routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Frontdesk & Admin
+    // Frontdesk & Admin routes
     Route::middleware('role:receptionist|admin')->prefix('app')->name('app.')->group(function () {
-        // Guests type route
         Route::resource('/guests', GuestController::class);
         Route::get('/guests/check-out/{reservation}', [ReservationController::class, 'checkOut'])->name('reservation.check-out');
-
-        // Reservation type route
         Route::resource('/reservations', ReservationController::class);
-
-        // Room type route
-        Route::resource('/rooms', RoomTypeController::class);
-
-        // Specific rooms for a room type route
-        Route::resource('/rooms/{type}/room', RoomController::class);
-
-        // Billing route
+        Route::resource('/rooms', RoomTypeController::class); /* Room Types route */
+        Route::resource('/rooms/{type}/room', RoomController::class); /* Specific room routes */
         Route::resource('/billings', BillingController::class);
 
         // Admin specific routes
         Route::middleware('role:admin')->group(function () {
-            // User route
             Route::resource('/users', UserController::class)->middleware([AppendDefaultUserFilters::class]);
-
-            // Report route
             Route::resource('/reports', ReportController::class);
-
-            // Content route
             Route::resource('/contents', ContentController::class);
-
-            // Building
             Route::resource('/buildings', BuildingController::class);
-
-            // Building
             Route::resource('/amenity', AmenityController::class);
+            Route::resource('/services', ServicesController::class);
         });
     });
-
-
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 Route::fallback(function () {

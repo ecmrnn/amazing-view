@@ -3,7 +3,9 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Enums\ReservationStatus;
+use App\Enums\ServiceStatus;
 use App\Http\Controllers\AddressController;
+use App\Livewire\ServicesTable;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Building;
@@ -104,7 +106,7 @@ class CreateReservation extends Component
 
         $this->buildings = Building::all();
         $this->rooms = RoomType::all();
-        $this->services = AdditionalServices::all();
+        $this->services = AdditionalServices::whereStatus(ServiceStatus::ACTIVE)->get();
 
         if (empty($this->regions) || empty($this->districts)) {
             try {

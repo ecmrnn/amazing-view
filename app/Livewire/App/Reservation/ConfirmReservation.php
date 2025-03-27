@@ -118,7 +118,7 @@ class ConfirmReservation extends Component
                                 @if (!empty($payment))
                                     @if (!empty($payment->proof_image_path))
                                         <div class="w-full overflow-auto border rounded-md max-h-96 border-slate-200">
-                                            <img src="{{ asset($payment->proof_image_path) }}" alt="payment receipt" class="h-full" />
+                                            <x-img src="{{ $payment->proof_image_path }}" alt="payment receipt" class="h-full" />
                                         </div>
                                         <div class="absolute top-0 flex gap-1 right-3">
                                             <x-tooltip text="Download" dir="top">
