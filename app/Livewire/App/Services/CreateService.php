@@ -17,7 +17,7 @@ class CreateService extends Component
 
     public function rules() {
         return [
-            'name' => 'required|min:5|unique:additional_services,name',
+            'name' => 'required|min:3|unique:additional_services,name',
             'description' => 'required|max:200',
             'price' => 'required|integer|min:1',
         ];

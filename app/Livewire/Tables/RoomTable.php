@@ -136,7 +136,7 @@ final class RoomTable extends PowerGridComponent
 
             Filter::number('rate', 'rate')
                 ->thousands('.')
-                ->placeholder('Min. Rate', 'Max. Rate')
+                ->placeholder('Min', 'Max')
         ];
     }
 

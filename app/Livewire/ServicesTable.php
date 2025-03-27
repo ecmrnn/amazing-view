@@ -104,14 +104,18 @@ final class ServicesTable extends PowerGridComponent
         $auth = new AuthService;
 
         if ($auth->validatePassword($this->password)) {
-            $handler = new AdditionalServiceHandler;
-            $handler->delete($service);
+            if ($service->reservations->count() == 0) {
+                $handler = new AdditionalServiceHandler;
+                $handler->delete($service);
+    
+                $this->reset('password');
+                $this->dispatch('service-deleted');
+                $this->dispatch('pg:eventRefresh-ServicesTable');
+                $this->toast('Success!', description: 'Service deleted successfully!');
+                return;
+            }
 
-            $this->reset('password');
-            $this->dispatch('service-deleted');
-            $this->dispatch('pg:eventRefresh-ServicesTable');
-            $this->toast('Success!', description: 'Service deleted successfully!');
-            return;
+            $this->toast('Delete failed!', 'warning', 'Service that is already availed cannot be deleted!');
         }
 
         $this->addError('password', 'Password mismatched, try again!');   
@@ -176,10 +180,24 @@ final class ServicesTable extends PowerGridComponent
             Column::make('Name', 'name_formatted', 'name')
                 ->searchable(),
             Column::make('description', 'description_formatted', 'description'),
-            Column::make('price', 'price_formatted', 'price')
+            Column::make('Price', 'price_formatted', 'price')
                 ->sortable(),
-            Column::make('status', 'status_formatted', 'status'),
+            Column::make('Status', 'status_formatted', 'status'),
             Column::action('')
+        ];
+    }
+
+    public function boot(): void
+    {
+        config(['livewire-powergrid.filter' => 'outside']);
+    }
+
+    public function filters(): array
+    {
+        return [
+            Filter::number('price', 'price')
+                ->thousands('.')
+                ->placeholder('Min', 'Max')
         ];
     }
 

@@ -238,15 +238,10 @@ final class AmenityTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('name')
-                ->placeholder('Name'),
+            Filter::number('price', 'price')
+                ->thousands('.')
+                ->placeholder('Min', 'Max')
         ];
-    }
-
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
     }
 
     public function actionsFromView($row)

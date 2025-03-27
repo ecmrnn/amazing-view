@@ -41,7 +41,7 @@ class AmenityCards extends Component
             ->get();
         // dd($finalized_amenities);
         foreach ($finalized_amenities as $amenity) {
-            $this->amenity_sales += ($amenity->price * $amenity->quantity);
+            $this->amenity_sales += ($amenity->pivot->price * $amenity->pivot->quantity);
         }
         // dd($this->popular_amenity);
         return view('livewire.app.amenity.amenity-cards');

@@ -51,7 +51,7 @@
                         <p class="text-xs">Give your service a new name</p>
                     </div>
                     
-                    <x-form.input-text id="name-{{ $row->id }}" name="name-{{ $row->id }}" label="Amenity Name" x-model="name" />
+                    <x-form.input-text id="name-{{ $row->id }}" name="name-{{ $row->id }}" label="Service Name" x-model="name" />
                     <x-form.input-error field="name" />
                 </x-form.input-group>
 
@@ -71,7 +71,7 @@
                 </x-form.input-group>
             </div>
 
-            <x-loading wire:loading wire:target='updateService'>Updating amenity, please wait</x-loading>
+            <x-loading wire:loading wire:target='updateService'>Updating service, please wait</x-loading>
 
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
@@ -127,8 +127,8 @@
     <x-modal.full name='enable-service-{{ $row->id }}' maxWidth='sm'>
         <form class="p-5 space-y-5" wire:submit='toggleStatus({{ $row->id }})' x-on:service-status-changed.window="show = false">
             <hgroup>
-                <h2 class="text-lg font-semibold">Enable Amenity</h2>
-                <p class="text-xs">Are you sure you really want to enable this amenity?</p>
+                <h2 class="text-lg font-semibold">Enable Service</h2>
+                <p class="text-xs">Are you sure you really want to enable this service?</p>
             </hgroup>
 
             <x-form.input-group>
@@ -137,7 +137,7 @@
                 <x-form.input-error field="password" />
             </x-form.input-group>
 
-            <x-loading wire:loading wire:target='toggleStatus'>Enabling amenity, please wait</x-loading>
+            <x-loading wire:loading wire:target='toggleStatus'>Enabling service, please wait</x-loading>
             
             <div class="flex justify-end gap-1">
                 <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>

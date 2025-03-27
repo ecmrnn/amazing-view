@@ -154,10 +154,6 @@ class ReservationService
             'children_count' => Arr::get($data, 'children_count', $reservation->children_count),
             'senior_count' => Arr::get($data, 'senior_count', $reservation->senior_count),
             'pwd_count' => Arr::get($data, 'pwd_count', $reservation->pwd_count),
-            'first_name' => Arr::get($data, 'first_name'),
-            'last_name' => Arr::get($data, 'last_name'),
-            'phone' => Arr::get($data, 'phone'),
-            'address' => Arr::get($data, 'address'),
             'note' => Arr::get($data, 'note'),
         ]);
 

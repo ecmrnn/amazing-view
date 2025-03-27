@@ -1,4 +1,5 @@
 <div class="max-w-screen-lg mx-auto space-y-5">
+    <livewire:app.services.services-cards />
     <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         <hgroup>
             <h2 class="font-semibold">Services</h2>
