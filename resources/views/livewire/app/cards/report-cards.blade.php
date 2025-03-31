@@ -8,7 +8,7 @@
         </x-slot:icon>
     </x-app.report>
     <x-app.report
-            title="Daily Reservations"
+            title="Incoming Reservations"
             description="Daily check-ins, check-outs, and cancellations."
         >
         <x-slot:icon>

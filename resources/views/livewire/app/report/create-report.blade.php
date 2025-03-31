@@ -45,7 +45,7 @@
         </div>
 
         {{-- Reservation Summary --}}
-        <template x-if='type === "reservation summary"'>
+        <template x-if='type === "{{ \App\Enums\ReportType::RESERVATION_SUMMARY->value }}"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Reservation Summary</h2>
@@ -72,10 +72,10 @@
             </div>
         </template>
 
-        <template x-if='type === "daily reservations"'>
+        <template x-if='type === "{{ \App\Enums\ReportType::INCOMING_RESERVATIONS->value }}"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
-                    <h2 class="text-sm font-semibold">Daily Reservations</h2>
+                    <h2 class="text-sm font-semibold">Incoming Reservation</h2>
                     <p class="text-sm">Select the date of the reservations you want to get.</p>
                 </hgroup>
     
@@ -89,7 +89,7 @@
             </div>
         </template>
 
-        <template x-if='type === "occupancy report"'>
+        <template x-if='type === "{{ \App\Enums\ReportType::OCCUPANCY_REPORT->value }}"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Occupancy Report</h2>
@@ -126,7 +126,7 @@
             </div>
         </template>
 
-        <template x-if='type === "revenue performance"'>
+        <template x-if='type === "{{ \App\Enums\ReportType::REVENUE_PERFORMANCE->value }}"'>
             <div class="p-5 space-y-3 border rounded-md border-slate-200">
                 <hgroup>
                     <h2 class="text-sm font-semibold">Revenue Performance</h2>
@@ -153,12 +153,7 @@
             </div>
         </template>
 
-        {{-- Additional Note --}}
-        <label for="note" class="block text-sm font-semibold">Additional Note (optional)</label>
-        <x-form.textarea id="note" name="note" label="Additional Note (Optional)" rows='4' wire:model.live='note' class="w-full" />
-        <x-form.input-error field="note" />
-
-        <div class="flex gap-3">
+        <div class="flex justify-end gap-1">
             <x-secondary-button type='button' x-on:click="show = false">Cancel</x-secondary-button>
             <x-primary-button wire:click="store()">Generate Report</x-primary-button>
         </div>
@@ -167,7 +162,7 @@
     <div x-show='! type' class="space-y-5">
         {{-- <p class="text-sm">Please select a type of report to generate before you continue</p> --}}
 
-        <button type="button" class="flex items-center justify-between w-full gap-5 p-5 text-left border rounded-md border-slate-200" x-on:click="$wire.set('type', 'reservation summary')">
+        <button type="button" class="flex items-center justify-between w-full gap-5 p-5 text-left border rounded-md border-slate-200" x-on:click="$wire.set('type', '{{ \App\Enums\ReportType::RESERVATION_SUMMARY->value }}')">
             <div>
                 <p class="font-semibold text-md">Reservation Summary</p>
                 <p class="text-xs">Overview of total reservations over a period.</p>
@@ -177,9 +172,9 @@
             </div>
         </button>
 
-        <button type="button" class="flex items-center justify-between w-full p-5 text-left border rounded-md border-slate-200" x-on:click="$wire.set('type', 'daily reservations')">
+        <button type="button" class="flex items-center justify-between w-full p-5 text-left border rounded-md border-slate-200" x-on:click="$wire.set('type', '{{ \App\Enums\ReportType::INCOMING_RESERVATIONS->value }}')">
             <div>
-                <p class="font-semibold text-md">Daily Reservation</p>
+                <p class="font-semibold text-md">Incoming Reservation</p>
                 <p class="text-xs">Daily check-ins, check-outs, and cancellations.</p>
             </div>
             <div class="pr-2">
@@ -187,7 +182,7 @@
             </div>
         </button>
 
-        <button type="button" class="flex items-center justify-between w-full p-5 text-left border rounded-md border-slate-200" x-on:click="$wire.set('type', 'occupancy report')">
+        <button type="button" class="flex items-center justify-between w-full p-5 text-left border rounded-md border-slate-200" x-on:click="$wire.set('type', '{{ \App\Enums\ReportType::OCCUPANCY_REPORT->value }}')">
             <div>
                 <p class="font-semibold text-md">Occupancy Report</p>
                 <p class="text-xs">Room occupancy rates over a period.</p>
@@ -197,7 +192,7 @@
             </div>
         </button>
 
-        <button type="button" class="flex items-center justify-between w-full p-5 text-left border rounded-md border-slate-200" x-on:click="$wire.set('type', 'revenue performance')">
+        <button type="button" class="flex items-center justify-between w-full p-5 text-left border rounded-md border-slate-200" x-on:click="$wire.set('type', '{{ \App\Enums\ReportType::REVENUE_PERFORMANCE->value }}')">
             <div>
                 <p class="font-semibold text-md">Revenue Performance</p>
                 <p class="text-xs">Total revenue generated by room type.</p>

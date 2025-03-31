@@ -51,7 +51,7 @@ class CreateReport extends Component
             'format' => 'required|string',
             'note' => 'nullable|string',
             'start_date' => 'required|date',
-            'end_date' => 'required_unless:type,"daily reservations"|date|nullable',
+            'end_date' => 'required_unless:type,"incoming reservations"|date|nullable',
             'size' => 'required_if:format,PDF',
             'room_type_id' => 'nullable|required_if:type,"occupancy report"'
         ];

@@ -62,7 +62,7 @@ class ShowReports extends Component
 
             <x-modal.full name='bulk-delete-reports' maxWidth='sm'>
                 <div>
-                    <form class="p-5 space-y-5 bg-white" x-on:submit.prevent="$wire.bulkDelete()" x-on:report-deleted.window="show = false">
+                    <form class="p-5 space-y-5" x-on:submit.prevent="$wire.bulkDelete()" x-on:report-deleted.window="show = false">
                         <hgroup>
                             <h2 class="font-semibold text-red-500 capitalize">Bulk Delete Reports</h2>
                             <p class="max-w-sm text-sm">You are about to delete these reports, this action cannot be undone</p>

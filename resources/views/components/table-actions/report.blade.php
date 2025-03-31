@@ -20,7 +20,7 @@
     </x-tooltip>
 
     <x-modal.full name='delete-report-{{ $row->id }}' maxWidth='sm'>
-        <form class="p-5 space-y-5 bg-white" x-on:submit.prevent="$dispatch('delete-report', { id: {{ $row->id  }}})">
+        <form class="p-5 space-y-5" x-on:submit.prevent="$dispatch('delete-report', { id: {{ $row->id  }}})">
             <hgroup>
                 <h2 class="text-base font-semibold text-red-500 capitalize">Delete Report</h2>
                 <p class="max-w-sm text-sm">You are about to delete this report, this action cannot be undone</p>

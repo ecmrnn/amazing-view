@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Enums\InvoiceStatus;
+use App\Enums\ReportType;
 use App\Enums\ReservationStatus;
-use App\Events\ReportDeleted;
 use App\Events\ReportGenerated;
 use App\Exports\DailyReservationExports;
 use App\Exports\ReservationSummaryExports;
@@ -14,10 +14,8 @@ use App\Models\Reservation;
 use App\Models\RoomType;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use Spatie\LaravelPdf\Enums\Orientation;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
 
@@ -53,17 +51,18 @@ class GenerateReport implements ShouldQueue
      */
     public function handle(): void
     {
+        logger($this->report->type);
         switch ($this->report->type) {
-            case 'reservation summary':
+            case ReportType::RESERVATION_SUMMARY->value:
                 $this->generateReservationSummmary($this->report, $this->size);
                 break;
-            case 'daily reservations':
-                $this->generateDailyReservations($this->report, $this->size);
+            case ReportType::INCOMING_RESERVATIONS->value:
+                $this->generateIncomingReservations($this->report, $this->size);
                 break;
-            case 'occupancy report':
+            case ReportType::OCCUPANCY_REPORT->value:
                 $this->generateOccupancyReport($this->report, $this->size);
                 break;
-            case 'revenue performance':
+            case ReportType::REVENUE_PERFORMANCE->value:
                 $this->generateRevenuePerformance($this->report, $this->size);
                 break;
         }
@@ -80,6 +79,7 @@ class GenerateReport implements ShouldQueue
                 'report' => $report,
             ])
             ->format($size)
+            ->orientation(Orientation::Landscape)
             ->margins(
                 $this->margin['top'],
                 $this->margin['right'],
@@ -98,7 +98,7 @@ class GenerateReport implements ShouldQueue
         }
     }
 
-    public function generateDailyReservations(Report $report, $size) {
+    public function generateIncomingReservations(Report $report, $size) {
         $reservations = Reservation::whereDate('date_in', $report->start_date)
             ->whereStatus(ReservationStatus::CONFIRMED->value)
             ->get();
@@ -108,12 +108,13 @@ class GenerateReport implements ShouldQueue
             ->first();
         
         if ($report->format == 'pdf') {
-            Pdf::view('pdf.reports.daily_reservations', [
+            Pdf::view('pdf.reports.incoming_reservations', [
                 'reservations' => $reservations,
                 'report' => $report,
                 'guest_count' => $guest_count,
             ])
             ->format($size)
+            ->orientation(Orientation::Landscape)
             ->margins(
                 $this->margin['top'],
                 $this->margin['right'],
