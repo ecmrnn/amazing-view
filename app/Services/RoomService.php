@@ -82,34 +82,47 @@ class RoomService
     // - Reservation instance
     // - Collection of rooms to attach
     public function sync(Reservation $reservation, $rooms) {
-        if ($reservation->rooms->count() > 0) {
-            foreach ($reservation->rooms as $room) {
-                $reservation->rooms()->detach($room->id);
+        DB::transaction(function () use ($reservation, $rooms) {
+            if ($reservation->rooms->count() > 0) {
+                foreach ($reservation->rooms as $room) {
+                    $reservation_count = $room->reservations()->whereIn('reservations.status', [
+                            ReservationStatus::AWAITING_PAYMENT->value,
+                            ReservationStatus::PENDING->value,
+                            ReservationStatus::CONFIRMED->value,
+                            ReservationStatus::CHECKED_IN->value,
+                        ])
+                        ->where('reservations.id', '!=', $reservation->id)
+                        ->count();
+
+                    $reservation->rooms()->detach($room->id);
+                    
+                    if ($reservation_count == 0) {
+                        $room->status = RoomStatus::AVAILABLE->value;
+                        $room->save();
+        
+                        $reservation->invoice->balance -= $room->rate;
+                        $reservation->save();
+                    }
+                }
+            }
     
-                $room->status = RoomStatus::AVAILABLE->value;
-                $room->save();
-
-                $reservation->invoice->balance -= $room->rate;
-                $reservation->save();
-            }
-        }
-
-        if (!empty($rooms)) {
-            foreach ($rooms as $room) {
-                $room = Room::find($room->id);
-
-                $reservation->rooms()->attach($room->id, [
-                    'rate' => $room->rate,
-                    'status' => $reservation->status,
-                ]);
-
-                $room->status = RoomStatus::RESERVED->value;
-                $room->save();
-
-                $reservation->invoice->balance += $room->rate;
-                $reservation->invoice->save();
-            }
-        }
+            if (!empty($rooms)) {
+                foreach ($rooms as $room) {
+                    $room = Room::find($room->id);
+    
+                    $reservation->rooms()->attach($room->id, [
+                        'rate' => $room->rate,
+                        'status' => $reservation->status,
+                    ]);
+    
+                    $room->status = RoomStatus::RESERVED->value;
+                    $room->save();
+    
+                    $reservation->invoice->balance += $room->rate;
+                    $reservation->invoice->save();
+                }
+            } 
+        });
     }
 
     // For releasing rooms or marking rooms as 'Available' on the database
@@ -121,7 +134,7 @@ class RoomService
         foreach ($rooms as $room) {
             $room->pivot->status = $status;
             $room->pivot->save();
-            
+
             $room->status = RoomStatus::AVAILABLE->value;
             $room->save();
         }

@@ -30,8 +30,10 @@ class AuthenticatedSessionController extends Controller
         $status = User::whereEmail($request->email)
             ->pluck('status')->toArray();
 
-        if ($status[0] == UserStatus::INACTIVE->value) {
-            return back()->withErrors(['email' => 'Your account is currently deactivated.']);
+        if ($status) {
+            if ($status[0] == UserStatus::INACTIVE->value) {
+                return back()->withErrors(['email' => 'Your account is currently deactivated.']);
+            }
         }
 
         $request->authenticate();

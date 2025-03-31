@@ -21,8 +21,8 @@ class ReservationSummaryExports implements FromQuery, WithHeadings
     {
         return [
             'Reservation ID',
-            'Date in',
-            'Date out',
+            'Check-in',
+            'Check-out',
             'First Name',
             'Last Name',
             'Senior Count',
@@ -39,6 +39,7 @@ class ReservationSummaryExports implements FromQuery, WithHeadings
     public function query()
     {
         return Reservation::selectRaw('rid, date_in, date_out, first_name, last_name, senior_count, pwd_count, adult_count, children_count, phone, address, email')
+            ->join('users', 'users.id', '=', 'reservations.user_id')
             ->whereBetween('date_in', [$this->report->start_date, $this->report->end_date]);
     }
 }

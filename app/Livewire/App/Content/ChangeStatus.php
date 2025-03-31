@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Content;
 
+use App\Enums\PageStatus;
 use App\Services\AuthService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\DB;
@@ -36,15 +37,15 @@ class ChangeStatus extends Component
         $this->statuses = collect([
             [
                 'status' => 'Active',
-                'value' => 0,
+                'value' => PageStatus::ACTIVE->value,
             ],
             [
                 'status' => 'Disable',
-                'value' => 1,
+                'value' => PageStatus::DISABLED->value,
             ],
             [
                 'status' => 'Maintenance',
-                'value' => 2,
+                'value' => PageStatus::MAINTENANCE->value,
             ],
         ]);
     }

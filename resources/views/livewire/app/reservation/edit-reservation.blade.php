@@ -773,7 +773,7 @@
                     </hgroup>
 
                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
-                        <x-img src="{{ $reservation->rooms->get($amenity_room_id)->image_1_path }}" />
+                        <x-img src="{{ $reservation->rooms->get($amenity_room_id)->image_1_path ?? '' }}" />
                         
                         <hgroup>
                             <h2 class="text-sm font-semibold">{{ $reservation->rooms->get($amenity_room_id)->room_number }}</h2>

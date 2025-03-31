@@ -39,13 +39,11 @@
             </div>
         </div>
         <div class="space-y-5">
-            <h3 class="text-xl font-semibold">Enjoy more of our content</h3>
+            <h3 class="text-xl font-semibold opacity-0 line-clamp-1">{{ $settings['site_title'] }}</h3>
             
             <div class="space-y-1">
-                <x-footer-link href="/">Blogs</x-footer-link>
-                <x-footer-link href="/">Events</x-footer-link>
-                <x-footer-link href="/">Testimonials</x-footer-link>
-                <x-footer-link href="/">Announcements</x-footer-link>
+                <p class="text-sm">Phone: {{ $settings['site_phone'] }}</p>
+                <p class="text-sm">Email: {{ $settings['site_email'] }}</p>
             </div>
         </div>
     </div>

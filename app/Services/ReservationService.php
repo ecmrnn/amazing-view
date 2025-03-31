@@ -415,7 +415,7 @@ class ReservationService
             $reservation->status = ReservationStatus::RESCHEDULED->value;
             $reservation->rescheduled_to = $new_reservation->id;
             $reservation->save();
-            $this->handlers->get('room')->release($reservation, $reservation->rooms, ReservationStatus::RESCHEDULED->value);
+            $this->handlers->get('room')->sync($reservation, $data['selected_rooms']);
 
             // Update the invoice of the old reservation
             $reservation->invoice->status = InvoiceStatus::CANCELED->value;
