@@ -6,8 +6,9 @@ use App\Enums\InvoiceStatus;
 use App\Enums\ReportType;
 use App\Enums\ReservationStatus;
 use App\Events\ReportGenerated;
-use App\Exports\DailyReservationExports;
+use App\Exports\IncomingReservationExports;
 use App\Exports\ReservationSummaryExports;
+use App\Exports\RevenuePerformanceExport;
 use App\Models\Invoice;
 use App\Models\Report;
 use App\Models\Reservation;
@@ -128,7 +129,7 @@ class GenerateReport implements ShouldQueue
             ])
             ->save($this->path);
         } else {
-            return (new DailyReservationExports($this->report))->store('public/csv/report/' . $this->filename);
+            return (new IncomingReservationExports($this->report))->store('public/csv/report/' . $this->filename);
         }
     }
 
@@ -188,23 +189,21 @@ class GenerateReport implements ShouldQueue
 
     public function generateRevenuePerformance(Report $report, $size) {
         $reservations = Reservation::whereBetween('date_in', [$report->start_date, $report->end_date])
+            ->whereStatus(ReservationStatus::CHECKED_OUT)
             ->get();
         $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
-            ->whereStatus(InvoiceStatus::PAID)
+            ->whereIn('status', [InvoiceStatus::PARTIAL, InvoiceStatus::PAID, InvoiceStatus::ISSUED])
             ->sum('total_amount');
-        $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
-            ->whereStatus(InvoiceStatus::PAID)
-            ->sum('total_amount');
-        $revenue_per_room_type = Invoice::whereIn('invoices.reservation_id', $reservations->pluck('id'))
-            ->join('room_reservations', 'invoices.reservation_id', '=', 'room_reservations.reservation_id')
-            ->join('rooms', 'rooms.id', '=', 'room_reservations.room_id')
-            ->join('room_types', 'rooms.room_type_id', '=', 'room_types.id')
+        $revenue_per_room_type = Invoice::whereIn('invoices.reservation_id', $reservations->pluck('id')->toArray())
             ->selectRaw('
                 room_types.name as room_type,
                 count(room_reservations.id) as reservation_count,
                 sum(invoices.total_amount) as total_revenue,
                 avg(invoices.total_amount) as average_revenue
             ')
+            ->join('room_reservations', 'invoices.reservation_id', '=', 'room_reservations.reservation_id')
+            ->join('rooms', 'rooms.id', '=', 'room_reservations.room_id')
+            ->join('room_types', 'rooms.room_type_id', '=', 'room_types.id')
             ->groupBy('room_types.name')
             ->get();
         $room_type_count = RoomType::count();   
@@ -243,6 +242,8 @@ class GenerateReport implements ShouldQueue
                 'report' => $report
             ])
             ->save($this->path);
+        } else {
+            return (new RevenuePerformanceExport($this->report))->store('public/csv/report/' . $this->filename);
         }
     }
 }

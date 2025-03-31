@@ -100,10 +100,10 @@ class AmenityService
         $taxes = $billing->taxes($reservation->fresh());
         $payments = $reservation->invoice->payments->sum('amount');
 
+        $reservation->invoice->sub_total = $taxes['net_total'];
         $reservation->invoice->total_amount = $taxes['net_total'];
         $reservation->invoice->balance = $taxes['net_total'] - $payments;
         $reservation->invoice->save();
-
     }
 
     // For adding amenities on edit and create reservations

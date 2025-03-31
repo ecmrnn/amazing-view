@@ -99,9 +99,6 @@ class RoomService
                     if ($reservation_count == 0) {
                         $room->status = RoomStatus::AVAILABLE->value;
                         $room->save();
-        
-                        $reservation->invoice->balance -= $room->rate;
-                        $reservation->save();
                     }
                 }
             }
@@ -117,11 +114,17 @@ class RoomService
     
                     $room->status = RoomStatus::RESERVED->value;
                     $room->save();
-    
-                    $reservation->invoice->balance += $room->rate;
-                    $reservation->invoice->save();
                 }
             } 
+
+            $billing = new BillingService;
+            $taxes = $billing->taxes($reservation->fresh());
+            $payments = $reservation->invoice->payments->sum('amount');
+
+            $reservation->invoice->sub_total = $taxes['net_total'];
+            $reservation->invoice->total_amount = $taxes['net_total'];
+            $reservation->invoice->balance = $taxes['net_total'] - $payments;
+            $reservation->invoice->save();
         });
     }
 

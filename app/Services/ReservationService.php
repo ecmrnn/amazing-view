@@ -360,8 +360,8 @@ class ReservationService
             // Send email to guests with no-show reservations
             Mail::to($reservation->user->email)->queue(new NoShow($reservation));
     
-            $this->handlers->get('room')->sync($reservation, null);
-            $this->handlers->get('amenity')->sync($reservation, null);
+            $this->handlers->get('room')->release($reservation, $reservation->rooms);
+            $this->handlers->get('amenity')->release($reservation, $reservation->rooms);
     
             return $reservation;
         });

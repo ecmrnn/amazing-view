@@ -2,13 +2,14 @@
 
 namespace App\Exports;
 
+use App\Enums\ReservationStatus;
 use App\Models\Report;
 use App\Models\Reservation;
 use Vitorccs\LaravelCsv\Concerns\Exportables\Exportable;
 use Vitorccs\LaravelCsv\Concerns\Exportables\FromQuery;
 use Vitorccs\LaravelCsv\Concerns\WithHeadings;
 
-class DailyReservationExports implements FromQuery, WithHeadings
+class IncomingReservationExports implements FromQuery, WithHeadings
 {
     use Exportable;
 
@@ -39,6 +40,8 @@ class DailyReservationExports implements FromQuery, WithHeadings
     public function query()
     {
         return Reservation::selectRaw('rid, date_in, date_out, first_name, last_name, senior_count, pwd_count, adult_count, children_count, phone, address, email')
-            ->whereDate('date_in', $this->report->start_date);
+            ->join('users', 'users.id', '=', 'reservations.user_id')
+            ->whereDate('date_in', $this->report->start_date)
+            ->where('reservations.status', ReservationStatus::CONFIRMED->value);
     }
 }
