@@ -12,6 +12,7 @@ use App\Mail\reservation\Expire;
 use App\Mail\Reservation\NoShow;
 use App\Mail\reservation\Received;
 use App\Mail\reservation\ReceivedFunctionHall;
+use App\Mail\reservation\ThankYou;
 use App\Mail\Reservation\Updated;
 use App\Models\CancelledReservation;
 use App\Models\FunctionHallReservations;
@@ -237,24 +238,26 @@ class ReservationService
                 $room->pivot->save();
             }
 
-            /**
-             * If all rooms are checked out: 
-             * - mark reservation as 'checked out'
-             * - mark invoice as 'paid'
-             */
-            $checked_in_rooms = $reservation->fresh()->rooms()->where('room_reservations.status', ReservationStatus::CHECKED_IN)->count();
-
-            if (empty($checked_in_rooms)) {
-                $reservation->status = ReservationStatus::CHECKED_OUT->value;
-                $reservation->save();
-            }
-
             $this->handlers->get('amenity')->release($reservation->fresh(), $selected_rooms);
             $this->handlers->get('room')->release($reservation->fresh(), $selected_rooms, ReservationStatus::CHECKED_OUT->value);
 
             // Issue invoice if not yet issued
             if (empty($reservation->invoice->issue_date)) {
                 $this->handlers->get('billing')->issueInvoice($reservation->invoice);
+            }
+
+            /**
+             * If all rooms are checked out: 
+             * - mark reservation as 'checked out'
+             * - mark invoice as 'issued'
+             */
+            $checked_in_rooms = $reservation->fresh()->rooms()->where('room_reservations.status', ReservationStatus::CHECKED_IN)->count();
+
+            if (empty($checked_in_rooms)) {
+                $reservation->status = ReservationStatus::CHECKED_OUT->value;
+                $reservation->save();
+
+                Mail::to($reservation->user->email)->queue(new ThankYou($reservation->fresh()));
             }
         });
     }

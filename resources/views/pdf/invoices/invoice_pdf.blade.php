@@ -5,7 +5,7 @@
     <div class="space-y-5">
         <header class="flex items-start justify-between">
             <div class="flex items-center gap-5">
-                <x-img src="{{ $settings['site_logo'] ?? '' }}" aspect="square" class="w-12" />
+                <x-application-logo width="w-14" />
     
                 <div>
                     <h1 class="text-base font-semibold">Amazing View Mountain Resort</h1>
@@ -14,7 +14,7 @@
             </div>
     
             <div>
-                <p class="text-xl font-semibold text-right text-blue-800">{{ $invoice->iid }}</p>
+                <p class="text-base font-semibold text-right text-blue-800">{{ $invoice->iid }}</p>
                 <p class="text-xs text-right">Invoice ID</p>
             </div>
         </header>
@@ -23,16 +23,31 @@
             <h2><strong>Date Issued:</strong> {{ date_format(date_create($invoice->issue_date), 'F j, Y') }}</h2>
         </div>
 
-        <div class="p-5 space-y-5 rounded-lg bg-slate-50">
-            <div>
-                <h2 class="text-xs font-semibold">Bill to</h2>
-                <p class="text-lg font-semibold capitalize">{{ $invoice->reservation->user->first_name . ' ' . $invoice->reservation->user->last_name }}</p>
+        <div class="grid grid-cols-2 gap-5">
+            <div class="p-5 space-y-5 rounded-lg bg-slate-50">
+                <div>
+                    <h2 class="text-xs font-semibold">Bill From</h2>
+                    <p class="text-lg font-semibold capitalize">Amazing View Mountain Resort</p>
+                </div>
+            
+                <div>
+                    <p>{{ $settings['site_phone'] }}</p>
+                    <p>{{ $settings['site_email'] }}</p>
+                    <p class="capitalize">Little Baguio, Paagahan Mabitac, Laguna, Philippines</p>
+                </div>
             </div>
             
-            <div>
-                <p class="capitalize">{{ $invoice->reservation->user->address }}</p>
-                <p>{{ $invoice->reservation->user->phone }}</p>
-                <p>{{ $invoice->reservation->user->email }}</p>
+            <div class="p-5 space-y-5 rounded-lg bg-slate-50">
+                <div>
+                    <h2 class="text-xs font-semibold">Bill to</h2>
+                    <p class="text-lg font-semibold capitalize">{{ $invoice->reservation->user->first_name . ' ' . $invoice->reservation->user->last_name }}</p>
+                </div>
+            
+                <div>
+                    <p>{{ $invoice->reservation->user->phone }}</p>
+                    <p>{{ $invoice->reservation->user->email }}</p>
+                    <p class="capitalize">{{ $invoice->reservation->user->address }}</p>
+                </div>
             </div>
         </div>
 
@@ -54,7 +69,7 @@
             </div>
     
             <div>
-                <p class="text-xl font-semibold text-right text-blue-800">{{ $invoice->iid }}</p>
+                <p class="text-base font-semibold text-right text-blue-800">{{ $invoice->iid }}</p>
                 <p class="text-xs text-right">Invoice ID</p>
             </div>
         </header>
