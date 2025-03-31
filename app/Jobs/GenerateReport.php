@@ -51,7 +51,6 @@ class GenerateReport implements ShouldQueue
      */
     public function handle(): void
     {
-        logger($this->report->type);
         switch ($this->report->type) {
             case ReportType::RESERVATION_SUMMARY->value:
                 $this->generateReservationSummmary($this->report, $this->size);
@@ -138,18 +137,24 @@ class GenerateReport implements ShouldQueue
             ->whereHas('rooms', function ($query) use ($report) {
                 $query->where('room_type_id', $report->room_type_id);
             })
+            ->whereIn('status', [ReservationStatus::CHECKED_IN, ReservationStatus::CHECKED_OUT])
             ->get();
         $revenue = Invoice::whereIn('reservation_id', $reservations->pluck('id'))
-            ->whereStatus(InvoiceStatus::PAID)
+            ->whereIn('status', [InvoiceStatus::PAID, InvoiceStatus::ISSUED])
             ->sum('total_amount');
-        $total_room_nights_occupied = Reservation::whereBetween('date_in', [$report->start_date, $report->end_date])
-            ->orWhereBetween('date_out', [$report->start_date, $report->end_date])
+        $total_room_nights_occupied = Reservation::
+            where(function ($query) use ($report) {
+                $query->whereBetween('date_in', [$report->start_date, $report->end_date])
+                    ->orWhereBetween('date_out', [$report->start_date, $report->end_date]);
+            })
+            ->whereIn('id', $reservations->pluck('id')->toArray())
             ->get()
             ->reduce(function ($carry, $reservation) use ($report) {
                 $check_in = Carbon::parse($reservation->date_in)->max($report->start_date);
                 $check_out = Carbon::parse($reservation->date_out)->min($report->end_date);
-                $nights_occupied = $check_in->diffInDays($check_out);
-                
+                $nights_occupied = $check_in->diffInDays($check_out);                
+                $nights_occupied = $nights_occupied == 0 ? 1 : $nights_occupied;
+
                 return $carry + $nights_occupied;
             }, 0);
         $days = Carbon::parse($report->start_date)->diffInDays(Carbon::parse($report->end_date)) + 1;

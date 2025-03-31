@@ -117,7 +117,7 @@ class CreateReport extends Component
     }
 
     public function automaticDownloadReport($event) {
-        $this->toast('Success!', description: 'Your file is ready to download');
+        $this->toast('Success!', description: 'Your file is ready to download. Stay online!');
         return response()->download(Storage::path('public/' . $event['report']['path']));
     }
 

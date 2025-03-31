@@ -418,7 +418,7 @@ class ReservationService
             $this->handlers->get('room')->sync($reservation, $data['selected_rooms']);
 
             // Update the invoice of the old reservation
-            $reservation->invoice->status = InvoiceStatus::CANCELED->value;
+            $reservation->invoice->status = InvoiceStatus::RESCHEDULED->value;
             $reservation->invoice->save();
         });
     }

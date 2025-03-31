@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Report extends Model
 {
@@ -94,6 +95,12 @@ class Report extends Model
                 'prefix' => date('REymd'),
                 'reset_on_prefix_change' => true
             ]);
+        });
+
+        self::deleting(function ($report) {
+            if ($report->path && Storage::exists('public/' . $report->path)) {
+                Storage::disk('public')->delete($report->path);
+            }
         });
     }
 }
