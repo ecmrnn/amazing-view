@@ -124,6 +124,10 @@ class User extends Authenticatable
         }
     }
 
+    public function announcements(): HasMany {
+        return $this->hasMany(Announcement::class);
+    }
+
     public static function boot()
     {
         // Generate custom ID: https://laravelarticle.com/laravel-custom-id-generator
