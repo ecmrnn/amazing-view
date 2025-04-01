@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AnnouncementStatus;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('image');
             $table->text('description');
-            $table->smallInteger('status')->default(0); /* Change to enum */
+            $table->smallInteger('status')->default(AnnouncementStatus::ACTIVE); /* Change to enum */
             $table->timestamps();
         });
     }

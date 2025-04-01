@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AnnouncementStatus;
 use App\Enums\FeaturedServiceStatus;
 use App\Enums\MilestoneStatus;
 use App\Enums\TestimonialStatus;
+use App\Models\Announcement;
 use App\Models\Content;
 use App\Models\FeaturedService;
 use App\Models\MediaFile;
@@ -14,11 +16,13 @@ use App\Models\PageContent;
 use App\Models\RoomType;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PageController extends Controller
 {
     public function index() {
         $page = Page::whereUrl('/')->first();
+        $announcement = Announcement::whereStatus(AnnouncementStatus::ACTIVE)->first();
         $contents = PageContent::where('page_id', $page->id)->pluck('value', 'key');
         $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
         $featured_services = FeaturedService::where('status', FeaturedServiceStatus::ACTIVE)->get();
@@ -26,6 +30,7 @@ class PageController extends Controller
 
         return view($page->view, [
             'page' => $page,
+            'announcement' => $announcement,
             'contents' => $contents,
             'medias' => $medias,
             'featured_services' => $featured_services,

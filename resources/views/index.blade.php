@@ -29,6 +29,43 @@
         </div>
     </x-slot:hero>
 
+    {{-- If there's an announcement, display it --}}
+    @empty(!$announcement)
+        <div x-data="{ show: true }" x-show="show" x-transition class="fixed inset-0 grid w-full h-full p-10 bg-zinc-800/50 place-items-center">
+            <div class="w-full max-w-screen-lg p-5 space-y-5 bg-white rounded-lg" x-on:click.outside="show = false">
+                <div class="flex justify-between -items-start">
+                    <div class="flex items-start gap-5">
+                        <x-icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-party-popper-icon lucide-party-popper"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/></svg>
+                        </x-icon>
+                        <hgroup>
+                            <h2 class="font-semibold">Announcement!</h2>
+                            <p class="text-xs">{{ date('F j, Y') }}</p>
+                        </hgroup>
+                    </div>
+
+                    <x-tooltip text="Close" dir="left">
+                        <x-icon-button x-ref="content" x-on:click="show = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </x-icon-button>
+                    </x-tooltip>
+                </div>
+
+                <div class="space-y-5">
+                    <x-img src="{{ $announcement->image }}" />
+                        
+                    <div>
+                        <div>
+                            <h3 class="font-semibold">{{ $announcement->title }}</h3>
+                            <p class="text-sm">{{ $announcement->description }}</p>
+                        </div>
+                        <p class="text-xs">{{ date_format(date_create($announcement->created_at), 'F j, Y') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endempty
+
     {{-- Featured Services --}}
     <x-section class="bg-white" id="services">
         <x-slot:icon><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg></x-slot:icon>

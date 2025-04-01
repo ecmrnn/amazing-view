@@ -67,6 +67,10 @@
             \App\Enums\ServiceStatus::ACTIVE->value => ['Active', 'text-green-800 border-green-500 bg-green-50'],
             \App\Enums\ServiceStatus::INACTIVE->value => ['Inactive', 'text-red-800 border-red-500 bg-red-50'],
         ],
+        'announcement' => [
+            \App\Enums\AnnouncementStatus::ACTIVE->value => ['Active', 'text-green-800 border-green-500 bg-green-50'],
+            \App\Enums\AnnouncementStatus::INACTIVE->value => ['Inactive', 'text-red-800 border-red-500 bg-red-50'],
+        ],
         'session' => [
             \App\Enums\SessionStatus::ONLINE->value => ['Online', 'text-green-800 border-green-500 bg-green-50'],
             \App\Enums\SessionStatus::OFFLINE->value => ['Offline', 'text-stone-800 border-stone-500 bg-stone-200'],

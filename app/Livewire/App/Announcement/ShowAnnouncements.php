@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Livewire\App\Announcement;
+
+use App\Models\Announcement;
+use Livewire\Component;
+
+class ShowAnnouncements extends Component
+{
+    protected $listeners = [
+        'announcement-created' => '$refresh',
+    ];
+
+    public $announcements;
+
+    public function render()
+    {
+        $this->announcements = Announcement::all();
+
+        return view('livewire.app.announcement.show-announcements');
+    }
+}

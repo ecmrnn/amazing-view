@@ -84,7 +84,7 @@ $maxWidth = [
         x-transition:leave-end="opacity-0"
         >
         {{-- Close Button --}}
-        <div class="p-2.5 bg-white border-b border-slate-200">
+        <div class="p-2.5 py-[9px] bg-white border-b border-slate-200">
             <div class="flex justify-end">
                 <x-tooltip text="Close" dir="left">
                     <x-icon-button x-ref="content" type="button" x-on:click="show = false">

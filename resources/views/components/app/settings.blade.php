@@ -2,7 +2,7 @@
     <section class="p-5 space-y-5">
         <hgroup>
             <h2 class="text-lg font-bold">Settings</h2>
-            <p class="text-sm">Configure other aspects of the system here</p>
+            <p class="text-xs">Configure other aspects of the system here</p>
         </hgroup>
 
         <article class="space-y-5">
@@ -39,9 +39,9 @@
             <p class="text-sm font-semibold">Others</p>
 
             <div class="p-1 bg-white border rounded-md border-slate-200">
-                <x-app-nav-link :active="false" href="{{ route('app.users.index') }}" class="flex items-center gap-3 p-3">
+                <x-app-nav-link :active="false" href="{{ route('app.announcements.index') }}" class="flex items-center gap-3 p-3">
                     <div class="pl-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-newspaper-icon lucide-newspaper"><path d="M15 18h-5"/><path d="M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/></svg>
                     </div>
                     <div class="pl-1">
                         <p class="text-sm font-semibold">Announcements</p>

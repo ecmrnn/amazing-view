@@ -80,6 +80,11 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'update service']);
         Permission::create(['name' => 'delete service']);
 
+        Permission::create(['name' => 'create announcement']);
+        Permission::create(['name' => 'read announcements']);
+        Permission::create(['name' => 'update announcement']);
+        Permission::create(['name' => 'delete announcement']);
+
         $guest_permissions = [
             'read reservations',
         ];
@@ -159,6 +164,11 @@ class RolePermissionSeeder extends Seeder
             'read services',
             'update service',
             'delete service',
+
+            'create announcement',
+            'read announcements',
+            'update announcement',
+            'delete announcement',
         ];
 
         // Create Roles

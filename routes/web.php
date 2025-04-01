@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AmenityController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\App\RoomController;
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\BillingController;
@@ -58,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('/buildings', BuildingController::class);
             Route::resource('/amenity', AmenityController::class);
             Route::resource('/services', ServicesController::class);
+            Route::resource('/announcements', AnnouncementController::class);
         });
     });
 });
