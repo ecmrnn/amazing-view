@@ -59,6 +59,7 @@ final class UserTable extends PowerGridComponent
     {
         return [
             Header::make()
+                ->withoutLoading()
                 ->showSearchInput(),
             Footer::make()
                 ->showPerPage(),

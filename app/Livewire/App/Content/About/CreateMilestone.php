@@ -65,7 +65,7 @@ class CreateMilestone extends Component
                     Kindly fill up the form below to add a milestone and upload an image related to your milestone.
                 </x-note>
 
-                <div class="space-y-2">
+                <x-form.input-group>
                     <div>
                         <x-form.input-label for="image">Image</x-form.input-label>
                         <p class="text-xs">Upload an image highlighting your milestone here</p>
@@ -77,9 +77,9 @@ class CreateMilestone extends Component
                         placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
                     />
                     <x-form.input-error field="image" />
-                </div>
+                </x-form.input-group>
 
-                <div class="space-y-2">
+                <x-form.input-group>
                     <div>
                         <x-form.input-label for="title">Title &amp; Description</x-form.input-label>
                         <p class="text-xs">Enter the title and short description of your service</p>
@@ -89,13 +89,10 @@ class CreateMilestone extends Component
                     <x-form.input-error field="title" />
                     
                     <x-form.textarea id="desription" name="description" wire:model.live="description" class="w-full" rows="5" x-on:keyup="count = max - $el.value.length" />
-                    <div class="flex justify-between">
-                        <span><x-form.input-error field="description" /></span>
-                        <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
-                    </div>
-                </div>
+                    <x-form.input-error field="description" />
+                </x-form.input-group>
 
-                <div class="space-y-2">
+                <x-form.input-group>
                     <div>
                         <x-form.input-label for="date_achieved">Date Achieved</x-form.input-label>
                         <p class="text-xs">Enter the date you acheived this milestone</p>
@@ -103,7 +100,7 @@ class CreateMilestone extends Component
 
                     <x-form.input-date id="date_achieved" name="date_achieved" wire:model.live="date_achieved" class="w-full" />
                     <x-form.input-error field="date_achieved" />
-                </div>
+                </x-form.input-group>
 
                 <x-loading wire:loading wire:target='submit'>Creating milestone, please wait</x-loading>
                 

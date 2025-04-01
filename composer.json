@@ -9,7 +9,6 @@
         "asantibanez/livewire-charts": "^4.1",
         "fedeisas/laravel-mail-css-inliner": "^5.4",
         "garygreen/pretty-routes": "^1.0",
-        "ginocampra/laravel-leaflet": "^1.0",
         "haruncpi/laravel-id-generator": "^1.1",
         "laravel/framework": "^11.9",
         "laravel/reverb": "^1.0",

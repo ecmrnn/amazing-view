@@ -62,7 +62,7 @@ class EditMilestone extends Component
                     <p class="max-w-sm text-sm">Update milestone details here</p>
                 </hgroup>
 
-                <div class="space-y-2">
+                <x-form.input-group>
                     <div>
                         <x-form.input-label for="edit-{{ $milestone->id }}-image">Image</x-form.input-label>
                         <p class="text-xs">Upload a new image here</p>
@@ -75,9 +75,9 @@ class EditMilestone extends Component
                     />
 
                     <x-form.input-error field="image" />
-                </div>
+                </x-form.input-group>
 
-                <div class="space-y-2">
+                <x-form.input-group>
                     <div>
                         <x-form.input-label for="edit-{{ $milestone->id }}-title">Title &amp; Description</x-form.input-label>
                         <p class="text-xs">Enter the title and short description of your milestone</p>
@@ -87,14 +87,10 @@ class EditMilestone extends Component
                     <x-form.input-error field="title" />
 
                     <x-form.textarea id="edit-{{ $milestone->id }}-desription" name="description" wire:model.live="description" class="w-full" rows="5" x-on:keyup="count = max - $el.value.length" />
-                    
-                    <div class="flex justify-between">
-                        <span><x-form.input-error field="description" /></span>
-                        <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
-                    </div>
-                </div>
+                    <x-form.input-error field="description" />
+                </x-form.input-group>
 
-                <div class="space-y-2">
+                <x-form.input-group>
                     <div>
                         <x-form.input-label for="edit-{{ $milestone->id }}-date">Date Achieved</x-form.input-label>
                         <p class="text-xs">Enter the date you acheived this milestone</p>
@@ -102,7 +98,7 @@ class EditMilestone extends Component
 
                     <x-form.input-date id="edit-{{ $milestone->id }}-date" name="date_achieved" wire:model.live="date_achieved" class="w-full" />
                     <x-form.input-error field="date_achieved" />
-                </div>
+                </x-form.input-group>
 
                 <x-loading wire:loading wire:target='submit'>Editing milestone, please wait</x-loading>
                 

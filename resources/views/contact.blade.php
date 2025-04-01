@@ -19,7 +19,9 @@
                     </p>
                 </div>
 
-                <livewire:email-form />
+                <div class="hidden md:block">
+                    <livewire:email-form />
+                </div>
             </div>
 
             <div class="absolute w-full h-full rounded-lg -z-10 before:contents[''] before:w-full before:h-full before:bg-black/35 before:absolute before:top-0 before:left-0 overflow-hidden"

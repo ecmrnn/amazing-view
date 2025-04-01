@@ -12,7 +12,7 @@ class ShowAnnouncements extends Component
     public function getListeners()
     {
         return [
-            "echo:admin,AnnouncementExpired" => '$refresh',
+            "echo-private:admin,AnnouncementExpired" => '$refresh',
             'announcement-created' => '$refresh',
             'announcement-updated' => '$refresh',
             'announcement-disabled' => '$refresh',

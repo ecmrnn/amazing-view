@@ -96,6 +96,8 @@ class DashboardController extends Controller
             // Monthly Revenue
             $monthly_revenue = InvoicePayment::select(DB::raw('sum(amount) as revenue'))
                 ->whereMonth('payment_date', Carbon::now()->format('m'))
+                ->whereIn('invoices.status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE])
+                ->join('invoices', 'invoices.id', '=', 'invoice_payments.invoice_id')
                 ->first();
             
             // Outstanding Balances

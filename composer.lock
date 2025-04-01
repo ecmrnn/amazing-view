@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "342d3fe2a37dfa78a0a7af4da837f7cf",
+    "content-hash": "b61b5c4d58effce2b7c05e8f62c8b322",
     "packages": [
         {
             "name": "asantibanez/livewire-charts",
@@ -926,50 +926,6 @@
                 "source": "https://github.com/garygreen/pretty-routes/tree/1.0.13"
             },
             "time": "2024-03-12T16:51:31+00:00"
-        },
-        {
-            "name": "ginocampra/laravel-leaflet",
-            "version": "1.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ginocampra/laravel-leaflet.git",
-                "reference": "bc17009bbe93950dbdf80861df77cb8d93877ca8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ginocampra/laravel-leaflet/zipball/bc17009bbe93950dbdf80861df77cb8d93877ca8",
-                "reference": "bc17009bbe93950dbdf80861df77cb8d93877ca8",
-                "shasum": ""
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Ginocampra\\LaravelLeaflet\\LaravelLeafletServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Ginocampra\\LaravelLeaflet\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Gino Campra",
-                    "email": "gino@gcampra.com.br"
-                }
-            ],
-            "description": "Allows you to create pages with Leaflet maps in an integrated way with Laravel",
-            "support": {
-                "issues": "https://github.com/ginocampra/laravel-leaflet/issues",
-                "source": "https://github.com/ginocampra/laravel-leaflet/tree/1.0.6"
-            },
-            "time": "2024-02-16T14:03:37+00:00"
         },
         {
             "name": "graham-campbell/result-type",

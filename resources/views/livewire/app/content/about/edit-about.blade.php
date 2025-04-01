@@ -157,10 +157,7 @@
                     </hgroup>
 
                     <div>
-                        <x-laravel-map
-                            :initialMarkers="$map['marker']"
-                            :options="$map['option']"
-                        />
+                        <x-map />
                     </div>
                 </section>
 

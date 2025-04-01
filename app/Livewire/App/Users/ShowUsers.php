@@ -12,10 +12,6 @@ use Livewire\Component;
 
 class ShowUsers extends Component
 {
-    protected $listeners = [
-        'user-status-changed' => '$refresh'
-    ];
-
     public $user_by_status = [
         'active' => 0,
         'inactive' => 0,
@@ -29,6 +25,18 @@ class ShowUsers extends Component
     #[Url] public $status;
     #[Url] public $role;
     public $user_count;
+
+    public function getListeners() {
+        return [
+            "echo-private:admin,UserLoggedOut" => 'authenticateUser',
+            "echo-private:admin,UserLoggedIn" => 'authenticateUser',
+            'user-status-changed' => '$refresh'
+        ];
+    }
+
+    public function authenticateUser() {
+        $this->dispatch('pg:eventRefresh-UserTable');
+    }
 
     public function getUsers() {
         $statuses = [

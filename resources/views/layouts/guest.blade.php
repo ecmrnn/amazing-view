@@ -23,6 +23,7 @@
         
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     </head>
     <body x-data="{ open : false, toast_details: {} }" class="antialiased font-inter text-zinc-800"
         x-init="

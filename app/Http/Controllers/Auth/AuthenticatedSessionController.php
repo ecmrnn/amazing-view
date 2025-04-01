@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserStatus;
+use App\Events\UserLoggedIn;
+use App\Events\UserLoggedOut;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
@@ -40,6 +42,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        broadcast(new UserLoggedIn);
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
@@ -53,6 +57,8 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        broadcast(new UserLoggedOut);
 
         return redirect('/');
     }

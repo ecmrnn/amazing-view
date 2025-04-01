@@ -71,10 +71,7 @@
         <x-slot:subheading>Waze your way to Amazing View!</x-slot:subheading>
 
         <div>
-            <x-laravel-map
-                :initialMarkers="$map['marker']"
-                :options="$map['option']"
-            />
+            <x-map />
         </div>
     </x-section>
 </x-guest-layout>

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AnnouncementExpired implements ShouldBroadcast
+class UserLoggedOut implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
