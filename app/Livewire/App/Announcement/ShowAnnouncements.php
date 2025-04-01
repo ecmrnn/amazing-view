@@ -7,15 +7,19 @@ use Livewire\Component;
 
 class ShowAnnouncements extends Component
 {
-    protected $listeners = [
-        'announcement-created' => '$refresh',
-        'announcement-updated' => '$refresh',
-        'announcement-disabled' => '$refresh',
-        'announcement-enabled' => '$refresh',
-        'announcement-deleted' => '$refresh',
-    ];
-
     public $announcements;
+
+    public function getListeners()
+    {
+        return [
+            "echo:admin,AnnouncementExpired" => '$refresh',
+            'announcement-created' => '$refresh',
+            'announcement-updated' => '$refresh',
+            'announcement-disabled' => '$refresh',
+            'announcement-enabled' => '$refresh',
+            'announcement-deleted' => '$refresh',
+        ];
+    }
 
     public function render()
     {

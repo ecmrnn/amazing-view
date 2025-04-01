@@ -23,7 +23,7 @@ class ShowReports extends Component
     
     public function getListeners() {
         return [
-            "echo:report,ReportGenerated" => 'getReportsCount',
+            "echo:admin,ReportGenerated" => 'getReportsCount',
             "report-created" => 'getReportsCount',
             "report-deleted" => 'getReportsCount',
         ];

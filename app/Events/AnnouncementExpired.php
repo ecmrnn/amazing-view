@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Report;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,19 +10,16 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ReportGenerated implements ShouldBroadcast
+class AnnouncementExpired implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        public Report $report,
-        public $user_id
-    )
+    public function __construct()
     {
-        $user_id = $report->user_id;
+        //
     }
 
     /**
@@ -34,7 +30,6 @@ class ReportGenerated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('reports.' . $this->user_id),
             new Channel('admin'),
         ];
     }
