@@ -16,6 +16,10 @@
                                 <h2 class="font-semibold line-clamp-1">{{ $announcement->title }}</h2>
                                 <p class="text-xs line-clamp-3">{{ $announcement->description }}</p>
                             </div>
+
+                            @if ($announcement->status == \App\Enums\AnnouncementStatus::ACTIVE->value && $announcement->expires_at)
+                                <p class="text-xs">Active until: {{ date_format(date_create($announcement->expires_at), 'F j, Y') }}</p>
+                            @endif
                         </div>
 
                         <div class="flex items-center justify-between">

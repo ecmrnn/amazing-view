@@ -14,15 +14,18 @@ class CreateAnnouncement extends Component
 {
     use DispatchesToast, WithFilePond;
     
+    public $min_date;
     #[Validate] public $title;
     #[Validate] public $description;
     #[Validate] public $image;
+    #[Validate] public $expires_at;
 
     public function rules() {
         return [
             'title' => 'required',
             'description' => 'required|max:1000',
             'image' => 'required|image',
+            'expires_at' => 'nullable|date|after_or_equal:today',
         ];
     }
 
@@ -43,6 +46,8 @@ class CreateAnnouncement extends Component
 
     public function render()
     {
+        $this->min_date = now()->format('Y-m-d');
+        
         return <<<'HTML'
         <x-modal.full name='add-announcement-modal' maxWidth='sm'>
             <form class="p-5 space-y-5" wire:submit="submit" x-on:announcement-created.window="show = false">
@@ -70,6 +75,12 @@ class CreateAnnouncement extends Component
                         placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
                     />
                     <x-form.input-error field="image" />
+                </x-form.input-group>
+
+                <x-form.input-group>
+                    <x-form.input-label for='expires_at'>Date until announcement is active</x-form.input-label>
+                    <x-form.input-date wire:model.live="expires_at" id="expires_at" name="expires_at" class="w-full" min="{{ $min_date }}" />
+                    <x-form.input-error field="expires_at" />
                 </x-form.input-group>
 
                 <x-loading wire:loading wire:target='submit'>Creating announcement, please wait</x-loading>

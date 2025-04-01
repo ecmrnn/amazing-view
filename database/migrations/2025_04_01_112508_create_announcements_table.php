@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('image');
             $table->text('description');
+            $table->date('expires_at')->nullable();
             $table->smallInteger('status')->default(AnnouncementStatus::ACTIVE); /* Change to enum */
             $table->timestamps();
         });

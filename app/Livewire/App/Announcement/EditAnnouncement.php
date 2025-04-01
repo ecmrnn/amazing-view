@@ -14,28 +14,29 @@ class EditAnnouncement extends Component
     use DispatchesToast, WithFilePond;
 
     public $announcement;
+    public $min_date;
     #[Validate] public $title;
     #[Validate] public $description;
     #[Validate] public $image;
+    #[Validate] public $expires_at;
 
     public function rules() {
         return [
             'title' => 'required',
             'description' => 'required|max:1000',
+            'expires_at' => 'nullable|date|after_or_equal:today',
+            'image' => 'nullable|image'
         ];
     }
 
     public function mount(Announcement $announcement) {
         $this->title = $announcement->title;
         $this->description = $announcement->description;
+        $this->expires_at = $announcement->expires_at;
     }
 
     public function submit() {
-        $validated = $this->validate([
-            'title' => $this->rules()['title'],
-            'description' => $this->rules()['description'],
-            'image' => 'nullable|image'
-        ]);
+        $validated = $this->validate();
 
         $service = new AnnouncementService;
         $announcement = $service->update($this->announcement, $validated);
@@ -50,6 +51,8 @@ class EditAnnouncement extends Component
     
     public function render()
     {
+        $this->min_date = now()->format('Y-m-d');
+
         return <<<'HTML'
         <form class="p-5 space-y-5" x-on:announcement-updated.window="show = false" wire:submit="submit">
             <hgroup>
@@ -77,6 +80,12 @@ class EditAnnouncement extends Component
                     placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
                 />
                 <x-form.input-error field="image" />
+            </x-form.input-group>
+
+            <x-form.input-group>
+                <x-form.input-label for='expires_at'>Date until announcement is active</x-form.input-label>
+                <x-form.input-date wire:model.live="expires_at" id="expires_at" name="expires_at" class="w-full" min="{{ $min_date }}" />
+                <x-form.input-error field="expires_at" />
             </x-form.input-group>
 
             <x-loading wire:loading wire:target='submit'>Updating announcement, please wait</x-loading>

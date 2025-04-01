@@ -24,6 +24,7 @@ class AnnouncementService
         return DB::transaction(function () use ($announcement, $data) {
             $announcement->title = $data['title'];
             $announcement->description = $data['description'];
+            $announcement->expires_at = $data['expires_at'];
 
             if ($data['image']) {
                 if (Storage::exists('public/' . $announcement->image)) {
