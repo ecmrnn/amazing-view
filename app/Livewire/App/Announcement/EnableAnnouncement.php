@@ -60,6 +60,8 @@ class EnableAnnouncement extends Component
                 <x-form.input-error field="password" />
             </x-form.input-group>
 
+            <x-loading wire:loading wire:target='submit'>Enabling announcement, please wait</x-loading>
+
             <div class="flex justify-end gap-1">
                 <x-secondary-button type='button' x-on:click="show = false">Cancel</x-secondary-button>
                 <x-primary-button>Enable</x-primary-button>

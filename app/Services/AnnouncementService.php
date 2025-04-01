@@ -56,4 +56,14 @@ class AnnouncementService
             ]);
         });
     }
+
+    public function delete(Announcement $announcement) {
+        return DB::transaction(function () use ($announcement) {
+            if (Storage::exists($announcement->image)) {
+                Storage::disk('public')->delete($announcement->image);
+            }
+
+            return $announcement->delete();
+        });
+    }
 }

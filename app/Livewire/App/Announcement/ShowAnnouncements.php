@@ -12,6 +12,7 @@ class ShowAnnouncements extends Component
         'announcement-updated' => '$refresh',
         'announcement-disabled' => '$refresh',
         'announcement-enabled' => '$refresh',
+        'announcement-deleted' => '$refresh',
     ];
 
     public $announcements;
