@@ -35,8 +35,8 @@ class CreateAnnouncement extends Component
         if ($announcement) {
             $this->dispatch('announcement-created');
             $this->dispatch('pond-reset');
-            $this->reset();
             $this->toast('Success', description: 'Announcement created!');
+            $this->reset();
             return;
         }
     }

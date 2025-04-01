@@ -8,7 +8,7 @@
         @if ($announcements->count() > 0)
             <div class="grid gap-5 lg:grid-cols-3 sm:grid-cols-2">
                 @foreach ($announcements as $announcement)
-                    <div class="flex flex-col justify-between gap-5 p-5 border rounded-md border-slate-200">
+                    <div wire:key='{{ $announcement->id }}' class="flex flex-col justify-between gap-5 p-5 border rounded-md border-slate-200">
                         <div class="space-y-5">
                             <x-img src="{{ $announcement->image }}" />
 
@@ -23,19 +23,19 @@
 
                             <div class="flex gap-1">
                                 <x-tooltip text="Edit">
-                                    <x-icon-button x-ref="content">
+                                    <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'edit-announcement-modal-{{ $announcement->id }}')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
                                     </x-icon-button>
                                 </x-tooltip>
                                 @if ($announcement->status == \App\Enums\AnnouncementStatus::ACTIVE->value)
                                     <x-tooltip text="Disable">
-                                        <x-icon-button x-ref="content">
+                                        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'disable-announcement-modal-{{ $announcement->id }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban-icon lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
                                         </x-icon-button>
                                     </x-tooltip>
                                 @else
                                     <x-tooltip text="Enable">
-                                        <x-icon-button x-ref="content">
+                                        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'enable-announcement-modal-{{ $announcement->id }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
                                         </x-icon-button>
                                     </x-tooltip>
@@ -47,9 +47,23 @@
                                 </x-tooltip>
                             </div>
                         </div>
+
+                        <x-modal.full name='edit-announcement-modal-{{ $announcement->id }}' maxWidth='sm'>
+                            <livewire:app.announcement.edit-announcement wire:key='edit-{{ $announcement->image }}' :announcement="$announcement" />
+                        </x-modal.full>
+
+                        <x-modal.full name='disable-announcement-modal-{{ $announcement->id }}' maxWidth='sm'>
+                            <livewire:app.announcement.disable-announcement wire:key='disable-{{ $announcement->image }}' :announcement="$announcement" />
+                        </x-modal.full>
+
+                        <x-modal.full name='enable-announcement-modal-{{ $announcement->id }}' maxWidth='sm'>
+                            <livewire:app.announcement.enable-announcement wire:key='enable-{{ $announcement->image }}' :announcement="$announcement" />
+                        </x-modal.full>
                     </div>
                 @endforeach
             </div>
+            
+            <x-note>Note: Only one announcement can be active at a time. Enabling an announcement will automatically disable the currently active one.</x-note>
         @else
             <div class="font-semibold text-center lg:col-span-3 sm:col-span-2">
                 <x-table-no-data.announcement />

@@ -9,6 +9,9 @@ class ShowAnnouncements extends Component
 {
     protected $listeners = [
         'announcement-created' => '$refresh',
+        'announcement-updated' => '$refresh',
+        'announcement-disabled' => '$refresh',
+        'announcement-enabled' => '$refresh',
     ];
 
     public $announcements;
