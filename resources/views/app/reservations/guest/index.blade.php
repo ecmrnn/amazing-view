@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between w-full">
             <hgroup>
                 <h1 class="text-xl font-bold leading-tight text-gray-800">Reservations</h1>
-                <p class="text-xs">View your reservations here</p>
+                <p class="text-xs">Manage your reservations here</p>
             </hgroup>
 
             <div class="flex items-center">

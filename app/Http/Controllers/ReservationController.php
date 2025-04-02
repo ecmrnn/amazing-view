@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Services\BillingService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use function Laravel\Prompts\error;
 
 class ReservationController extends Controller
 {
@@ -71,8 +74,20 @@ class ReservationController extends Controller
     }
 
     public function guestReservations(User $user) {
-        return view('app.reservations.guest-reservations', [
-            'user' => $user,
+        if ($user->id == Auth::user()->id) {
+            return view('app.reservations.guest.index', [
+                'user' => $user,
+            ]);
+        } else {
+            // return response()->view('error.404', status: 404);
+        }
+    }
+
+    public function showGuestReservations(string $reservation) {
+        $reservation = Reservation::where('rid', $reservation)->first();
+
+        return view('app.reservations.show', [
+            'reservation' => $reservation,
         ]);
     }
 }

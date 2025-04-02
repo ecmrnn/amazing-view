@@ -74,13 +74,13 @@ class CreatePayment extends Component
             <form wire:submit="store" x-data="{ payment_method: @entangle('payment_method') }" x-on:payment-added.window="show = false" class="p-5 space-y-5">
                 <hgroup>
                     <h2 class="text-lg font-semibold capitalize">Add Payment</h2>
-                    <p class="text-sm">Enter the payment details made by the guest.</p>
+                    <p class="text-xs">Enter the payment details made by the guest.</p>
                 </hgroup>
 
                 <div class="space-y-3">
                     <div class="space-y-2">
-                        <x-form.input-label for="payment_date">Payment Date</x-form.input-label>
-                        <x-form.input-date wire:model="payment_date" id="payment_date" class="w-full" />
+                        <x-form.input-label for="create_payment_date">Payment Date</x-form.input-label>
+                        <x-form.input-date wire:model="payment_date" id="create_payment_date" class="w-full" />
                         <x-form.input-error field="payment_date" />
                     </div>
 
@@ -112,14 +112,14 @@ class CreatePayment extends Component
                     <x-form.input-error x-show="payment_method != 'cash'" field="proof_image_path" />
                     
                     <x-form.input-group>
-                        <x-form.input-label for="amount">Enter the amount paid</x-form.input-label>
-                        <x-form.input-currency wire:model.live='amount' id="amount" class="w-full" />
+                        <x-form.input-label for="create_amount">Enter the amount paid</x-form.input-label>
+                        <x-form.input-currency wire:model.live='amount' id="create_amount" class="w-full" />
                         <x-form.input-error field="amount" />
                     </x-form.input-group>
 
                     <x-form.input-group>
-                        <x-form.input-label for='purpose'>Select purpose of payment</x-form.input-label>
-                        <x-form.select>
+                        <x-form.input-label for='create_purpose'>Select purpose of payment</x-form.input-label>
+                        <x-form.select id="create_purpose">
                             <option value="downpayment">Down Payment</option>
                             <option value="security deposit">Security Deposit</option>
                             <option value="partial">Partial Payment</option>
@@ -128,10 +128,12 @@ class CreatePayment extends Component
                         <x-form.input-error field="purpose" />
                     </x-form.input-group>
                 </div>
+
+                <x-loading wire:loading wire:target='store'>Submitting payment, please wait</x-loading>
                 
                 <div class="flex items-center justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="$dispatch('cancel-confirmation'); show = false">Cancel</x-secondary-button>
-                    <x-primary-button type="submimt">Submit Payment</x-primary-button>
+                    <x-primary-button>Submit</x-primary-button>
                 </div>
             </form>
         HTML;

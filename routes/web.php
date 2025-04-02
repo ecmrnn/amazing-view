@@ -29,9 +29,6 @@ Route::middleware([CheckPageStatus::class])->name('guest.')->group(function () {
     Route::get('/reservation', [PageController::class, 'reservation'])->name('reservation');
     Route::get('/function-hall', [PageController::class, 'functionHall'])->name('function-hall');
     Route::get('/search', [PageController::class, 'findReservation'])->name('search');
-
-    // Add route for specific room details
-    // ...
 });
 
 // Authenticated Routes 
@@ -42,8 +39,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Guest Routes
     Route::middleware(['role:guest'])->prefix('app')->name('app.')->group(function () {
-        Route::get('/reservations/{user}', [ReservationController::class, 'guestReservations'])->name('reservations.guest-reservations');
+        Route::get('/reservation/{user}', [ReservationController::class, 'guestReservations'])->name('reservations.guest-reservations');
+        Route::get('/reservation/{reservation}/view', [ReservationController::class, 'showGuestReservations'])->name('reservations.show-guest-reservations');
+        Route::get('/billing/{user}', [BillingController::class, 'guestBillings'])->name('billings.guest-billings');
     });
 
     // Frontdesk & Admin routes

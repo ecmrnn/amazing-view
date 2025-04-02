@@ -12,7 +12,7 @@
         {{-- Guest Specific Links --}}
         @can('read own reservations')
             <x-tooltip text="Reservations" dir="right">
-                <x-app-nav-link x-ref="content" :active="Request::is('app/reservations*')" href="{{ route('app.reservations.guest-reservations', ['user' => Auth::user()->id]) }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-3 p-3">
+                <x-app-nav-link x-ref="content" :active="Request::is('app/reservation*')" href="{{ route('app.reservations.guest-reservations', ['user' => Auth::user()->id]) }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-3 p-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
                     <span x-show="expanded" class="text-xs font-semibold">Reservations</span>
                 </x-app-nav-link>
@@ -21,7 +21,7 @@
 
         @can('read own billings')
             <x-tooltip text="Billings" dir="right">
-                <x-app-nav-link x-ref="content" :active="Request::is('app/billings*')" href="{{ route('dashboard') }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-3 p-3">
+                <x-app-nav-link x-ref="content" :active="Request::is('app/billings*')" href="{{ route('app.billings.guest-billings', ['user' => Auth::user()->id]) }}" x-bind:class="expanded ? '' : '*:mx-auto'" class="flex items-center gap-3 p-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet-icon lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
                     <span x-show="expanded" class="text-xs font-semibold">Billings</span>
                 </x-app-nav-link>
@@ -99,14 +99,14 @@
 
         {{-- Guest Specific Links --}}
         @can('read own reservations')
-            <x-app-nav-link x-ref="content" :active="Request::is('app/reservations*')" href="{{ route('app.reservations.guest-reservations', ['user' => Auth::user()->id]) }}" class="flex items-center gap-3 p-3">
+            <x-app-nav-link x-ref="content" :active="Request::is('app/reservation*')" href="{{ route('app.reservations.guest-reservations', ['user' => Auth::user()->id]) }}" class="flex items-center gap-3 p-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
                 <span class="text-xs font-semibold">Reservations</span>
             </x-app-nav-link>
         @endcan
 
         @can('read own billings')
-            <x-app-nav-link x-ref="content" :active="Request::is('app/billings*')" href="{{ route('dashboard') }}" class="flex items-center gap-3 p-3">
+            <x-app-nav-link x-ref="content" :active="Request::is('app/billings*')" href="{{ route('app.billings.guest-billings', ['user' => Auth::user()->id]) }}" class="flex items-center gap-3 p-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet-icon lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
                 <span class="text-xs font-semibold">Billings</span>
             </x-app-nav-link>

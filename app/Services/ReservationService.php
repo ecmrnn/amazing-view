@@ -44,7 +44,7 @@ class ReservationService
         $reservation = DB::transaction(function () use ($data) {
             // Assuming the $data is already validated prior to this point
             // Generate password for guest format: SurnameYYYY!
-            $password = ucwords(strtolower($data['last_name'])) . now()->format('Y') . '!';
+            $password = ucwords(str_replace(' ', '', strtolower($data['last_name']))) . now()->format('Y') . '!';
 
             // Check if the email corresponds to a user that is admin or receptionist
             $auth_user = User::whereEmail($data['email'] ?? '')->first();
@@ -62,7 +62,7 @@ class ReservationService
                     'phone' => $data['phone'],
                     'role' => UserRole::GUEST,
                     'address' => $data['address'],
-                    'password' => $password,
+                    'password' => $auth_user->password ?? $password,
                 ]);
             } else {
                 $user = $auth_user;
@@ -187,6 +187,9 @@ class ReservationService
 
         // Send update email
         Mail::to($reservation->user->email)->queue(new Updated($reservation));
+
+        // Update PDF
+        GenerateReservationPDF::dispatch($reservation);
 
         return $reservation;
     }

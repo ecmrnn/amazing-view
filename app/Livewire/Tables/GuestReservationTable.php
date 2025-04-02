@@ -112,10 +112,12 @@ final class GuestReservationTable extends PowerGridComponent
 
     public function actionsFromView($row)
     {
+        $view_link = $row->user->hasRole('guest') ? 'app.reservations.show-guest-reservations' : 'app.reservations.show';
+        
         return view('components.table-actions.reservation', [
             'row' => $row,
             'edit_link' => 'app.reservations.edit',
-            'view_link' => 'app.reservations.show',
+            'view_link' => $view_link,
         ]);
     }
 
