@@ -27,17 +27,19 @@ class DashboardController extends Controller
         $view = '';
 
         $status_labels = [
-            0 => 'Available',
-            1 => 'Unavailable',
-            2 => 'Occupied',
-            3 => 'Reserved'
+            RoomStatus::AVAILABLE->value => 'Available',
+            RoomStatus::UNAVAILABLE->value => 'Unavailable',
+            RoomStatus::OCCUPIED->value=> 'Occupied',
+            RoomStatus::RESERVED->value => 'Reserved',
+            RoomStatus::DISABLED->value => 'Disabled',
         ];
 
         $status_colors = [
-            0 => '#2563EB', /* Blue */
-            1 => '#EF4444', /* Red */
-            2 => '#F59E0B', /* Amber */
-            3 => '#22C55E', /* Green */
+            RoomStatus::AVAILABLE->value => '#2563EB', /* Blue */
+            RoomStatus::UNAVAILABLE->value => '#EF4444', /* Red */
+            RoomStatus::OCCUPIED->value => '#F59E0B', /* Amber */
+            RoomStatus::RESERVED->value => '#22C55E', /* Green */
+            RoomStatus::DISABLED->value => '#a6a09b', /* Stone */
         ];
 
         // Dashboard content for frontdesks
@@ -75,7 +77,7 @@ class DashboardController extends Controller
                 $label = $status_labels[$room->status]; 
                 $color = $status_colors[$room->status];
 
-                 $column_chart->addColumn($label, $room->count, $color);
+                $column_chart->addColumn($label, $room->count, $color);
             }
 
             $data = [
@@ -147,6 +149,8 @@ class DashboardController extends Controller
                 'monthly_reservations' => $monthly_reservations,
                 'reservation_count' => $reservation_count,
             ];
+        } else {
+            
         }
 
         return view($view, $data);

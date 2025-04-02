@@ -31,7 +31,7 @@
 
     {{-- If there's an announcement, display it --}}
     @empty(!$announcement)
-        <div x-cloak x-data="{ show: true }" x-show="show" x-transition class="fixed inset-0 grid w-full h-full p-10 bg-zinc-800/50 place-items-center">
+        <div x-cloak x-data="{ show: true }" x-show="show" x-transition class="fixed inset-0 z-50 grid w-full h-full p-10 bg-zinc-800/50 place-items-center">
             <div class="w-full max-w-screen-lg p-5 space-y-5 bg-white rounded-lg" x-on:click.outside="show = false">
                 <div class="flex items-start justify-between">
                     <div class="flex items-start gap-5">

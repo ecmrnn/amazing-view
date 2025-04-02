@@ -1,9 +1,7 @@
 <x-app-layout>
     <x-slot:header>
         <hgroup>
-            <h1 class="text-xl font-bold leading-tight text-gray-800">
-                {{ __('Dashboard') }}
-            </h1>
+            <h1 class="text-xl font-bold leading-tight text-gray-800">Dashboard</h1>
             <p class="text-xs">Keep track of your records</p>
         </hgroup>
     </x-slot:header>
