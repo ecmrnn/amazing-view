@@ -131,15 +131,6 @@
             <livewire:tables.guest-reservation-table :user="$user" />
         </section>
     @endif
-
-    <section class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
-        <hgroup>
-            <h3 class="font-semibold">Recent Activities</h3>
-            <p class="text-xs">List of {{ ucwords($user->first_name) }}&apos;s activities</p>
-        </hgroup>
-
-        {{-- Insert logged activities table here --}}
-    </section>
     
     {{-- Force Logout --}}
     <x-modal.full name='force-logout' maxWidth='sm'>

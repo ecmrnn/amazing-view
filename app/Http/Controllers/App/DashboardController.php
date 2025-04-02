@@ -17,6 +17,7 @@ use App\Models\Room;
 use App\Models\User;
 use Asantibanez\LivewireCharts\Models\AreaChartModel;
 use Asantibanez\LivewireCharts\Models\ColumnChartModel;
+use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -153,9 +154,11 @@ class DashboardController extends Controller
             ];
         } else {
             $announcement = Announcement::whereStatus(AnnouncementStatus::ACTIVE)->first();
+            $quote = Inspiring::quote();
 
             $data = [
                 'announcement' => $announcement,
+                'quote' => $quote,
             ];
             
             $view = 'app.dashboard.guest';            

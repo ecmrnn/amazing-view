@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use App\Models\ReservationAmenity;
+use App\Models\User;
 use App\Services\BillingService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -66,6 +67,12 @@ class ReservationController extends Controller
         
         return view('app.reservations.check-out', [
             'reservation' => $reservation,
+        ]);
+    }
+
+    public function guestReservations(User $user) {
+        return view('app.reservations.guest-reservations', [
+            'user' => $user,
         ]);
     }
 }

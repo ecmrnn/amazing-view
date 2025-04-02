@@ -34,13 +34,17 @@ Route::middleware([CheckPageStatus::class])->name('guest.')->group(function () {
     // ...
 });
 
-// Authenticated Routes
+// Authenticated Routes 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Global authenticated routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::middleware(['role:guest'])->prefix('app')->name('app.')->group(function () {
+        Route::get('/reservations/{user}', [ReservationController::class, 'guestReservations'])->name('reservations.guest-reservations');
+    });
 
     // Frontdesk & Admin routes
     Route::middleware('role:receptionist|admin')->prefix('app')->name('app.')->group(function () {
