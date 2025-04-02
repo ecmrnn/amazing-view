@@ -127,7 +127,7 @@
             
                         <div class="flex flex-col-reverse items-start justify-between gap-5 md:flex-row lg:col-span-2">
                             <div class="flex flex-col items-start gap-5 md:flex-row">
-                                <x-primary-button type="button" class="block" wire:click="selectRoom()">Select a Room</x-primary-button>
+                                <x-primary-button type="button" class="block" wire:click="selectRoom()">Select Accommodation</x-primary-button>
                                 <x-loading wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</x-loading>
                             </div>
             
@@ -148,7 +148,7 @@
             
             {{-- Select a Room --}}
             <x-form.form-section>
-                <x-form.form-header class="form-header" title="Select a Room" subtitle="Choose which rooms to reserve" />
+                <x-form.form-header class="form-header" title="Select Accommodation" subtitle="Choose which rooms to reserve" />
             
                 <div x-show="can_select_a_room" x-collapse.duration.1000ms>
                     <x-form.form-body>

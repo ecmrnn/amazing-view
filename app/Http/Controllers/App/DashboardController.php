@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\App;
 
+use App\Enums\AnnouncementStatus;
 use App\Enums\InvoiceStatus;
 use App\Enums\RoomStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Livewire\tables\ReservationTable;
+use App\Models\Announcement;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Reservation;
@@ -89,7 +91,7 @@ class DashboardController extends Controller
                 'due_invoices' => $due_invoices,
             ];
 
-            $view = 'app.dashboard.frontdesk';
+            $view = 'app.dashboard.receptionist';
         } elseif ($user->hasRole('admin')) {
             $view = 'app.dashboard.admin';            
             $months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
@@ -150,7 +152,13 @@ class DashboardController extends Controller
                 'reservation_count' => $reservation_count,
             ];
         } else {
+            $announcement = Announcement::whereStatus(AnnouncementStatus::ACTIVE)->first();
+
+            $data = [
+                'announcement' => $announcement,
+            ];
             
+            $view = 'app.dashboard.guest';            
         }
 
         return view($view, $data);

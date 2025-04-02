@@ -25,6 +25,7 @@ class RolePermissionSeeder extends Seeder
 
         Permission::create(['name' => 'create reservation']);
         Permission::create(['name' => 'read reservations']);
+        Permission::create(['name' => 'read own reservations']);
         Permission::create(['name' => 'update reservation']);
         Permission::create(['name' => 'delete reservation']);
         Permission::create(['name' => 'cancel reservation']);
@@ -42,6 +43,7 @@ class RolePermissionSeeder extends Seeder
 
         Permission::create(['name' => 'create billing']);
         Permission::create(['name' => 'read billings']);
+        Permission::create(['name' => 'read own billings']);
         Permission::create(['name' => 'update billing']);
         Permission::create(['name' => 'delete billing']);
 
@@ -86,7 +88,8 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'delete announcement']);
 
         $guest_permissions = [
-            'read reservations',
+            'read own reservations',
+            'read own billings',
         ];
 
         $receptionist_permissions = [
