@@ -21,7 +21,7 @@
         <h2 class="font-semibold">Reservation Details</h2>
 
         <div class="grid grid-cols-2 gap-5">
-            <div class="grid grid-cols-2 p-5 rounded-md bg-slate-50">
+            <div class="grid grid-cols-2 p-5 border rounded-md bg-slate-50 border-slate-200">
                 <div>
                     <p class="font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
                     <p class="text-xs">Check-in Date</p>
@@ -31,7 +31,7 @@
                     <p class="text-xs">Check-out Date</p>
                 </div>
             </div>
-            <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
+            <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 bg-slate-50 border-slate-200">
                 <div>
                     <p class="font-semibold">
                         {{ $reservation->adult_count > 1 ? $reservation->adult_count . ' Adults' : $reservation->adult_count . ' Adult' }}
@@ -64,7 +64,7 @@
         <h2 class="font-semibold">Guest Details</h2>
 
         <div>
-            <div class="grid grid-cols-2 gap-5 p-5 rounded-md bg-slate-50">
+            <div class="grid grid-cols-2 gap-5 p-5 border rounded-md bg-slate-50 border-slate-200">
                 <div>
                     <p class="font-semibold capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</p>
                     <p class="text-xs">Name</p>

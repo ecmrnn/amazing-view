@@ -37,9 +37,13 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::where('rid', $reservation)->first();
 
-        return view('app.reservations.show', [
-            'reservation' => $reservation,
-        ]);
+        if ($reservation) {
+            return view('app.reservations.show', [
+                'reservation' => $reservation,
+            ]);
+        }
+
+        return response()->view('error.404', status: 404);
     }
 
     /**
@@ -49,9 +53,13 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::where('rid', $reservation)->first();
 
-        return view('app.reservations.edit', [
-            'reservation' => $reservation,
-        ]);
+        if ($reservation) {
+            return view('app.reservations.edit', [
+                'reservation' => $reservation,
+            ]);
+        }
+
+        return response()->view('error.404', status: 404);
     }
 
     public function updateNote(Request $request, Reservation $reservation) {
@@ -67,10 +75,14 @@ class ReservationController extends Controller
 
     public function checkOut(Request $request, $reservation) {
         $reservation = Reservation::where('rid', $reservation)->first();
-        
-        return view('app.reservations.check-out', [
-            'reservation' => $reservation,
-        ]);
+
+        if ($reservation) {
+            return view('app.reservations.check-out', [
+                'reservation' => $reservation,
+            ]);
+        }
+
+        return response()->view('error.404', status: 404);
     }
 
     public function guestReservations(User $user) {
@@ -78,16 +90,20 @@ class ReservationController extends Controller
             return view('app.reservations.guest.index', [
                 'user' => $user,
             ]);
-        } else {
-            // return response()->view('error.404', status: 404);
-        }
+        } 
+
+        return response()->view('error.403', status: 403);
     }
 
     public function showGuestReservations(string $reservation) {
         $reservation = Reservation::where('rid', $reservation)->first();
 
-        return view('app.reservations.show', [
-            'reservation' => $reservation,
-        ]);
+        if ($reservation && $reservation->user->id == Auth::user()->id) {
+            return view('app.reservations.show', [
+                'reservation' => $reservation,
+            ]);
+        }
+
+        return response()->view('error.404', status: 404);
     }
 }
