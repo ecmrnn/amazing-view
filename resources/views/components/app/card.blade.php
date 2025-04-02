@@ -6,7 +6,7 @@
 ])
 
 <div class="overflow-hidden bg-white border rounded-lg border-slate-200">
-    <div class="flex gap-3 p-3 sm:p-5">
+    <div class="flex items-center gap-5 p-5">
         <div class="p-3 text-white grid place-items-center *:mx-auto w-full max-w-[50px] rounded-md aspect-square bg-gradient-to-r from-blue-500 to-blue-600">
             {{ $icon }}
         </div>

@@ -68,6 +68,6 @@
     </div>
 
     <div x-show="!grid_view">
-        <livewire:building-table />
+        <livewire:tables.building-table />
     </div>
 </section>

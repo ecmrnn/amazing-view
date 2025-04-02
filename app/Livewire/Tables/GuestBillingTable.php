@@ -5,9 +5,7 @@ namespace App\Livewire\Tables;
 use App\Models\Invoice;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Blade;
-use Livewire\Attributes\Url;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -19,46 +17,33 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
-final class InvoiceTable extends PowerGridComponent
+final class GuestBillingTable extends PowerGridComponent
 {
     use WithExport;
 
-    #[Url] public $status;
+    public string $tableName = 'GuestBillingTable';
+    public string $sortField = 'invoices.id';
 
-    public function noDataLabel(): string|View
-    { 
-        return view('components.table-no-data.invoice');
-    }
-
-    public function boot(): void
-    {
-        config(['livewire-powergrid.filter' => 'outside']);
-    }
+    public $user;
 
     public function setUp(): array
     {
         return [
             Header::make()
+                ->withoutLoading()
                 ->showSearchInput(),
             Footer::make()
-                ->showPerPage(),
+                ->showPerPage()
+                ->showRecordCount(),
         ];
     }
 
     public function datasource(): Builder
     {
-        if (isset($this->status)) {
-            return Invoice::query()->where('status', $this->status)
-                ->with('reservation')
-                ->orderByDesc('created_at');
-        }
-        return Invoice::query()->with('reservation')
-            ->orderByDesc('created_at');;
-    }
-
-    public function relationSearch(): array
-    {
-        return [];
+        return Invoice::query()
+            ->select('invoices.*')
+            ->where('reservations.user_id', $this->user->id)
+            ->join('reservations', 'reservations.id', '=', 'invoices.reservation_id');
     }
 
     public function fields(): PowerGridFields
@@ -141,10 +126,12 @@ final class InvoiceTable extends PowerGridComponent
 
     public function actionsFromView($row)
     {
+        $view_link = $row->reservation->user->hasRole('guest') ? 'app.billings.show-guest-billings' : 'app.billings.show';
+
         return view('components.table-actions.invoice', [
             'row' => $row,
             'edit_link' => 'app.billings.edit',
-            'view_link' => 'app.billings.show',
+            'view_link' => $view_link,
         ]);
     }
 }

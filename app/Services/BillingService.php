@@ -62,14 +62,15 @@ class BillingService
                 ReservationStatus::PENDING->value,
             ])) {
                 $invoice->balance -= $payment['amount'];
+                
+                if ($invoice->balance <= 0) {
+                    $invoice->balance = 0;
+                    $invoice->status = InvoiceStatus::PAID->value;
+                } else {
+                    $invoice->status = InvoiceStatus::PARTIAL->value;
+                }
             }
     
-            if ($invoice->balance <= 0) {
-                $invoice->balance = 0;
-                $invoice->status = InvoiceStatus::PAID->value;
-            } else {
-                $invoice->status = InvoiceStatus::PARTIAL->value;
-            }
     
             $invoice->save();
 

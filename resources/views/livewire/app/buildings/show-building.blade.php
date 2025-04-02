@@ -44,7 +44,7 @@
         </hgroup>
 
         @if ($building->rooms->count() > 0)
-            <livewire:room-building-table :building="$building" />
+            <livewire:tables.room-building-table :building="$building" />
         @else
             <div class="font-semibold text-center">
                 <x-table-no-data.buildings />

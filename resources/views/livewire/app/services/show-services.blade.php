@@ -7,7 +7,7 @@
         </hgroup>
 
         @if ($services > 0)
-            <livewire:services-table />
+            <livewire:tables.services-table />
         @else
             <div class="font-semibold text-center">
                 <x-table-no-data.services />

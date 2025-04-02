@@ -31,8 +31,15 @@
     <div class="flex items-center justify-between p-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center justify-between gap-3 sm:items-start">
             <div class="flex items-center gap-3 sm:gap-5">
+                @php
+                    if (Auth::user()->role == App\Enums\UserRole::GUEST->value) {
+                        $route = route('app.billings.guest-billings', ['user' => Auth::user()->id]);
+                    } else {
+                        $route = route('app.billings.index');
+                    }
+                @endphp
                 <x-tooltip text="Back" dir="bottom">
-                    <a x-ref="content" href="{{ route('app.billings.index')}}" wire:navigate>
+                    <a x-ref="content" href="{{ $route }}" wire:navigate>
                         <x-icon-button>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
                         </x-icon-button>
@@ -46,39 +53,41 @@
             </div>
         </div>
 
-        <x-actions>
-            <div class="space-y-1">
-                @if (in_array($invoice->status, [
-                        App\Enums\InvoiceStatus::PARTIAL->value,
-                        App\Enums\InvoiceStatus::PENDING->value,
-                        App\Enums\InvoiceStatus::PAID->value,
-                    ])) 
-                    <a href="{{ route('app.billings.edit', ['billing' => $invoice->iid]) }}" wire:navigate>
-                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
-                            <p>Edit</p>
-                        </button>
-                    </a>
-                    @if ($invoice->balance == 0)
-                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'issue-invoice'); dropdown = false">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>
-                            <p>Issue Invoice</p>
+        @hasanyrole(['admin', 'receptionist'])
+            <x-actions>
+                <div class="space-y-1">
+                    @if (in_array($invoice->status, [
+                            App\Enums\InvoiceStatus::PARTIAL->value,
+                            App\Enums\InvoiceStatus::PENDING->value,
+                            App\Enums\InvoiceStatus::PAID->value,
+                        ])) 
+                        <a href="{{ route('app.billings.edit', ['billing' => $invoice->iid]) }}" wire:navigate>
+                            <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+                                <p>Edit</p>
+                            </button>
+                        </a>
+                        @if ($invoice->balance == 0)
+                            <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'issue-invoice'); dropdown = false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>
+                                <p>Issue Invoice</p>
+                            </button>
+                        @endif
+                        @if ($invoice->balance > 0)
+                            <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-add-payment'); dropdown = false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+                                <p>Add Payment</p>
+                            </button>
+                        @endif
+                    @else
+                        <button wire:click='download' type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            <p>Download Invoice</p>
                         </button>
                     @endif
-                    @if ($invoice->balance > 0)
-                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'show-add-payment'); dropdown = false">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
-                            <p>Add Payment</p>
-                        </button>
-                    @endif
-                @else
-                    <button wire:click='download' type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                        <p>Download Invoice</p>
-                    </button>
-                @endif
-            </div>
-        </x-actions>
+                </div>
+            </x-actions>
+        @endhasanyrole
     </div>
 
     <div class="space-y-5">
@@ -101,7 +110,7 @@
         <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
             <hgroup>
                 <h3 class="font-semibold">Payments</h3>
-                <p class="text-xs">Track all the payments made on this invoice</p>
+                <p class="text-xs">Track all the payments made on this bill</p>
             </hgroup>
             @if ($payment_count > 0)
                 {{-- Payments Table --}}
@@ -124,9 +133,17 @@
             <x-status type="invoice" :status="$invoice->status"></x-status>
         </div>
 
+            @php
+                if (Auth::user()->role == App\Enums\UserRole::GUEST->value) {
+                    $route = route('app.reservations.show-guest-reservations', ['reservation' => $invoice->reservation->rid]);
+                } else {
+                    $route = route('app.reservations.show', ['reservation' => $invoice->reservation->rid]);
+                }
+            @endphp
+
         <div class="flex flex-col gap-5 p-5 border rounded-md border-slate-200 sm:flex-row">
             <div class="w-full">
-                <a href="{{ route('app.reservations.show', ['reservation' => $invoice->reservation->rid]) }}" wire:navigate>
+                <a href="{{ $route }}" wire:navigate>
                     <h2 class="font-semibold text-blue-500">{{ $invoice->reservation->rid }}</h2>
                 </a>
                 <p class="text-xs">Reservation ID</p>

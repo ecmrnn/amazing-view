@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Tables;
 
 use App\Models\AdditionalServices;
 use App\Services\AdditionalServiceHandler;

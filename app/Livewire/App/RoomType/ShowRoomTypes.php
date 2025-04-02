@@ -34,7 +34,7 @@ class ShowRoomTypes extends Component
             </div>
 
             <div x-show="!grid_view">
-                <livewire:room-type-table />
+                <livewire:tables.room-type-table />
             </div>
             
             <div x-show="grid_view" class="grid gap-5 lg:grid-cols-3 sm:grid-cols-2">

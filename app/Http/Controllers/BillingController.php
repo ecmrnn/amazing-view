@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class BillingController extends Controller
 {
@@ -45,14 +46,34 @@ class BillingController extends Controller
     {
         $invoice = Invoice::whereIid($billing)->first();
         
-        return view('app.billings.edit', [
-            'invoice' => $invoice
-        ]);
+        if ($invoice) {
+            return view('app.billings.edit', [
+                'invoice' => $invoice
+            ]);
+        }
+
+        return response()->view('error.404', status: 404);
     }
 
     public function guestBillings(User $user) {
-        return view('app.billings.guest.index', [
-            'user' => $user,
-        ]);
+        if ($user->id && Auth::user()->id) {
+            return view('app.billings.guest.index', [
+                'user' => $user,
+            ]);
+        }
+
+        return response()->view('error.403', status: 403);
+    }
+
+    public function showGuestBillings(string $billing) {
+        $invoice = Invoice::whereIid($billing)->first();
+
+        if ($invoice && $invoice->reservation->user->id == Auth::user()->id) {
+            return view('app.billings.show', [
+                'invoice' => $invoice
+            ]);
+        }
+
+        return response()->view('error.404', status: 404);
     }
 }

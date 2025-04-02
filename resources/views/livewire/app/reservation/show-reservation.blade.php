@@ -2,15 +2,11 @@
     <div class="flex items-center justify-between p-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center gap-3 sm:gap-5">
             @php
-                if (in_array(Auth::user()->role, [
-                    App\Enums\UserRole::ADMIN->value,
-                    App\Enums\UserRole::RECEPTIONIST->value,
-                ])) {
-                    $route = route('app.reservations.index');
-                } else {
+                if (Auth::user()->role == App\Enums\UserRole::GUEST->value) {
                     $route = route('app.reservations.guest-reservations', ['user' => Auth::user()->id]);
+                } else {
+                    $route = route('app.reservations.index');
                 }
-                
             @endphp
             <x-tooltip text="Back" dir="bottom">
                 <a x-ref="content" href="{{ $route }}" wire:navigate>
@@ -180,7 +176,7 @@
 
     <section x-data="{ show: false }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center gap-5">
-            <div class="grid font-bold text-white bg-blue-500 rounded-md aspect-square w-14 place-items-center">
+            <div class="grid font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-md aspect-square w-full max-w-[50px] place-items-center">
                 <p class="text-xl">{{ ucwords($reservation->user->first_name[0]) . ucwords($reservation->user->last_name[0]) }}</p>
             </div>
 

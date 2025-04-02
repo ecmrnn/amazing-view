@@ -44,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/reservation/{user}', [ReservationController::class, 'guestReservations'])->name('reservations.guest-reservations');
         Route::get('/reservation/{reservation}/view', [ReservationController::class, 'showGuestReservations'])->name('reservations.show-guest-reservations');
         Route::get('/billing/{user}', [BillingController::class, 'guestBillings'])->name('billings.guest-billings');
+        Route::get('/billing/{billing}/view', [BillingController::class, 'showGuestBillings'])->name('billings.show-guest-billings');
     });
 
     // Frontdesk & Admin routes

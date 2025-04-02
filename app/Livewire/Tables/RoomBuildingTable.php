@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Tables;
 
 use App\Models\Room;
 use Illuminate\Contracts\View\View;

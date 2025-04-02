@@ -8,7 +8,7 @@
         <button class="text-xs font-semibold text-blue-500" x-on:click="$dispatch('open-modal', 'add-testimony-modal')" type="button">Add Testimony</button>
     </div>
 
-    <livewire:testimonial-table/>
+    <livewire:tables.testimonial-table/>
 
     {{-- Modals --}}
     <x-modal.full name='add-testimony-modal' maxWidth='sm'>
