@@ -91,10 +91,7 @@ class CreateService extends Component
                     <x-form.input-error field="title" />
                     
                     <x-form.textarea id="desription" name="description" wire:model.live="description" class="w-full" rows="5" x-on:keyup="count = max - $el.value.length" />
-                    <div class="flex justify-between">
-                        <span><x-form.input-error field="description" /></span>
-                        <p class="text-xs text-right">Remaining Characters: <span x-text="count"></span> / 200</p>
-                    </div>
+                    <span><x-form.input-error field="description" /></span>
                 </x-form.input-group>
                 
                 <div class="flex items-center justify-end gap-1">

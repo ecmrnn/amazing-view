@@ -84,65 +84,7 @@
                         <p class="text-xs text-center">Read feedbacks from our previous guests!</p>
                     </hgroup>
 
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 place-items-start">
-                        {{-- 2 Chunks --}}
-                        @forelse ($testimonials->chunk(ceil($testimonials->count() / 2)) as $testimonial_chunks)
-                            <div class="space-y-4 lg:hidden">
-                                @foreach ($testimonial_chunks as $testimonial)
-                                    <div key="{{ $testimonial->id }}" class="p-5 border rounded-md border-slate-200 bg-slate-50">
-                                        <p class="text-sm font-semibold text-center">{{ $testimonial->name }}</p>
-                                        <div class="flex justify-center gap-1 mt-2">
-                                            @for ($rating = 0; $rating < 5; $rating++)
-                                                @if ($rating < $testimonial->rating)
-                                                    <div class="text-amber-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-                                                    </div>
-                                                @else
-                                                    <div class="text-zinc-800/50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-                                                    </div>
-                                                @endif
-                                            @endfor
-                                        </div>
-                                        <p class="mt-4 text-xs text-justify line-clamp-2 indent-4">{{ $testimonial->testimonial }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @empty
-                            <div class="font-semibold text-center opacity-50">
-                                No Testimonials Yet
-                            </div>
-                        @endforelse
-            
-                        {{-- 3 Chunks --}}
-                        @forelse ($testimonials->chunk(ceil($testimonials->count() / 3)) as $testimonial_chunks)
-                            <div class="hidden space-y-4 lg:block">
-                                @foreach ($testimonial_chunks as $testimonial)
-                                    <div key="{{ $testimonial->id }}" class="p-5 border rounded-md border-slate-200 bg-slate-50">
-                                        <p class="text-sm font-semibold text-center">{{ $testimonial->name }}</p>
-                                        <div class="flex justify-center gap-1 mt-2">
-                                            @for ($rating = 0; $rating < 5; $rating++)
-                                                @if ($rating < $testimonial->rating)
-                                                    <div class="text-amber-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-                                                    </div>
-                                                @else
-                                                    <div class="text-zinc-800/50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-                                                    </div>
-                                                @endif
-                                            @endfor
-                                        </div>
-                                        <p class="mt-4 text-xs text-justify line-clamp-2 indent-4">{{ $testimonial->testimonial }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @empty
-                            <div class="font-semibold text-center opacity-50">
-                                No Testimonials Yet
-                            </div>
-                        @endforelse
-                    </div>
+                    <livewire:guest.home-testimonials />
                 </section>
                 
                 <footer class="w-full py-10 mx-auto space-y-3 text-white rounded-md bg-blue-950">
