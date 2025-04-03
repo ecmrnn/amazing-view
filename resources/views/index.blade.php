@@ -75,20 +75,7 @@
         <x-slot:heading>Featured Services</x-slot:heading>
         <x-slot:subheading>Experience our featured services!</x-slot:subheading>
 
-        <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
-            @foreach ($featured_services as $key => $featured_service)
-                <div class="space-y-5">
-                    <x-img src="{{ $featured_service->image }}" />
-                
-                    <hgroup>
-                        <span class="text-xs">{{ sprintf("%02d", $key + 1) }}</span>
-                        <h3 class="text-2xl font-semibold">{{ $featured_service->title }}</h3>
-                    </hgroup>
-                
-                    <p class="text-justify">{{ $featured_service->description }}</p>
-                </div>
-            @endforeach
-        </div>
+        <livewire:guest.home-featured-services />
     </x-section>
 
     {{-- Brief Background --}}

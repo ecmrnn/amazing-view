@@ -1,7 +1,9 @@
-<div class="space-y-5">
+<div x-data="{ limit: 3, max: @entangle('max') }" class="space-y-5">
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
-        @foreach ($testimonials as $testimonial)
-            <div wire:key="{{ $testimonial->id }}" class="flex flex-col justify-between gap-5 p-5 border rounded-lg border-slate-200 bg-slate-50">
+        @foreach ($testimonials as $key => $testimonial)
+            <div wire:key="{{ $testimonial->id }}"
+                class="flex flex-col justify-between gap-5 p-5 border rounded-lg border-slate-200 bg-slate-50"
+                x-transition x-data="{ key: @js($key + 1) }" x-cloak x-show="key <= limit">
                 <div>
                     <div class="flex gap-1 mt-2">
                         @for ($rating = 0; $rating < 5; $rating++)
@@ -28,7 +30,5 @@
         @endforeach
     </div>
 
-    @if ($limit < $testimonial_count)
-        <button type="button" class="block mx-auto text-sm font-semibold text-blue-500" wire:click='seeMore'>See more</button>
-    @endif
+    <button x-show="limit < max" type="button" class="block mx-auto text-sm font-semibold text-blue-500" x-on:click="limit = limit + 3; console.log(limit)">See more</button>
 </div>

@@ -9,20 +9,13 @@ use Livewire\Component;
 class HomeTestimonials extends Component
 {
     public $testimonials;
-    public $limit = 3;
-    public $testimonial_count;
-
-    public function seeMore() {
-        $this->limit += 3;
-    }
+    public $max;
 
     public function render()
     {
-        $this->testimonials = Testimonial::whereStatus(TestimonialStatus::ACTIVE)
-            ->limit($this->limit)
-            ->get();
-        $this->testimonial_count = Testimonial::whereStatus(TestimonialStatus::ACTIVE)->count();
-
+        $this->testimonials = Testimonial::whereStatus(TestimonialStatus::ACTIVE)->orderByDesc('rating')->get();
+        $this->max = Testimonial::whereStatus(TestimonialStatus::ACTIVE)->count();
+        
         return view('livewire.guest.home-testimonials');
     }
 }
