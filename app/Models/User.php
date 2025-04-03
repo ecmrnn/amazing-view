@@ -29,8 +29,8 @@ class User extends Authenticatable
 
     public static function rules(array $excepts = []) {
         $rules = [
-            'first_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-]+$/u|max:255',
-            'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-]+$/u|max:255',
+            'first_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-\s]+$/u|max:255',
+            'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-\s]+$/u|max:255',
             'email' => 'required|unique:users,email|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'nullable',

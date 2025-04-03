@@ -33,6 +33,7 @@ final class UserTable extends PowerGridComponent
     public $user;
     public $key;
     #[Validate] public $password;
+    public $cancel_reservations;
     #[Url] public $status;
     #[Url] public $role;
 
@@ -187,14 +188,14 @@ final class UserTable extends PowerGridComponent
                 return;
             }
 
-            $service->deactivate($user);
+            $service->deactivate($user, $this->cancel_reservations);
 
             if ($user) {
                 $this->fillData();
                 $this->toast('User Deactivated', description: 'User successfully deactivated!');
                 $this->dispatch('user-status-changed');
                 $this->dispatch('force-logout-user');
-                $this->reset('password');
+                $this->reset('password', 'cancel_reservations');
             }
         } else {
             $this->addError('password', 'Password mismatched, try again!');

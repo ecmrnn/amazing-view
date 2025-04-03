@@ -4,7 +4,10 @@
 ])
 
 <div class="flex justify-end gap-1">
-    @if ($row->invoice->status != App\Enums\InvoiceStatus::ISSUED->value)
+    @if (!in_array($row->invoice->status, [
+            \App\Enums\InvoiceStatus::ISSUED->value,
+            \App\Enums\InvoiceStatus::CANCELED->value,
+        ]))
         @can('delete billing')
             <x-tooltip text="Delete" dir="top">
                 <a x-ref="content">
@@ -82,47 +85,53 @@
                 </div>
             </div>
 
-            @can('update billing')
-                @if ($row->invoice->status != App\Enums\InvoiceStatus::ISSUED->value)
-                    <div class="grid grid-cols-2 gap-5">
-                        @if ($row->payment_method != 'CASH')
-                            <x-form.input-group class="col-span-2">
-                                <x-form.input-label for='transaction_id-{{ $row->id }}'>Reference No.</x-form.input-label>
-                                <x-form.input-text x-model="transaction_id" id="transaction_id-{{ $row->id }}" name="transaction_id-{{ $row->id }}" label="Reference No." />
-                                <x-form.input-error field="transaction_id" />
+            @if (!in_array($row->invoice->status, [
+                    \App\Enums\InvoiceStatus::ISSUED->value,
+                    \App\Enums\InvoiceStatus::CANCELED->value,
+                ]))
+                @can('update billing')
+                    @if ($row->invoice->status != App\Enums\InvoiceStatus::ISSUED->value)
+                        <div class="grid grid-cols-2 gap-5">
+                            @if ($row->payment_method != 'CASH')
+                                <x-form.input-group class="col-span-2">
+                                    <x-form.input-label for='transaction_id-{{ $row->id }}'>Reference No.</x-form.input-label>
+                                    <x-form.input-text x-model="transaction_id" id="transaction_id-{{ $row->id }}" name="transaction_id-{{ $row->id }}" label="Reference No." />
+                                    <x-form.input-error field="transaction_id" />
+                                </x-form.input-group>
+                            @endif
+                            <x-form.input-group>
+                                <x-form.input-label for='amount-{{ $row->id }}'>Amount Paid</x-form.input-label>
+                                <x-form.input-currency x-model="amount" id="amount-{{ $row->id }}" name="amount-{{ $row->id }}" label="amount" />
+                                <x-form.input-error field="amount" />
                             </x-form.input-group>
-                        @endif
-                        <x-form.input-group>
-                            <x-form.input-label for='amount-{{ $row->id }}'>Amount Paid</x-form.input-label>
-                            <x-form.input-currency x-model="amount" id="amount-{{ $row->id }}" name="amount-{{ $row->id }}" label="amount" />
-                            <x-form.input-error field="amount" />
-                        </x-form.input-group>
-                        <x-form.input-group>
-                            <x-form.input-label for='payment_date-{{ $row->id }}'>Payment Date</x-form.input-label>
-                            <x-form.input-date x-model="payment_date" id="payment_date-{{ $row->id }}" name="payment_date-{{ $row->id }}" label="payment_date" class="w-full" />
-                            <x-form.input-error field="payment_date" />
-                        </x-form.input-group>
-                    </div>
-            
-                    
-                    <div class="flex justify-end gap-1">
-                        <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
-                        <x-primary-button 
-                            type="submit"
-                            wire:loading.attr='disabled'
-                            x-on:click="$dispatch('edit-payment', {
-                                'id': {{ $row->id }},
-                                'amount': amount,
-                                'payment_date': payment_date,
-                                'transaction_id': transaction_id, 
-                                'payment_method': payment_method 
-                                })"
-                            >
-                            Edit
-                        </x-primary-button>
-                    </div>
-                @endif
-            @endcan
+                            <x-form.input-group>
+                                <x-form.input-label for='payment_date-{{ $row->id }}'>Payment Date</x-form.input-label>
+                                <x-form.input-date x-model="payment_date" id="payment_date-{{ $row->id }}" name="payment_date-{{ $row->id }}" label="payment_date" class="w-full" />
+                                <x-form.input-error field="payment_date" />
+                            </x-form.input-group>
+                        </div>
+                
+                        
+                        <div class="flex justify-end gap-1">
+                            <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
+                            <x-primary-button 
+                                type="submit"
+                                wire:loading.attr='disabled'
+                                x-on:click="$dispatch('edit-payment', {
+                                    'id': {{ $row->id }},
+                                    'amount': amount,
+                                    'payment_date': payment_date,
+                                    'transaction_id': transaction_id, 
+                                    'payment_method': payment_method 
+                                    })"
+                                >
+                                Edit
+                            </x-primary-button>
+                        </div>
+                    @endif
+                @endcan
+            @endif
+
         </div>
     </x-modal.full>
 </div>

@@ -9,6 +9,7 @@ use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -48,6 +49,7 @@ class UserService
     public function update(User $user, $data) {
         DB::transaction(function () use ($user, $data) {
             $user->update($data);
+
         });
     }
 
@@ -88,29 +90,35 @@ class UserService
         return $checks;
     }
     
-    public function deactivate(User $user) {
-        $this->forceLogout($user);
-        
-        DB::transaction(function () use ($user) {
+    public function deactivate(User $user, $cancel_reservations) {
+        return DB::transaction(function () use ($user, $cancel_reservations) {
+            $this->forceLogout($user);
+
             $user->update([
                 'status' => UserStatus::INACTIVE,
             ]);
 
-            foreach ($user->reservations as $reservation) {
-                $reservation->update([
-                    'status' => ReservationStatus::CANCELED,
-                    'canceled_at' => now(),
-                ]);
+            if ($cancel_reservations) {
+                $reservations = $user->reservations()->whereIn('status', [
+                    ReservationStatus::AWAITING_PAYMENT,
+                    ReservationStatus::PENDING,
+                    ReservationStatus::CONFIRMED,
+                ])->get();
+               
+                foreach ($reservations as $reservation) {
+                    $service = new ReservationService;
 
-                $amenity = new AmenityService;
-                $amenity->release($reservation, $reservation->rooms);
+                    $canceled_by = Auth::user()->hasRole('guest') ? 'guest' : 'management';
+                    $refund_amount = $service->calculateRefundAmount($reservation);
 
-                $room = new RoomService;
-                $room->release($reservation, $reservation->rooms, ReservationStatus::CANCELED->value);
+                    $cancelation_details = [
+                        'reason' => 'Account deactivated',
+                        'canceled_by' => $canceled_by,
+                        'refund_amount' => $refund_amount
+                    ];
 
-                $reservation->invoice->update([
-                    'status' => InvoiceStatus::CANCELED,
-                ]);
+                    $service->cancel($reservation, $cancelation_details);
+                }
             }
 
             return $user;

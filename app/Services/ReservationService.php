@@ -211,6 +211,10 @@ class ReservationService
             // Update amenity's quantity and room's availability tables
             $this->handlers->get('amenity')->release($reservation, $reservation->rooms);
             $this->handlers->get('room')->release($reservation, $reservation->rooms, ReservationStatus::CANCELED->value);
+
+            $reservation->invoice->update([
+                'status' => InvoiceStatus::CANCELED,
+            ]);
     
             // Send cancellation email to the guests
             Mail::to($reservation->user->email)->queue(new Cancelled($reservation));
@@ -443,5 +447,34 @@ class ReservationService
             // Send email
             Mail::to($data['email'])->queue(new ReceivedFunctionHall($function_hall));
         });
+    }
+
+    public function calculateRefundAmount(Reservation $reservation) {
+        $max_amount = 0;
+        $refund_amount = 0;
+        $date_in = $reservation->date_in;
+        $date_diff = Carbon::parse(now()->format('Y-m-d'))->diffInDays($date_in);
+        
+        if ($reservation->invoice->payments->count() > 0) {
+            foreach ($reservation->invoice->payments->pluck('amount') as $payment) {
+                $max_amount += $payment;
+            }
+        }
+
+        if ($max_amount > 0) {
+            if ($date_diff >= 7) {
+                $refund_amount = $max_amount * 1;
+            } else {
+                if ($date_diff > 0) {
+                    $refund_amount = $max_amount * .5;
+                } else {
+                    $refund_amount = 0;
+                }
+            }
+        } else {
+            $refund_amount = 0;
+        }
+
+        return $refund_amount;
     }
 }

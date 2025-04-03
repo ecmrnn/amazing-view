@@ -16,6 +16,7 @@ class DeactivateUser extends Component
     
     public $user;
     public $password;
+    public $cancel_reservations;
 
     public function rules() {
         return [
@@ -47,11 +48,11 @@ class DeactivateUser extends Component
             
             if ($user) {
                 $service = new UserService;
-                $service->deactivate($user);
+                $service->deactivate($user, $this->cancel_reservations);
                 $this->toast('User Deactivated', 'success', 'User successfully deactivated!');
                 $this->dispatch('user-deactivated');
                 $this->dispatch('force-logout-user');
-                $this->reset('password');
+                $this->reset('password', 'cancel_reservations');
             }
         }       
     }
@@ -79,6 +80,8 @@ class DeactivateUser extends Component
                 <x-form.input-text wire:model="password" type="password" label="Password" id="password-deactivate-{{ $user->id }}" />
                 <x-form.input-error field="password" />
             </x-form.input-group>
+
+            <x-form.input-checkbox id="cancel_reservations" name="cancel_reservations" label="Cancel all pending reservations of this user" wire:model.live="cancel_reservations" />
 
             <x-loading wire:loading wire:target='deactivateUser'>Deactivating user, please wait</x-loading>
             

@@ -25,10 +25,12 @@
                             <p>Edit</p>
                         </x-action-button>
                     </a>
-                    <x-action-button x-on:click="$dispatch('open-modal', 'deactivate-profile-modal')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban-icon lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
-                        <p>Deactivate</p>
-                    </x-action-button>
+                    @hasanyrole(['guest', 'receptionist'])
+                        <x-action-button x-on:click="$dispatch('open-modal', 'deactivate-profile-modal')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban-icon lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                            <p>Deactivate</p>
+                        </x-action-button>
+                    @endhasanyrole
                 </div>
             </x-actions>
         </div>
@@ -117,4 +119,8 @@
             </article>
         </section>
     <div>
+
+    <x-modal.full name='deactivate-profile-modal' maxWidth='sm'>
+        <livewire:app.profile.deactivate-profile :user="$user" />
+    </x-modal.full>
 </x-app-layout>

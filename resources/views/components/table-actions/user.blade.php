@@ -50,6 +50,8 @@
                         <x-form.input-error field="password" />
                     </x-form.input-group>
 
+                    <x-form.input-checkbox id="cancel_reservations" name="cancel_reservations" label="Cancel all pending reservations of this user" wire:model.live="cancel_reservations" />
+
                     <x-loading wire:loading wire:target='deactivateUser'>Deactivating user, please wait</x-loading>
                     
                     <div class="flex justify-end gap-1">
