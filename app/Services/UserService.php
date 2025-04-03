@@ -47,7 +47,7 @@ class UserService
 
     public function update(User $user, $data) {
         DB::transaction(function () use ($user, $data) {
-            return $user->update($data);
+            $user->update($data);
         });
     }
 

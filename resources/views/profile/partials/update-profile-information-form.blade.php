@@ -1,13 +1,8 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
+    <hgroup>
+        <h2 class='font-semibold'>Profile Information</h2>
+        <p class='text-xs'>Update your account's profile information and email address.</p>
+    </hgroup>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
@@ -18,21 +13,26 @@
         @method('patch')
 
         <div class="grid grid-cols-2 gap-5">
-            <div>
-                <x-form.input-label for="first_name" :value="__('First Name')" />
-                <x-form.input-text id="first_name" name="first_name" type="text" class="block w-full mt-1 capitalize" :value="old('first_name', $user->first_name)" required autofocus autocomplete="name" />
+            <x-form.input-group>
+                <x-form.input-label for='first_name'>First Name</x-form.input-label>
+                <x-form.input-text id="first_name" name="first_name" label="first_name" value="{{ $user->first_name }}" />
                 <x-form.input-error field="first_name" />
-            </div>
+            </x-form.input-group>
+            {{-- <div>
+                <x-form.input-label for="first_name" :value="__('First Name')" />
+                <x-form.input-text id="first_name" name="first_name" type="text" class="block w-full mt-1 capitalize" :value="old('first_name', $user->first_name)" />
+                <x-form.input-error field="first_name" />
+            </div> --}}
             <div>
                 <x-form.input-label for="last_name" :value="__('Last Name')" />
-                <x-form.input-text id="last_name" name="last_name" type="text" class="block w-full mt-1 capitalize" :value="old('last_name', $user->last_name)" required autofocus autocomplete="name" />
+                <x-form.input-text id="last_name" name="last_name" type="text" class="block w-full mt-1 capitalize" :value="old('last_name', $user->last_name)" />
                 <x-form.input-error field="last_name" />
             </div>
         </div>
 
         <div>
             <x-form.input-label for="email" :value="__('Email')" />
-            <x-form.input-text id="email" name="email" type="email" class="block w-full mt-1" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-form.input-text id="email" name="email" type="email" class="block w-full mt-1" :value="old('email', $user->email)" />
             <x-form.input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())

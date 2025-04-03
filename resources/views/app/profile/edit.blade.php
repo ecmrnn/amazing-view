@@ -8,5 +8,5 @@
         </div>
     </x-slot:header>
 
-    
+    <livewire:app.profile.edit-profile :user="$user" />
 </x-app-layout>

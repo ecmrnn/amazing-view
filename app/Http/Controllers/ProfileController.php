@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,14 +12,23 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public function index() {
+        return view('app.profile.index', [
+            'user' => Auth::user(),
+        ]);
+    }
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+    public function edit(User $profile)
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        if ($profile->id == Auth::user()->id) {
+            return view('app.profile.edit', [
+                'user' => $profile,
+            ]);
+        }
+
+        return response()->view('error.403', status: 403);
     }
 
     /**

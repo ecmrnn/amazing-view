@@ -9,6 +9,7 @@
                 <h1 class="text-2xl font-semibold">Amazing View <br /> Mountain Resort</h1>
                 <x-application-logo />
             </hgroup>
+            
             <!-- Email Address -->
             <x-form.input-group>
                 <x-form.input-label for="email">Enter your email</x-form.input-label>

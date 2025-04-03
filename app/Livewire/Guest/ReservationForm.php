@@ -120,7 +120,34 @@ class ReservationForm extends Component
     // Custome Validation Messages
     public function messages() 
     {
-        return Reservation::messages(['downpayment', 'note']);
+        return [
+            'date_in.required' => 'Select a :attribute',
+            'date_out.required_if' => 'Select a :attribute',
+            'date_in.after_or_equal' => ':attribute must be after or equal to today',
+            'date_out.after_or_equal' => ':attribute must be after or equal to check-in date',
+            
+            'adult_count.required' => 'Enter number of :attribute',
+            'adult_count.min' => 'Minimum number of :attribute is 1',
+            'children_count.min' => 'Minimum number of :attribute is 0',
+
+            'first_name.required' => 'Enter a :attribute',
+            'first_name.min' => 'Minimum length of :attribute is 2',
+            'first_name.regex' => 'Name can only contain letters, hyphens, and apostrophes',
+            
+            'last_name.required' => 'Enter a :attribute',
+            'last_name.min' => 'Minimum length of :attribute is 2',
+            'last_name.regex' => 'Name can only contain letters, hyphens, and apostrophes',
+
+            'phone.required' => 'Enter a :attribute',
+            'phone.min' => 'The length of :attribute must be 11',
+            'phone.starts_with' => ':attribute must start with "09"',
+            'address.required' => 'Enter your home address',
+            
+            'email.required' => 'Enter an :attribute',
+            'email.email' => 'Enter a valid :attribute',
+
+            'selected_rooms.required' => 'Select a room first',
+        ];
     }
 
     // Validation Methods
@@ -134,8 +161,8 @@ class ReservationForm extends Component
             'adult_count' => 'required|integer|min:1',
             'children_count' => 'integer|min:0',
             'selected_rooms' => 'required',
-            'first_name' => 'required|min:2',
-            'last_name' => 'required|min:2',
+            'first_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-\s]+$/u|max:255',
+            'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-\s]+$/u|max:255',
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'required',
