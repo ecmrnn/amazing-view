@@ -6,6 +6,7 @@ use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
 use App\Mail\reservation\Expire;
@@ -49,10 +50,7 @@ class ReservationService
             // Check if the email corresponds to a user that is admin or receptionist
             $auth_user = User::whereEmail($data['email'] ?? '')->first();
 
-            if (!in_array($auth_user->role ?? UserRole::GUEST->value, [
-                UserRole::ADMIN->value,
-                UserRole::RECEPTIONIST->value,
-            ])) {
+            if (($auth_user->role ?? UserRole::GUEST->value) === UserRole::GUEST->value) {
                 // Create or update the guest
                 $user = User::where('email', $data['email'] ?? '')->updateOrCreate([
                     'email' => $data['email'],
@@ -64,6 +62,8 @@ class ReservationService
                     'address' => $data['address'],
                     'password' => $auth_user->password ?? $password,
                 ]);
+                
+                $user->assignRole('guest');
             } else {
                 $user = $auth_user;
             }
@@ -131,6 +131,26 @@ class ReservationService
                     'transaction_id' => Arr::get($data, 'transaction_id', null),
                     'purpose' => 'downpayment',
                     'payment_date' => now(),
+                ]);
+            }
+
+            // Create the discount
+            $discount = 0;
+            if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
+                $guest_count = $reservation->children_count + $reservation->adult_count;
+                $discountable_guests = $reservation->pwd_count + $reservation->senior_count;
+    
+                $vatable_exempt_sales = ($breakdown['sub_total'] / 1.12) * ($discountable_guests / $guest_count);
+                $discount = ($vatable_exempt_sales * .2) * $discountable_guests;
+            }
+
+            $file_exists = file_exists($data['discount_attachment'] ? $data['discount_attachment']->getRealPath() : '');
+
+            if ($file_exists && ($data['senior_count'] > 0 || $data['pwd_count'] > 0)) {
+                $reservation->discounts()->create([
+                    'amount' => $discount,
+                    'description' => 'Senior and PWD discount',
+                    'image' => $data['discount_attachment']->store('discounts', 'public'),
                 ]);
             }
     
@@ -284,6 +304,8 @@ class ReservationService
     public function confirm(Reservation $reservation, $data) {
         DB::transaction(function () use ($reservation, $data) {
             $reservation->status = ReservationStatus::CONFIRMED;
+            $reservation->senior_count = $data['senior_count'] ?? $reservation->senior_count;
+            $reservation->pwd_count = $data['pwd_count'] ?? $reservation->pwd_count;
             $reservation->save();
 
             foreach ($reservation->rooms as $room) {
@@ -305,10 +327,21 @@ class ReservationService
                         'purpose' => 'downpayment',
                     ]
                     );
-    
-                $reservation->invoice->balance -= Arr::get($data, 'amount', 0);
-                $reservation->invoice->status = $reservation->invoice->balance > 0 ? InvoiceStatus::PARTIAL : InvoiceStatus::PAID;
-                $reservation->invoice->save();
+
+                $taxes = $this->handlers->get('billing')->taxes($reservation);
+                $reservation->invoice->update([
+                    'total_amount' => $taxes['net_total'],
+                    'sub_total' => $taxes['sub_total'],
+                    'balance' => $reservation->invoice->balance - Arr::get($data, 'amount', 0),
+                    'status' => $reservation->invoice->balance > 0 ? InvoiceStatus::PARTIAL : InvoiceStatus::PAID,
+                ]);
+
+                $reservation->discounts()->updateOrCreate(
+                    ['description' => 'Senior and PWD discount'],
+                    [
+                        'amount' => $taxes['discount'] ?? 0,
+                    ]
+                );
             }
     
             if (!Storage::exists($path)) {

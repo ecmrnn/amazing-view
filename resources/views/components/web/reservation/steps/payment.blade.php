@@ -1,5 +1,5 @@
 {{-- Loader --}}
-<div class="fixed top-0 left-0 z-[9999] w-screen h-screen bg-white place-items-center" wire:loading.delay.long wire:target='submit'>
+<div class="fixed top-0 left-0 z-[9999] w-screen h-screen bg-white place-items-center" wire:loading.delay.longest wire:target='submit'>
     <div class="grid h-screen place-items-center">
         <div>
             <p class="text-2xl font-bold text-center">Loading, please wait</p>
@@ -144,6 +144,7 @@
                     </div>
                 </div>
             </div>
+
             {{-- Taxes --}}
             <div class="flex justify-end text-sm">
                 <table class="w-max">
@@ -192,6 +193,17 @@
             <p class="text-sm">Upload your receipt here so that we can our staff can confirm your payment</p>
         </hgroup>
 
+        <div class="flex items-center gap-3" x-on:click="$dispatch('open-modal', 'show-discounts-modal')">
+            <x-icon-button>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-percent-icon lucide-badge-percent"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m15 9-6 6"/><path d="M9 9h.01"/><path d="M15 15h.01"/></svg>
+            </x-icon-button>
+            
+            <div>
+                <p class="text-sm font-semibold">Apply Discounts</p>
+                <p class="text-xs">Save a peso, apply discount!</p>
+            </div>
+        </div>
+
         {{-- Payment Methods --}}
         <div class="grid">
             <div class="flex items-center gap-3 p-3 bg-white border rounded-lg border-slate-200">
@@ -213,7 +225,7 @@
 
         <div class="w-full">
             <x-filepond::upload
-                wire:model="proof_image_path"
+                wire:model.live="proof_image_path"
                 placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
             />
             <x-form.input-error field="proof_image_path" />
@@ -223,3 +235,92 @@
         <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="submit">Submit</x-primary-button>
     </aside>
 </div>
+
+<x-modal.full name='show-discounts-modal' maxWidth='sm'>
+    <div x-data="{ discount: '' }" class="p-5" x-on:discount-applied.window="show = false">
+        <div x-show="discount == ''" class="space-y-5">
+            <hgroup>
+                <h2 class='font-semibold'>Apply Discounts</h2>
+                <p class='text-xs'>Select what type of discounts you want to apply</p>
+            </hgroup>
+            
+            <button type="button" class="inline-flex items-center w-full gap-5 p-5 text-left bg-white border rounded-md border-slate-200" x-on:click="discount = 'promo'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-percent-icon lucide-ticket-percent"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+                
+                <div>
+                    <h3 class="font-semibold">Promo Code</h3>
+                    <p class="text-xs">Enter your promo code</p>
+                </div>
+            </button>
+
+            <button type="button" class="inline-flex items-center w-full gap-5 p-5 text-left bg-white border rounded-md border-slate-200" x-on:click="discount = 'discount'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility-icon lucide-accessibility"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>
+
+                <div>
+                    <h3 class="font-semibold">Senior and PWDs</h3>
+                    <p class="text-xs">Avail 20&#37; discount</p>
+                </div>
+            </button>
+
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+            </div>
+        </div>
+
+        <div x-show="discount == 'promo'" class="space-y-5">
+            <hgroup>
+                <h2 class='font-semibold'>Promo Code</h2>
+                <p class='text-xs'>Enter your promo code to avail discounts!</p>
+            </hgroup>
+
+            <x-form.input-group>
+                <x-form.input-label for='promo_code'>Enter promo code here</x-form.input-label>
+                <x-form.input-text id="promo_code" name="promo_code" label="Promo Code" />
+                <x-form.input-error field="promo_code" />
+            </x-form.input-group>
+
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="discount = ''">Cancel</x-secondary-button>
+                <x-primary-button type="button" wire:click='applyPromo'>Apply</x-primary-button>
+            </div>
+        </div>
+
+        <div x-show="discount == 'discount'" class="space-y-5">
+            <hgroup>
+                <h2 class="font-semibold">Senior and PWDs</h2>
+                <p class="text-xs">The number of seniors and PWDs are limited to the number of guests you have.</p>
+            </hgroup>
+
+            <div class="grid grid-cols-2 gap-5">
+                <x-form.input-group>
+                    <x-form.input-label for='senior_count'>Number of Seniors</x-form.input-label>
+                    <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Seniors" />
+                </x-form.input-group>
+            
+                <x-form.input-group>
+                    <x-form.input-label for='pwd_count'>Number of PWDs</x-form.input-label>
+                    <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="PWD" />
+                </x-form.input-group>
+            </div>
+
+            <x-form.input-group>
+                <x-filepond::upload
+                    wire:model="discount_attachment"
+                    placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
+                />
+                <x-form.input-error field="discount_attachment" />
+                <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Maximum image size &lpar;<strong class="text-blue-500">3MB or 3000kb</strong>&rpar;</p>
+            </x-form.input-group>
+            
+            <x-form.input-error field="senior_count" />
+            <x-form.input-error field="pwd_count" />
+
+            <x-note>This will not be immediately applied and will require confirmation first upon your arrival at the resort.</x-note>
+
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="discount = ''">Cancel</x-secondary-button>
+                <x-primary-button type="button" wire:click='applyDiscount'>Save</x-primary-button>
+            </div>
+        </div>
+    </div>
+</x-modal.full>

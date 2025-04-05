@@ -112,7 +112,7 @@ class BillingService
         $discount = 0;
         $other_charges = 0;
         
-        // Compute for discounts
+        // Compute for promos & discounts
         if (!in_array($reservation->status, [
             ReservationStatus::AWAITING_PAYMENT->value,
             ReservationStatus::PENDING->value,

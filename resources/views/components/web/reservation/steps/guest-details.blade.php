@@ -222,9 +222,10 @@
                             <x-loading wire:loading wire:target="getDistrictBaranggays">Loading Baranggay...</x-loading>
                         </div>
     
-                        <x-loading wire:loading.block wire:target='additionalDetails()' class="text-xs font-semibold">Please wait while we load the next form.</x-loading>
-                        
-                        <x-primary-button type="button" wire:click="additionalDetails()">Additional Details</x-primary-button>
+                        <div class="flex items-center gap-5">
+                            <x-primary-button type="button" wire:click="additionalDetails()">Additional Details</x-primary-button>
+                            <x-loading wire:loading.block wire:target='additionalDetails'>Please wait while we load the next form.</x-loading>
+                        </div>
                     </div>
                 </x-form.form-body>
             </div>

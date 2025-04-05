@@ -69,12 +69,12 @@
                 </div>
             
                 <div x-show="!can_select_a_room" x-collapse.duration.1000ms class="lg:grid-cols-2 lg:col-span-2">
-                    <x-form.form-body class="grid gap-5 p-5 pt-0 lg:grid-cols-2 lg:col-span-2">
+                    <x-form.form-body class="grid gap-5 p-5 pt-0 md:grid-cols-2 lg:col-span-2">
                         <div
                             x-effect="date_in == '' ? date_out = '' : '';"
                             class="grid gap-5"
                             x-bind:class="{
-                                'grid-cols-2': reservation_type == 'overnight',
+                                'sm:grid-cols-2': reservation_type == 'overnight',
                                 'grid-cols-1': reservation_type == 'day tour'
                             }">
                             <x-form.input-group>
@@ -103,7 +103,7 @@
                             </div>
                         </div>
             
-                        <div class="grid grid-cols-2 gap-5">
+                        <div class="grid gap-5 sm:grid-cols-2">
                             <x-form.input-group>
                                 <x-form.input-label for="adult_count">Number of Adults</x-form.input-label>
                                 <x-form.input-number
@@ -125,22 +125,9 @@
                             </x-form.input-group>
                         </div>
             
-                        <div class="flex flex-col-reverse items-start justify-between gap-5 md:flex-row lg:col-span-2">
-                            <div class="flex flex-col items-start gap-5 md:flex-row">
-                                <x-primary-button type="button" class="block" wire:click="selectRoom()">Select Accommodation</x-primary-button>
-                                <x-loading wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our rooms, please wait...</x-loading>
-                            </div>
-            
-                            <div class="flex flex-row-reverse items-center gap-3 md:flex-row">
-                                <div x-on:click="$dispatch('open-modal', 'show-discounts-modal')">
-                                    <p class="text-sm font-semibold md:text-right">Apply Discounts</p>
-                                    <p class="text-xs md:text-right">For Senior and PWD Guests</p>
-                                </div>
-
-                                <x-icon-button x-on:click="$dispatch('open-modal', 'show-discounts-modal')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>
-                                </x-icon-button>
-                            </div>
+                        <div class="flex flex-col items-center gap-5 md:flex-row md:col-span-2">
+                            <x-primary-button type="button" class="block" wire:click="selectRoom()">Select Accommodation</x-primary-button>
+                            <x-loading wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our accommodations, please wait...</x-loading>
                         </div>
                     </x-form.form-body>
                 </div>
@@ -160,7 +147,9 @@
                             <x-primary-button class="text-xs" type="button" wire:click="suggestRooms">Find me a Room</x-primary-button>
                         </div>
             
-                        <x-loading wire:loading.delay wire:target="suggestRooms" class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-lg">Amazing rooms incoming!</x-loading>
+                        <div class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-md">
+                            <x-loading wire:loading.delay wire:target="suggestRooms">Amazing rooms incoming!</x-loading>
+                        </div>
             
                         @if (!empty($suggested_rooms))
                             <div class="p-5 m-5 mb-0 space-y-5 bg-white border rounded-lg border-slate-200">
@@ -191,10 +180,7 @@
 
                                             <x-modal.full name='view-room-{{ $room->id }}' maxWidth='md'>
                                                 <div class="p-5 space-y-5">
-                                                    <div class="w-full rounded-md aspect-video" 
-                                                        style="background-image: url('{{ asset('storage/' . $room->image_1_path) }}');
-                                                            background-position: center;
-                                                            background-size: cover;"></div>
+                                                    <x-img src="{{ $room->image_1_path }}" />
 
                                                     <div class="flex items-start justify-between">
                                                         <div>
@@ -329,9 +315,10 @@
             </x-form.form-section>
             
             <x-primary-button
+                x-bind:class="!can_select_a_room ? 'h-0 overflow-hidden scale-0' : 'h-full scale-100'"
                 x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }"
-                type="submit"
-                wire:click='submit'>Continue
+                wire:click='submit'>
+                Continue
             </x-primary-button>
         </div>
     </template>
@@ -403,33 +390,4 @@
             </section>
         </div>
     @endif
-</x-modal.full>
-
-<x-modal.full name='show-discounts-modal' maxWidth='sm'>
-    <div class="p-5 space-y-5" x-on:discount-applied.window="show = false">
-        <hgroup>
-            <h2 class="text-lg font-semibold">Apply Discounts</h2>
-            <p class="text-xs">The number of seniors and PWDs are limited to the number of guests you have.</p>
-        </hgroup>
-
-        <div class="grid grid-cols-2 gap-5">
-            <x-form.input-group>
-                <x-form.input-label for='senior_count'>Number of Seniors</x-form.input-label>
-                <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Seniors" />
-            </x-form.input-group>
-            
-            <x-form.input-group>
-                <x-form.input-label for='pwd_count'>Number of PWDs</x-form.input-label>
-                <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="PWD" />
-            </x-form.input-group>
-        </div>
-        
-        <x-form.input-error field="senior_count" />
-        <x-form.input-error field="pwd_count" />
-
-        <div class="flex justify-end gap-1">
-            <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-            <x-primary-button type="button" wire:click='applyDiscount'>Save</x-primary-button>
-        </div>
-    </div>
 </x-modal.full>

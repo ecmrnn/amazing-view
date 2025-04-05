@@ -133,6 +133,10 @@ class Reservation extends Model
         return $this->hasOne(Invoice::class);
     }
 
+    public function discounts(): HasMany {
+        return $this->hasMany(Discount::class);
+    }
+
     public function cars(): HasOneOrMany {
         return $this->hasMany(CarReservation::class);
     }

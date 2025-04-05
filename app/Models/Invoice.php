@@ -25,10 +25,6 @@ class Invoice extends Model
         return $this->belongsTo(Reservation::class);
     }
 
-    public function discounts(): BelongsToMany {
-        return $this->belongsToMany(Discount::class);
-    }
-
     public function items(): HasMany {
         return $this->hasMany(InvoiceItem::class);
     }

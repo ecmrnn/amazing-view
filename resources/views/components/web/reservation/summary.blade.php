@@ -9,7 +9,7 @@
 <aside class="sticky self-start p-5 space-y-5 bg-white rounded-lg shadow-sm top-5">
     <hgroup>
         <h2 class="text-lg font-semibold">Reservation Summary</h2>
-        <p class="text-sm">View the summary of your reservavtion here</p>
+        <p class="text-sm">View the summary of your reservation here</p>
     </hgroup>
 
     <div>

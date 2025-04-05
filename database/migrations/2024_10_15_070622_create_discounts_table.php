@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Reservation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,12 +14,20 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('amount')->nullable();
-            $table->double('percentage')->nullable();
+            $table->foreignIdFor(Reservation::class)->constrained()->cascadeOnDelete();
+            $table->double('amount');
+            $table->string('description');
+            $table->string('image')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('promos', function (Blueprint $table) {
+            $table->id();
+            $table->string('code');
+            $table->double('amount');
             $table->date('start_date');
             $table->date('end_date');
-            $table->smallInteger('status')->default(0);
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

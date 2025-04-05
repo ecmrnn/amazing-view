@@ -43,7 +43,7 @@
             
             <div class="space-y-1">
                 <p class="text-sm">Phone: {{ $settings['site_phone'] }}</p>
-                <p class="text-sm">Email: {{ $settings['site_email'] }}</p>
+                <p class="text-sm break-words">Email: {{ $settings['site_email'] }}</p>
             </div>
         </div>
     </div>
