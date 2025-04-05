@@ -332,7 +332,7 @@ class ReservationService
                 $reservation->invoice->update([
                     'total_amount' => $taxes['net_total'],
                     'sub_total' => $taxes['sub_total'],
-                    'balance' => $reservation->invoice->balance - Arr::get($data, 'amount', 0),
+                    'balance' => $taxes['net_total'] - $data['amount'] ?? 0,
                     'status' => $reservation->invoice->balance > 0 ? InvoiceStatus::PARTIAL : InvoiceStatus::PAID,
                 ]);
 

@@ -109,13 +109,13 @@
 {{-- Modal for confirming reservation --}}
 <x-modal.full name="show-reservation-confirmation" maxWidth="sm">
     <form wire:submit='store' x-data="{ checked: false }" x-on:reservation-created.window="show = false">
-        <section class="p-5 space-y-5 bg-white">
+        <section class="p-5 space-y-5">
             <hgroup>
                 <h2 class="text-lg font-semibold">Reservation Confirmation</h2>
                 <p class="text-xs">Confirm that the reservation details entered are correct</p>
             </hgroup>
 
-            <div class="px-3 py-2 border rounded-md border-slate-200">
+            <div class="px-3 py-2 bg-white border rounded-md border-slate-200">
                 <x-form.input-checkbox x-model="checked" id="checked" label="The information I have provided is true and correct." />
             </div>
             

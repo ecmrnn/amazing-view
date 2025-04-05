@@ -210,7 +210,7 @@ class ReservationForm extends Component
         
         if ($file_exists) {
             $this->validate([
-                'discount_attachment' => 'nullable|mimes:jpg,jpeg,png|file|max:3000',
+                'discount_attachment' => 'nullable|mimes:jpg,jpeg,png|file|max:5000',
             ]);
         } else {
             $this->discount_attachment = null;
@@ -611,12 +611,14 @@ class ReservationForm extends Component
         $service = new ReservationService();
         $reservation = $service->create($validated);
 
-        // Dispatch event
-        $this->reservation_rid = $reservation->rid;
-        $this->dispatch('reservation-created');
-        $this->reset('can_select_a_room', 'can_select_address');
-        $this->toast('Success!', description: 'Reservation sent!');
-        $this->step++;
+        if ($reservation) {
+            // Dispatch event
+            $this->reservation_rid = $reservation->rid;
+            $this->dispatch('reservation-created');
+            $this->reset('can_select_a_room', 'can_select_address');
+            $this->toast('Success!', description: 'Reservation sent!');
+            $this->step++;
+        }
     }
 
     public function updateReservationType() {

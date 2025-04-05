@@ -73,6 +73,7 @@ class CreateReservation extends Component
     public $max_senior_count;
     public $selected_building;
     #[Validate] public $quantity = 0;
+    public $discount_attachment;
     public $max_quantity = 0;
     public $available_amenities;
     public $available_room_types;
@@ -126,7 +127,10 @@ class CreateReservation extends Component
 
     public function messages() 
     {
-        return Reservation::messages();
+        $messages = Reservation::messages();
+        $messages['discount_attachment.required'] = 'Upload Senior or PWD ID for confirmation';
+        $messages['proof_image_path.required_unless'] = 'A payment receipt is required when payment is not cash';
+        return $messages;   
     }
  
     public function validationAttributes()
@@ -277,9 +281,24 @@ class CreateReservation extends Component
             'pwd_count' => 'nullable|integer',
         ]);
 
+        $file_exists = !$this->discount_attachment ?: file_exists($this->discount_attachment->getRealPath());
+        
+        if ($file_exists) {
+            $this->validate([
+                'discount_attachment' => 'nullable|mimes:jpg,jpeg,png|file|max:5000',
+            ]);
+        } else {
+            $this->discount_attachment = null;
+        }
+
         if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
             $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
             return;
+        }
+
+        if (($this->senior_count > 0 || $this->pwd_count > 0) && !$this->discount_attachment) {
+            $this->addError('discount_attachment', 'Upload Senior or PWD ID for confirmation');
+            return false;
         }
 
         $this->dispatch('discount-applied');
@@ -404,9 +423,18 @@ class CreateReservation extends Component
             'phone' => $this->rules()['phone'],
             'address' => $this->rules()['address'],
             'transaction_id' => 'nullable|required_unless:payment_method,cash',
-            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
             'note' => $this->rules()['note'],
         ]);
+
+        $file_exists = !$this->proof_image_path ?: file_exists($this->proof_image_path->getRealPath());
+
+        if ($file_exists) {
+            $this->validate([
+                'proof_image_path' => 'nullable|required_unless:payment_method,cash|mimes:jpg,jpeg,png|image|max:3000',
+            ]);
+        } else {
+            $this->proof_image_path = null;
+        }
 
         if ($this->downpayment > 0 && $this->downpayment < 500) {
             $this->addError('downpayment', 'The minimum amount for downpayment is 500.00');
@@ -437,7 +465,7 @@ class CreateReservation extends Component
             'address' => $this->rules()['address'],
             'note' => $this->rules()['note'],
             'transaction_id' => 'nullable|required_unless:payment_method,cash',
-            'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
+            'proof_image_path' => 'nullable|required_unless:payment_method,cash|mimes:jpg,jpeg,png|image|max:3000',
         ]);
 
         $validated['downpayment'] = $this->downpayment;
@@ -445,15 +473,17 @@ class CreateReservation extends Component
         $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address']), ',') : $validated['address'];
         $validated['selected_rooms'] = $this->selected_rooms;
         $validated['selected_services'] = $this->selected_services;
+        $validated['discount_attachment'] = $this->discount_attachment;
         $validated['cars'] = $this->cars;
 
         $service = new ReservationService;
         $reservation = $service->create($validated);
 
-        $this->resetReservation();
-
-        $this->toast('Success!', description: 'Reservation created successfully!');
-        $this->dispatch('reservation-created');
+        if ($reservation) {
+            $this->resetReservation();
+            $this->toast('Success!', description: 'Reservation created successfully!');
+            $this->dispatch('reservation-created');
+        }
     }
 
     public function render()
