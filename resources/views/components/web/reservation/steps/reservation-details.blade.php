@@ -147,9 +147,7 @@
                             <x-primary-button class="text-xs" type="button" wire:click="suggestRooms">Find me a Room</x-primary-button>
                         </div>
             
-                        <div class="block px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-md">
-                            <x-loading wire:loading.delay wire:target="suggestRooms">Amazing rooms incoming!</x-loading>
-                        </div>
+                        <x-loading wire:loading.delay wire:target="suggestRooms" class="block w-full px-5 py-3 m-5 mb-0 text-xs font-semibold border rounded-md">Amazing rooms incoming!</x-loading>
             
                         @if (!empty($suggested_rooms))
                             <div class="p-5 m-5 mb-0 space-y-5 bg-white border rounded-lg border-slate-200">
@@ -374,7 +372,7 @@
                             <div class="min-w-max">
                                 @if ($selected_room_count == $rooms->count())
                                     <x-secondary-button disabled class="text-xs">
-                                        All Room Selected
+                                        No Remaining Rooms
                                     </x-secondary-button>
                                 @else
                                     <x-primary-button type="button" class="text-xs" wire:click="addRoom({{ json_encode($rooms->pluck('id')) }})">

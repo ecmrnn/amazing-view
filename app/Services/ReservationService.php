@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Nette\Utils\Random;
 
 class ReservationService
 {
@@ -45,7 +45,7 @@ class ReservationService
         $reservation = DB::transaction(function () use ($data) {
             // Assuming the $data is already validated prior to this point
             // Generate password for guest format: SurnameYYYY!
-            $password = ucwords(str_replace(' ', '', strtolower($data['last_name']))) . now()->format('Y') . '!';
+            $password = Random::generate();
 
             // Check if the email corresponds to a user that is admin or receptionist
             $auth_user = User::whereEmail($data['email'] ?? '')->first();

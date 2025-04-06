@@ -4,21 +4,19 @@ namespace App\Mail\reservation;
 
 use App\Models\Reservation;
 use App\Models\RoomAmenity;
-use App\Models\RoomReservation;
-use App\Models\Settings;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Password;
 
 class Received extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $has_amenities = false;
+    public $token = null;
     
     /**
      * Create a new message instance.
@@ -26,6 +24,8 @@ class Received extends Mailable
     public function __construct(public Reservation $reservation)
     {
         $this->has_amenities = RoomAmenity::where('reservation_id', $reservation->id)->exists();
+        $this->token = Password::createToken($reservation->user);
+        logger($this->token);
     }
 
     /**
