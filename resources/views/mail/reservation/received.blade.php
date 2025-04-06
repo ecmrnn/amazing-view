@@ -136,13 +136,13 @@
             <div class="space-y-5">
                 <hgroup>
                     <h2 class='font-bold'>Account Creation</h2>
-                    <p class="text-sm">You may create and access your account by clicking <a class="text-blue-500 underline underline-offset-2" href="{{ route('password.reset', ['token' => $token]) }}">here</a> to set your password paired with your email address.</p>
+                    <p class="text-sm">You may create and access your account by clicking <a class="text-blue-500 underline underline-offset-2" href="{{ route('password.reset', ['token' => $token, 'email' => $reservation->user->email]) }}">here</a> to set your password paired with your email address.</p>
                 </hgroup>
 
                 <div>
                     <p class='text-sm'><span class="font-bold">Email</span>: {{ $reservation->user->email }}</p>
                     <p class="text-sm"><span class="font-bold">Password</span>: 
-                        <a class="text-blue-500 underline underline-offset-2" href="{{ route('password.reset', ['token' => $token]) }}">Set password</a>
+                        <a class="text-blue-500 underline underline-offset-2" href="{{ route('password.reset', ['token' => $token, 'email' => $reservation->user->email]) }}">Set password</a>
                     </p>
                 </div>
             </div>

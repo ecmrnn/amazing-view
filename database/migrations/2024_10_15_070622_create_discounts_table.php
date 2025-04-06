@@ -20,16 +20,6 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->timestamps();
         });
-
-        Schema::create('promos', function (Blueprint $table) {
-            $table->id();
-            $table->string('code');
-            $table->double('amount');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->integer('status')->default(1);
-            $table->timestamps();
-        });
     }
 
     /**

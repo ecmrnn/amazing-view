@@ -27,7 +27,7 @@
             <!-- Password -->
             <div class="mt-4">
                 <x-form.input-label for="password" :value="__('Password')" />
-                <x-form.input-text id="password" class="block w-full mt-1" type="password" name="password" required autocomplete="new-password" />
+                <x-form.input-text id="password" label="••••••••" class="block w-full mt-1" type="password" name="password" required autocomplete="new-password" />
                 <x-form.input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
     
@@ -36,6 +36,7 @@
                 <x-form.input-label for="password_confirmation" :value="__('Confirm Password')" />
     
                 <x-form.input-text id="password_confirmation" class="block w-full mt-1"
+                                    label="••••••••"
                                     type="password"
                                     name="password_confirmation" required autocomplete="new-password" />
     

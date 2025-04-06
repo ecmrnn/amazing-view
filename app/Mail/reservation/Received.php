@@ -25,7 +25,6 @@ class Received extends Mailable
     {
         $this->has_amenities = RoomAmenity::where('reservation_id', $reservation->id)->exists();
         $this->token = Password::createToken($reservation->user);
-        logger($this->token);
     }
 
     /**

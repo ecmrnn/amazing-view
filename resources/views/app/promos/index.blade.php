@@ -2,14 +2,14 @@
     <x-slot:header>
         <div class="flex items-center justify-between w-full">
             <hgroup>
-                <h1 class="text-xl font-bold leading-tight text-gray-800">Announcements</h1>
-                <p class="text-xs">Manage your announcements here</p>
+                <h1 class="text-xl font-bold leading-tight text-gray-800">Promos</h1>
+                <p class="text-xs">Manage your promos here</p>
             </hgroup>
 
             <div class="flex items-center">
-                @can('create announcement')
-                    <x-tooltip text="Add Announcement" dir="bottom">
-                        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'add-announcement-modal')">
+                @can('create promo')
+                    <x-tooltip text="Create Promo" dir="bottom">
+                        <x-icon-button x-ref="content" x-on:click="$dispatch('open-modal', 'add-promo-modal')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
                         </x-icon-button>
                     </x-tooltip>
@@ -21,7 +21,7 @@
     </x-slot:header>
 
     <div>
-        <livewire:app.announcement.show-announcements />
+        <livewire:app.promo.show-promos />
 
         {{-- Modal --}}
         <livewire:app.announcement.create-announcement />

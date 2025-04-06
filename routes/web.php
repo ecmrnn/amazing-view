@@ -10,6 +10,7 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PromoController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoomTypeController;
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('/amenity', AmenityController::class);
             Route::resource('/services', ServicesController::class);
             Route::resource('/announcements', AnnouncementController::class);
+            Route::get('/promos', [PromoController::class, 'index'])->name('promos.index');
         });
     });
 });
