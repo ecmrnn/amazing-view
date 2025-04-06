@@ -137,6 +137,10 @@ class Reservation extends Model
         return $this->hasMany(Discount::class);
     }
 
+    public function promo(): BelongsTo {
+        return $this->belongsTo(Promo::class);
+    }
+
     public function cars(): HasOneOrMany {
         return $this->hasMany(CarReservation::class);
     }

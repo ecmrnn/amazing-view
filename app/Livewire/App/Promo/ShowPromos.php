@@ -9,6 +9,12 @@ class ShowPromos extends Component
 {
     public $promos;
 
+    protected $listeners = [
+        'promo-created' => '$refresh',
+        'promo-updated' => '$refresh',
+        'promo-deleted' => '$refresh',
+    ];
+
     public function render()
     {
         $this->promos = Promo::all();

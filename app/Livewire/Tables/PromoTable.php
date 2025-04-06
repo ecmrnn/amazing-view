@@ -3,8 +3,14 @@
 namespace App\Livewire\Tables;
 
 use App\Models\Promo;
+use App\Services\AuthService;
+use App\Services\PromoService;
+use App\Traits\DispatchesToast;
+use Fidry\CpuCoreCounter\NumberOfCpuCoreNotFound;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Blade;
+use Livewire\Attributes\Validate;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
@@ -18,17 +24,35 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class PromoTable extends PowerGridComponent
 {
-    use WithExport;
+    use WithExport, DispatchesToast;
+
+    public string $tableName = 'PromoTable';
+
+    public $name;
+    public $code;
+    public $amount;
+    public $start_date;
+    public $end_date;
+    #[Validate] public $password;
+
+    public function rules() {
+        return [
+            'password' => 'required',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'password.required' => 'Enter your password',
+        ];
+    }
 
     public function setUp(): array
     {
-        $this->showCheckBox();
-
         return [
-            Exportable::make('export')
-                ->striped()
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
-            Header::make()->showSearchInput(),
+            Header::make()
+                ->withoutLoading()
+                ->showSearchInput(),
             Footer::make()
                 ->showPerPage()
                 ->showRecordCount(),
@@ -49,56 +73,124 @@ final class PromoTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
+            ->add('name_formatted', function ($promo) {
+                return Blade::render('<p class="line-clamp-1 hover:line-clamp-none w-max">' . $promo->name . '</p>');
+            })
+            ->add('amount_formatted', function ($promo) {
+                return Blade::render('<x-currency />' . number_format($promo->amount, 2));
+            })
+            ->add('status_formatted', function ($promo) {
+                return Blade::render('<x-status type="promo" :status="' . $promo->status . '" />');
+            })
+            ->add('start_date_formatted', function ($promo) {
+                return Carbon::parse($promo->start_date)->format('F j, Y');
+            })
+            ->add('end_date_formatted', function ($promo) {
+                return Carbon::parse($promo->end_date)->format('F j, Y');
+            })
             ->add('created_at');
     }
 
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id'),
-            Column::make('Created at', 'created_at_formatted', 'created_at')
+            // Column::make('promo name', 'name_formatted', 'name')
+            //     ->searchable(),
+            Column::make('code', 'code', 'code')
+                ->searchable(),
+            Column::make('discount amount', 'amount_formatted', 'amount')
+                ->searchable()
+                ->sortable(),
+            Column::make('promo starts', 'start_date_formatted', 'start_date'),
+            Column::make('promo ends', 'end_date_formatted', 'end_date'),
+            Column::make('status', 'status_formatted', 'status')
+                ->searchable()
                 ->sortable(),
 
-            Column::make('Created at', 'created_at')
-                ->sortable()
-                ->searchable(),
-
-            Column::action('Action')
+            Column::action('')
         ];
     }
 
-    public function filters(): array
+    public function actionsFromView($row)
     {
-        return [
-        ];
+        $min_date = now()->format('Y-m-d');
+        
+        return view('components.table-actions.promo', [
+            'row' => $row,
+            'min_date' => $min_date,
+        ]);
     }
 
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
+    public function updatePromo($data) {
+        $this->name = $data['name'];
+        $this->amount = $data['amount'];
+        $this->start_date = $data['start_date'];
+        $this->end_date = $data['end_date'];
+        
+        $validated = $this->validate([
+            'name' => 'required|string|max:255|regex:/^[A-Za-z0-9\- ]+$/',
+            'amount' => 'required|numeric|min:0',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after:start_date',
+        ]);
+
+        $promo = Promo::find($data['id']);
+
+        if ($promo) {
+            $service = new PromoService;
+            $service->update($promo, $validated);
+            $this->toast('Success', description: 'Promo updated successfully!');
+            $this->dispatch('pg:eventRefresh-PromoTable');
+            $this->dispatch('promo-updated');
+            return;
+        } 
+        
+        $this->toast('Error', description: 'Promo not found!', type: 'error');
     }
 
-    public function actions(Promo $row): array
-    {
-        return [
-            Button::add('edit')
-                ->slot('Edit: '.$row->id)
-                ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
-        ];
+    public function toggleStatus(Promo $promo) {
+        $this->validate([
+            'password' => $this->rules()['password'],
+        ]);
+
+        $auth = new AuthService;
+
+        if ($auth->validatePassword($this->password)) {
+            $service = new PromoService;
+            $_promo = $service->toggleStatus($promo);
+
+            if ($_promo) {
+                $this->reset('password');
+                $this->toast('Success!', description: strtoupper($promo->code) . '\'s status updated!');
+                $this->dispatch('pg:eventRefresh-PromoTable');
+                $this->dispatch('promo-status-changed');
+                return;
+            }
+        }
+
+        $this->addError('password', 'Password mismatched, try again!');   
     }
 
-    /*
-    public function actionRules($row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
+    public function deletePromo(Promo $promo) {
+        $this->validate([
+            'password' => $this->rules()['password'],
+        ]);
+
+        $auth = new AuthService;
+
+        if ($auth->validatePassword($this->password)) {
+            $service = new PromoService;
+            $_promo = $service->delete($promo);
+            
+            if ($_promo) {
+                $this->toast('Promo Deleted', description: 'Promo deleted successfully!');
+                $this->dispatch('promo-deleted');
+                $this->dispatch('pg:eventRefresh-PromoTable');
+                $this->reset('password');
+                return;
+            }
+        }
+
+        $this->addError('password', 'Password mismatched, try again!');
     }
-    */
 }

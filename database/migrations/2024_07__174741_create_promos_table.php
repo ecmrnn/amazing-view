@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('promos', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('code')->unique();
             $table->decimal('amount', 10, 2);
             $table->date('start_date');

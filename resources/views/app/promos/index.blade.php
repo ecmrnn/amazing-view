@@ -24,6 +24,6 @@
         <livewire:app.promo.show-promos />
 
         {{-- Modal --}}
-        <livewire:app.announcement.create-announcement />
+        <livewire:app.promo.create-promo />
     </div>
 </x-app-layout>

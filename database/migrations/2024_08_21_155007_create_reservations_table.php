@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Promo;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
@@ -17,6 +18,7 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->string('rid')->nullable();
+            $table->foreignIdFor(Promo::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->date('date_in');
             $table->date('date_out');
