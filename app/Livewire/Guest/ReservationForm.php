@@ -6,6 +6,7 @@ use App\Enums\RoomStatus;
 use App\Enums\ServiceStatus;
 use App\Http\Controllers\AddressController;
 use App\Models\AdditionalServices;
+use App\Models\Promo;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -78,6 +79,8 @@ class ReservationForm extends Component
     #[Validate] public $proof_image_path;
     #[Validate] public $transaction_id;
     public $discount_attachment;
+    public $promo_code;
+    public Promo $promo;
 
     // Operational Variables
     public $reservation_type = null; /* Can be 'day tour' or 'overnight' */
@@ -585,6 +588,26 @@ class ReservationForm extends Component
         $this->resetErrorBag();
     }
 
+    public function applyPromo() {
+        $this->validate([
+            'promo_code' => 'required|exists:promos,code',
+        ]);
+
+        $promo = Promo::whereCode($this->promo_code)->first();
+
+        if ($promo) {
+            if ($promo->isValid($promo)) {
+                $this->promo = $promo;
+                $this->toast('Success!', description: 'Promo code applied successfully!');
+                $this->dispatch('discount-applied');
+                return;
+            }
+            $this->addError('promo_code', 'Promo code has expired');
+        }
+
+        $this->addError('promo_code', 'Promo code is invalid');
+    }
+
     public function store() {
         $validated = $this->validate([
             'date_in' => $this->rules()['date_in'],
@@ -601,6 +624,7 @@ class ReservationForm extends Component
             'proof_image_path' => $this->rules()['proof_image_path'],
         ]);
 
+        $validated['promo'] = $this->promo;
         $validated['selected_rooms'] = $this->selected_rooms;
         $validated['selected_services'] = $this->selected_services;
         $validated['cars'] = $this->cars;

@@ -5,6 +5,7 @@ namespace App\Livewire\App\Reservation;
 use App\Enums\ReservationStatus;
 use App\Mail\Reservation\Confirmed;
 use App\Models\Reservation;
+use App\Services\AuthService;
 use App\Services\BillingService;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
@@ -23,6 +24,7 @@ class ConfirmReservation extends Component
 
     public $reservation;
     public $payment;
+
     public $total_amount;
     public $discount;
     public $senior_count;
@@ -30,7 +32,6 @@ class ConfirmReservation extends Component
     public $adult_count;
     public $children_count;
 
-    public $promo;
     public $is_valid = false;
     public $can_confirm = false;
     public $can_discard = false;
@@ -38,6 +39,7 @@ class ConfirmReservation extends Component
     #[Validate] public $transaction_id;
     #[Validate] public $payment_date;
     #[Validate] public $password;
+    #[Validate] public $invoice_note;
 
     public function rules() {
         return [
@@ -45,6 +47,7 @@ class ConfirmReservation extends Component
             'transaction_id' => 'nullable',
             'payment_date' => 'date|required',
             'password' => 'required',
+            'invoice_note' => 'nullable|max:200',
         ];
     }
 
@@ -77,6 +80,7 @@ class ConfirmReservation extends Component
             'amount' => $this->rules()['amount'],
             'transaction_id' => $this->rules()['transaction_id'],
             'payment_date' => $this->rules()['payment_date'],
+            'invoice_note' => $this->rules()['invoice_note'],
         ]);
 
         $this->is_valid = true;
@@ -91,14 +95,36 @@ class ConfirmReservation extends Component
     }
 
     public function discardPayment() {
-        $service = new BillingService;
-        $service->discardPayment($this->payment);
+        $this->validate([
+            'password' => $this->rules()['password'],
+        ]);
 
-        $this->toast('Success!', description: 'The payment has been discarded');
-        $this->dispatch('reservation-confirmed');
+        $auth = new AuthService;
+
+        if ($auth->validatePassword($this->password)) {
+            $service = new BillingService;
+            $service->discardPayment($this->payment);
+    
+            $this->toast('Success!', description: 'The payment has been discarded');
+            $this->dispatch('reservation-confirmed');
+            return;
+        }
+
+        $this->addError('password', 'Password mismatched, try again!');
     }
 
     public function confirm() {
+        $this->validate([
+            'password' => $this->rules()['password'],
+        ]);
+
+        $auth = new AuthService;
+
+        if (!$auth->validatePassword($this->password)) {
+            $this->addError('password', 'Password mismatched, try again!');
+            return;
+        }
+
         $data = [
             'amount' => $this->amount,
             'transaction_id' => $this->transaction_id,
@@ -106,6 +132,7 @@ class ConfirmReservation extends Component
             'orid' => $this->payment->orid,
             'senior_count' => $this->senior_count,
             'pwd_count' => $this->pwd_count,
+            'invoice_note' => $this->invoice_note,
         ];
 
         // Validate senior and pwd count
@@ -141,7 +168,7 @@ class ConfirmReservation extends Component
                         <section class="p-5 space-y-5">
                             <hgroup>
                                 <h2 class="font-semibold capitalize text">Confirm Reservation</h2>
-                                <p class="max-w-sm text-xs">Confirm that the payment made below are successful before confirming the reservation.</p>
+                                <p class="max-w-sm text-xs">Verify that the payment made below are successful before confirming the reservation.</p>
                             </hgroup>
                             <div class="relative space-y-5">
                                 @if (!empty($payment))
@@ -167,9 +194,15 @@ class ConfirmReservation extends Component
                                         </div>
                                     @endif
                                     @if ($payment->amount > 0)
-                                        <div class="p-5 bg-white border rounded-md border-slate-200">
-                                            <p class="text-base font-semibold"><x-currency />{{ number_format($payment->amount, 2) }}</p>
-                                            <p class="text-xs">Amount Paid</p>
+                                        <div class="flex items-center gap-5 p-5 bg-white border rounded-md border-slate-200">
+                                            <div class="p-3 text-blue-800 rounded-md bg-blue-50">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-banknote-arrow-up-icon lucide-banknote-arrow-up"><path d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"/><path d="M18 12h.01"/><path d="M19 22v-6"/><path d="m22 19-3-3-3 3"/><path d="M6 12h.01"/><circle cx="12" cy="12" r="2"/></svg>
+                                            </div>
+
+                                            <div>
+                                                <p class="text-lg font-semibold text-blue-800"><x-currency />{{ number_format($payment->amount, 2) }}</p>
+                                                <p class="text-xs">Amount Paid</p>
+                                            </div>
                                         </div>
                                     @endif
                                 @else
@@ -196,6 +229,12 @@ class ConfirmReservation extends Component
                                     <x-form.input-label for='amount'>Confirm and enter the amount paid</x-form.input-label>
                                     <x-form.input-currency x-model="amount" wire:model.live='amount' id="amount" class="w-full" />
                                     <x-form.input-error field="amount" />
+                                </x-form.input-group>
+
+                                <x-form.input-group>
+                                    <x-form.input-label for='invoice_note'>Note</x-form.input-label>
+                                    <x-form.textarea id="invoice_note" name="invoice_note" label="invoice_note" wire:model.live="invoice_note" rows="4" class="w-full" />
+                                    <x-form.input-error field="invoice_note" />
                                 </x-form.input-group>
                             </div>
 
@@ -269,6 +308,25 @@ class ConfirmReservation extends Component
                                     </div>
                                 @endif
 
+                                @if ($reservation->promo)
+                                    <div class="flex items-center gap-5 p-5 bg-white border rounded-md border-slate-200">
+                                        <div class="p-3 text-blue-800 rounded-md bg-blue-50">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-icon lucide-ticket"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-lg font-semibold text-blue-800">{{ $reservation->promo->code }}</p>
+                                            <p class="text-xs"><x-currency />{{ number_format($reservation->promo->amount, 2) }} Off</p>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <x-form.input-group>
+                                    <x-form.input-label for='password-confirm'>Enter your password</x-form.input-label>
+                                    <x-form.input-text type="password" id="password-confirm" name="password" label="Password" wire:model.live="password" />
+                                    <x-form.input-error field="password" />
+                                </x-form.input-group>
+
                                 <x-loading wire:loading wire:target="confirm">Confirming reservation, please wait</x-loading>
 
                                 <div class="flex justify-end gap-1">
@@ -284,6 +342,12 @@ class ConfirmReservation extends Component
                                 </hgroup>
 
                                 <x-note>Discarding the payment for this reservation will revert its status to <strong>Awaiting Payment</strong>. Notify the guest to send another payment.</x-note>
+
+                                <x-form.input-group>
+                                    <x-form.input-label for='password-discard'>Enter your password</x-form.input-label>
+                                    <x-form.input-text type="password" id="password-discard" name="password" label="Password" wire:model.live="password" />
+                                    <x-form.input-error field="password" />
+                                </x-form.input-group>
 
                                 <x-loading wire:loading wire:target="discard">Discarding payment, please wait</x-loading>
 

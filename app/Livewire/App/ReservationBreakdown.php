@@ -154,6 +154,12 @@ class ReservationBreakdown extends Component
                             <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
                         </tr>
                     @endif
+                    @if ($breakdown['taxes']['promo_discount'] > 0)
+                        <tr>
+                            <td class="pr-5 text-right">Promo Discount</td>
+                            <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['promo_discount'], 2) }}&rpar;</td>
+                        </tr>
+                    @endif
 
                     <tr>
                         <td class="pt-5 pr-5 font-semibold text-right text-blue-500">Net Total</td>

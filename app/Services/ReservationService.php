@@ -44,7 +44,6 @@ class ReservationService
     public function create($data) {
         $reservation = DB::transaction(function () use ($data) {
             // Assuming the $data is already validated prior to this point
-            // Generate password for guest format: SurnameYYYY!
             $password = Random::generate();
 
             // Check if the email corresponds to a user that is admin or receptionist
@@ -84,6 +83,7 @@ class ReservationService
     
             // Create the reservation
             $reservation = $user->reservations()->create([
+                'promo_id' => $data['promo']->id ?? null,
                 'date_in' => Arr::get($data, 'date_in'),
                 'date_out' => Arr::get($data, 'date_out'),
                 'senior_count' => Arr::get($data, 'senior_count'),
@@ -117,7 +117,7 @@ class ReservationService
     
             // Compute breakdown
             $breakdown = $this->handlers->get('billing')->breakdown($reservation);
-            $breakdown['downpayment'] = Arr::get($data, 'downpayment', 0);
+            $breakdown['downpayment'] = $data['downpayment'] ?? 0;
     
             // Create the invoice
             $invoice = $this->handlers->get('billing')->create($reservation, $breakdown);

@@ -110,6 +110,7 @@ class BillingService
         $vatable_sales = $sub_total / 1.12;
         $vatable_exempt_sales = 0;
         $discount = 0;
+        $promo_discount = 0;
         $other_charges = 0;
         
         // Compute for promos & discounts
@@ -125,6 +126,10 @@ class BillingService
                 $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
                 $discount = ($vatable_exempt_sales * .2) * $discountable_guests;
             }
+
+            if ($reservation->promo) {
+                $promo_discount = $reservation->promo->amount;
+            }
         }
 
         // Add 'other charges'
@@ -135,7 +140,7 @@ class BillingService
         }
         
         $vat = $vatable_sales * .12;
-        $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount) + $other_charges;
+        $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount - $promo_discount) + $other_charges;
 
         return [
             'sub_total' => $sub_total,
@@ -144,6 +149,7 @@ class BillingService
             'vat' => $vat,
             'other_charges' => $other_charges,
             'discount' => $discount,
+            'promo_discount' => $promo_discount,
             'net_total' => $net_total,
         ];
     }
@@ -164,6 +170,7 @@ class BillingService
         $vatable_sales = $sub_total / 1.12;
         $vatable_exempt_sales = 0;
         $discount = 0;
+        $promo_discount = 0;
 
         if (!empty($invoice)) {
             // Compute for discounts
@@ -182,17 +189,22 @@ class BillingService
                     $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
                     $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
                 }
+
+                if ($invoice->reservation->promo) {
+                    $promo_discount = $invoice->reservation->promo->amount;
+                }
             }
         }
 
         $vat = $vatable_sales * .12;
-        $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount) + $other_charges;
+        $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount - $promo_discount) + $other_charges;
 
         $taxes = [
             'vatable_sales' => $vatable_sales,
             'vatable_exempt_sales' => $vatable_exempt_sales,
             'vat' => $vat,
             'discount' => $discount,
+            'promo_discount' => $promo_discount,
             'other_charges' => $other_charges,
             'net_total' => $net_total,
         ];
@@ -298,6 +310,9 @@ class BillingService
             $payment->invoice->save();
 
             $payment->delete();
+
+            // Send mail
+            
         });
     }
 }
