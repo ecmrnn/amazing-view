@@ -2,28 +2,26 @@
 
 namespace App\Events;
 
-use App\Models\Report;
+use App\Models\Invoice;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
-class ReportGenerated implements ShouldBroadcast
+class InvoicePDFGenerated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        public Report $report,
-        public $user_id
-    )
+    public function __construct(public Invoice $invoice)
     {
-        $user_id = $report->user_id;
+        // 
     }
 
     /**
@@ -34,8 +32,7 @@ class ReportGenerated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('reports.' . $this->user_id),
-            new PrivateChannel('admin'),
+            new PrivateChannel('invoices.' . $this->invoice->id),
         ];
     }
 }

@@ -53,7 +53,7 @@
 
             <div class="hidden p-5 border rounded-md lg:grid lg:grid-cols-2 border-slate-200">
                 <div class="lg:col-span-2">
-                    <p class="font-semibold">{{ $invoice->reservation->address }}</p>
+                    <p class="font-semibold">{{ $invoice->reservation->user->address }}</p>
                     <p class="text-xs">Address</p>
                 </div>
             </div>
@@ -68,20 +68,6 @@
             </hgroup>
 
             <x-status type="invoice" :status="$invoice->status"></x-status>
-        </div>
-
-        <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
-            <x-form.input-group>
-                <x-form.input-label for='issue_date'>Issue Date</x-form.input-label>
-                <x-form.input-date wire:model.live='issue_date' id="issue_date" name="issue_date" label="issue_date" class="w-full" />
-                <x-form.input-error field="issue_date" />
-            </x-form.input-group>
-
-            <x-form.input-group>
-                <x-form.input-label for='due_date'>Due Date</x-form.input-label>
-                <x-form.input-date wire:model.live='due_date' id="due_date" name="due_date" label="due_date" class="w-full" />
-                <x-form.input-error field="due_date" />
-            </x-form.input-group>
         </div>
     </div>
 

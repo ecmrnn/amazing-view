@@ -1,33 +1,4 @@
-<section
-    x-data="{
-    date_in: $wire.entangle('date_in'),
-    date_out: $wire.entangle('date_out'),
-    adult_count: $wire.entangle('adult_count'),
-    children_count: $wire.entangle('children_count'),
-    night_count: $wire.entangle('night_count'),
-
-    first_name: $wire.entangle('first_name'),
-    last_name: $wire.entangle('last_name'),
-    email: $wire.entangle('email'),
-    phone: $wire.entangle('phone'),
-    address: $wire.entangle('address'),
-
-    vat: $wire.entangle('vat'),
-    vatable_sales: $wire.entangle('vatable_sales'),
-    net_total: $wire.entangle('net_total'),
-
-    reservation_id: '',
-    rid: $wire.entangle('rid'),
-
-    issue_date: $wire.entangle('issue_date'),
-    due_date: $wire.entangle('due_date'),
-
-    formatDate(date) {
-            let options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(date).toLocaleDateString('en-US', options)
-        }
-    }"
-    class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
+<section class="relative w-full max-w-screen-lg mx-auto space-y-5 rounded-lg">
     <div class="flex items-center justify-between p-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center justify-between gap-3 sm:items-start">
             <div class="flex items-center gap-3 sm:gap-5">
@@ -67,6 +38,10 @@
                                 <p>Edit</p>
                             </button>
                         </a>
+                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$wire.printBill(); dropdown = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer-icon lucide-printer"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg>
+                            <p>Print Running Bill</p>
+                        </button>
                         @if ($invoice->balance == 0)
                             <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'issue-invoice'); dropdown = false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>

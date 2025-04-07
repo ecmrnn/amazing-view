@@ -10,6 +10,7 @@ use App\Models\InvoicePayment;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -285,7 +286,7 @@ class BillingService
     public function downloadPdf(Invoice $invoice) {
         $filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->user->last_name) . '_' . strtoupper($invoice->reservation->user->first_name) . '.pdf';
         $path = 'public/pdf/invoice/' . $filename;
-        
+
         if (Storage::exists($path)) {
             return Storage::download($path, $filename);
         }
@@ -314,5 +315,12 @@ class BillingService
             // Send mail
             
         });
+    }
+
+    public function printBill(Invoice $invoice) {
+        $filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->user->last_name) . '_' . strtoupper($invoice->reservation->user->first_name) . '.pdf';
+        $path = 'public/pdf/invoice/' . $filename;
+        
+        GenerateInvoicePDF::dispatch($invoice);
     }
 }

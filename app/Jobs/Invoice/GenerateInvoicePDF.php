@@ -2,12 +2,11 @@
 
 namespace App\Jobs\Invoice;
 
+use App\Events\InvoicePDFGenerated;
 use App\Models\Invoice;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
 
@@ -52,5 +51,7 @@ class GenerateInvoicePDF implements ShouldQueue
             Unit::Pixel
         )
         ->save($this->path);
+        
+        broadcast(new InvoicePDFGenerated($this->invoice));
     }
 }

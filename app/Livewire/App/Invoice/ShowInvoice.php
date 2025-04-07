@@ -7,18 +7,23 @@ use App\Models\Reservation;
 use App\Services\BillingService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ShowInvoice extends Component
 {
     use DispatchesToast;
     
-    protected $listeners = [
-        'payment-added' => '$refresh',
-        'payment-edited' => '$refresh',
-        'payment-deleted' => '$refresh',
-        'invoice-issued' => '$refresh',
-    ];
+    public function getListeners() {
+        return [
+            'echo-private:invoices.' . $this->invoice->id . ',InvoicePDFGenerated' => 'download',
+            'payment-added' => '$refresh',
+            'payment-edited' => '$refresh',
+            'payment-deleted' => '$refresh',
+            'invoice-issued' => '$refresh',
+        ];
+    }
     
     // Invoice
     public $invoice;
@@ -29,6 +34,12 @@ class ShowInvoice extends Component
         $this->invoice = $invoice;
         $this->remaining_days = (int) Carbon::parse(Carbon::now()->format('Y-m-d'))->diffInDays($invoice->due_date);
         $this->payment_count = $invoice->payments()->count();
+    }
+
+    public function printBill() {
+        $billing = new BillingService;
+        $billing->printBill($this->invoice);
+        $this->toast('Generating PDF', 'info', 'Please wait for a few seconds');
     }
 
     public function download() {
