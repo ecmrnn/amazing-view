@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 
-                <div>
+                <div style="margin: 20px 0;">
                     <p style="font-size: 14px; margin: 0;">We&apos;ve got everything ready for your arrival. If you have any questions, please don&apos;t hesitate to contact us! Attached below is a copy of your confirmed reservation form.</p>
                     <p style="font-size: 14px; margin: 0; font-weight: bold;">We look forward to providing you with an amazing stay! </p>
                 </div>

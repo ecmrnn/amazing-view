@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use DateTimeImmutable;
 use Illuminate\Support\Facades\Http;
 
 class DateController extends Controller
 {
     public static function today() {
+        return Carbon::parse($_SERVER['REQUEST_TIME'])->format('Y-m-d');
+
         try {
             $key = env('TIMEZONEDB_KEY');
             $response = Http::get('http://api.timezonedb.com/v2.1/get-time-zone?key=' . $key . '&format=json&by=zone&zone=Asia/Manila');

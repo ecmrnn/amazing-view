@@ -38,8 +38,6 @@ class FindRoom extends Component
     }
 
     public function resetForm() {
-        $this->reset();
-        
         $this->min_date = now()->format('Y-m-d');
         $this->date_in = Carbon::now()->format('Y-m-d');
         $this->date_out = Carbon::now()->addDay()->format('Y-m-d');
