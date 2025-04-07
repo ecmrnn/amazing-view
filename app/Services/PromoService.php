@@ -30,6 +30,11 @@ class PromoService
                 ]);
             }
 
+            // Disable all promos
+            Promo::where('status', PromoStatus::ACTIVE->value)->update([
+                'status' => PromoStatus::INACTIVE->value
+            ]); 
+
             return $promo->update([
                 'status' => PromoStatus::ACTIVE->value
             ]);

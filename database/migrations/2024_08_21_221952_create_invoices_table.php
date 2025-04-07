@@ -26,6 +26,7 @@ return new class extends Migration
             $table->date('issue_date')->nullable();
             $table->date('due_date')->nullable();
             $table->smallInteger('status')->default(InvoiceStatus::PENDING);
+            $table->string('note')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

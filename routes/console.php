@@ -30,3 +30,6 @@ Schedule::command('otp:reset-count')
 Schedule::command('annoucement:expire')
     ->daily();
 
+// Disable Expired Promo every day at 12:00 AM
+Schedule::command('promo:expired')
+    ->daily();

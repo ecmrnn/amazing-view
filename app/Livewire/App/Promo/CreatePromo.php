@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Promo;
 
+use App\Models\Promo;
 use App\Services\PromoService;
 use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
@@ -31,6 +32,17 @@ class CreatePromo extends Component
     public function submit() {
         $validated = $this->validate();
 
+        // Check if the promo overlaps with another promo
+        $overlaps = Promo::where(function ($query) use ($validated) {
+                $query->whereBetween('start_date', [$validated['start_date'], $validated['end_date']])
+                      ->orWhereBetween('end_date', [$validated['start_date'], $validated['end_date']]);
+            })
+            ->exists();
+
+        if ($overlaps) {
+            $this->addError('start_date', 'The promo dates overlap with an existing promo.');
+            return;
+        }
         $service = new PromoService;
         $promo = $service->create($validated);
 
@@ -76,14 +88,17 @@ class CreatePromo extends Component
                     <x-form.input-group>
                         <x-form.input-label for='start_date'>Promo Starts</x-form.input-label>
                         <x-form.input-date id="start_date" name="start_date" class="w-full" wire:model.live="start_date" min="{{ $min_date }}" />
-                        <x-form.input-error field="start_date" />
                     </x-form.input-group>
 
                     <x-form.input-group>
                         <x-form.input-label for='end_date'>Promo Ends</x-form.input-label>
                         <x-form.input-date id="end_date" name="end_date" class="w-full" wire:model.live="end_date" min="{{ $start_date }}" />
-                        <x-form.input-error field="end_date" />
                     </x-form.input-group>
+                    
+                    <div class="col-span-2">
+                        <x-form.input-error field="start_date" />
+                        <x-form.input-error field="end_date" />
+                    </div>
                 </div>
 
                 <x-loading wire:loading wire:target='submit'>Creating promo, please wait</x-loading>

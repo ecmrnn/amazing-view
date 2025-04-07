@@ -334,6 +334,7 @@ class ReservationService
                     'sub_total' => $taxes['sub_total'],
                     'balance' => $taxes['net_total'] - $data['amount'] ?? 0,
                     'status' => $reservation->invoice->balance > 0 ? InvoiceStatus::PARTIAL : InvoiceStatus::PAID,
+                    'note' => $data['invoice_note'] ?? null,
                 ]);
 
                 $reservation->discounts()->updateOrCreate(

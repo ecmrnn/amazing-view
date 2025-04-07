@@ -114,9 +114,11 @@ final class PromoTable extends PowerGridComponent
     public function actionsFromView($row)
     {
         $min_date = now()->format('Y-m-d');
+        $can_activate = Carbon::now()->between($row->start_date, $row->end_date);
         
         return view('components.table-actions.promo', [
             'row' => $row,
+            'can_activate' => $can_activate,
             'min_date' => $min_date,
         ]);
     }
@@ -130,7 +132,7 @@ final class PromoTable extends PowerGridComponent
         $validated = $this->validate([
             'name' => 'required|string|max:255|regex:/^[A-Za-z0-9\- ]+$/',
             'amount' => 'required|numeric|min:0',
-            'start_date' => 'required|date|after_or_equal:today',
+            'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
 
