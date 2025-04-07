@@ -4,12 +4,26 @@ namespace App\Livewire\App\Reservation;
 
 use App\Enums\ReservationStatus;
 use App\Models\Reservation;
+use App\Traits\DispatchesToast;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class ShowReservations extends Component
 {
+    use DispatchesToast;
+    
+    public function getListeners() {
+        return [
+            'echo-private:receptionist_admin,ReservationCreated' => 'refreshTable',
+        ];
+    }
+
+    public function refreshTable() {
+        $this->toast('New Reservation!', 'info', 'A guest has made a reservation');
+        $this->dispatch('pg:eventRefresh-ReservationTable');
+    }
+
     public $reservation_by_status = [
         'all' => 0,
         'awaiting_payment' => 0,

@@ -7,6 +7,7 @@ use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Events\ReservationCreated;
 use App\Jobs\Reservation\GenerateReservationPDF;
 use App\Mail\Reservation\Cancelled;
 use App\Mail\reservation\Expire;
@@ -157,8 +158,11 @@ class ReservationService
             // Generate PDF
             GenerateReservationPDF::dispatch($reservation);
     
+            // Broadcast the event
+            broadcast(new ReservationCreated)->toOthers();
+
             // Send confirmation email to the guest
-            Mail::to($reservation->user->email)->queue(new Received($reservation));
+            // Mail::to($reservation->user->email)->queue(new Received($reservation));
             return $reservation;
         });
 
@@ -344,11 +348,8 @@ class ReservationService
                     ]
                 );
             }
-    
-            if (!Storage::exists($path)) {
-                GenerateReservationPDF::dispatch($reservation);
-            }
-    
+
+            GenerateReservationPDF::dispatch($reservation);
             return $reservation;
         });
     }

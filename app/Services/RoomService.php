@@ -73,8 +73,10 @@ class RoomService
                 'status' => $reservation->status,
             ]);
             
-            $room->status = RoomStatus::RESERVED;
-            $room->save();
+            if ($room->status == RoomStatus::AVAILABLE) {
+                $room->status = RoomStatus::RESERVED;
+                $room->save();
+            }
         }
     }
     // For syncing room records on room_reservations pivot table

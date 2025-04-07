@@ -80,7 +80,7 @@ class ReservationForm extends Component
     #[Validate] public $transaction_id;
     public $discount_attachment;
     public $promo_code;
-    public Promo $promo;
+    public $promo = null;
 
     // Operational Variables
     public $reservation_type = null; /* Can be 'day tour' or 'overnight' */
