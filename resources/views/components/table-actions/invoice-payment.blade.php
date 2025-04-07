@@ -61,9 +61,9 @@
                 @endif
             </hgroup>
     
-            @if (!empty($row->proof_image_Path))
-                <div class="col-span-2 overflow-auto border rounded-md aspect-square border-slate-200">
-                    <x-img src="{{ $row->proof_image_path }}" alt="payment" />
+            @if ($row->proof_image_path)
+                <div class="w-full overflow-auto border rounded-md max-h-96 border-slate-200">
+                    <img src="{{ asset('storage/' . $row->proof_image_path) }}" alt="payment receipt" class="h-full" />
                 </div>
             @endif
 
