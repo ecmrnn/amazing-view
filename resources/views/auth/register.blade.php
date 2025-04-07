@@ -4,11 +4,10 @@
 
         <div class="max-w-sm">
             <h1 class="text-2xl font-semibold">Create an Account</h1>
-            <p class="mb-5">Fill the required input fields below before submitting the form to create your account.</p>
+            <p class="mb-5 text-sm">Fill the required input fields below before submitting the form to create your account.</p>
 
             <div class="flex items-center gap-5">
-                <h2 class="text-lg font-semibold">Your Details</h2>
-                <x-line class="bg-gray-300" />
+                <h2 class="text-lg font-semibold">Personal Details</h2>
             </div>
 
             <div class="mt-5 space-y-3">
@@ -40,7 +39,6 @@
 
             <div class="flex items-center gap-5 my-5">
                 <h2 class="text-lg font-semibold">Account Details</h2>
-                <x-line class="bg-gray-300" />
             </div>
 
             <div class="space-y-3">
@@ -52,6 +50,7 @@
                         class="block w-full mt-1"
                         type="email"
                         name="email"
+                        :value="old('email')"
                     />
                     <x-form.input-error field="email" />
                 </div>
@@ -76,6 +75,8 @@
                         name="password_confirmation" />
                     <x-form.input-error field="password_confirmation" />
                 </div>
+
+                <x-note>Your password must contain atleast 8 characters, including at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.</x-note>
             </div>
 
             <x-primary-button class="w-full mt-4">

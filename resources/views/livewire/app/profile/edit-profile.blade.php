@@ -37,7 +37,7 @@
 
                 <x-form.input-group>
                     <x-form.input-label for='phone'>Contact Number</x-form.input-label>
-                    <x-form.input-text id="phone" name="phone" label="09xxxxxxxxx" wire:model.live='phone' />
+                    <x-form.input-text id="phone" name="phone" label="09xxxxxxxxx" wire:model.live='phone' maxlength="11" />
                     <x-form.input-error field="phone" />
                 </x-form.input-group>
 
