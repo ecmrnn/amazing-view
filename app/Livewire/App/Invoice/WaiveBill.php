@@ -9,9 +9,13 @@ use App\Traits\DispatchesToast;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class WaiveBalance extends Component
+class WaiveBill extends Component
 {
     use DispatchesToast;
+
+    protected $listeners = [
+        'waive-retracted' => 'refreshRetract',
+    ];
 
     #[Validate] public $amount = 0;
     #[Validate] public $reason;
@@ -21,8 +25,13 @@ class WaiveBalance extends Component
 
     public function mount(Invoice $invoice) {
         $this->balance = $invoice->balance;
-        $this->amount = ($invoice->balance - $invoice->waive_amount) > 0 ? (int)  $invoice->balance - $invoice->waive_amount : (int)  $invoice->balance ;
+        $this->amount = (int) $invoice->balance;
         $this->reason = $invoice->waive_reason;
+    }
+
+    public function refreshRetract() {
+        $this->balance = $this->invoice->balance;
+        $this->amount = (int) $this->invoice->balance;
     }
 
     public function rules() {
@@ -52,8 +61,10 @@ class WaiveBalance extends Component
 
             if ($invoice) {
                 $this->toast('Balance Waived', description: 'Balance has been waived successfully!');
-                $this->dispatch('balance-waived');
-                $this->reset('password', 'reason', 'amount');
+                $this->dispatch('bill-waived');
+
+                $this->amount = $invoice->balance;
+                $this->reset('password');
                 return;
             }
         }
@@ -64,7 +75,7 @@ class WaiveBalance extends Component
     public function render()
     {
         return <<<'HTML'
-        <form x-data="{ amount: @entangle('amount') }" wire:submit="submit" x-on:balance-waived.window="show = false" class="p-5 space-y-5">
+        <form x-data="{ amount: @entangle('amount') }" wire:submit="submit" x-on:bill-waived.window="show = false" class="p-5 space-y-5">
             <hgroup>
                 <h2 class='font-semibold'>Waive Balance</h2>
                 <p class='text-xs'>Modify the balance directly here</p>

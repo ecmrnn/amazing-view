@@ -54,7 +54,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
                                 <p>Add Payment</p>
                             </button>
-                            <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'waive-balance-modal'); dropdown = false">
+                            <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'waive-bill-modal'); dropdown = false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tag-icon lucide-tag"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
                                 <p>Waive Bill</p>
                             </button>
@@ -103,11 +103,13 @@
 
         @if ($invoice->waive_amount > 0)
             <x-info-message>
-                <div>
+                <div class="relative">
                     <h2 class="text-lg font-semibold">This bill is {{ (int) $invoice->balance <= 0 ? 'fully' : 'partially' }} waived!</h2>
                     <p class="text-xs">Amount: <x-currency />{{ number_format($invoice->waive_amount, 2) }}</p>
                     <p class="text-xs">Reason: {{ $invoice->waive_reason }}</p>
                     <p class="text-xs">By: <span class="capitalize">{{ $invoice->user->first_name . ' ' . $invoice->user->last_name }}</span></p>
+
+                    <x-primary-button class="top-0 right-0 mt-5 sm:mt-0 sm:absolute" type="button" x-on:click="$dispatch('open-modal', 'retract-waive-modal')">Retract Waive</x-primary-button>
                 </div>
             </x-info-message>
         @endif

@@ -333,4 +333,29 @@ class BillingService
             return $invoice;
         });
     }
+
+    public function retractWaive(Invoice $invoice, $amount) {
+        return DB::transaction(function () use ($invoice, $amount) {
+            $invoice->waive_amount -= $amount;
+            $invoice->save();
+
+            $taxes = $this->taxes($invoice->reservation);
+            $payments = $invoice->payments->sum('amount');
+            $waive = $invoice->waive_amount;
+
+            $invoice->sub_total = $taxes['net_total'];
+            $invoice->total_amount = $taxes['net_total'];
+            $invoice->balance = $taxes['net_total'] - $payments;
+
+            // Apply waived amount
+            if ($invoice->balance >= $waive) {
+                $invoice->balance -=  $waive;
+            } else {
+                $invoice->balance = 0;
+            }
+
+            $invoice->save();
+            return $invoice;
+        });
+    }
 }

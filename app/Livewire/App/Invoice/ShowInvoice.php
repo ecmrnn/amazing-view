@@ -22,7 +22,8 @@ class ShowInvoice extends Component
             'payment-edited' => '$refresh',
             'payment-deleted' => '$refresh',
             'invoice-issued' => '$refresh',
-            'balance-waived' => '$refresh',
+            'bill-waived' => '$refresh',
+            'waive-retracted' => '$refresh',
         ];
     }
     

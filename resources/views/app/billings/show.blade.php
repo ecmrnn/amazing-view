@@ -36,8 +36,12 @@
             <livewire:app.invoice.issue-invoice :invoice="$invoice" />
         </x-modal.full> 
         
-        <x-modal.full name="waive-balance-modal" maxWidth="sm">
-            <livewire:app.invoice.waive-balance :invoice="$invoice" />
+        <x-modal.full name="waive-bill-modal" maxWidth="sm">
+            <livewire:app.invoice.waive-bill :invoice="$invoice" />
+        </x-modal.full> 
+        
+        <x-modal.full name="retract-waive-modal" maxWidth="sm">
+            <livewire:app.invoice.retract-waive :invoice="$invoice" />
         </x-modal.full> 
     </div>
 </x-app-layout>  
