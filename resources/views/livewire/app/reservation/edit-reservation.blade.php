@@ -59,10 +59,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-open"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg>
                         <p>Rooms &amp; Guests</p>
                     </button>
-                    <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'add-amenity-modal'); dropdown = false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-concierge-bell"><path d="M3 20a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1Z"/><path d="M20 16a8 8 0 1 0-16 0"/><path d="M12 4v4"/><path d="M10 4h4"/></svg>
-                        <p>Add Amenity</p>
-                    </button>
+                    @if ($reservation->status == App\Enums\ReservationStatus::CHECKED_IN->value)
+                        <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'add-amenity-modal'); dropdown = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-concierge-bell"><path d="M3 20a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1Z"/><path d="M20 16a8 8 0 1 0-16 0"/><path d="M12 4v4"/><path d="M10 4h4"/></svg>
+                            <p>Add Amenity</p>
+                        </button>
+                    @endif
                     <button type="button" class="flex items-center w-full gap-5 px-3 py-2 text-xs font-semibold rounded-md hover:bg-slate-50" x-on:click="$dispatch('open-modal', 'add-car-modal'); dropdown = false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car-front"><path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.646 5H8.4a2 2 0 0 0-1.903 1.257L5 10 3 8"/><path d="M7 14h.01"/><path d="M17 14h.01"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>
                         <p>Add Car</p>
@@ -198,41 +200,6 @@
             </div>
         </section>
 
-        {{-- Guest Details --}}
-        <section class="p-5 space-y-5 bg-white border rounded-lg">
-            <hgroup>
-                <h3 class="font-semibold">Guest Details</h3>
-                <p class="max-w-sm text-xs">Modify the reservation field you want to update then click the <strong
-                        class="text-blue-500">Save Button</strong> to save your changes.</p>
-            </hgroup>
-
-            {{-- First & Last name --}}
-            <div class="grid items-start gap-5 sm:grid-cols-2">
-                <div class="space-y-1">
-                    <x-form.input-text class="capitalize" wire:model.live='first_name' x-model="first_name"
-                        id="first_name" label="First Name" />
-                    <x-form.input-error field="first_name" />
-                </div>
-                <div class="space-y-1">
-                    <x-form.input-text class="capitalize" wire:model.live='last_name' x-model="last_name" id="last_name"
-                        label="Last Name" />
-                    <x-form.input-error field="last_name" />
-                </div>
-                <div class="space-y-1">
-                    <x-form.input-text wire:model.live='phone' id="phone" label="Contact Number" />
-                    <x-form.input-error field="phone" />
-                </div>
-                <div class="space-y-1">
-                    <x-form.input-text wire:model.live='email' id="email" label="Email" />
-                    <x-form.input-error field="email" />
-                </div>
-                <div class="sm:col-span-2">
-                    <x-form.input-text wire:model.live='address' id="address" label="Address" />
-                    <x-form.input-error field="address" />
-                </div>
-            </div>
-        </section>
-
         @if ($reservation->status != App\Enums\ReservationStatus::CANCELED->value)
             {{-- Additional Details (Optional) --}}
             <section class="p-5 space-y-5 bg-white border rounded-lg">
@@ -274,102 +241,104 @@
                 </div>
             </section>
 
-            <section class="p-5 space-y-5 bg-white border rounded-lg">
-                <div class="flex items-start justify-between">
-                    <hgroup>
-                        <h3 class="font-semibold">Amenities</h3>
-                        <p class="max-w-sm text-xs">Click the <strong class="text-blue-500">Add Amenity</strong>
-                            button on the right to select an amenity you want to add.</p>
-                    </hgroup>
+            @if ($reservation->status != \App\Enums\ReservationStatus::CHECKED_IN->value)
+                <section class="p-5 space-y-5 bg-white border rounded-lg">
+                    <div class="flex items-start justify-between">
+                        <hgroup>
+                            <h3 class="font-semibold">Amenities</h3>
+                            <p class="max-w-sm text-xs">Click the <strong class="text-blue-500">Add Amenity</strong>
+                                button on the right to select an amenity you want to add.</p>
+                        </hgroup>
 
-                    <button type="button" class="text-xs font-semibold text-blue-500"
-                        x-on:click="$dispatch('open-modal', 'add-amenity-modal')">Add Amenity</button>
-                </div>
+                        <button type="button" class="text-xs font-semibold text-blue-500"
+                            x-on:click="$dispatch('open-modal', 'add-amenity-modal')">Add Amenity</button>
+                    </div>
 
-                
-                @php $counter = 0; @endphp
-                @if ($selected_amenities->count() > 0)
-                    <x-table.table headerCount="7">
-                        <x-slot:headers>
-                            <p>No.</p>
-                            <p>Room No.</p>
-                            <p>Amenity</p>
-                            <p class="text-center">Quantity</p>
-                            <p class="text-right">Price</p>
-                            <p class="text-right">Total</p>
-                            <p></p>
-                        </x-slot:headers>
-                        
-                        @foreach ($selected_amenities as $key => $amenity)
-                            <div wire:key='amenity-{{ $key }}' >
-                                <div x-data="{ quantity: @js($amenity['quantity']) }"
-                                        x-init="
-                                        let timeout;
-                                        $watch('quantity', (value) => {
-                                            clearTimeout(timeout); // Cancel the previous request if another change happens quickly
-                                            timeout = setTimeout(() => { 
-                                                if (value > 0) {
-                                                    @this.call('updateQuantity', '{{ $amenity['id'] }}', value, '{{ $amenity['room_number'] }}');
-                                                }
-                                            }, 300); // Adjust debounce delay (300ms is a good default)
-                                        })"
-                                        class="grid items-center grid-cols-7 px-5 py-1 text-sm hover:bg-slate-50"
-                                    >
-                                    <p class="font-semibold opacity-50">{{ ++$counter }}</p>
-                                    <p>{{ $amenity['room_number'] }}</p>
-                                    <p>{{ $amenity['name'] }}</p>
-                                    @if (in_array(Arr::get($amenity, 'status', null), [
-                                        App\Enums\ReservationStatus::CONFIRMED->value,
-                                        App\Enums\ReservationStatus::CHECKED_IN->value,
-                                    ]))
-                                        <x-form.input-number x-model="quantity" max="{{ $amenity['max'] }}" min="1" id="quantity" name="quantity" class="text-center" />
-                                    @else
-                                        <p class="text-center">{{ $amenity['quantity'] }}</p>
-                                    @endif
-                                    <p class="text-right"><x-currency />{{ number_format($amenity['price'], 2) }}</p>
-                                    <p class="text-right"><x-currency />{{ number_format($amenity['quantity'] * $amenity['price'], 2) }}</p>
-                                    <div class="ml-auto text-right w-max">
-                                        @if (Arr::get($amenity, 'status', null) == App\Enums\ReservationStatus::CHECKED_OUT->value)
-                                            <x-icon-button type="button"
-                                                class="opacity-0"
-                                                x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $key }}')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
-                                            </x-icon-button>
+                    
+                    @php $counter = 0; @endphp
+                    @if ($selected_amenities->count() > 0)
+                        <x-table.table headerCount="7">
+                            <x-slot:headers>
+                                <p>No.</p>
+                                <p>Room No.</p>
+                                <p>Amenity</p>
+                                <p class="text-center">Quantity</p>
+                                <p class="text-right">Price</p>
+                                <p class="text-right">Total</p>
+                                <p></p>
+                            </x-slot:headers>
+                            
+                            @foreach ($selected_amenities as $key => $amenity)
+                                <div wire:key='amenity-{{ $key }}' >
+                                    <div x-data="{ quantity: @js($amenity['quantity']) }"
+                                            x-init="
+                                            let timeout;
+                                            $watch('quantity', (value) => {
+                                                clearTimeout(timeout); // Cancel the previous request if another change happens quickly
+                                                timeout = setTimeout(() => { 
+                                                    if (value > 0) {
+                                                        @this.call('updateQuantity', '{{ $amenity['id'] }}', value, '{{ $amenity['room_number'] }}');
+                                                    }
+                                                }, 300); // Adjust debounce delay (300ms is a good default)
+                                            })"
+                                            class="grid items-center grid-cols-7 px-5 py-1 text-sm hover:bg-slate-50"
+                                        >
+                                        <p class="font-semibold opacity-50">{{ ++$counter }}</p>
+                                        <p>{{ $amenity['room_number'] }}</p>
+                                        <p>{{ $amenity['name'] }}</p>
+                                        @if (in_array(Arr::get($amenity, 'status', null), [
+                                            App\Enums\ReservationStatus::CONFIRMED->value,
+                                            App\Enums\ReservationStatus::CHECKED_IN->value,
+                                        ]))
+                                            <x-form.input-number x-model="quantity" max="{{ $amenity['max'] }}" min="1" id="quantity" name="quantity" class="text-center" />
                                         @else
-                                            <x-tooltip text="Remove" dir="left">
-                                                <x-icon-button x-ref="content" type="button"
+                                            <p class="text-center">{{ $amenity['quantity'] }}</p>
+                                        @endif
+                                        <p class="text-right"><x-currency />{{ number_format($amenity['price'], 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($amenity['quantity'] * $amenity['price'], 2) }}</p>
+                                        <div class="ml-auto text-right w-max">
+                                            @if (Arr::get($amenity, 'status', null) == App\Enums\ReservationStatus::CHECKED_OUT->value)
+                                                <x-icon-button type="button"
+                                                    class="opacity-0"
                                                     x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $key }}')">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
                                                 </x-icon-button>
-                                            </x-tooltip>
-                                        @endif
+                                            @else
+                                                <x-tooltip text="Remove" dir="left">
+                                                    <x-icon-button x-ref="content" type="button"
+                                                        x-on:click="$dispatch('open-modal', 'remove-amenity-modal-{{ $key }}')">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
+                                                    </x-icon-button>
+                                                </x-tooltip>
+                                            @endif
+                                        </div>
                                     </div>
-                                </div>
 
-                                <x-modal.full name="remove-amenity-modal-{{ $key }}" maxWidth='sm'>
-                                    <div class="p-5 space-y-5" x-on:amenity-removed.window="show = false">
-                                        <div>
-                                            <h2 class="text-lg font-semibold text-red-500">Remove Amenity</h2>
-                                            <p class="text-xs">Are you sure you really want to remove
-                                                <strong>{{ $amenity['name'] }}</strong> as an amenity?
-                                            </p>
+                                    <x-modal.full name="remove-amenity-modal-{{ $key }}" maxWidth='sm'>
+                                        <div class="p-5 space-y-5" x-on:amenity-removed.window="show = false">
+                                            <div>
+                                                <h2 class="text-lg font-semibold text-red-500">Remove Amenity</h2>
+                                                <p class="text-xs">Are you sure you really want to remove
+                                                    <strong>{{ $amenity['name'] }}</strong> as an amenity?
+                                                </p>
+                                            </div>
+                                            <div class="flex justify-end gap-1">
+                                                <x-secondary-button type="button" x-on:click="show = false">No,
+                                                    cancel</x-secondary-button>
+                                                <x-danger-button type="button"
+                                                    wire:click="removeAmenity({{ $amenity['id'] }}, '{{ $amenity['room_number'] }}')">Yes,
+                                                    remove</x-danger-button>
+                                            </div>
                                         </div>
-                                        <div class="flex justify-end gap-1">
-                                            <x-secondary-button type="button" x-on:click="show = false">No,
-                                                cancel</x-secondary-button>
-                                            <x-danger-button type="button"
-                                                wire:click="removeAmenity({{ $amenity['id'] }}, '{{ $amenity['room_number'] }}')">Yes,
-                                                remove</x-danger-button>
-                                        </div>
-                                    </div>
-                                </x-modal.full>
-                            </div>
-                        @endforeach
-                    </x-table.table>
-                @else
-                    <x-table-no-data.amenity />
-                @endif
-            </section>
+                                    </x-modal.full>
+                                </div>
+                            @endforeach
+                        </x-table.table>
+                    @else
+                        <x-table-no-data.amenity />
+                    @endif
+                </section>
+            @endif
 
             <section class="p-5 space-y-5 bg-white border rounded-lg">
                 <div class="flex items-start justify-between">

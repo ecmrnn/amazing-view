@@ -499,7 +499,6 @@ class EditReservation extends Component
         $validated['selected_services'] = $this->selected_services;
         $validated['selected_amenities'] = $this->selected_amenities;
         $validated['cars'] = $this->cars;
-
         
         $service = new ReservationService();
         $service->update($this->reservation, $validated);

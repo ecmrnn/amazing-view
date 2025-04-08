@@ -11,6 +11,7 @@
                 App\Enums\InvoiceStatus::PARTIAL->value,
                 App\Enums\InvoiceStatus::PENDING->value,
                 App\Enums\InvoiceStatus::PAID->value,
+                App\Enums\InvoiceStatus::WAIVED->value,
             ]))
             <x-tooltip text="Edit" dir="top">
                 <a x-ref="content" href="{{ route($edit_link, ['billing' => $row->iid]) }}" wire:navigate.hover>

@@ -28,6 +28,10 @@ class Invoice extends Model
     public function items(): HasMany {
         return $this->hasMany(InvoiceItem::class);
     }
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class, 'waived_by');
+    }
     
     public static function boot()
     {

@@ -35,7 +35,7 @@
         </div>
 
         <div class="grid grid-cols-2 gap-5">
-            <div class="p-5 space-y-5 rounded-lg bg-slate-50">
+            <div class="p-5 space-y-5 border rounded-lg bg-slate-50 border-slate-200">
                 <div>
                     <h2 class="text-xs font-semibold">Bill From</h2>
                     <p class="text-lg font-semibold capitalize">Amazing View Mountain Resort</p>
@@ -48,7 +48,7 @@
                 </div>
             </div>
             
-            <div class="p-5 space-y-5 rounded-lg bg-slate-50">
+            <div class="p-5 space-y-5 border rounded-lg bg-slate-50 border-slate-200">
                 <div>
                     <h2 class="text-xs font-semibold">Bill to</h2>
                     <p class="text-lg font-semibold capitalize">{{ $invoice->reservation->user->first_name . ' ' . $invoice->reservation->user->last_name }}</p>

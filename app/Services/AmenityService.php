@@ -75,35 +75,46 @@ class AmenityService
     // - Reservation instance
     // - Collection of amenities to attach
     public function sync(Reservation $reservation, $amenities) {
-        foreach ($reservation->rooms as $room) {
-            foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
-                $_amenity = Amenity::find($amenity['id']);
-                
-                $room->amenities()->detach($amenity['id']);
-                
-                if (in_array($reservation->status, [
-                    ReservationStatus::AWAITING_PAYMENT->value,
-                    ReservationStatus::PENDING->value,
-                    ReservationStatus::CONFIRMED->value,
-                    ReservationStatus::CHECKED_IN->value,
-                ])) {
-                    $_amenity->quantity += (int) $amenity->pivot->quantity;
+        DB::transaction(function () use ($reservation, $amenities) {
+            foreach ($reservation->rooms as $room) {
+                foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
+                    $_amenity = Amenity::find($amenity['id']);
+                    
+                    $room->amenities()->detach($amenity['id']);
+                    
+                    if (in_array($reservation->status, [
+                        ReservationStatus::AWAITING_PAYMENT->value,
+                        ReservationStatus::PENDING->value,
+                        ReservationStatus::CONFIRMED->value,
+                        ReservationStatus::CHECKED_IN->value,
+                    ])) {
+                        $_amenity->quantity += (int) $amenity->pivot->quantity;
+                    }
+                    $_amenity->save();
                 }
-                $_amenity->save();
             }
-        }
-        if (!empty($amenities)) {
-            $this->attach($reservation, $amenities);
-        }
-
-        $billing = new BillingService;
-        $taxes = $billing->taxes($reservation->fresh());
-        $payments = $reservation->invoice->payments->sum('amount');
-
-        $reservation->invoice->sub_total = $taxes['net_total'];
-        $reservation->invoice->total_amount = $taxes['net_total'];
-        $reservation->invoice->balance = $taxes['net_total'] - $payments;
-        $reservation->invoice->save();
+            if (!empty($amenities)) {
+                $this->attach($reservation, $amenities);
+            }
+    
+            $billing = new BillingService;
+            $taxes = $billing->taxes($reservation->fresh());
+            $payments = $reservation->invoice->payments->sum('amount');
+            $waive = $reservation->invoice->waive_amount;
+            
+            $reservation->invoice->sub_total = $taxes['net_total'];
+            $reservation->invoice->total_amount = $taxes['net_total'];
+            $reservation->invoice->balance = $taxes['net_total'] - $payments;
+            
+            // Apply waived amount
+            if ($reservation->invoice->balance >= $waive) {
+                $reservation->invoice->balance -=  $waive;
+            } else {
+                $reservation->invoice->balance = 0;
+            }
+            
+            $reservation->invoice->save();
+        });
     }
 
     // For adding amenities on edit and create reservations

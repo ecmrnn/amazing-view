@@ -33,6 +33,7 @@
             \App\Enums\InvoiceStatus::CANCELED->value => ['Canceled', 'text-stone-800 border-stone-500 bg-stone-200'],
             \App\Enums\InvoiceStatus::ISSUED->value => ['Issued', 'text-green-800 border-green-500 bg-green-50'],
             \App\Enums\InvoiceStatus::RESCHEDULED->value => ['Rescheduled', 'text-indigo-800 border-indigo-500 bg-indigo-50'],
+            \App\Enums\InvoiceStatus::WAIVED->value => ['Waived', 'text-amber-800 border-amber-500 bg-amber-50'],
         ],
         'page' => [
             \App\Enums\PageStatus::ACTIVE->value => ['Active', 'text-green-800 border-green-500 bg-green-50'],

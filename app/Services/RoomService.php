@@ -122,10 +122,19 @@ class RoomService
             $billing = new BillingService;
             $taxes = $billing->taxes($reservation->fresh());
             $payments = $reservation->invoice->payments->sum('amount');
+            $waive = $reservation->invoice->waive_amount;
 
             $reservation->invoice->sub_total = $taxes['net_total'];
             $reservation->invoice->total_amount = $taxes['net_total'];
             $reservation->invoice->balance = $taxes['net_total'] - $payments;
+
+            // Apply waived amount
+            if ($reservation->invoice->balance >= $waive) {
+                $reservation->invoice->balance -=  $waive;
+            } else {
+                $reservation->invoice->balance = 0;
+            }
+
             $reservation->invoice->save();
         });
     }

@@ -91,9 +91,6 @@ class BillingService
             $invoice->issue_date = Carbon::now()->format('Y-m-d');
             $invoice->status = InvoiceStatus::ISSUED;
             $invoice->save();
-    
-            // Send invoice to user via email
-            
         });
     }
 
@@ -141,7 +138,7 @@ class BillingService
                 $other_charges += $item->price * $item->quantity;
             }
         }
-        
+
         $vat = $vatable_sales * .12;
         $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount - $promo_discount) + $other_charges;
 
@@ -319,10 +316,21 @@ class BillingService
         });
     }
 
-    public function printBill(Invoice $invoice) {
-        $filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->user->last_name) . '_' . strtoupper($invoice->reservation->user->first_name) . '.pdf';
-        $path = 'public/pdf/invoice/' . $filename;
-        
+    public function generatePdf(Invoice $invoice) {
         GenerateInvoicePDF::dispatch($invoice);
+    }
+
+    public function waive(Invoice $invoice, $data) {
+        return DB::transaction(function () use ($invoice, $data) {
+            $invoice->update([
+                'balance' => $invoice->balance - $data['amount'],
+                'waive_amount' => $invoice->waive_amount + $data['amount'],
+                'waive_reason' => $data['reason'],
+                'waived_by' => Auth::user()->id,
+                'status' => InvoiceStatus::WAIVED,
+            ]);
+
+            return $invoice;
+        });
     }
 }

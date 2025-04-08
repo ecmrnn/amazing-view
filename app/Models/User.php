@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -103,6 +104,10 @@ class User extends Authenticatable
 
     public function reports(): HasMany {
         return $this->hasMany(Report::class);
+    }
+
+    public function invoice(): HasOne {
+        return $this->hasOne(Invoice::class, 'waived_by');
     }
 
     public function reservations(): HasMany {

@@ -101,7 +101,7 @@ class DashboardController extends Controller
             // Monthly Revenue
             $monthly_revenue = InvoicePayment::select(DB::raw('sum(amount) as revenue'))
                 ->whereMonth('payment_date', Carbon::now()->format('m'))
-                ->whereIn('invoices.status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE])
+                ->whereIn('invoices.status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE, InvoiceStatus::WAIVED])
                 ->join('invoices', 'invoices.id', '=', 'invoice_payments.invoice_id')
                 ->first();
             

@@ -22,6 +22,7 @@ class ShowInvoice extends Component
             'payment-edited' => '$refresh',
             'payment-deleted' => '$refresh',
             'invoice-issued' => '$refresh',
+            'balance-waived' => '$refresh',
         ];
     }
     
@@ -38,7 +39,7 @@ class ShowInvoice extends Component
 
     public function printBill() {
         $billing = new BillingService;
-        $billing->printBill($this->invoice);
+        $billing->generatePdf($this->invoice);
         $this->toast('Generating PDF', 'info', 'Please wait for a few seconds');
     }
 
