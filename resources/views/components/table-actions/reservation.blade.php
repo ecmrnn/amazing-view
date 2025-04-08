@@ -42,7 +42,7 @@
     </x-tooltip>
 
     <x-modal.full name='delete-reservation-{{ $row->id }}' maxWidth='sm'>
-        <form class="p-5 space-y-5 bg-white" x-on:submit.prevent="$dispatch('delete-reservation', { id: {{ $row->id  }}})">
+        <form class="p-5 space-y-5" x-on:submit.prevent="$dispatch('delete-reservation', { id: {{ $row->id  }}})">
             <hgroup>
                 <h2 class="text-lg font-semibold text-red-500 capitalize">Delete Reservation</h2>
                 <p class="text-xs">You are about to delete this reservation, this action cannot be undone</p>

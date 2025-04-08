@@ -51,7 +51,7 @@ class DeleteReservation extends Component
     public function render()
     {
         return <<<'HTML'
-        <form wire:submit="destroy" class="p-5 space-y-5 bg-white" x-on:reservation-deleted.window="show = false">
+        <form wire:submit="destroy" class="p-5 space-y-5" x-on:reservation-deleted.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold text-red-500 capitalize">Delete Reservation</h2>
                 <p class="text-xs">You are about to delete this reservation, this action cannot be undone</p>

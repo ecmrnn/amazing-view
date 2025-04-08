@@ -4,7 +4,7 @@
     <p class="text-sm">No payments yet!</p>
 
     @can('create payment')
-        <x-primary-button>
+        <x-primary-button x-on:click="$dispatch('open-modal', 'show-add-payment')">
             Add Payment
         </x-primary-button>
     @endcan

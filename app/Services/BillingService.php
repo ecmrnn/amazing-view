@@ -330,6 +330,9 @@ class BillingService
                 'status' => InvoiceStatus::WAIVED,
             ]);
 
+            $invoice->reservation->status = ReservationStatus::CONFIRMED;
+            $invoice->reservation->save();
+
             return $invoice;
         });
     }
@@ -337,6 +340,9 @@ class BillingService
     public function retractWaive(Invoice $invoice, $amount) {
         return DB::transaction(function () use ($invoice, $amount) {
             $invoice->waive_amount -= $amount;
+            $invoice->reservation->status = ReservationStatus::CONFIRMED->value;
+
+            $invoice->reservation->save();
             $invoice->save();
 
             $taxes = $this->taxes($invoice->reservation);
@@ -354,6 +360,26 @@ class BillingService
                 $invoice->balance = 0;
             }
 
+            if ((int) $invoice->waive_amount == 0) {
+                $invoice->waive_reason = null;
+                $invoice->waived_by = null;
+
+                if ($invoice->balance > 0 && in_array($invoice->reservation->status, [
+                    ReservationStatus::AWAITING_PAYMENT->value,
+                    ReservationStatus::PENDING->value,
+                    ReservationStatus::CONFIRMED->value,
+                ])) {
+                    $invoice->status = InvoiceStatus::PENDING;
+                } else {
+                    $invoice->status = InvoiceStatus::PARTIAL;
+                }
+
+                if ($invoice->payments()->sum('amount') == 0) {
+                    $invoice->reservation->status = ReservationStatus::AWAITING_PAYMENT;
+                }
+            }
+
+            $invoice->reservation->save();
             $invoice->save();
             return $invoice;
         });
