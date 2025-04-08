@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Jobs\Invoice\GenerateInvoicePDF;
+use App\Mail\invoice\DiscardPayment;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Reservation;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class BillingService
@@ -313,7 +315,7 @@ class BillingService
             $payment->delete();
 
             // Send mail
-            
+            Mail::to($payment->invoice->reservation->user->email)->queue(new DiscardPayment($payment->invoice));
         });
     }
 

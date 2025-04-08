@@ -38,7 +38,6 @@ final class DashboardReservationTable extends PowerGridComponent
     {
         return [
             Header::make()
-                ->showToggleColumns()
                 ->showSearchInput(),
 
             Footer::make()

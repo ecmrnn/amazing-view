@@ -36,7 +36,7 @@ class ConfirmReservation extends Component
     public $can_confirm = false;
     public $can_discard = false;
     #[Validate] public $amount = 0;
-    #[Validate] public $transaction_id;
+    #[Validate] public $transaction_id = 'cash';
     #[Validate] public $payment_date;
     #[Validate] public $password;
     #[Validate] public $invoice_note;
@@ -44,7 +44,7 @@ class ConfirmReservation extends Component
     public function rules() {
         return [
             'amount' => 'required|integer|gt:500|max:' . ceil($this->total_amount),
-            'transaction_id' => 'nullable',
+            'transaction_id' => 'required_unless:payment_method,cash',
             'payment_date' => 'date|required',
             'password' => 'required',
             'invoice_note' => 'nullable|max:200',
@@ -71,7 +71,7 @@ class ConfirmReservation extends Component
         if ($this->payment) {
             $this->amount = (int) $this->payment->amount;
             $this->payment_date = $this->payment->payment_date;
-            $this->transaction_id = $this->payment->transaction_id;
+            $this->transaction_id = $this->payment->transaction_id ?? 'cash';
         }
     }
 
@@ -216,15 +216,17 @@ class ConfirmReservation extends Component
                                         <x-form.input-group class="w-full">
                                             <x-form.input-label for='transaction_id'>Reference ID</x-form.input-label>
                                             <x-form.input-text wire:model.live='transaction_id' id="transaction_id" class="w-full" label="Reference ID" />
-                                            <x-form.input-error field="transaction_id" />
                                         </x-form.input-group>
                                     @endif
                                     <x-form.input-group class="w-full">
                                         <x-form.input-label for='payment_date'>Date of Payment</x-form.input-label>
                                         <x-form.input-date wire:model.live='payment_date' id="payment_date" class="w-full" />
-                                        <x-form.input-error field="payment_date" />
                                     </x-form.input-group>
                                 </div>
+                                
+                                <x-form.input-error field="transaction_id" />
+                                <x-form.input-error field="payment_date" />
+                                
                                 <x-form.input-group>
                                     <x-form.input-label for='amount'>Confirm and enter the amount paid</x-form.input-label>
                                     <x-form.input-currency x-model="amount" wire:model.live='amount' id="amount" class="w-full" />

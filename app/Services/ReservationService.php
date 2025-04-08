@@ -172,7 +172,7 @@ class ReservationService
             broadcast(new ReservationCreated)->toOthers();
 
             // Send confirmation email to the guest
-            // Mail::to($reservation->user->email)->queue(new Received($reservation));
+            Mail::to($reservation->user->email)->queue(new Received($reservation));
             return $reservation;
         });
 

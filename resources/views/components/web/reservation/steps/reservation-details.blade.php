@@ -125,7 +125,7 @@
                             </x-form.input-group>
                         </div>
             
-                        <div class="flex flex-col items-center gap-5 md:flex-row md:col-span-2">
+                        <div class="flex flex-col gap-5 md:items-center md:flex-row md:col-span-2">
                             <x-primary-button type="button" class="block" wire:click="selectRoom()">Select Accommodation</x-primary-button>
                             <x-loading wire:loading.delay wire:target="selectRoom" class="text-xs font-semibold">Loading our accommodations, please wait...</x-loading>
                         </div>
@@ -151,10 +151,10 @@
             
                         @if (!empty($suggested_rooms))
                             <div class="p-5 m-5 mb-0 space-y-5 bg-white border rounded-lg border-slate-200">
-                                <div class="grid-cols-3 gap-5 space-y-5 lg:space-y-0 lg:grid">
+                                <div class="grid gap-5 md:grid-cols-3">
                                     @forelse ($suggested_rooms as $key => $room)
-                                        <div key="{{ $key }}" class="flex gap-3 border-slate-200 lg:block lg:space-y-2">
-                                            <x-img class="w-full max-w-[200px] lg:max-w-full" src="{{ $room->image_1_path }}" />
+                                        <div key="{{ $key }}" class="gap-3 border-slate-200 lg:space-y-2">
+                                            <x-img class="w-full" src="{{ $room->image_1_path }}" />
                 
                                             <div class="w-full space-y-2">
                                                 <hgroup>

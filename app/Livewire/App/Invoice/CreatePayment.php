@@ -9,6 +9,7 @@ use App\Models\Reservation;
 use App\Services\BillingService;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -48,14 +49,25 @@ class CreatePayment extends Component
     }
 
     public function store() {
-        $validated = $this->validate([
-            'payment_date' => $this->rules()['payment_date'],
-            'payment_method' => $this->rules()['payment_method'],
-            'proof_image_path' => $this->rules()['proof_image_path'],
-            'transaction_id' => $this->rules()['transaction_id'],
-            'amount' => $this->rules()['amount'],
-            'proof_image_path' => $this->rules()['proof_image_path'],
-        ]);
+        $user = Auth::user();
+        if ($user->hasRole('guest')) {
+            $validated = $this->validate([
+                'payment_date' => $this->rules()['payment_date'],
+                'payment_method' => $this->rules()['payment_method'],
+                'proof_image_path' => $this->rules()['proof_image_path'],
+                'amount' => $this->rules()['amount'],
+                'proof_image_path' => $this->rules()['proof_image_path'],
+            ]);
+        } else {
+            $validated = $this->validate([
+                'payment_date' => $this->rules()['payment_date'],
+                'payment_method' => $this->rules()['payment_method'],
+                'proof_image_path' => $this->rules()['proof_image_path'],
+                'transaction_id' => $this->rules()['transaction_id'],
+                'amount' => $this->rules()['amount'],
+                'proof_image_path' => $this->rules()['proof_image_path'],
+            ]);
+        }
 
         $billing = new BillingService;
         $billing->addPayment($this->invoice, $validated);

@@ -15,7 +15,7 @@
             <h1 class="text-md"><span class="font-bold">Reservation ID:</span> {{ $reservation->rid }}</h1>
 
             <p>Hi <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>! After verification of your proof of payment, we would like to inform you about your approved reservation. We have confirmed your payment amounting to 
-                <strong><x-currency />{{ number_format($reservation->invoice->payments()->sum('amount'), 2) }}</strong>.
+                <strong><x-currency />{{ number_format($reservation->invoice->payments()->sum('amount'), 2) }}.</strong> Your outstanding balance is <strong><x-currency />{{ number_format($reservation->invoice->balance, 2) }}</strong>.
             </p>
 
             <div>

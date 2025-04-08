@@ -636,7 +636,6 @@ class ReservationForm extends Component
         $reservation = $service->create($validated);
 
         if ($reservation) {
-            // Dispatch event
             $this->reservation_rid = $reservation->rid;
             $this->dispatch('reservation-created');
             $this->reset('can_select_a_room', 'can_select_address');
@@ -645,6 +644,7 @@ class ReservationForm extends Component
             return;
         }
 
+        $this->step = 1;
         $this->addError('selected_rooms', 'One of the selected rooms is already reserved, select another room');
         $this->toast('Reservation Error!', 'warning', 'Failed to create reservation');
     }
