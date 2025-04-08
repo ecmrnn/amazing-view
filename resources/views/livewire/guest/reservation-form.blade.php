@@ -153,6 +153,8 @@
                 <h2 class="text-lg font-semibold">Reservation Confirmation</h2>
                 <p class="text-xs">Confirm that the reservation details entered are correct</p>
             </hgroup>
+
+            <x-form.input-error field="selected_rooms" />
             
             <section class="p-5 bg-white border rounded-md border-slate-200">
                 <x-form.input-checkbox x-model="toc" id="toc" label="I, {{ ucwords(strtolower($first_name)) . ' ' . ucwords(strtolower($last_name)) }}, ensure that the information I provided is true and correct. I also give consent to Amazing View Mountain Resort to collect and manage my data." />

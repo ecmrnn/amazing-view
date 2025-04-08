@@ -21,6 +21,7 @@ class ShowReservations extends Component
 
     public function refreshTable() {
         $this->toast('New Reservation!', 'info', 'A guest has made a reservation');
+        $this->getReservationCount();
         $this->dispatch('pg:eventRefresh-ReservationTable');
     }
 

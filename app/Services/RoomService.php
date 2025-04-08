@@ -73,7 +73,7 @@ class RoomService
                 'status' => $reservation->status,
             ]);
             
-            if ($room->status == RoomStatus::AVAILABLE) {
+            if ($room->status == RoomStatus::AVAILABLE->value) {
                 $room->status = RoomStatus::RESERVED;
                 $room->save();
             }

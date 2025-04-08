@@ -44,9 +44,19 @@ class ReservationService
 
     public function create($data) {
         $reservation = DB::transaction(function () use ($data) {
+            // Check if the selected rooms are available
+            $reserved_rooms = Room::reservedRooms($data['date_in'], $data['date_out'])->pluck('id')->toArray();
+            $selected_rooms = $data['selected_rooms'] ?? [];
+
+            foreach ($selected_rooms as $room_id) {
+                if (in_array($room_id->id, $reserved_rooms)) {
+                    return null;
+                }
+            }
+
             // Assuming the $data is already validated prior to this point
             $password = Random::generate();
-
+            
             // Check if the email corresponds to a user that is admin or receptionist
             $auth_user = User::whereEmail($data['email'] ?? '')->first();
 

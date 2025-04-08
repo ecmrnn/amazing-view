@@ -483,7 +483,11 @@ class CreateReservation extends Component
             $this->resetReservation();
             $this->toast('Success!', description: 'Reservation created successfully!');
             $this->dispatch('reservation-created');
+            return;
         }
+
+        $this->addError('selected_rooms', 'One of the selected rooms is already reserved, select another room');
+        $this->toast('Reservation Error!', 'warning', 'Failed to create reservation');
     }
 
     public function render()

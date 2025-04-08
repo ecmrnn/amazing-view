@@ -642,7 +642,11 @@ class ReservationForm extends Component
             $this->reset('can_select_a_room', 'can_select_address');
             $this->toast('Success!', description: 'Reservation sent!');
             $this->step++;
+            return;
         }
+
+        $this->addError('selected_rooms', 'One of the selected rooms is already reserved, select another room');
+        $this->toast('Reservation Error!', 'warning', 'Failed to create reservation');
     }
 
     public function updateReservationType() {

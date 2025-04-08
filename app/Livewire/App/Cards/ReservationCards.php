@@ -8,7 +8,12 @@ use Livewire\Component;
 
 class ReservationCards extends Component
 {
-    protected $listeners = ['status-changed' => '$refresh'];
+    public function getListeners() {
+        return [
+            'echo-private:receptionist_admin,ReservationCreated' => 'refreshTable',
+            'status-changed' => '$refresh',
+        ];
+    }
 
     public function render()
     {
