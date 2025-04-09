@@ -26,7 +26,7 @@
         </div>
         
         <div class="fixed top-0 z-0">
-            <img src="{{ asset('storage/global/login.jpg') }}" alt="" class="object-cover object-center w-screen h-screen blur-md">
+            <img src="{{ url('images/login.jpg') }}" alt="" class="object-cover object-center w-screen h-screen blur-md">
             <x-overlay />
         </div>
 
