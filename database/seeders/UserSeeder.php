@@ -5,11 +5,8 @@ namespace Database\Seeders;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Seeder;
 use Nette\Utils\Random;
-use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {

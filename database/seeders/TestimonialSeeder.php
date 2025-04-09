@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Testimonial;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TestimonialSeeder extends Seeder
@@ -30,7 +29,5 @@ class TestimonialSeeder extends Seeder
             'rating' => 5,
             'testimonial' => 'I was impressed with how this resort is giving justice to its name - the staffs are friendly and approachable, the facilities are clean, and the ambiance in general is very relaxing!',
         ]);
-
-        Testimonial::factory(6)->create();
     }
 }
