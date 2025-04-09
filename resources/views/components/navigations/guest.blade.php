@@ -1,6 +1,4 @@
 <div class="w-full">
-    {{-- <x-banner /> --}}
-    
     <nav class="py-2 text-sm font-semibold bg-white/90 before:backdrop-blur-xl before:backdrop-hack">
         <div class="max-w-screen-xl mx-auto">
             {{-- Desktop --}}

@@ -4,9 +4,9 @@ namespace App\Livewire\App\Reservation;
 
 use App\Mail\Reservation\Cancelled;
 use App\Mail\Reservation\Confirmed;
-use App\Mail\reservation\Expire;
+use App\Mail\Reservation\Expire;
 use App\Mail\Reservation\NoShow;
-use App\Mail\reservation\Received;
+use App\Mail\Reservation\Received;
 use App\Mail\Reservation\Reminder;
 use App\Mail\Reservation\Updated;
 use App\Traits\DispatchesToast;

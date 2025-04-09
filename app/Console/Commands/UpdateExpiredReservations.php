@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\ReservationStatus;
-use App\Mail\reservation\Expire;
+use App\Mail\Reservation\Expire;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use Illuminate\Console\Command;
