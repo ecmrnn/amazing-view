@@ -5,9 +5,10 @@ namespace Database\Seeders;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
-use Faker\Factory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Seeder;
+use Nette\Utils\Random;
 use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
@@ -17,12 +18,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Factory::create();
         $guest = User::create([
             'first_name' => 'juan',
             'last_name' => 'dela cruz',
-            'address' => $faker->address(),
-            'phone' => '09' . $faker->randomNumber(9, true),
+            'address' => null,
+            'phone' => '09' . Random::generate(9, '0-9'),
             'role' => UserRole::GUEST,
             'status' => UserStatus::ACTIVE,
             'email' => 'guest@test.com',
@@ -32,8 +32,8 @@ class UserSeeder extends Seeder
         $receptionist = User::create([
             'first_name' => 'ec',
             'last_name' => 'maranan',
-            'address' => $faker->address(),
-            'phone' => '09' . $faker->randomNumber(9, true),
+            'address' => null,
+            'phone' => '09' . Random::generate(9, '0-9'),
             'role' => UserRole::RECEPTIONIST,
             'status' => UserStatus::ACTIVE,
             'email' => 'receptionist@test.com',
@@ -43,8 +43,8 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'first_name' => 'marnie',
             'last_name' => 'maranan',
-            'address' => $faker->address(),
-            'phone' => '09' . $faker->randomNumber(9, true),
+            'address' => null,
+            'phone' => '09' . Random::generate(9, '0-9'),
             'role' => UserRole::ADMIN,
             'status' => UserStatus::ACTIVE,
             'email' => 'admin@test.com',
@@ -54,8 +54,8 @@ class UserSeeder extends Seeder
         $admin2 = User::create([
             'first_name' => 'jane',
             'last_name' => 'doe',
-            'address' => $faker->address(),
-            'phone' => '09' . $faker->randomNumber(9, true),
+            'address' => null,
+            'phone' => '09' . Random::generate(9, '0-9'),
             'role' => UserRole::ADMIN,
             'status' => UserStatus::ACTIVE,
             'email' => 'admin2@test.com',
