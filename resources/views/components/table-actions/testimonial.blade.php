@@ -124,7 +124,7 @@
 
             <x-form.input-group>
                 <x-form.input-label for='deactivate-testimonial-password-{{ $row->id }}'>Enter your password</x-form.input-label>
-                <x-form.input-text type="password" wire:model='password' id="deactivate-testimonial-password-{{ $row->id }}" name="deactivate-testimonial-password-{{ $row->id }}" label="Password" />
+                <x-form.input-text type="password" wire:model='password' id="activate-testimonial-password-{{ $row->id }}" name="deactivate-testimonial-password-{{ $row->id }}" label="Password" />
                 <x-form.input-error field="password" />
             </x-form.input-group>
 
