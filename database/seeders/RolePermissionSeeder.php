@@ -47,7 +47,7 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'read own billings']);
         Permission::create(['name' => 'update billing']);
         Permission::create(['name' => 'delete billing']);
-        Permission::create(['name' => 'retract billing']);
+        Permission::create(['name' => 'waive billing']);
 
         Permission::create(['name' => 'create building']);
         Permission::create(['name' => 'read buildings']);
@@ -145,7 +145,7 @@ class RolePermissionSeeder extends Seeder
             'read billings',
             'update billing',
             'delete billing',
-            'retract billing',
+            'waive billing',
 
             'create building',
             'read buildings',

@@ -331,6 +331,7 @@ class BillingService
             ]);
 
             $invoice->reservation->status = ReservationStatus::CONFIRMED;
+            $invoice->reservation->expires_at = null;
             $invoice->reservation->save();
 
             return $invoice;
@@ -341,6 +342,7 @@ class BillingService
         return DB::transaction(function () use ($invoice, $amount) {
             $invoice->waive_amount -= $amount;
             $invoice->reservation->status = ReservationStatus::CONFIRMED->value;
+            $invoice->reservation->expires_at = null;
 
             $invoice->reservation->save();
             $invoice->save();
@@ -374,8 +376,9 @@ class BillingService
                     $invoice->status = InvoiceStatus::PARTIAL;
                 }
 
-                if ($invoice->payments()->sum('amount') == 0) {
+                if ($invoice->payments()->sum('amount') == 0 && $invoice->reservation->status == ReservationStatus::CONFIRMED->value) {
                     $invoice->reservation->status = ReservationStatus::AWAITING_PAYMENT;
+                    $invoice->reservation->expires_at = Carbon::now()->addHour();
                 }
             }
 

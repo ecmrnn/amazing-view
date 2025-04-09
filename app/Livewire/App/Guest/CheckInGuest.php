@@ -85,7 +85,7 @@ class CheckInGuest extends Component
                 </hgroup>
 
                 @if (!empty($reservation))
-                    <div class="flex items-center w-full gap-3 px-3 py-2 text-xs border rounded-md border-emerald-500 bg-emerald-200/50">
+                    <div class="flex items-center w-full gap-3 px-3 py-2 text-xs border rounded-md border-emerald-500 bg-emerald-50">
                         <svg class="self-start flex-shrink-0 text-emerald-800" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
                         <p class="text-emerald-800">Ready for check-in!</p>
                     </div>
