@@ -9,17 +9,20 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 class Reminder extends Mailable
 {
     use Queueable, SerializesModels;
+
+    public $refund_date;
 
     /**
      * Create a new message instance.
      */
     public function __construct(public Reservation $reservation)
     {
-        //
+        $this->refund_date = Carbon::parse($reservation->date_in)->subWeek();
     }
 
     /**
