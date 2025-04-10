@@ -45,7 +45,8 @@ class GenerateInvoicePDF implements ShouldQueue
         ])
         ->withBrowsershot(function (Browsershot $browsershot) {
             // prevents puppeteer errors with navigation
-            $browsershot->noSandbox();
+            $browsershot->noSandbox()
+                ->setChromePath('/usr/bin/chromium-browser');
         })
         ->format('letter')
         ->margins(
