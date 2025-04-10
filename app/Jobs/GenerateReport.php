@@ -16,6 +16,7 @@ use App\Models\RoomType;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Enums\Orientation;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -78,6 +79,10 @@ class GenerateReport implements ShouldQueue
                 'reservations' => $reservations,
                 'report' => $report,
             ])
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                // prevents puppeteer errors with navigation
+                $browsershot->noSandbox();
+            })
             ->format($size)
             ->orientation(Orientation::Landscape)
             ->margins(
@@ -113,6 +118,10 @@ class GenerateReport implements ShouldQueue
                 'report' => $report,
                 'guest_count' => $guest_count,
             ])
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                // prevents puppeteer errors with navigation
+                $browsershot->noSandbox();
+            })
             ->format($size)
             ->orientation(Orientation::Landscape)
             ->margins(
@@ -170,6 +179,10 @@ class GenerateReport implements ShouldQueue
                 'revenue' => $revenue,
                 'occupancy_rate' => abs($total_room_nights_occupied / $total_room_nights_available * 100)
             ])
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                // prevents puppeteer errors with navigation
+                $browsershot->noSandbox();
+            })
             ->format($size)
             ->margins(
                 $this->margin['top'],
@@ -228,6 +241,10 @@ class GenerateReport implements ShouldQueue
                 'revenue_per_room_type' => $revenue_per_room_type,
                 'grand_total' => $grand_total,
             ])
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                // prevents puppeteer errors with navigation
+                $browsershot->noSandbox();
+            })
             ->format($size)
             ->margins(
                 $this->margin['top'],

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
 
@@ -41,6 +42,10 @@ class GenerateReservationPDF implements ShouldQueue
         Pdf::view('pdf.reservations.reservation_pdf', [
             'reservation' => $this->reservation
         ])
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            // prevents puppeteer errors with navigation
+            $browsershot->noSandbox();
+        })
         ->format('letter')
         ->margins(
             $this->margin['top'],

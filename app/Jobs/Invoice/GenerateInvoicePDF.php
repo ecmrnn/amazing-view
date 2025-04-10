@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Enums\Unit;
 use Spatie\LaravelPdf\Facades\Pdf;
 
@@ -42,6 +43,10 @@ class GenerateInvoicePDF implements ShouldQueue
         Pdf::view('pdf.invoices.invoice_pdf', [
             'invoice' => $this->invoice
         ])
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            // prevents puppeteer errors with navigation
+            $browsershot->noSandbox();
+        })
         ->format('letter')
         ->margins(
             $this->margin['top'],
