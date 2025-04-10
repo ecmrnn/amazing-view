@@ -1,36 +1,33 @@
 <x-mail-layout>
-    <div class="max-w-2xl p-5 m-5 mx-auto bg-white rounded-lg shadow-lg md:p-10">
-        <header class="flex flex-col items-center gap-5 md:flex-row">
-            <div class="w-full max-w-24 aspect-square">
-                <img src="{{ $message->embed(storage_path('app/public/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}">
-            </div>
-        
-            <hgroup>
-                <p class="text-lg font-bold text-center md:text-left">Amazing View Mountain Resort</p>
-                <p class="text-sm text-center md:text-left">Little Baguio, Paagahan Mabitac, Laguna, Philippines</p>
-            </hgroup>
-        </header>
-    
-        <main class="py-10 space-y-5">
-            <h1 class="text-md"><span class="font-bold">Reservation ID:</span> {{ $reservation->rid }}</h1>
+    <table style="width: 600px; padding: 20px; margin: 20px auto; background-color: white; border-radius: 20px; border: 1px solid ##e2e8f0">
+        {{-- Header --}}
+        <tr>
+            <img src="{{ $message->embed(storage_path('app/public/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}" class="w-24 aspect-square">
+            <p class="mt-5 text-lg font-bold text-center md:text-left">Amazing View Mountain Resort</p>
+            <p class="text-sm text-center md:text-left">Little Baguio, Paagahan Mabitac, Laguna, Philippines</p>
+        </tr>
 
-            <p>Good day, <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
+        {{-- Main --}}
+        <tr>
+            <p class="text-md"><span class="font-bold">Reservation ID:</span> {{ $reservation->rid }}</p>
 
-            <h2 class="font-bold">Guest Details</h2>
+            <p class="mt-5">Good day, <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
 
-            <div>
-                <p><strong class="font-bold capitalize">Name:</strong> <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span></p>
-                <p><strong class="font-bold">Contact Number:</strong> {{ $reservation->user->phone }}</p>
-                <p><strong class="font-bold">Email:</strong> {{ $reservation->user->email }}</p>
-                <p><strong class="font-bold capitalize">Address:</strong> {{ $reservation->user->address }}</p>
+            <p class="mt-5 font-bold">Guest Details</p>
+
+            <div class="mt-5">
+                <p><span class="font-bold capitalize">Name:</span> <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span></p>
+                <p><span class="font-bold">Contact Number:</span> {{ $reservation->user->phone }}</p>
+                <p><span class="font-bold">Email:</span> {{ $reservation->user->email }}</p>
+                <p><span class="font-bold capitalize">Address:</span> {{ $reservation->user->address }}</p>
             </div>
 
-            <h2 class="font-bold">Reservation Details</h2>
+            <p class="mt-5 font-bold">Reservation Details</p>
 
             <div>
-                <p><strong class="font-bold">Check-in Date:</strong> {{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
-                <p><strong class="font-bold">Check-out Date:</strong> {{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
-                <p><strong class="font-bold">Number of Guests:</strong> 
+                <p><span class="font-bold">Check-in Date:</span> {{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
+                <p><span class="font-bold">Check-out Date:</span> {{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
+                <p><span class="font-bold">Number of Guests:</span> 
                     {{ $reservation->adult_count }} 
                     <span>
                         @if ($reservation->adult_count > 1)
@@ -146,12 +143,17 @@
                     </p>
                 </div>
             </div>
-        </main>
+        </tr>
+
+        {{-- Footer --}}
+        <tr>
+            <p style="text-align: center;">💖</p>
+            <p style="text-align: center;">Thank you for choosing</p>
+            <p style="text-align: center; font-weight: bold; color: #2b7fff">Amazing View Mountain Resort!</p>
+        </tr>
+    </table>
     
-        <footer>
-            <p class="text-center">💖</p>
-            <p class="text-center">Thank you for choosing</p>
-            <p class="font-bold text-center text-blue-500">Amazing View Mountain Resort!</p>
-        </footer>
+    <div>
+        
     </div>
 </x-mail-layout>

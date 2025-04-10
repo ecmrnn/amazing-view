@@ -230,7 +230,7 @@
                             <button type="button" class="text-xs font-semibold text-blue-500" x-on:click="$dispatch('open-modal', 'add-payment-modal')">Add Payment</button>
                         </div>
                         {{-- Remaining Balance --}}
-                        @if ($invoice->balance >= 0)
+                        @if ((int) $reservation->invoice->balance >= 0)
                             <x-app.card
                                 label="Remaining Balance"
                                 :hasLink="false"
