@@ -359,7 +359,7 @@ class ReservationService
                 );
             }
 
-            GenerateReservationPDF::dispatch($reservation);
+            // GenerateReservationPDF::dispatch($reservation);
             return $reservation;
         });
     }
