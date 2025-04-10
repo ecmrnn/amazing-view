@@ -107,7 +107,7 @@
 
         <section x-data="{ show: false }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
             <div class="flex items-start justify-between">
-                <div class="flex items-center gap-5">
+                <div class="flex items-center w-full gap-5">
                     <div class="grid font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-md aspect-square w-full max-w-[50px] place-items-center">
                         <p class="text-xl">{{ ucwords($reservation->user->first_name[0]) . ucwords($reservation->user->last_name[0]) }}</p>
                     </div>
@@ -118,7 +118,7 @@
                     </hgroup>
                 </div>
 
-                <a href="{{ route('app.users.edit', ['user' => $reservation->user->id]) }}" wire:navigate>
+                <a href="{{ route('app.users.edit', ['user' => $reservation->user->uid]) }}" wire:navigate>
                     <button type="button" class="text-xs font-semibold text-blue-500">Edit</button>
                 </a>
             </div>
