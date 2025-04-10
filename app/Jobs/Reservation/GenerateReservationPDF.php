@@ -44,7 +44,6 @@ class GenerateReservationPDF implements ShouldQueue
         ])
         ->withBrowsershot(function (Browsershot $browsershot) {
             $browsershot->noSandbox()
-                ->setChromePath('/usr/bin/chromium-browser')
                 ->setNodeBinary('/usr/bin/node')
                 ->setNpmBinary('/usr/bin/npm');
         })
