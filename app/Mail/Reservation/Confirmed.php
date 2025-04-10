@@ -60,5 +60,7 @@ class Confirmed extends Mailable
         // return [
         //     Attachment::fromPath($path)
         // ];
+
+        return [];
     }
 }
