@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
+use App\Http\Controllers\DateController;
 use App\Services\AmenityService;
 use Carbon\Carbon;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
@@ -24,8 +25,7 @@ class Reservation extends Model
     protected $guarded = [];
 
     public static function rules(array $excepts = []) {
-        $today = Carbon::now('UTC')->toDateString();
-
+        $today = DateController::today();
         $rules = [
             'date_in' => 'required|date|after_or_equal:' . $today,
             'date_out' => 'required|date|after_or_equal:date_in',

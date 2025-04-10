@@ -5,6 +5,7 @@ namespace App\Livewire\Guest;
 use App\Enums\RoomStatus;
 use App\Enums\ServiceStatus;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\DateController;
 use App\Models\AdditionalServices;
 use App\Models\Promo;
 use App\Models\Reservation;
@@ -95,13 +96,15 @@ class ReservationForm extends Component
     public $night_count;
     public $breakdown;
     public $max_date;
+    public $today;
 
     public function mount() {
         $this->selected_rooms = collect();
         $this->selected_services = collect();
         $this->available_room_types = collect();
         $this->cars = collect();
-        $this->min_date_in = now()->timezone(config('app.timezone'))->toDateString();
+        $this->today = DateController::today();
+        $this->min_date_in = DateController::tomorrow();
         $this->room_types = RoomType::all();
         $this->additional_services = AdditionalServices::where('status', ServiceStatus::ACTIVE)->get();
     }
@@ -113,7 +116,7 @@ class ReservationForm extends Component
 
     public function resetReservation() {
         $this->reset();
-
+        $this->today = DateController::today();
         $this->selected_rooms = collect();
         $this->selected_services = collect();
         $this->available_room_types = collect();
@@ -163,10 +166,8 @@ class ReservationForm extends Component
     // Validation Methods
     public function rules()
     {
-        $today = now()->timezone(config('app.timezone'))->toDateString();
-        logger($today);
         return [
-            'date_in' => 'required|date|after_or_equal:' . $today,
+            'date_in' => 'required|date|after_or_equal:' . $this->today,
             'date_out' => 'required_if:reservation_type,overnight|date|after_or_equal:date_in',
             'senior_count' => 'required|integer',
             'pwd_count' => 'required|integer',
@@ -334,7 +335,7 @@ class ReservationForm extends Component
             'adult_count' => $this->rules()['adult_count'],
             'children_count' => $this->rules()['children_count'],
         ]);
-        
+
         if ($this->reservation_type == 'overnight' && $this->date_in == $this->date_out) {
             $this->addError('date_out', 'Check-out date must be after check-in date');
             return;

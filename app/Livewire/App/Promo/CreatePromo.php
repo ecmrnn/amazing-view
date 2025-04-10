@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Promo;
 
+use App\Http\Controllers\DateController;
 use App\Models\Promo;
 use App\Services\PromoService;
 use App\Traits\DispatchesToast;
@@ -21,8 +22,7 @@ class CreatePromo extends Component
     public $min_date;
 
     public function rules() {
-        $today = Carbon::now('UTC')->toDateString();
-        
+        $today = DateController::today();
         return [
             'name' => 'required|max:255|string|regex:/^[A-Za-z0-9\- ]+$/',
             'code' => 'required|unique:promos,code|alpha_num:ascii',

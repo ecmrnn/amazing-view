@@ -2,8 +2,8 @@
     x-data="{
         {{-- Reservation Details --}}
         reservation_type: $persist($wire.entangle('reservation_type')).using(sessionStorage),
-        min_date_in: $persist($wire.entangle('min_date_in')).using(sessionStorage),
-        min_date_out: $persist($wire.entangle('min_date_out')).using(sessionStorage),
+        min_date_in: @entangle('min_date_in'),
+        min_date_out: @entangle('min_date_out'),
         max_date: $persist($wire.entangle('max_date')).using(sessionStorage),
         date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
         date_out: $persist($wire.entangle('date_out')).using(sessionStorage),

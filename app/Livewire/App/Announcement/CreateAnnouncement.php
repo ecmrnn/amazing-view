@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Announcement;
 
+use App\Http\Controllers\DateController;
 use App\Models\Announcement;
 use App\Services\AnnouncementService;
 use App\Traits\DispatchesToast;
@@ -22,8 +23,7 @@ class CreateAnnouncement extends Component
     #[Validate] public $expires_at;
 
     public function rules() {
-        $today = Carbon::now('UTC')->toDateString();
-
+        $today = DateController::today();
         return [
             'title' => 'required',
             'description' => 'required|max:1000',

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Room;
 
+use App\Http\Controllers\DateController;
 use App\Models\Room;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
@@ -18,12 +19,11 @@ class FindRoom extends Component
     public $min_date;
     public $rooms;
     public $index = 0;
+    public $today;
 
     public function rules() {
-        $today = Carbon::now('UTC')->toDateString();
-        
         return [
-            'date_in' => 'required|date|after_or_equal:' . $today,
+            'date_in' => 'required|date|after_or_equal:' . $this->today,
             'date_out' => 'required|date|after_or_equal:date_in',
             'guest_count' => 'required|integer|min:1',
         ];
@@ -33,6 +33,7 @@ class FindRoom extends Component
         $this->min_date = now()->format('Y-m-d');
         $this->date_in = Carbon::now()->format('Y-m-d');
         $this->date_out = Carbon::now()->addDay()->format('Y-m-d');
+        $this->today = DateController::today();
         $this->rooms = collect();
     }
 

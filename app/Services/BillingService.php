@@ -188,8 +188,8 @@ class BillingService
                     $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
                     
                     if ($guest_count == $discountable_guests) {
-                        $vatable_exempt_sales = ($sub_total / 1.12) / $guest_count;
-                        $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                        $vatable_exempt_sales = ($sub_total / 1.12);
+                        $discount = $vatable_exempt_sales * .2;
                     } else {
                         $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
                         $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 

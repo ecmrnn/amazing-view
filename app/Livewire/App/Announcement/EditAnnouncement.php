@@ -2,6 +2,7 @@
 
 namespace App\Livewire\App\Announcement;
 
+use App\Http\Controllers\DateController;
 use App\Models\Announcement;
 use App\Services\AnnouncementService;
 use App\Traits\DispatchesToast;
@@ -20,14 +21,13 @@ class EditAnnouncement extends Component
     #[Validate] public $description;
     #[Validate] public $image;
     #[Validate] public $expires_at;
+    public $today;
 
     public function rules() {
-        $today = Carbon::now('UTC')->toDateString();
-        
         return [
             'title' => 'required',
             'description' => 'required|max:1000',
-            'expires_at' => 'nullable|date|after_or_equal:' . $today,
+            'expires_at' => 'nullable|date|after_or_equal:' . $this->today,
             'image' => 'nullable|image'
         ];
     }
@@ -36,6 +36,7 @@ class EditAnnouncement extends Component
         $this->title = $announcement->title;
         $this->description = $announcement->description;
         $this->expires_at = $announcement->expires_at;
+        $this->today = DateController::today();
     }
 
     public function submit() {
