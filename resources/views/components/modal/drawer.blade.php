@@ -75,7 +75,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="w-full overflow-y-auto overflow-x-hidden h-screen relative transition-all transform bg-white rounded-s-lg {{ $maxWidth }}"
+        class="w-full overflow-y-auto overflow-x-hidden h-svh relative transition-all transform bg-white rounded-s-lg {{ $maxWidth }}"
         x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
         x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
         x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
