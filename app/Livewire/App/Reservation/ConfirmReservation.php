@@ -259,7 +259,7 @@ class ConfirmReservation extends Component
                                     <p class="text-xs">This reservation is about to be confirmed</p>
                                 </hgroup>
 
-                                @if ($discount)
+                                @if ($reservation->discount)
                                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                                         <hgroup>
                                             <h2 class='text-sm font-semibold'>Discounts Applied</h2>

@@ -11,7 +11,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     </head>
     <body>
-        <div style="font-size: 20px; padding: 40px 20px; color: #27272a; background-color: #f8fafc">
+        <div style="font-size: 20px; padding: 40px 20px; color: #27272a; background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
             {{ $slot }}
         </div>
     </body>

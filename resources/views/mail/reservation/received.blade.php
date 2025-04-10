@@ -51,7 +51,7 @@
                 <p style="margin-top: 20px; font-weight: bold; font-size: 14px;">Rooms Reserved:</p>
 
                 <div style="margin-top: 20px; overflow: hidden; border: 1px solid #e2e8f0; border-radius: 6px;">
-                    <table style="width: 100%;">
+                    <table style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr style="border-bottom: 1px solid #e2e8f0">
                                 <th style="padding: 8px 12px; font-weight: bold; font-size: 14px; text-align: left; background-color: #e2e8f0;">Room</th>
@@ -74,14 +74,14 @@
                 <p style="font-weight: bold; font-size: 16px;">Additional Services or Amenities Added</p>
 
                 <div style="overflow: hidden; border: 1px solid #e2e8f0; border-radius: 6px;">
-                    <table style="width: 100%;">
+                    <table style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #f8fafc;">Name</th>
-                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #f8fafc;">Type</th>
-                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #f8fafc;">Qty</th>
-                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #f8fafc;">Price</th>
-                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #f8fafc;">Total</th>
+                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #e2e8f0;">Name</th>
+                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #e2e8f0;">Type</th>
+                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #e2e8f0;">Qty</th>
+                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #e2e8f0;">Price</th>
+                                <th style="padding: 8px 12px; font-size: 14px; font-weight: bold; text-align: left; background-color: #e2e8f0;">Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -94,8 +94,9 @@
                                     <td style="padding: 8px 12px; font-size: 14px;"><x-currency />{{ number_format($service->pivot->price, 2) }}</td>
                                 </tr>
                             @endforeach
+                            
                             @foreach ($reservation->rooms as $room)
-                                @foreach ($room->amenities as $amenity)
+                                @foreach ($room->amenitiesForReservation($reservation->id)->get() as $amenity)
                                     <tr style="border-top: 1px solid #e2e8f0;">
                                         <td style="padding: 8px 12px; font-size: 14px; text-transform: capitalize;">{{ $amenity->name }}</td>
                                         <td style="padding: 8px 12px; font-size: 14px; text-transform: capitalize;">Amenity</td>
@@ -116,13 +117,13 @@
                 <div style="padding: 20px; border: 1px solid #f0b100; border-radius: 8px; font-size: 16px; background-color: #fefce8; color: #894b00;">
                     <div style="margin-bottom: 20px;">
                         <p style="font-size: 16px; font-weight: bold;">Payment Methods</p>
-                        <p style="font-size: 14px;">To confirm your reservation, a minimum amount of Php500.00 must be paid in the payment method below on or before <strong style="font-weight: bold; color: #ef4444;">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</strong>:</p>
+                        <p style="font-size: 14px;">To confirm your reservation, a minimum amount of Php500.00 must be paid in the payment method below on or before <span style="font-weight: bold; color: #ef4444;">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</span>:</p>
                     </div>
     
                     <div>
                         <p style="font-size: 14px; font-weight: bold;">GCash:</p>
-                        <p style="font-size: 14px; font-weight: normal;"><strong style="font-weight: bold;">GCash Number:</strong> {{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}</p>
-                        <p style="font-size: 14px; font-weight: normal;"><strong style="font-weight: bold;">Account Name:</strong> {{ Arr::get($settings, 'site_gcash_name', 'Fabio Basbaño') }}</p>
+                        <p style="font-size: 14px; font-weight: normal;"><span style="font-weight: bold;">GCash Number:</span> {{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}</p>
+                        <p style="font-size: 14px; font-weight: normal;"><span style="font-weight: bold;">Account Name:</span> {{ Arr::get($settings, 'site_gcash_name', 'Fabio Basbaño') }}</p>
                     </div>
                 </div>
             @else
@@ -135,13 +136,13 @@
             <div style="margin-top: 20px;">
                 <div>
                     <p style="font-size: 16px; font-weight: bold;">Account Creation</p>
-                    <p style="font-size: 14px;">You may create and access your account by clicking <a style="color: #3b82f6; text-decoration: underline;" href="{{ route('password.reset', ['token' => $token, 'email' => $reservation->user->email]) }}">here</a> to set your password paired with your email address.</p>
+                    <p style="font-size: 14px;">You may create and access your account by clicking <a style="color: #2b7fff; text-decoration: underline; text-underline-offset: 2px;" href="{{ route('password.reset', ['token' => $token, 'email' => $reservation->user->email]) }}">here</a> to set your password paired with your email address.</p>
                 </div>
 
                 <div>
                     <p style="margin: 0; font-size: 14px;"><span style="font-weight: bold;">Email</span>: {{ $reservation->user->email }}</p>
                     <p style="margin: 0; font-size: 14px;"><span style="font-weight: bold;">Password</span>: 
-                        <a style="color: #2b7fff; text-decoration: underline;" href="{{ route('password.reset', ['token' => $token, 'email' => $reservation->user->email]) }}">Set password</a>
+                        <a style="color: #2b7fff; text-decoration: underline; text-underline-offset: 2px;" href="{{ route('password.reset', ['token' => $token, 'email' => $reservation->user->email]) }}">Set password</a>
                     </p>
                 </div>
             </div>

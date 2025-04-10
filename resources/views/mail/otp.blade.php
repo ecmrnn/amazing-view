@@ -1,28 +1,29 @@
 <x-mail-layout>
-    <div class="max-w-2xl p-5 mx-auto bg-white md:shadow-lg md:p-10 md:rounded-lg">
-        <header class="flex flex-col items-center gap-5 md:flex-row">
-            <div class="w-full max-w-24 aspect-square">
-                <img src="{{ $message->embed(storage_path('app/public/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}">
+    <table style="width: 600px; padding: 20px; margin: 20px auto; background-color: white; border-radius: 8px; border: 1px solid #e2e8f0">
+        {{-- Header --}}
+        <tr>
+            <img src="{{ $message->embed(storage_path('app/public/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}" style="width: 96px; display: block; margin: 0 auto; aspect-ratio:1/1">
+            <p style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;">Amazing View Mountain Resort</p>
+            <p style="margin: 0; font-size: 14px; text-align: center;">Little Baguio, Paagahan Mabitac, Laguna, Philippines</p>
+        </tr>
+
+        {{-- Main --}}
+        <tr>
+            <p style="font-weight: bold; text-align: center; font-size: 18px;">Your OTP</p>
+
+            <p style="padding: 40px 0; font-size: 30px; font-weight: bold; letter-spacing: .4px; text-align: center; color: #2b7fff; border-radius: 6px; background-color: #f8fafc; border: 1px solid #e2e8f0;">{{ $otp->otp }}</p>
+
+            <div style="max-width: 320px; width: 100%; text-align: center;">
+                <p style="color: #ef4444; font-size: 16px;">Do not share your OTP!</p>
+                <p style="font-size: 14px;">If this is not you make sure to contact our staff to secure your reservation. Your OTP is valid only for 10 minutes.</p>
             </div>
-        
-            <hgroup>
-                <p class="text-lg font-bold text-center md:text-left">Amazing View Mountain Resort</p>
-                <p class="text-sm text-center md:text-left">Little Baguio, Paagahan Mabitac, Laguna, Philippines</p>
-            </hgroup>
-        </header>
-    
-        <main class="py-10 space-y-5">
-            <h1 class="font-semibold text-center text-md">Your OTP</h1>
+        </tr>
 
-            <p class="py-10 text-3xl font-bold tracking-wide text-center text-blue-500 rounded-md md:text-6xl bg-slate-50">{{ $otp->otp }}</p>
-
-            <p class="max-w-xs mx-auto text-sm text-center"><strong class="block text-red-500">Do not share your OTP!</strong> If this is not you make sure to contact our staff to secure your reservation. Your OTP is valid only for 10 minutes.</p>
-        </main>
-    
-        <footer>
-            <p class="text-center">💖</p>
-            <p class="text-center">Thank you for choosing</p>
-            <p class="font-bold text-center text-blue-500">Amazing View Mountain Resort!</p>
-        </footer>
-    </div>
+        {{-- Footer --}}
+        <tr>
+            <p style="font-size: 14px; margin: 0; text-align: center;">💖</p>
+            <p style="font-size: 14px; margin: 0; text-align: center;">Thank you for choosing</p>
+            <p style="font-size: 14px; margin: 0; text-align: center; font-weight: bold; color: #2b7fff">Amazing View Mountain Resort!</p>
+        </tr>
+    </table>
 </x-mail-layout>

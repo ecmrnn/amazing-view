@@ -166,10 +166,10 @@ class ReservationService
             }
     
             // Generate PDF
-            // GenerateReservationPDF::dispatch($reservation);
+            GenerateReservationPDF::dispatch($reservation);
     
             // Broadcast the event
-            // broadcast(new ReservationCreated)->toOthers();
+            broadcast(new ReservationCreated)->toOthers();
 
             // Send confirmation email to the guest
             Mail::to($reservation->user->email)->queue(new Received($reservation));
@@ -359,7 +359,7 @@ class ReservationService
                 );
             }
 
-            // GenerateReservationPDF::dispatch($reservation);
+            GenerateReservationPDF::dispatch($reservation);
             return $reservation;
         });
     }

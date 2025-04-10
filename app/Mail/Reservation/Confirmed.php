@@ -54,13 +54,11 @@ class Confirmed extends Mailable
      */
     public function attachments(): array
     {
-        // $filename = $this->reservation->rid . ' - ' . strtoupper($this->reservation->user->last_name) . '_' . strtoupper($this->reservation->user->first_name) . '.pdf';
-        // $path = 'storage/app/public/pdf/reservation/' . $filename;
+        $filename = $this->reservation->rid . ' - ' . strtoupper($this->reservation->user->last_name) . '_' . strtoupper($this->reservation->user->first_name) . '.pdf';
+        $path = 'storage/app/public/pdf/reservation/' . $filename;
 
-        // return [
-        //     Attachment::fromPath($path)
-        // ];
-
-        return [];
+        return [
+            Attachment::fromPath($path)
+        ];
     }
 }
