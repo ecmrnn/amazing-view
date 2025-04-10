@@ -82,7 +82,7 @@
                                 <x-form.input-date
                                     wire:model.live="date_in"
                                     x-model="date_in"
-                                    min="2025-04-17"
+                                    x-bind:min="min_date_in"
                                     name="date_in"
                                     x-on:input="$wire.setMinDateOut($event.target.value); if (reservation_type == 'day tour') date_out = date_in;"
                                     id="date_in" class="block w-full" />
