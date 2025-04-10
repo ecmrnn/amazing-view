@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Jobs\Invoice\GenerateInvoicePDF;
-use App\Mail\invoice\DiscardPayment;
+use App\Mail\Invoice\DiscardPayment;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Reservation;
