@@ -10,7 +10,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     </head>
-    <body class="text-sm antialiased md:p-10 font-inter text-zinc-800 bg-slate-50">
+    <body style="font-size: 20px; padding: 40px; color: #27272a; background-color: #f8fac">
         {{ $slot }}
     </body>
 </html>

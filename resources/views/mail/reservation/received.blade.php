@@ -1,14 +1,14 @@
 <x-mail-layout>
-    <table style="width: 600px; padding: 20px; margin: 20px auto; background-color: white; border-radius: 20px; border: 1px solid ##e2e8f0">
+    <table style="width: 600px; padding: 20px; margin: 20px auto; background-color: white; border-radius: 20px; border: 1px solid #e2e8f0">
         {{-- Header --}}
         <tr>
-            <img src="{{ $message->embed(storage_path('app/public/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}" class="w-24 aspect-square">
-            <p class="mt-5 text-lg font-bold text-center md:text-left">Amazing View Mountain Resort</p>
-            <p class="text-sm text-center md:text-left">Little Baguio, Paagahan Mabitac, Laguna, Philippines</p>
+            <img src="{{ $message->embed(storage_path('app/public/' . Arr::get($settings, 'site_logo', 'global/application-logo.png'))) }}" style="width: 96px; aspect-ratio:1/1">
+            {{-- <p class="mt-5 text-lg font-bold text-center md:text-left">Amazing View Mountain Resort</p>
+            <p class="text-sm text-center md:text-left">Little Baguio, Paagahan Mabitac, Laguna, Philippines</p> --}}
         </tr>
 
         {{-- Main --}}
-        <tr>
+        {{-- <tr>
             <p class="text-md"><span class="font-bold">Reservation ID:</span> {{ $reservation->rid }}</p>
 
             <p class="mt-5">Good day, <span class="capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>! We're excited to confirm your reservation with us. Here are the details of your reservation:</p>
@@ -143,7 +143,7 @@
                     </p>
                 </div>
             </div>
-        </tr>
+        </tr> --}}
 
         {{-- Footer --}}
         <tr>
@@ -152,8 +152,4 @@
             <p style="text-align: center; font-weight: bold; color: #2b7fff">Amazing View Mountain Resort!</p>
         </tr>
     </table>
-    
-    <div>
-        
-    </div>
 </x-mail-layout>
