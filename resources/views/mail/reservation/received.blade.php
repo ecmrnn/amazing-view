@@ -71,7 +71,7 @@
             </div>
 
             @if ($reservation->services->count() > 0 || $has_amenities)
-                <h2 style="font-weight: bold">Additional Services or Amenities Added</h2>
+                <p style="font-weight: bold">Additional Services or Amenities Added</p>
 
                 <div style="overflow: hidden; border: 1px solid #e2e8f0; border-radius: 6px;">
                     <table style="width: 100%;">
@@ -110,33 +110,33 @@
                 </div>
             @endif
 
-            <h2 style="font-size: 24px; font-weight: bold; color: #2b7fff">Total Amount Due: <x-currency />{{ number_format($reservation->invoice->sub_total, 2) }}</h2>
+            <p style="font-size: 24px; font-weight: bold; color: #2b7fff">Total Amount Due: <x-currency />{{ number_format($reservation->invoice->sub_total, 2) }}</p>
 
             @if (!empty($reservation->expires_at))
-                <x-warning-message>
+                <div style="padding: 20px; border: 1px solid #f0b100; border-radius: 8px; background-color: #fefce8; color: #894b00;">
                     <div style="margin-bottom: 20px;">
-                        <h2 style="font-weight: bold;">Payment Methods</h2>
+                        <p style="font-weight: bold;">Payment Methods</p>
                         <p>To confirm your reservation, a minimum amount of Php500.00 must be paid in the payment method below on or before <strong style="font-weight: bold; color: #ef4444;">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</strong>:</p>
                     </div>
     
                     <div>
-                        <h3 style="font-weight: bold;">GCash:</h3>
+                        <p style="font-weight: bold;">GCash:</p>
                         <p style="font-weight: normal;"><strong style="font-weight: bold;">GCash Number:</strong> {{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}</p>
                         <p style="font-weight: normal;"><strong style="font-weight: bold;">Account Name:</strong> {{ Arr::get($settings, 'site_gcash_name', 'Fabio Basbaño') }}</p>
                     </div>
-                </x-warning-message>
+                </div>
             @else
-                <x-info-message>
+                <div style="padding: 20px; border: 1px solid #2b7fff; border-radius: 8px; background-color: #eff6ff; color: #193cb8;">
                     <p style="font-weight: bold;">Proof of Payment Uploaded</p>
                     <p>We have received the image you uploaded on the reservation form. Please wait for our receptionist to confirm your reservation.</p>
-                </x-info-message>
+                </div>
             @endif
 
             <div style="margin-top: 20px;">
-                <hgroup>
-                    <h2 style="font-weight: bold;">Account Creation</h2>
+                <div>
+                    <p style="font-weight: bold;">Account Creation</p>
                     <p style="font-size: 14px;">You may create and access your account by clicking <a style="color: #3b82f6; text-decoration: underline;" href="{{ route('password.reset', ['token' => $token, 'email' => $reservation->user->email]) }}">here</a> to set your password paired with your email address.</p>
-                </hgroup>
+                </div>
 
                 <div>
                     <p style="font-size: 14px;"><span style="font-weight: bold;">Email</span>: {{ $reservation->user->email }}</p>
