@@ -11,31 +11,30 @@
         <tr>
             <p style="font-size: 16px;"><span style="font-weight: bold">Amazing vacation ahead!</span></p>
 
-            <p style="font-size: 14px;">Hi, <span style="text-transform: capitalize;">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>!
-                <br></br>
-                We are excited to welcome you to Amazing View Mountain Farm Resort soon! This is a friendly reminder about your upcoming stay with us.
-            </p>
+            <p style="font-size: 14px;">Hi, <span style="text-transform: capitalize;">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>!</p>
+
+            <p style="font-size: 14px;">We are excited to welcome you to Amazing View Mountain Farm Resort soon! This is a friendly reminder about your upcoming stay with us.</p>
 
             <div>
                 <p style="font-size: 14px; margin: 0;"><span style="font-weight: bold;">Check-in Date:</span> {{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
                 <p style="font-size: 14px; margin: 0;"><span style="font-weight: bold;">Check-out Date:</span> {{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
                 <div>
-                    <p style="font-weight: bold;">Rooms Reserved:</p> 
+                    <p style="font-weight: bold; font-size: 16px;">Rooms Reserved:</p> 
                     <div style="overflow: hidden; border: 1px solid #e2e8f0; border-radius: 6px;">
                         <table style="border-collapse: collapse; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th style="font-size: 14px; text-align: left; padding: 8px 12px;">Room Number</th>
-                                    <th style="font-size: 14px; text-align: left; padding: 8px 12px;">Building</th>
-                                    <th style="font-size: 14px; text-align: left; padding: 8px 12px;">Floor</th>
+                                    <th style="font-size: 14px; text-align: left; padding: 8px 12px; background-color: #e2e8f0;">Room Number</th>
+                                    <th style="font-size: 14px; text-align: left; padding: 8px 12px; background-color: #e2e8f0;">Building</th>
+                                    <th style="font-size: 14px; text-align: left; padding: 8px 12px; background-color: #e2e8f0;">Floor</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($reservation->rooms as $room)
-                                    <tr>
-                                        <p style="font-size: 14px; margin: 0; padding: 8px 12px;">{{ $room->room_number }}</p>
-                                        <p style="font-size: 14px; margin: 0; padding: 8px 12px; text-transform: capitalize;">{{ $room->building->name }}</p>
-                                        <p style="font-size: 14px; margin: 0; padding: 8px 12px;">{{ $room->floor_number }}</p>
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="font-size: 14px; margin: 0; padding: 8px 12px;">{{ $room->room_number }}</td>
+                                        <td style="font-size: 14px; margin: 0; padding: 8px 12px; text-transform: capitalize;">{{ $room->building->name }}</td>
+                                        <td style="font-size: 14px; margin: 0; padding: 8px 12px;">{{ $room->floor_number }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -66,8 +65,8 @@
                 </div>
             </div>
 
-            <p style="margin: 0; font-size: 14px;">We&apos;ve got everything ready for your arrival. If you have any questions, please don&apos;t hesitate to contact us! Attached below is a copy of your confirmed reservation form.</p>
-            <p style="margin: 0; font-size: 14px; font-weight: bold;">We look forward to providing you with an amazing stay! </p>
+            <p style="margin-top: 20px; font-size: 14px;">We&apos;ve got everything ready for your arrival. If you have any questions, please don&apos;t hesitate to contact us! Attached below is a copy of your confirmed reservation form.</p>
+            <p style="margin-bottom: 20px; font-size: 14px; font-weight: bold;">We look forward to providing you with an amazing stay! </p>
         </tr>
 
         {{-- Footer --}}
