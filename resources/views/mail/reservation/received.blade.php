@@ -53,14 +53,14 @@
                 <div style="margin-top: 20px; overflow: hidden; border: 1px solid #e2e8f0; border-radius: 6px;">
                     <table style="width: 100%;">
                         <thead>
-                            <tr style="border-bottom 1px solid #e2e8f0">
-                                <th style="padding: 8px 12px; font-weight: bold; font-size: 14px; background-color: #e2e8f0;">Room</th>
-                                <th style="padding: 8px 12px; font-weight: bold; font-size: 14px; background-color: #e2e8f0;">Rate</th>
+                            <tr style="border-bottom: 1px solid #e2e8f0">
+                                <th style="padding: 8px 12px; font-weight: bold; font-size: 14px; text-align: left; background-color: #e2e8f0;">Room</th>
+                                <th style="padding: 8px 12px; font-weight: bold; font-size: 14px; text-align: left; background-color: #e2e8f0;">Rate</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($reservation->rooms as $room)
-                                <tr style="border-bottom 1px solid #e2e8f0">
+                                <tr style="border-bottom: 1px solid #e2e8f0">
                                     <td style="font-size: 14px; padding: 8px 12px;">{{ $room->room_number }}</td>
                                     <td style="font-size: 14px; padding: 8px 12px;"><x-currency />{{ number_format($room->pivot->rate, 2) }}</td>
                                 </tr>
@@ -110,7 +110,7 @@
                 </div>
             @endif
 
-            <p style="font-size: 24px; font-weight: bold; margin-top: 0; color: #2b7fff">Total Amount Due: <x-currency />{{ number_format($reservation->invoice->sub_total, 2) }}</p>
+            <p style="font-size: 18px; font-weight: bold; margin-top: 20px; color: #2b7fff">Total Amount Due: <x-currency />{{ number_format($reservation->invoice->sub_total, 2) }}</p>
 
             @if (!empty($reservation->expires_at))
                 <div style="padding: 20px; border: 1px solid #f0b100; border-radius: 8px; font-size: 16px; background-color: #fefce8; color: #894b00;">
