@@ -43,9 +43,10 @@ class GenerateReservationPDF implements ShouldQueue
             'reservation' => $this->reservation
         ])
         ->withBrowsershot(function (Browsershot $browsershot) {
-            // prevents puppeteer errors with navigation
             $browsershot->noSandbox()
-                ->setChromePath('/usr/bin/chromium-browser');
+                ->setChromePath('/usr/bin/chromium-browser')
+                ->setNodeBinary('/usr/local/bin/node')
+                ->setNpmBinary('/usr/local/bin/npm');
         })
         ->format('letter')
         ->margins(
