@@ -43,11 +43,11 @@ class GenerateInvoicePDF implements ShouldQueue
         Pdf::view('pdf.invoices.invoice_pdf', [
             'invoice' => $this->invoice
         ])
-        ->withBrowsershot(function (Browsershot $browsershot) {
-            // prevents puppeteer errors with navigation
-            $browsershot->noSandbox()
-                ->setChromePath('/usr/bin/chromium-browser');
-        })
+        // ->withBrowsershot(function (Browsershot $browsershot) {
+        //     // prevents puppeteer errors with navigation
+        //     $browsershot->noSandbox()
+        //         ->setChromePath('/usr/bin/chromium-browser');
+        // })
         ->format('letter')
         ->margins(
             $this->margin['top'],

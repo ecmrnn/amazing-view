@@ -42,11 +42,11 @@ class GenerateReservationPDF implements ShouldQueue
         Pdf::view('pdf.reservations.reservation_pdf', [
             'reservation' => $this->reservation
         ])
-        ->withBrowsershot(function (Browsershot $browsershot) {
-            // prevents puppeteer errors with navigation
-            $browsershot->noSandbox()
-                ->setChromePath('/usr/bin/chromium-browser');
-        })
+        // ->withBrowsershot(function (Browsershot $browsershot) {
+        //     // prevents puppeteer errors with navigation
+        //     $browsershot->noSandbox()
+        //         ->setChromePath('/usr/bin/chromium-browser');
+        // })
         ->format('letter')
         ->margins(
             $this->margin['top'],
