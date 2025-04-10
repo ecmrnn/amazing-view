@@ -101,8 +101,7 @@ class ReservationForm extends Component
         $this->selected_services = collect();
         $this->available_room_types = collect();
         $this->cars = collect();
-        $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
-        
+        $this->min_date_in = now()->timezone(config('app.timezone'))->toDateString();
         $this->room_types = RoomType::all();
         $this->additional_services = AdditionalServices::where('status', ServiceStatus::ACTIVE)->get();
     }
@@ -164,8 +163,10 @@ class ReservationForm extends Component
     // Validation Methods
     public function rules()
     {
-        return[
-            'date_in' => 'required|date|after_or_equal:today',
+        $today = now()->timezone(config('app.timezone'))->toDateString();
+        logger($today);
+        return [
+            'date_in' => 'required|date|after_or_equal:' . $today,
             'date_out' => 'required_if:reservation_type,overnight|date|after_or_equal:date_in',
             'senior_count' => 'required|integer',
             'pwd_count' => 'required|integer',

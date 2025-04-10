@@ -175,19 +175,25 @@ class BillingService
         if (!empty($invoice)) {
             // Compute for discounts
             if (in_array($invoice->reservation->status, [
-                ReservationStatus::AWAITING_PAYMENT->value,
-                ReservationStatus::PENDING->value,
-                ReservationStatus::CONFIRMED->value,
-                ReservationStatus::CHECKED_OUT->value,
-                ReservationStatus::COMPLETED->value,
-            ])) {
+                    ReservationStatus::AWAITING_PAYMENT->value,
+                    ReservationStatus::PENDING->value,
+                    ReservationStatus::CONFIRMED->value,
+                    ReservationStatus::CHECKED_OUT->value,
+                    ReservationStatus::COMPLETED->value,
+                ])) {
                 if ($invoice->reservation->senior_count > 0 || $invoice->reservation->pwd_count > 0) {
                     $guest_count = $invoice->reservation->children_count + $invoice->reservation->adult_count;
                     $discountable_guests = $invoice->reservation->pwd_count + $invoice->reservation->senior_count;
         
                     $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
-                    $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
-                    $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                    
+                    if ($guest_count == $discountable_guests) {
+                        $vatable_exempt_sales = ($sub_total / 1.12) / $guest_count;
+                        $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                    } else {
+                        $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
+                        $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                    }
                 }
 
                 if ($invoice->reservation->promo) {

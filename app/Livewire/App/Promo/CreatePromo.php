@@ -5,6 +5,7 @@ namespace App\Livewire\App\Promo;
 use App\Models\Promo;
 use App\Services\PromoService;
 use App\Traits\DispatchesToast;
+use Carbon\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -20,11 +21,13 @@ class CreatePromo extends Component
     public $min_date;
 
     public function rules() {
+        $today = Carbon::now('UTC')->toDateString();
+        
         return [
             'name' => 'required|max:255|string|regex:/^[A-Za-z0-9\- ]+$/',
             'code' => 'required|unique:promos,code|alpha_num:ascii',
             'amount' => 'required|integer',
-            'start_date' => 'required|date|after_or_equal:today',
+            'start_date' => 'required|date|after_or_equal:' . $today,
             'end_date' => 'required|date|after_or_equal:start_date',
         ];
     }

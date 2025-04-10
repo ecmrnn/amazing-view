@@ -6,6 +6,7 @@ use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
 use App\Services\AmenityService;
+use Carbon\Carbon;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,8 +24,10 @@ class Reservation extends Model
     protected $guarded = [];
 
     public static function rules(array $excepts = []) {
+        $today = Carbon::now('UTC')->toDateString();
+
         $rules = [
-            'date_in' => 'required|date|after_or_equal:today',
+            'date_in' => 'required|date|after_or_equal:' . $today,
             'date_out' => 'required|date|after_or_equal:date_in',
             'senior_count' => 'nullable|integer',
             'pwd_count' => 'nullable|integer',

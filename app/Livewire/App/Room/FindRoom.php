@@ -20,8 +20,10 @@ class FindRoom extends Component
     public $index = 0;
 
     public function rules() {
+        $today = Carbon::now('UTC')->toDateString();
+        
         return [
-            'date_in' => 'required|date|after_or_equal:today',
+            'date_in' => 'required|date|after_or_equal:' . $today,
             'date_out' => 'required|date|after_or_equal:date_in',
             'guest_count' => 'required|integer|min:1',
         ];

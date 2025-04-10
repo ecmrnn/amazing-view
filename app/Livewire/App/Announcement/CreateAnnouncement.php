@@ -5,6 +5,7 @@ namespace App\Livewire\App\Announcement;
 use App\Models\Announcement;
 use App\Services\AnnouncementService;
 use App\Traits\DispatchesToast;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -21,11 +22,13 @@ class CreateAnnouncement extends Component
     #[Validate] public $expires_at;
 
     public function rules() {
+        $today = Carbon::now('UTC')->toDateString();
+
         return [
             'title' => 'required',
             'description' => 'required|max:1000',
             'image' => 'required|image',
-            'expires_at' => 'nullable|date|after_or_equal:today',
+            'expires_at' => 'nullable|date|after_or_equal:' . $today,
         ];
     }
 

@@ -5,6 +5,7 @@ namespace App\Livewire\App\Announcement;
 use App\Models\Announcement;
 use App\Services\AnnouncementService;
 use App\Traits\DispatchesToast;
+use Carbon\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Spatie\LivewireFilepond\WithFilePond;
@@ -21,10 +22,12 @@ class EditAnnouncement extends Component
     #[Validate] public $expires_at;
 
     public function rules() {
+        $today = Carbon::now('UTC')->toDateString();
+        
         return [
             'title' => 'required',
             'description' => 'required|max:1000',
-            'expires_at' => 'nullable|date|after_or_equal:today',
+            'expires_at' => 'nullable|date|after_or_equal:' . $today,
             'image' => 'nullable|image'
         ];
     }
