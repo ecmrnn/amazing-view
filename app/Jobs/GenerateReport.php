@@ -82,7 +82,7 @@ class GenerateReport implements ShouldQueue
             ->withBrowsershot(function (Browsershot $browsershot) {
                 // prevents puppeteer errors with navigation
                 $browsershot->noSandbox()
-                    ->setChromePath('/usr/bin/chromium-browser');;
+                      ->setChromePath('/usr/bin/chromium-browser');
             })
             ->format($size)
             ->orientation(Orientation::Landscape)
@@ -122,7 +122,7 @@ class GenerateReport implements ShouldQueue
             ->withBrowsershot(function (Browsershot $browsershot) {
                 // prevents puppeteer errors with navigation
                 $browsershot->noSandbox()
-                    ->setChromePath('/usr/bin/chromium-browser');;
+                    ->setChromePath('/usr/bin/chromium-browser');
             })
             ->format($size)
             ->orientation(Orientation::Landscape)
@@ -184,7 +184,7 @@ class GenerateReport implements ShouldQueue
             ->withBrowsershot(function (Browsershot $browsershot) {
                 // prevents puppeteer errors with navigation
                 $browsershot->noSandbox()
-                    ->setChromePath('/usr/bin/chromium-browser');;
+                    ->setChromePath('/usr/bin/chromium-browser');
             })
             ->format($size)
             ->margins(
@@ -247,7 +247,7 @@ class GenerateReport implements ShouldQueue
             ->withBrowsershot(function (Browsershot $browsershot) {
                 // prevents puppeteer errors with navigation
                 $browsershot->noSandbox()
-                    ->setChromePath('/usr/bin/chromium-browser');;
+                    ->setChromePath('/usr/bin/chromium-browser');
             })
             ->format($size)
             ->margins(
