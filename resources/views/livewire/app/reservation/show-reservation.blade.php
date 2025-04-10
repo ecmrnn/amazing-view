@@ -189,7 +189,7 @@
             </div>
 
             <hgroup>
-                <h2 class="text-lg font-semibold capitalize">
+                <h2 class="overflow-hidden text-lg font-semibold capitalize text-ellipsis whitespace-nowrap">
                     {{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</h2>
                 <p class="text-xs">Full Name</p>
             </hgroup>
@@ -198,7 +198,7 @@
         <div class="grid gap-5 lg:grid-cols-2">
             <div class="grid gap-5 p-5 border rounded-md lg:grid-cols-2 border-slate-200">
                 <div>
-                    <p class="font-semibold">{{ $reservation->user->email }}</p>
+                    <p class="overflow-hidden font-semibold text-ellipsis whitespace-nowrap" title="{{ $reservation->user->email }}">{{ $reservation->user->email }}</p>
                     <p class="text-xs">Email</p>
                 </div>
 

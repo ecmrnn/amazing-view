@@ -105,6 +105,50 @@
             </x-warning-message>
         @endif
 
+        <section x-data="{ show: false }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-start justify-between">
+                <div class="flex items-center gap-5">
+                    <div class="grid font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-md aspect-square w-full max-w-[50px] place-items-center">
+                        <p class="text-xl">{{ ucwords($reservation->user->first_name[0]) . ucwords($reservation->user->last_name[0]) }}</p>
+                    </div>
+                    <hgroup>
+                        <h2 class="overflow-hidden text-lg font-semibold capitalize text-ellipsis whitespace-nowrap">
+                            {{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</h2>
+                        <p class="text-xs">Full Name</p>
+                    </hgroup>
+                </div>
+
+                <a href="{{ route('app.users.edit', ['user' => $reservation->user->id]) }}" wire:navigate>
+                    <button type="button" class="text-xs font-semibold text-blue-500">Edit</button>
+                </a>
+            </div>
+    
+            <div class="grid gap-5 lg:grid-cols-2">
+                <div class="grid gap-5 p-5 border rounded-md lg:grid-cols-2 border-slate-200">
+                    <div>
+                        <p class="overflow-hidden font-semibold text-ellipsis whitespace-nowrap" title="{{ $reservation->user->email }}">{{ $reservation->user->email }}</p>
+                        <p class="text-xs">Email</p>
+                    </div>
+    
+                    <div>
+                        <p class="font-semibold">{{ $reservation->user->phone }}</p>
+                        <p class="text-xs">Contact No.</p>
+                    </div>
+                    <div class="lg:hidden">
+                        <p class="font-semibold">{{ $reservation->user->address }}</p>
+                        <p class="text-xs">Address</p>
+                    </div>
+                </div>
+    
+                <div class="hidden p-5 border rounded-md lg:grid lg:grid-cols-2 border-slate-200">
+                    <div class="lg:col-span-2">
+                        <p class="font-semibold">{{ $reservation->user->address }}</p>
+                        <p class="text-xs">Address</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         {{-- Reservation Details --}}
         <section class="p-5 space-y-5 bg-white border rounded-lg">
             <div class="flex items-start justify-between">
@@ -241,7 +285,7 @@
                 </div>
             </section>
 
-            @if ($reservation->status != \App\Enums\ReservationStatus::CHECKED_IN->value)
+            @if ($reservation->status == App\Enums\ReservationStatus::CHECKED_IN->value)
                 <section class="p-5 space-y-5 bg-white border rounded-lg">
                     <div class="flex items-start justify-between">
                         <hgroup>
@@ -253,7 +297,6 @@
                         <button type="button" class="text-xs font-semibold text-blue-500"
                             x-on:click="$dispatch('open-modal', 'add-amenity-modal')">Add Amenity</button>
                     </div>
-
                     
                     @php $counter = 0; @endphp
                     @if ($selected_amenities->count() > 0)
