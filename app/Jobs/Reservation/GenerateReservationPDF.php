@@ -42,6 +42,9 @@ class GenerateReservationPDF implements ShouldQueue
         Pdf::view('pdf.reservations.reservation_pdf', [
             'reservation' => $this->reservation
         ])
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            $browsershot->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']);
+        })
         ->format('letter')
         ->margins(
             $this->margin['top'],
