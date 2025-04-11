@@ -32,7 +32,7 @@ class GenerateInvoicePDF implements ShouldQueue
     public function __construct(public Invoice $invoice)
     {
         $this->filename = $invoice->iid . ' - ' . strtoupper($invoice->reservation->user->last_name) . '_' . strtoupper($invoice->reservation->user->first_name) . '.pdf';
-        $this->path = 'storage/app/public/pdf/invoice/' . $this->filename;
+        $this->path = storage_path('app/public/pdf/invoice/' . $this->filename);
     }
 
     /**
@@ -44,9 +44,7 @@ class GenerateInvoicePDF implements ShouldQueue
             'invoice' => $this->invoice
         ])
         ->withBrowsershot(function (Browsershot $browsershot) {
-            // prevents puppeteer errors with navigation
-            $browsershot->noSandbox()
-                ->setChromePath('/usr/bin/chromium-browser');
+            $browsershot->noSandbox();
         })
         ->format('letter')
         ->margins(

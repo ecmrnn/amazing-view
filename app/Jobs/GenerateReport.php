@@ -45,7 +45,7 @@ class GenerateReport implements ShouldQueue
     )
     {
         $this->filename = $report->name . ' - ' . $report->rid . '.' . $report->format;
-        $this->path = 'storage/app/public/' . $report->format . '/report/' . $this->filename;
+        $this->path = storage_path('app/public/' . $report->format . '/report/' . $this->filename);
     }
 
     /**
@@ -80,9 +80,7 @@ class GenerateReport implements ShouldQueue
                 'report' => $report,
             ])
             ->withBrowsershot(function (Browsershot $browsershot) {
-                // prevents puppeteer errors with navigation
-                $browsershot->noSandbox()
-                      ->setChromePath('/usr/bin/chromium-browser');
+                $browsershot->noSandbox();
             })
             ->format($size)
             ->orientation(Orientation::Landscape)
@@ -120,9 +118,7 @@ class GenerateReport implements ShouldQueue
                 'guest_count' => $guest_count,
             ])
             ->withBrowsershot(function (Browsershot $browsershot) {
-                // prevents puppeteer errors with navigation
-                $browsershot->noSandbox()
-                    ->setChromePath('/usr/bin/chromium-browser');
+                $browsershot->noSandbox();
             })
             ->format($size)
             ->orientation(Orientation::Landscape)
@@ -182,9 +178,7 @@ class GenerateReport implements ShouldQueue
                 'occupancy_rate' => abs($total_room_nights_occupied / $total_room_nights_available * 100)
             ])
             ->withBrowsershot(function (Browsershot $browsershot) {
-                // prevents puppeteer errors with navigation
-                $browsershot->noSandbox()
-                    ->setChromePath('/usr/bin/chromium-browser');
+                $browsershot->noSandbox();
             })
             ->format($size)
             ->margins(
@@ -245,9 +239,7 @@ class GenerateReport implements ShouldQueue
                 'grand_total' => $grand_total,
             ])
             ->withBrowsershot(function (Browsershot $browsershot) {
-                // prevents puppeteer errors with navigation
-                $browsershot->noSandbox()
-                    ->setChromePath('/usr/bin/chromium-browser');
+                $browsershot->noSandbox();
             })
             ->format($size)
             ->margins(
