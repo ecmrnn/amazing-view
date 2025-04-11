@@ -40,7 +40,7 @@ class GenerateReservationPDF implements ShouldQueue
      */
     public function handle(): void
     {
-        logger(Storage::exists($this->path));
+        logger('Directory exists: ' . (Storage::exists($this->path) ? 'Yes' : 'No') );
         // Pdf::view('pdf.reservations.reservation_pdf', [
         //     'reservation' => $this->reservation
         // ])
