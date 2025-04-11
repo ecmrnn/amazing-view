@@ -4,7 +4,7 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('reports.{user_id}', function (User $user, User $user_id) {
+Broadcast::channel('reports.{user_id}', function (User $user, $user_id) {
     return (int) $user->id === (int) $user_id;
 });
 

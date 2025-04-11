@@ -97,14 +97,5 @@
 
         @livewireScripts
         @livewireStyles
-
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                Echo.private('receptionist_admin')
-                    .listen('ReservationCreated', e => {
-                        new Audio("{{ asset('storage/sounds/notification.mp3') }}").play();
-                    })
-            });
-       </script>
     </body>
 </html>
