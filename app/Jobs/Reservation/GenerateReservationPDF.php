@@ -37,13 +37,13 @@ class GenerateReservationPDF implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle()
     {
-        Pdf::view('pdf.reservations.reservation_pdf', [
+        return Pdf::view('pdf.reservations.reservation_pdf', [
             'reservation' => $this->reservation
         ])
         ->withBrowsershot(function (Browsershot $browsershot) {
-            $browsershot->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']);
+            $browsershot->noSandbox();
         })
         ->format('letter')
         ->margins(
