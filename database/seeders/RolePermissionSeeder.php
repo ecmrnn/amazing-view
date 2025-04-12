@@ -112,7 +112,7 @@ class RolePermissionSeeder extends Seeder
 
             'create billing',
             'read billings',
-            'update billings',
+            'update billing',
             
             'create payment',
             'read payments',
