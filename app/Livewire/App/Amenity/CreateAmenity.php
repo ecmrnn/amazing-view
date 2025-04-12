@@ -54,7 +54,7 @@ class CreateAmenity extends Component
                     <x-form.input-group>
                         <div>
                             <x-form.input-label for="name">Name</x-form.input-label>
-                            <p class="text-xs">Give your new service or amenity a name</p>
+                            <p class="text-xs">Give your new amenity a name</p>
                         </div>
                         <x-form.input-text id="name" name="name" label="Amenity Name" wire:model.live="name" />
                         <x-form.input-error field="name" />
