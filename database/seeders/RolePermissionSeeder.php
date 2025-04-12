@@ -103,6 +103,7 @@ class RolePermissionSeeder extends Seeder
             'read guests',
             'update guest',
 
+            'update reservation',
             'create reservation',
             'read reservations',
 
@@ -111,6 +112,7 @@ class RolePermissionSeeder extends Seeder
 
             'create billing',
             'read billings',
+            'update billings',
             
             'create payment',
             'read payments',

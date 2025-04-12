@@ -115,15 +115,15 @@
 
             @if (!empty($reservation->expires_at))
                 <div style="padding: 20px; border: 1px solid #f0b100; border-radius: 8px; font-size: 16px; background-color: #fefce8; color: #894b00;">
-                    <div style="margin-bottom: 20px;">
+                    <div style="margin: 0; margin-bottom: 20px;">
                         <p style="font-size: 16px; font-weight: bold;">Payment Methods</p>
-                        <p style="font-size: 14px;">To confirm your reservation, a minimum amount of Php500.00 must be paid in the payment method below on or before <span style="font-weight: bold; color: #ef4444;">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</span>:</p>
+                        <p style="font-size: 14px;">To confirm your reservation, a minimum amount of <x-currency />500.00 must be paid in the payment method below on or before <span style="font-weight: bold; color: #ef4444;">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</span>:</p>
                     </div>
     
                     <div>
-                        <p style="font-size: 14px; font-weight: bold;">GCash:</p>
-                        <p style="font-size: 14px; font-weight: normal;"><span style="font-weight: bold;">GCash Number:</span> {{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}</p>
-                        <p style="font-size: 14px; font-weight: normal;"><span style="font-weight: bold;">Account Name:</span> {{ Arr::get($settings, 'site_gcash_name', 'Fabio Basbaño') }}</p>
+                        <p style="margin: 0; font-size: 14px; font-weight: bold;">GCash:</p>
+                        <p style="margin: 0; font-size: 14px; font-weight: normal;"><span style="font-weight: bold;">GCash Number:</span> {{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}</p>
+                        <p style="margin: 0; font-size: 14px; font-weight: normal;"><span style="font-weight: bold;">Account Name:</span> {{ Arr::get($settings, 'site_gcash_name', 'Fabio Basbaño') }}</p>
                     </div>
                 </div>
             @else
