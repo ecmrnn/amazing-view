@@ -461,13 +461,13 @@ class ReservationForm extends Component
     {
         if ($previous) {
             // Delete temporary uploaded file
-            $file_exists = !$this->proof_image_path ?: file_exists($this->proof_image_path->getRealPath());
+            $file_exists = !$this->proof_image_path ? false : file_exists($this->proof_image_path->getRealPath());
             if ($file_exists) {
                 unlink($this->proof_image_path->getRealPath());
             }
             $this->reset('proof_image_path');
 
-            $file_exists = !$this->discount_attachment ?: file_exists($this->discount_attachment->getRealPath());
+            $file_exists = !$this->discount_attachment ? false : file_exists($this->discount_attachment->getRealPath());
             if ($file_exists) {
                 unlink($this->discount_attachment->getRealPath());
             }
