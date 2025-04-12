@@ -14,7 +14,7 @@ Broadcast::channel('admin', function (User $user) {
 
 // These channes are used for the receptionist and admin to listen to the following events
 
-Broadcast::channel('invoices.{invoice_id}', function (User $user) {
+Broadcast::channel('invoices.{invoice_id}', function (User $user, $invoice_id) {
     return (int) $user->role === UserRole::ADMIN->value || (int) $user->role === UserRole::RECEPTIONIST->value;
 });
 
