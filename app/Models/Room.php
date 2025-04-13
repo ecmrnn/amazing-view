@@ -75,6 +75,23 @@ class Room extends Model
     // Get all reserved rooms between a specific range of dates
     public function scopeReservedRooms($query, $date_in, $date_out)
     {
+        if ($date_in == $date_out) {
+            return $query->whereIn('rooms.status', [
+                RoomStatus::RESERVED->value,
+                RoomStatus::OCCUPIED->value,
+                RoomStatus::UNAVAILABLE->value,
+            ])
+            ->whereHas('reservations', function ($query) use ($date_in, $date_out) {
+                $query->where('date_in', $date_in)
+                ->whereIn('reservations.status', [
+                    ReservationStatus::AWAITING_PAYMENT->value,
+                    ReservationStatus::PENDING->value,
+                    ReservationStatus::CONFIRMED->value,
+                    ReservationStatus::CHECKED_IN->value,
+                ]);
+        });
+        }
+
         return $query->whereIn('rooms.status', [
                 RoomStatus::RESERVED->value,
                 RoomStatus::OCCUPIED->value,
@@ -82,9 +99,10 @@ class Room extends Model
             ])
             ->whereHas('reservations', function ($query) use ($date_in, $date_out) {
                 $query->where(function ($q) use ($date_in, $date_out) {
-                    $q->where('date_in', '<=', $date_out)  // Starts before end of range
-                    ->where('date_out', '>=', $date_in); // Ends after start of range
-                })->whereIn('reservations.status', [
+                    $q->where('date_in', '<', $date_out)  // Starts before end of range
+                    ->where('date_out', '>', $date_in); // Ends after start of range
+                })
+                ->whereIn('reservations.status', [
                     ReservationStatus::AWAITING_PAYMENT->value,
                     ReservationStatus::PENDING->value,
                     ReservationStatus::CONFIRMED->value,

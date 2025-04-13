@@ -1,4 +1,4 @@
-<a wire:navigate {{ $attributes->merge(['class' => 'inline-flex items-center justify-between p-5 text-white rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 group']) }}>
+<a wire:navigate {{ $attributes->merge(['class' => 'inline-flex items-center justify-between p-5 text-white rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 group hover:cursor-pointer']) }}>
     {{ $slot }}
 
     <div class="transition-all duration-200 ease-in-out -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-0">

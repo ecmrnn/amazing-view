@@ -37,39 +37,76 @@ class CheckInGuest extends Component
 
         $this->reservation = Reservation::where('rid', $this->reservation_rid)->first();
         
-        if (!empty($this->reservation)) {
-            if ($this->reservation->status != ReservationStatus::CONFIRMED->value) {
+        if (empty($this->reservation)) {
+            return $this->toast('Oof, not found!', 'warning', 'Reservation not found!');
+        }
+        
+        $status = $this->reservation->status;
+        
+        $statusesWithMessages = [
+            [ 
+                'statuses' => [
+                    ReservationStatus::AWAITING_PAYMENT->value,
+                    ReservationStatus::PENDING->value,
+                ],
+                'message' => 'Reservation status must be confirmed'
+            ],
+            [
+                'statuses' => [
+                    ReservationStatus::EXPIRED->value,
+                    ReservationStatus::CANCELED->value,
+                    ReservationStatus::RESCHEDULED->value,
+                    ReservationStatus::NO_SHOW->value,
+                ],
+                'message' => 'Reservation is problematic!'
+            ],
+            [
+                'statuses' => [
+                    ReservationStatus::COMPLETED->value,
+                    ReservationStatus::CHECKED_OUT->value,
+                ],
+                'message' => 'Reservation is completed!'
+            ],
+            [
+                'statuses' => [
+                    ReservationStatus::CHECKED_IN->value,
+                ],
+                'message' => 'Guest is already in!'
+            ],
+        ];
+        
+        foreach ($statusesWithMessages as $group) {
+            if (in_array($status, $group['statuses'])) {
                 $this->reservation = null;
-                $this->toast('Check-in Failed', 'warning', 'Reservation status must be confirmed');
-            } else {
-                $this->date_in = $this->reservation->date_in;
-                $this->date_out = $this->reservation->date_out;
-                
-                if ($this->date_in != Carbon::now()->format('Y-m-d')) {
-                    $this->reservation = null;
-                    $this->toast('Check-in Failed', 'warning', 'Reservation check-in date is not until ' . date_format(date_create($this->date_in), 'F j, Y') . '!');
-                }
+                $this->toast('Check-in Failed', 'info', $group['message']);
+                return;
             }
-        } else {
-            $this->toast('Oof, not found!', 'warning', 'Reservation not found!');
+        }
+        
+        // Passed all checks, now validate check-in date
+        $this->date_in = $this->reservation->date_in;
+        $this->date_out = $this->reservation->date_out;
+        
+        if ($this->date_in !== Carbon::now()->format('Y-m-d')) {
+            $this->reservation = null;
+            return $this->toast(
+                'Check-in Failed',
+                'warning',
+                'Reservation check-in date is not until ' . Carbon::parse($this->date_in)->format('F j, Y') . '!'
+            );
         }
     }
 
     public function checkIn() {
         // If a reservation was found
         if (!empty($this->reservation)) {
-            if ($this->reservation->status == ReservationStatus::CHECKED_IN) {
-                $this->toast('Already in', 'info', 'Guest already checked-in');
-            } else {
-                $service = new ReservationService;
-                $service->checkIn($this->reservation);
+            $service = new ReservationService;
+            $service->checkIn($this->reservation);
 
-                $this->reset();
-                $this->dispatch('pg:eventRefresh-GuestTable');
-                $this->dispatch('guest-checked-in');
-                $this->toast('Success!', description: 'Success, guest checked-in!');
-            }
-            // If the reservation is already checked-in
+            $this->reset();
+            $this->dispatch('pg:eventRefresh-GuestTable');
+            $this->dispatch('guest-checked-in');
+            $this->toast('Success!', description: 'Success, guest checked-in!');
         } else {
             $this->toast('Oof, not found!', 'warning', 'Reservation not found!');
         }

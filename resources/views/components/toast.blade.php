@@ -293,11 +293,11 @@
                 }
             });
         "
-        class="fixed block w-full group z-[99] max-w-xs"
+        class="fixed block w-full group z-[99999] max-w-xs"
         :class="{
             'right-0 top-0 sm:mt-6 sm:mr-6': position=='top-right',
             'left-0 top-0 sm:mt-6 sm:ml-6': position=='top-left',
-            'left-1/2 -translate-x-1/2 top-0 sm:mt-6': position=='top-center',
+            'left-1/2 -translate-x-1/2 top-0 sm:mt-5': position=='top-center',
             'right-0 bottom-0 sm:mr-6 sm:mb-6': position=='bottom-right',
             'left-0 bottom-0 sm:ml-6 sm:mb-6': position=='bottom-left',
             'left-1/2 -translate-x-1/2 bottom-0 sm:mb-6': position=='bottom-center'

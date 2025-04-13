@@ -38,6 +38,17 @@
             @endif
         </div>
 
+        <div class="flex items-center gap-5">
+            <x-icon>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap-icon lucide-zap"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+            </x-icon>
+            
+            <hgroup>
+                <h2 class='font-semibold'>Quick Actions</h2>
+                <p class='text-xs'>What do you need to do?</p>
+            </hgroup>
+        </div>
+
         {{-- Widgets / Quick Actions --}}
         <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
            <x-quick-action href="{{ route('guest.reservation') }}">
