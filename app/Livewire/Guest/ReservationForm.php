@@ -333,6 +333,16 @@ class ReservationForm extends Component
             'adult_count' => $this->rules()['adult_count'],
             'children_count' => $this->rules()['children_count'],
         ]);
+        
+        if ($this->reservation_type == 'overnight' && $this->date_in == $this->date_out) {
+            $this->addError('date_out', 'Check-out date must be after check-in date');
+            return;
+        }
+
+        if ($this->date_out > $this->max_date) {
+            $this->addError('date_out', 'Maximum check-out date is one month after check-in date');
+            return;
+        }
 
         if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
             $this->addError('adult_count', 'Total Seniors and PWDs cannot exceed total guests');
