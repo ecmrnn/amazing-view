@@ -96,6 +96,7 @@
                                         x-model="date_out"
                                         x-bind:value="date_in == '' ? null : date_out"
                                         x-bind:min="min_date_out"
+                                        x-bind:max="max_date"
                                         name="date_out"
                                         id="date_out" class="block w-full" />
                                     <x-form.input-error field="date_out" />

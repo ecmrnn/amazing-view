@@ -94,6 +94,7 @@ class ReservationForm extends Component
     public $reservation_rid;
     public $night_count;
     public $breakdown;
+    public $max_date;
 
     public function mount() {
         $this->selected_rooms = collect();
@@ -108,6 +109,7 @@ class ReservationForm extends Component
 
     public function setMinDateOut($date_in) {
         $this->min_date_out = Carbon::parse($date_in)->addDay()->format('Y-m-d');
+        $this->max_date = Carbon::parse($this->date_in)->addMonth()->format('Y-m-d');
     }
 
     public function resetReservation() {

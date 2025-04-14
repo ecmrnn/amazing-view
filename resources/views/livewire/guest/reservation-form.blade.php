@@ -4,6 +4,7 @@
         reservation_type: $persist($wire.entangle('reservation_type')).using(sessionStorage),
         min_date_in: $wire.entangle('min_date_in'),
         min_date_out: $wire.entangle('min_date_out'),
+        max_date: $wire.entangle('max_date'),
         date_in: $persist($wire.entangle('date_in')).using(sessionStorage),
         date_out: $persist($wire.entangle('date_out')).using(sessionStorage),
         senior_count: $persist($wire.entangle('senior_count')).using(sessionStorage),
