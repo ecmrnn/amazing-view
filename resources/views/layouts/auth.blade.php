@@ -26,12 +26,12 @@
         </div>
         
         <div class="fixed top-0 z-0">
-            <img src="{{ url('images/login.jpg') }}" alt="" class="object-cover object-center w-screen h-screen blur-md">
+            <img src="{{ url('images/login.jpg') }}" alt="" class="object-cover object-center w-screen h-screen">
             <x-overlay />
         </div>
 
-        <main class="relative w-full h-full p-5 sm:w-auto sm:h-auto">
-            <div class="grid h-full p-5 bg-white rounded-lg sm:h-auto place-items-center">
+        <main class="relative w-auto h-auto p-5">
+            <div class="grid h-full p-10 bg-white border border-white rounded-lg sm:h-auto place-items-center">
                 {{ $slot }}
             </div>
         </main>
