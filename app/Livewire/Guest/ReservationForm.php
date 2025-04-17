@@ -117,12 +117,13 @@ class ReservationForm extends Component
 
     public function resetReservation() {
         $this->reset();
-        $this->today = DateController::today();
+        
         $this->selected_rooms = collect();
         $this->selected_services = collect();
         $this->available_room_types = collect();
         $this->cars = collect();
-        $this->min_date_in = Carbon::now()->addDay()->format('Y-m-d');
+        $this->today = DateController::today();
+        $this->min_date_in = Carbon::parse($this->today)->addDay()->format('Y-m-d');
         
         $this->room_types = RoomType::all();
         $this->additional_services = AdditionalServices::where('status', ServiceStatus::ACTIVE)->get();
