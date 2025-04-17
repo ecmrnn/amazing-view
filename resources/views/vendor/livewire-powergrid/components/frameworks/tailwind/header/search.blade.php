@@ -3,6 +3,7 @@
         <div class="relative float-right w-full rounded-full sm:max-w-min group ">
             
             <x-form.input-search
+                autocomplete="off"
                 wire:model.live.debounce.700ms="search"
             />
             
