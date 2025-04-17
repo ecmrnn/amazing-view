@@ -3,7 +3,6 @@
         <div class="relative float-right w-full rounded-full sm:max-w-min group ">
             
             <x-form.input-search
-                id="email"
                 wire:model.live.debounce.700ms="search"
             />
             
