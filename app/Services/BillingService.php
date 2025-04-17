@@ -121,10 +121,16 @@ class BillingService
             if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
                 $guest_count = $reservation->children_count + $reservation->adult_count;
                 $discountable_guests = $reservation->pwd_count + $reservation->senior_count;
-    
+                
                 $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
-                $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
-                $discount = ($vatable_exempt_sales * .2) * $discountable_guests;
+
+                if ($guest_count == $discountable_guests) {
+                    $vatable_exempt_sales = ($sub_total / 1.12);
+                    $discount = $vatable_exempt_sales * .2;
+                } else {
+                    $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
+                    $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                }
             }
 
             if ($reservation->promo) {
