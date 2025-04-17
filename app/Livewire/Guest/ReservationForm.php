@@ -103,8 +103,9 @@ class ReservationForm extends Component
         $this->selected_services = collect();
         $this->available_room_types = collect();
         $this->cars = collect();
+
         $this->today = DateController::today();
-        $this->min_date_in = DateController::tomorrow();
+        $this->min_date_in = Carbon::parse($this->today)->addDay()->format('Y-m-d');
         $this->room_types = RoomType::all();
         $this->additional_services = AdditionalServices::where('status', ServiceStatus::ACTIVE)->get();
     }
@@ -135,7 +136,7 @@ class ReservationForm extends Component
         return [
             'date_in.required' => 'Select a :attribute',
             'date_out.required_if' => 'Select a :attribute',
-            'date_in.after_or_equal' => ':attribute must be after or equal to today',
+            'date_in.after_or_equal' => ':attribute must be after to today',
             'date_out.after_or_equal' => ':attribute must be after or equal to check-in date',
             
             'adult_count.required' => 'Enter number of :attribute',
