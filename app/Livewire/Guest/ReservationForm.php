@@ -357,6 +357,20 @@ class ReservationForm extends Component
             return;
         }
 
+        // Get the room with the largest capacity
+        $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
+        $max_guests = Room::whereNotIn('id', $reserved_rooms)->sum('max_capacity');
+        
+        if ($this->children_count + $this->adult_count > 30) {
+            $this->addError('adult_count', 'Maximum number of guests are 30');
+            return;
+        }
+
+        if ($this->children_count + $this->adult_count > $max_guests) {
+            $this->addError('adult_count', 'Maximum number of guest are ' . $max_guests);
+            return;
+        }
+
         // Get the number of nights between 'date_in' and 'date_out'
         $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));
 

@@ -110,6 +110,7 @@
                                 <x-form.input-number
                                     wire:model.live="adult_count"
                                     x-model="adult_count"
+                                    max="30"
                                     id="adult_count"
                                     name="number_of_adults"
                                     class="block w-full"
@@ -121,6 +122,7 @@
                                 <x-form.input-label for="children_count">Number of Children</x-form.input-label>
                                 <x-form.input-number x-model="children_count" id="children_count"
                                     wire:model.live="children_count"
+                                    max="30"
                                     class="block w-full" />
                                 <x-form.input-error field="children_count" />
                             </x-form.input-group>
