@@ -208,7 +208,6 @@
                                     </div>
 
                                     <x-form.input-text wire:model.live='address' x-model="address" id="address" name="address" label="Address" />
-                                    <x-form.input-error field="address" />
                                 </x-form.input-group>
                             @endif
                             <x-form.input-error field="address" />

@@ -135,6 +135,8 @@ class DashboardController extends Controller
 
             // Monthly Sales
             $monthly_sales = InvoicePayment::select(DB::raw('MONTH(payment_date) as month, sum(amount) as total_sales'))
+                ->whereIn('invoices.status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE, InvoiceStatus::WAIVED])
+                ->join('invoices', 'invoices.id', '=', 'invoice_payments.invoice_id')
                 ->groupByRaw('MONTH(payment_date)')
                 ->get();
 

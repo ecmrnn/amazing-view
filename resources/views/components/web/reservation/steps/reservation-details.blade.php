@@ -181,11 +181,14 @@
 
                                             <x-modal.full name='view-room-{{ $room->id }}' maxWidth='md'>
                                                 <div class="p-5 space-y-5">
-                                                    <x-img src="{{ $room->image_1_path }}" />
+                                                    {{-- Edit this gagawing gallery --}}
+                                                    @if ($room->attachments->count() > 0)
+                                                        <x-img-gallery :srcs="$room->attachments()->pluck('path')" />
+                                                    @endif
 
                                                     <div class="flex items-start justify-between">
                                                         <div>
-                                                            <h3 class="text-lg font-semibold">{{ $room->roomType->name }} {{ $room->room_number }}</h3>
+                                                            <h3 class="text-lg font-semibold">{{ $room->roomType->name }} <span class="px-2 py-1 ml-2 text-xs border rounded-md bg-slate-50 border-slate-200">{{ $room->room_number }}</span></h3>
                                                             <p class="text-sm font-semibold"><x-currency />{{ $room->rate }} &#47; night</p>
                                                         </div>
 

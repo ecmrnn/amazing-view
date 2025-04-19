@@ -1,89 +1,56 @@
-@props([
-    'image_1_path' => 'https://placehold.co/500',
-    'image_2_path' => 'https://placehold.co/500',
-    'image_3_path' => 'https://placehold.co/500',
-    'image_4_path' => 'https://placehold.co/500',
-])
+@props(['srcs' => null])
 
 <div x-data="{
-    imageGalleryOpened: false,
-    imageGalleryActiveUrl: null,
-    imageGalleryImageIndex: null,
-    imageGallery: [
-        {
-            'photo': '{{ $image_1_path }}',
-            'alt': 'Photo of a Room'
+        key: 0,
+        prev() {
+            if (this.key - 1 < 0) {
+                this.key = @js(count($srcs) - 1);
+                return;
+            }
+
+            this.key = this.key - 1;
         },
-        {
-            'photo': '{{ $image_2_path }}',
-            'alt': 'Photo of a Room'
-        },
-        {
-            'photo': '{{ $image_3_path }}',
-            'alt': 'Photo of a Room'
-        },
-        {
-            'photo': '{{ $image_4_path }}',
-            'alt': 'Photo of a Room'
+        next() {
+            if (this.key + 1 > @js(count($srcs) - 1)) {
+                this.key = 0;
+                return;
+            }
+
+            this.key = this.key + 1;
         }
-    ],
-    imageGalleryOpen(event) {
-        this.imageGalleryImageIndex = event.target.dataset.index;
-        this.imageGalleryActiveUrl = event.target.src;
-        this.imageGalleryOpened = true;
-    },
-    imageGalleryClose() {
-        this.imageGalleryOpened = false;
-        setTimeout(() => this.imageGalleryActiveUrl = null, 300);
-    },
-    imageGalleryNext(){
-        this.imageGalleryImageIndex = (this.imageGalleryImageIndex == this.imageGallery.length) ? 1 : (parseInt(this.imageGalleryImageIndex) + 1);
-        this.imageGalleryActiveUrl = this.$refs.gallery.querySelector('[data-index=\'' + this.imageGalleryImageIndex + '\']').src;
-    },
-    imageGalleryPrev() {
-        this.imageGalleryImageIndex = (this.imageGalleryImageIndex == 1) ? this.imageGallery.length : (parseInt(this.imageGalleryImageIndex) - 1);
-        this.imageGalleryActiveUrl = this.$refs.gallery.querySelector('[data-index=\'' + this.imageGalleryImageIndex + '\']').src;
-        
-    }
-}" 
-@image-gallery-next.window="imageGalleryNext()" 
-@image-gallery-prev.window="imageGalleryPrev()" 
-@keyup.right.window="imageGalleryNext();" 
-@keyup.left.window="imageGalleryPrev();"
-class="w-full h-full select-none">
-<div class="max-w-6xl mx-auto duration-1000 delay-300 opacity-0 select-none ease animate-fade-in-view" style="translate: none; rotate: none; scale: none; opacity: 1; transform: translate(0px, 0px);">
-    <ul x-ref="gallery" id="gallery" class="grid grid-cols-2 gap-2">
-        <template x-for="(image, index) in imageGallery">
-            <li><img x-on:click="imageGalleryOpen" :src="image.photo" :alt="image.alt" :data-index="index+1" class="object-cover w-full h-auto bg-gray-200 rounded select-none cursor-zoom-in aspect-video"></li>
-        </template>
-    </ul>
-</div>
-<template x-teleport="body">
-    <div 
-        x-show="imageGalleryOpened" 
-        x-transition:enter="transition ease-in-out duration-300" 
-        x-transition:enter-start="opacity-0" 
-        x-transition:leave="transition ease-in-in duration-300" 
-        x-transition:leave-end="opacity-0" 
-        @click="imageGalleryClose" 
-        @keydown.window.escape="imageGalleryClose" 
-        x-trap.inert.noscroll="imageGalleryOpened"
-        class="fixed inset-0 z-[99] flex items-center justify-center bg-zinc-800 bg-opacity-50 select-none cursor-zoom-out" x-cloak>
-        <div class="relative flex items-center justify-center w-11/12 xl:w-4/5 h-11/12"> 
-            <div @click="$event.stopPropagation(); $dispatch('image-gallery-prev')" class="absolute left-0 flex items-center justify-center text-white translate-x-10 rounded-full cursor-pointer xl:-translate-x-24 2xl:-translate-x-32 bg-white/10 w-14 h-14 hover:bg-white/20">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+    }"
+    class="space-y-5">
+    <div class="relative overflow-hidden aspect-video">
+        @foreach ($srcs as $key => $src)
+            <div x-show="key == @js($key)" 
+                x-transition
+                x-transition.origin.center
+                x-transition:leave.scale.105
+                >
+                <x-img src="{{ $src }}" class="absolute" />
             </div>
-            <img 
-                x-show="imageGalleryOpened" 
-                x-transition:enter="transition ease-in-out duration-300" 
-                x-transition:enter-start="opacity-0 transform scale-50" 
-                x-transition:leave="transition ease-in-in duration-300" 
-                x-transition:leave-end="opacity-0 transform scale-50" 
-                class="object-contain object-center w-full select-none cursor-zoom-out" :src="imageGalleryActiveUrl" alt="" style="display: none;">
-            <div @click="$event.stopPropagation(); $dispatch('image-gallery-next');" class="absolute right-0 flex items-center justify-center text-white -translate-x-10 rounded-full cursor-pointer xl:translate-x-24 2xl:translate-x-32 bg-white/10 w-14 h-14 hover:bg-white/20">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-            </div>
-        </div>
+        @endforeach
     </div>
-</template>
+
+    <div class="flex justify-between w-full">
+        <x-tooltip text="Previous">
+            <x-icon-button x-ref="content" x-on:click="prev()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            </x-icon-button>
+        </x-tooltip>
+
+        <div class="flex items-center gap-1">
+            @for ($index = 0; $index < count($srcs); $index++)
+                <button x-on:click="key = @js($index)" x-bind:class="@js($index) != key 
+                ? 'w-2 rounded-full bg-slate-200 aspect-square'
+                : 'w-2 rounded-full bg-blue-500 aspect-square'"></button>
+            @endfor
+        </div>
+
+        <x-tooltip text="Next">
+            <x-icon-button x-ref="content" x-on:click="next()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </x-icon-button>
+        </x-tooltip>
+    </div>
 </div>
