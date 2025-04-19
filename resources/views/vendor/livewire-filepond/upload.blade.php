@@ -93,7 +93,11 @@ $pondLocalizations = __('livewire-filepond::filepond');
 
       {{-- Reset all the uploaded files --}}
       this.addEventListener('pond-reset', e => {
-            pond.removeFile()
+            if (@js($multiple)) {
+                pond.removeFiles();
+            }
+
+            pond.removeFile();
         })
     }"
 >

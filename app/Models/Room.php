@@ -60,6 +60,10 @@ class Room extends Model
         return $this->belongsToMany(Amenity::class, 'room_amenities')->withPivot('quantity', 'price');
     }
 
+    public function attachments(): HasMany {
+        return $this->hasMany(RoomAttachment::class);
+    }
+
     public function amenitiesForReservation($reservation) {
         return $this->belongsToMany(Amenity::class, 'room_amenities')->where('room_amenities.reservation_id', $reservation)->withPivot('quantity', 'price');
     }

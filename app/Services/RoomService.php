@@ -14,10 +14,6 @@ class RoomService
 {
     public function create($data) {
         return DB::transaction(function () use ($data) {
-            if ($data['image_1_path']) {
-                $data['image_1_path'] = $data['image_1_path']->store('rooms', 'public');
-            }
-    
             $room = Room::create([
                 'room_type_id' => $data['room_type'],
                 'building_id' => $data['building'],
@@ -27,12 +23,22 @@ class RoomService
                 'min_capacity' => $data['min_capacity'],
                 'max_capacity' => $data['max_capacity'],
                 'rate' => $data['rate'],
-                'image_1_path' => $data['image_1_path'],
             ]);
 
             $slot = BuildingSlot::find($data['selected_slot']['id']);
             $slot->room_id = $room->id;
             $slot->save();
+
+            if ($data['images']->count() > 0) {
+                foreach ($data['images'] as $path) {
+                    Storage::move('public/' . $path, 'public/rooms/' . substr($path, 6));
+                    $path = 'rooms/' . substr($path, 6);
+
+                    $room->attachments()->create([
+                        'path' => $path,
+                    ]);
+                }
+            }
             
             return $room;
         });

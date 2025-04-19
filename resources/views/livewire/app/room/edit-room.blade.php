@@ -10,7 +10,7 @@
             </x-tooltip>
         
             <hgroup>
-                <h2 class="text-lg font-semibold">Edit Room ({{ $room->room_number }})</h2>
+                <h2 class="text-lg font-semibold">Edit Room <span class="px-2 py-1 ml-2 text-xs border rounded-md bg-slate-50 border-slate-200">{{ $room->room_number }}</span></h2>
                 <p class="max-w-sm text-xs">Update your room details here</p>
             </hgroup>
         </div>
@@ -79,21 +79,7 @@
                         <x-form.input-error field="max_capacity" />
                     </x-form.input-group>
                 </div>
-                <!-- Image -->
-                <x-form.input-group>
-                    <div>
-                        <x-form.input-label for="image_1_path">Image</x-form.input-label>
-                        <p class="text-xs">Upload an image of your new room here</p>
-                    </div>
 
-                    <x-img src="{{ $room->image_1_path }}" />
-
-                    <x-filepond::upload
-                        wire:model.live="image_1_path"
-                        placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
-                    />
-                    <x-form.input-error field="image_1_path" />
-                </x-form.input-group>
                 {{-- Rate --}}
                 <x-form.input-group>
                     <div>
@@ -104,6 +90,49 @@
                     <x-form.input-error field="rate" />
                 </x-form.input-group>
             </div>
+        </div>
+
+        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <hgroup>
+                <h3 class="font-semibold">Image Gallery</h3>
+                <p class="text-xs">View your room images here</p>
+            </hgroup>
+
+            <!-- Image -->
+            <x-form.input-group>
+                <div>
+                    <x-form.input-label for="image_1_path">Image</x-form.input-label>
+                    <p class="text-xs">Upload images of your room here</p>
+                </div>
+
+                @if ($room->attachments->count() > 0)
+                    <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
+                        @foreach ($room->attachments as $image)
+                            <div wire:key='{{ $image->id }}' class="relative">
+                                <x-img src="{{ $image->path }}" :zoomable="true" />
+    
+                                <x-icon-button x-on:click="$dispatch('open-modal', 'delete-image-modal-{{ $image->id }}')" class="absolute bg-white top-2 right-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                </x-icon-button>
+                                
+                                <x-modal.full name='delete-image-modal-{{ $image->id }}' maxWidth='sm'>
+                                    <livewire:app.room.delete-room-image wire:key='{{ $image->id }}' :image="$image" />
+                                </x-modal.full>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <div class="w-full md:w-1/2">
+                    <x-filepond::upload
+                        wire:model.live="images"
+                        multiple
+                        placeholder="Drag & drop your images or <span class='filepond--label-action'> Browse </span>"
+                    />
+                </div>
+                
+                <x-form.input-error field="image_1_path" />
+            </x-form.input-group>
         </div>
 
         <x-primary-button>Edit Room</x-primary-button>

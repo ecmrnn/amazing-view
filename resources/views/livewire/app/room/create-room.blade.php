@@ -119,21 +119,6 @@
                     <x-form.input-error field="max_capacity" />
                 </x-form.input-group>
             </div>
-            
-            <!-- Image -->
-            <x-form.input-group>
-                <div>
-                    <x-form.input-label for="image_1_path">Image</x-form.input-label>
-                    <p class="text-xs">Upload an image of your new room here</p>
-                </div>
-        
-                <x-filepond::upload
-                    wire:model.live="image_1_path"
-                    placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
-                />
-
-                <x-form.input-error field="image_1_path" />
-            </x-form.input-group>
 
             {{-- Rate --}}
             <x-form.input-group>
@@ -145,6 +130,33 @@
                 <x-form.input-currency id="rate" name="rate" wire:model.live='rate' class="w-min" />
                 <x-form.input-error field="rate" />
             </x-form.input-group>
+        </div>
+
+        <div class="p-5 border rounded-md border-slate-200">
+            <!-- Image -->
+            <x-form.input-group>
+                <div>
+                    <x-form.input-label for="image">Images</x-form.input-label>
+                    <p class="text-xs">Upload images of your new room here</p>
+                </div>
+
+                @if ($images->count() > 0)
+                    <div class="grid grid-cols-2 gap-2">
+                        @foreach ($images as $image)
+                            <x-img src="{{ $image }}" />
+                        @endforeach
+                    </div>
+                @endif
+        
+                <x-filepond::upload
+                    wire:model.live="image"
+                    placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
+                />
+
+                <x-form.input-error field="image" />
+            </x-form.input-group>
+
+            <x-primary-button type="button" wire:click='saveImage'>Save Image</x-primary-button>
         </div>
         
         <div class="flex justify-end gap-1">

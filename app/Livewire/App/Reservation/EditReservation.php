@@ -271,7 +271,6 @@ class EditReservation extends Component
             $service->sync($this->reservation, $this->selected_amenities);
     
             $this->reset('amenity', 'quantity', 'max_quantity');
-            $this->dispatch('amenity-added');
             $this->toast('Success!', description: 'Amenity added successfully!');
         } else {
             $this->toast('Room is Checked-out', 'warning', 'The room selected is already checked-out.');

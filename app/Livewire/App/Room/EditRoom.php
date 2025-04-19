@@ -17,21 +17,21 @@ class EditRoom extends Component
     protected $listeners = [
         'status-updated' => '$refresh',
         'room-disabled' => '$refresh',
+        'image-deleted' => '$refresh',
     ];
 
     #[Validate] public $room;
     #[Validate] public $room_number;
     #[Validate] public $min_capacity;
     #[Validate] public $max_capacity;
-    #[Validate] public $image_1_path;
     #[Validate] public $rate;
+    public $images = [];
 
     public function rules() {
         return [
             'room_number' => 'required',
             'min_capacity' => 'required|numeric|min:1',
             'max_capacity' => 'required|numeric|gte:min_capacity',
-            'image_1_path' => 'nullable|image|mimes:jpeg,jpg,png',
             'rate' => 'required|numeric|min:1000',
         ];
     }
@@ -59,9 +59,22 @@ class EditRoom extends Component
             'room_number' => $this->rules()['room_number'],
             'min_capacity' => $this->rules()['min_capacity'],
             'max_capacity' => $this->rules()['max_capacity'],
-            'image_1_path' => $this->rules()['image_1_path'],
             'rate' => $this->rules()['rate'],
         ]);
+
+        if ($this->images) {
+            $this->validate([
+                'images.*' => 'image|max:1024', // 2MB max per image
+            ]);
+
+            foreach ($this->images as $key => $image) {
+                $image = $image->store('rooms', 'public');
+
+                $this->room->attachments()->create([
+                    'path' => $image,
+                ]);
+            }
+        }
 
         $this->room->update([
             'room_number' => $this->room_number,
@@ -70,21 +83,12 @@ class EditRoom extends Component
             'rate' => $this->rate,
         ]);
 
-        if (!empty($this->image_1_path)) {
-            // Delete previous image
-            if (!empty($this->room->image_1_path)) {
-                Storage::disk('public')->delete($this->room->image_1_path);
-            }
-            
-            // Store the image in the disk
-            $this->room->image_1_path = $this->image_1_path->store('rooms', 'public');
-        }
-
         $this->room->save();
 
         $this->toast('Success!', 'success', 'Room edited successfully!');
         $this->dispatch('room-edited');
         $this->dispatch('pond-reset');
+        $this->redirect(route('app.room.edit', ['type' => $this->room->roomType->id, 'room' => $this->room->id]), true);
     }
 
     public function render()
