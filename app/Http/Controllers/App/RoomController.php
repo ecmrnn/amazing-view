@@ -52,7 +52,7 @@ class RoomController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $room)
+    public function edit(string $type, string $room)
     {
         $room = Room::findOrFail($room);
 
