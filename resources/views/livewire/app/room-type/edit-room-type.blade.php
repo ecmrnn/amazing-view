@@ -1,6 +1,6 @@
 <form x-data="{ image_count: @entangle('image_count') }" wire:submit='submit' class="max-w-screen-lg mx-auto space-y-5">
     <div class="flex items-center justify-between gap-5 p-5 bg-white border rounded-lg border-slate-200">
-        <div class="flex items-center gap-3 sm:gap-5">
+        <div class="flex items-center gap-5">
             <x-tooltip text="Back" dir="bottom">
                 <a x-ref="content" href="{{ route('app.rooms.index')}}" wire:navigate>
                     <x-icon-button>
@@ -69,9 +69,9 @@
             <p class="text-xs">Upload an image for your thumbnail and rooms</p>
         </hgroup>
 
-        <div class="grid gap-5 mt-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="grid gap-2 mt-5 sm:grid-cols-2 xl:grid-cols-4">
             <x-form.input-group>
-                <x-img src="{{ $temp_image_1_path }}" />
+                <x-img src="{{ $temp_image_1_path }}" :zoomable="true" />
                 
                 <x-filepond::upload
                     wire:model.live="image_1_path"
@@ -81,7 +81,7 @@
             </x-form.input-group>
 
             <x-form.input-group>
-                <x-img src="{{ $temp_image_2_path }}" />
+                <x-img src="{{ $temp_image_2_path }}" :zoomable="true" />
 
                 <x-filepond::upload
                     wire:model.live="image_2_path"
@@ -91,7 +91,7 @@
             </x-form.input-group>
 
             <x-form.input-group>
-                <x-img src="{{ $temp_image_3_path }}" />
+                <x-img src="{{ $temp_image_3_path }}" :zoomable="true" />
 
                 <x-filepond::upload
                     wire:model.live="image_3_path"
@@ -101,7 +101,7 @@
             </x-form.input-group>
             
             <x-form.input-group>
-                <x-img src="{{ $temp_image_4_path }}" />
+                <x-img src="{{ $temp_image_4_path }}" :zoomable="true" />
 
                 <x-filepond::upload
                     wire:model.live="image_4_path"

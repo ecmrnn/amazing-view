@@ -34,12 +34,12 @@
             @foreach ($rooms as $room)
                 <div class="space-y-5">
                     <div>
-                        <x-img src="{{ $room->image_1_path }}" />
+                        <x-img :zoomable="true" src="{{ $room->image_1_path }}" />
                         
                         <div class="grid grid-cols-3 gap-1 mt-1">
-                            <x-img src="{{ $room->image_2_path }}" />
-                            <x-img src="{{ $room->image_3_path }}" />
-                            <x-img src="{{ $room->image_4_path }}" />
+                            <x-img :zoomable="true" src="{{ $room->image_2_path }}" />
+                            <x-img :zoomable="true" src="{{ $room->image_3_path }}" />
+                            <x-img :zoomable="true" src="{{ $room->image_4_path }}" />
                         </div>
                     </div>
                     
