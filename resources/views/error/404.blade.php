@@ -10,4 +10,4 @@
             <x-primary-button class="text-xs">Take me back</x-primary-button>
         </a>
     </div>
-</x-error-layout>p
+</x-error-layout>

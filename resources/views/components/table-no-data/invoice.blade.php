@@ -4,9 +4,9 @@
     <p class="text-sm">No invoices yet!</p>
 
     @can('create reservation')
-        <a class="inline-block text-xs" href="{{ route('app.billings.create') }}" wire:navigate.hover>
+        <a class="inline-block text-xs" href="{{ route('app.reservations.create') }}" wire:navigate.hover>
             <x-primary-button>
-                Create an Invoice
+                Create Reservation
             </x-primary-button>
         </a>
     @endcan

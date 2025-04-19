@@ -157,7 +157,7 @@
                                 <div class="grid gap-5 md:grid-cols-3">
                                     @forelse ($suggested_rooms as $key => $room)
                                         <div key="{{ $key }}" class="gap-3 border-slate-200 lg:space-y-2">
-                                            <x-img class="w-full" src="{{ $room->image_1_path }}" />
+                                            <x-img class="w-full" src="{{ $room->attachments->count() > 0 ? $room->attachments->get(0)->path : $room->roomType->image_1_path }}" :zoomable="true" />
                 
                                             <div class="w-full space-y-2">
                                                 <hgroup>

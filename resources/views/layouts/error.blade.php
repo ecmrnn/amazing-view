@@ -25,7 +25,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="antialiased font-inter text-zinc-800">
-        <div class="grid sm:h-screenh-svh place-items-center">
+        <div class="grid h-screen place-items-center">
             {{ $slot }}
         </div>
         
