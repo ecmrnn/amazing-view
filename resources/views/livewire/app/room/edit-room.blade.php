@@ -149,12 +149,14 @@
                 <button type="button" class="text-xs font-semibold text-blue-500" x-on:click="$dispatch('open-modal', 'add-inclusion-modal')">Add Inclusion</button>
             </div>
 
-            <livewire:tables.room-inclusions-table :room="$room" />
+            @if ($room->inclusions->count() > 0)
+                <livewire:tables.room-inclusions-table :room="$room" />
+            @else
+                <div class="font-semibold text-center border rounded-md border-slate-200s">
+                    <x-table-no-data.room_inclusion />
+                </div>
+            @endif
         </div>
         <x-primary-button>Edit Room</x-primary-button>
     </form>
-
-    <x-modal.full name='add-inclusion-modal' maxWidth='sm'>
-      <livewire:app.room.create-inclusion :room="$room" />  
-    </x-modal.full>
 </div>

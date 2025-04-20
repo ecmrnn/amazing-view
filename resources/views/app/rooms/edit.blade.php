@@ -10,17 +10,23 @@
         </div>
     </x-slot:header>
 
-    <livewire:app.room.edit-room room="{{ $room->id }}" />
+    <div>
+        <livewire:app.room.edit-room room="{{ $room->id }}" />
+            
+        <x-modal.full name='change-status-modal' maxWidth='sm'>
+            <livewire:app.room.change-status :room="$room" />
+        </x-modal.full>
 
-    <x-modal.full name='change-status-modal' maxWidth='sm'>
-        <livewire:app.room.change-status :room="$room" />
-    </x-modal.full>
+        <x-modal.full name='disable-room-modal' maxWidth='sm'>
+            <livewire:app.room.disable-room :room="$room" />
+        </x-modal.full>
 
-    <x-modal.full name='disable-room-modal' maxWidth='sm'>
-        <livewire:app.room.disable-room :room="$room" />
-    </x-modal.full>
+        <x-modal.full name='delete-room-modal' maxWidth='sm'>
+            <livewire:app.room.delete-room :room="$room" />
+        </x-modal.full>
 
-    <x-modal.full name='delete-room-modal' maxWidth='sm'>
-        <livewire:app.room.delete-room :room="$room" />
-    </x-modal.full>
+        <x-modal.full name='add-inclusion-modal' maxWidth='sm'>
+            <livewire:app.room.create-inclusion :room="$room" />  
+          </x-modal.full>
+    </div>
 </x-app-layout>

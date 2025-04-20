@@ -5,6 +5,7 @@ namespace App\Livewire\Tables;
 use App\Models\RoomInclusion;
 use App\Services\AuthService;
 use App\Traits\DispatchesToast;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Validate;
@@ -93,6 +94,11 @@ final class RoomInclusionsTable extends PowerGridComponent
         return view('components.table-actions.room_inclusion', [
             'row' => $row,
         ]);
+    }
+
+    public function noDataLabel(): string|View
+    { 
+        return view('components.table-no-data.room_inclusion');
     }
 
     public function updateInclusion(RoomInclusion $inclusion, $name) {

@@ -31,7 +31,7 @@ class CreateInclusion extends Component
             $this->toast('Success!', description: 'Inclusion created!');
             $this->dispatch('inclusion-created');
             $this->dispatch('pg:eventRefresh-RoomInclusionsTable');
-            $this->reset();
+            $this->reset('name');
         }
     }
 
