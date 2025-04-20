@@ -64,6 +64,10 @@ class Room extends Model
         return $this->hasMany(RoomAttachment::class);
     }
 
+    public function inclusions(): HasMany {
+        return $this->hasMany(RoomInclusion::class);
+    }
+
     public function amenitiesForReservation($reservation) {
         return $this->belongsToMany(Amenity::class, 'room_amenities')->where('room_amenities.reservation_id', $reservation)->withPivot('quantity', 'price');
     }

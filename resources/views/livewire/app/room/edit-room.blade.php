@@ -28,6 +28,10 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
                             <p>Change Status</p>
                         </x-action-button>
+                        <x-action-button type="button" x-on:click="$dispatch('open-modal', 'add-inclusion-modal'); dropdown = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bath-icon lucide-bath"><path d="M10 4 8 6"/><path d="M17 19v2"/><path d="M2 12h20"/><path d="M7 19v2"/><path d="M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/></svg>
+                            <p>Add Inclusion</p>
+                        </x-action-button>
                         <x-action-button type="button" x-on:click="$dispatch('open-modal', 'disable-room-modal'); dropdown = false">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
                             <p>Disable Room</p>
@@ -135,6 +139,22 @@
             </x-form.input-group>
         </div>
 
+        <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+            <div class="flex items-start justify-between">
+                <hgroup>
+                    <h2 class='font-semibold'>Inclusions</h2>
+                    <p class='text-xs'>Manage room inclusions here</p>
+                </hgroup>
+
+                <button type="button" class="text-xs font-semibold text-blue-500" x-on:click="$dispatch('open-modal', 'add-inclusion-modal')">Add Inclusion</button>
+            </div>
+
+            <livewire:tables.room-inclusions-table :room="$room" />
+        </div>
         <x-primary-button>Edit Room</x-primary-button>
     </form>
+
+    <x-modal.full name='add-inclusion-modal' maxWidth='sm'>
+      <livewire:app.room.create-inclusion :room="$room" />  
+    </x-modal.full>
 </div>

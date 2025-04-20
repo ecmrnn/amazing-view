@@ -18,6 +18,7 @@ class EditRoom extends Component
         'status-updated' => '$refresh',
         'room-disabled' => '$refresh',
         'image-deleted' => '$refresh',
+        'inclusion-created' => '$refresh',
     ];
 
     #[Validate] public $room;

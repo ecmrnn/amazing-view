@@ -301,8 +301,6 @@ class ReservationForm extends Component
             if (!$this->selected_rooms->contains('id', $room_id)) {
                 $room = Room::find($room_id);
                 $this->toggleRoom($room);
-
-                $this->toast('Success!', 'success', 'Room added!');
                 break;
             }
         }
@@ -322,8 +320,6 @@ class ReservationForm extends Component
         $this->selected_rooms = $this->selected_rooms->reject(function ($room) use ($room_to_delete) {
             return $room->id == $room_to_delete->id;
         });
-
-        $this->toast('For Your Info.', 'info', 'Room removed');
     }
 
     // Will be called when customer finished filling out the following properties

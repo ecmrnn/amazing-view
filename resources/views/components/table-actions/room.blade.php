@@ -19,8 +19,8 @@
     <x-modal.full name='delete-room-{{ $row->id }}-modal' maxWidth='sm'>
         <section class="p-5 space-y-5 bg-white" x-on:room-deleted.window="show = false">
             <hgroup>
-                <h2 class="font-semibold text-center text-red-500 capitalize">Delete room</h2>
-                <p class="max-w-sm text-sm text-center">Are you sure you really want to delete this room?</p>
+                <h2 class="text-lg font-semibold text-red-500 capitalize">Delete room</h2>
+                <p class="text-xs">Are you sure you really want to delete this room?</p>
             </hgroup>
 
             <div class="space-y-2">

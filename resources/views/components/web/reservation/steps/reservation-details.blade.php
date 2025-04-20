@@ -186,14 +186,53 @@
                                                         <x-img-gallery :srcs="$room->attachments()->pluck('path')" />
                                                     @endif
 
-                                                    <div class="flex items-start justify-between">
-                                                        <div>
-                                                            <h3 class="text-lg font-semibold">{{ $room->roomType->name }} <span class="px-2 py-1 ml-2 text-xs border rounded-md bg-slate-50 border-slate-200">{{ $room->room_number }}</span></h3>
-                                                            <p class="text-sm font-semibold"><x-currency />{{ $room->rate }} &#47; night</p>
+                                                    <div class="space-y-3">
+                                                        <div class="flex items-center gap-3">
+                                                            <x-icon class="bg-white">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-closed-icon lucide-door-closed"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><path d="M14 12v.01"/></svg>
+                                                            </x-icon>
+                                                            
+                                                            <div>
+                                                                <p class="font-semibold">{{ $room->roomType->name }}</p>
+                                                                <p class="text-xs">{{ $room->room_number }}</p>
+                                                            </div>
                                                         </div>
 
+                                                        <div class="flex items-center gap-3">
+                                                            <x-icon class="bg-white">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-philippine-peso-icon lucide-philippine-peso"><path d="M20 11H4"/><path d="M20 7H4"/><path d="M7 21V4a1 1 0 0 1 1-1h4a1 1 0 0 1 0 12H7"/></svg>
+                                                            </x-icon>
+                                                            
+                                                            <div>
+                                                                <p class="font-semibold"><x-currency />{{ number_format($room->rate, 2)  }}</p>
+                                                                <p class="text-xs">Room rate</p>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        @if ($room->inclusions->count() > 0)
+                                                            <div class="flex items-center gap-3">
+                                                                <x-icon class="bg-white">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles-icon lucide-sparkles"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+                                                                </x-icon>
+                                                                <div>
+                                                                    <p class="font-semibold">Inclusions</p>
+                                                                    <p class="text-xs">This room includes:</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="p-5 bg-white border rounded-md border-slate-200">
+                                                                <ul class="space-y-2 list-disc list-inside">
+                                                                    @foreach ($room->inclusions as $inclusion)
+                                                                        <li class="text-sm">{{ $inclusion->name }}</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="flex justify-end gap-1">
+                                                        <x-secondary-button type='button' x-on:click="show = false">Cancel</x-secondary-button>
                                                         @if ($selected_rooms->contains('id', $room->id))
-                                                            <x-secondary-button type="button" class="text-xs" wire:click="removeRoom({{ $room->id }})">Remove Room</x-secondary-button>
+                                                            <x-danger-button type="button" class="text-xs" wire:click="removeRoom({{ $room->id }})">Remove Room</x-danger-button>
                                                         @else
                                                             <x-primary-button type="button" class="text-xs" wire:click="addRoom({{ json_encode(array($room->id)) }})">Book this Room</x-primary-button>
                                                         @endif
@@ -249,7 +288,7 @@
             
                                 <div x-show="show" class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                                     @forelse ($selected_rooms as $room)
-                                    <div wire:key="{{ $room->id }}" class="relative flex items-center gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
+                                    <div wire:key="{{ $room->id }}" class="relative flex items-center justify-between gap-2 px-3 py-2 bg-white border rounded-lg border-slate-200">
                                         {{-- Room Details --}}
                                         <div>
                                             <p class="font-semibold capitalize border-r border-dashed line-clamp-1">{{ $room->roomType->name }}</p>
@@ -257,14 +296,20 @@
                                                 {{ $room->room_number }}: &#8369;{{ $room->rate }} &#47; night</p>
                                             <p class="text-xs text-zinc-800">Good for {{ $room->max_capacity }} guests.</p>
                                         </div>
+                                        
                                         {{-- Remove Room button --}}
-                                        <button
-                                            type="button"
-                                            class="absolute text-xs font-semibold text-red-500 top-2 right-3"
-                                            wire:click="removeRoom({{ $room->id }})">
-                                            <span wire:loading.remove wire:target="removeRoom({{ $room->id }})">Remove</span>
-                                            <x-loading wire:loading wire:target="removeRoom({{ $room->id }})">Removing</x-loading>
-                                        </button>
+                                        <div class="flex gap-1">
+                                            <x-tooltip text="View Room">
+                                                <x-icon-button x-ref="content" wire:click="viewRoom({{ $room->id }})">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-view-icon lucide-view"><path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"/><path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><circle cx="12" cy="12" r="1"/><path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/></svg>
+                                                </x-icon-button>
+                                            </x-tooltip>
+                                            <x-tooltip text="Remove Room">
+                                                <x-icon-button x-ref="content" class="text-red-500" wire:click="removeRoom({{ $room->id }})">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                                </x-icon-button>
+                                            </x-tooltip>
+                                        </div>
                                     </div>
                                     @empty
                                         <div class="border rounded-lg">
