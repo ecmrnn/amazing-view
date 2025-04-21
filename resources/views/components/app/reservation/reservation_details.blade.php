@@ -4,8 +4,7 @@
             <div class="grid space-y-1">
                 <x-form.input-label for="date_in">Check-in Date</x-form.input-label>
                 <x-form.input-date
-                    wire:model.live="date_in"
-                    x-model="date_in"
+                    wire:model="date_in"
                     min="{{ $min_date }}"
                     id="date_in" />
                 <x-form.input-error field="date_in" />
@@ -14,8 +13,7 @@
                 <x-form.input-label for="date_out">Check-out Date</x-form.input-label>
                 <x-form.input-date
                     x-bind:disabled="date_in == '' || date_in == null"
-                    wire:model.live="date_out"
-                    x-model="date_out"
+                    wire:model="date_out"
                     x-bind:value="date_in == '' ? null : date_out" x-bind:min="date_in"
                     id="date_out" />
                 <x-form.input-error field="date_out" />

@@ -36,12 +36,12 @@ class AmenityCards extends Component
 
         $this->amenity_sales = 0;
         $finalized_amenities = RoomAmenity::join('reservations', 'reservations.id', '=', 'room_amenities.reservation_id')
-            ->whereIn('reservations.status', [ReservationStatus::CHECKED_OUT, ReservationStatus::COMPLETED])
+            ->whereIn('reservations.status', [ReservationStatus::CHECKED_OUT->value, ReservationStatus::COMPLETED->value])
             ->get();
-        
+            
         if ($finalized_amenities->count() > 0) {
             foreach ($finalized_amenities as $amenity) {
-                $this->amenity_sales += ($amenity->pivot->price * $amenity->pivot->quantity);
+                $this->amenity_sales += ($amenity->price * $amenity->quantity);
             }
         }
         
