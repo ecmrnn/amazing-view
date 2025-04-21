@@ -140,7 +140,7 @@ final class AmenityTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Amenity::query();
+        return Amenity::query()->with('rooms');
     }
 
     public function relationSearch(): array

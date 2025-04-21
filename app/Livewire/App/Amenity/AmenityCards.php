@@ -33,17 +33,18 @@ class AmenityCards extends Component
             ->first();
         $this->critical_amenities = Amenity::where('quantity', '<=', 10)
             ->count();
-        $reserved_amenities = RoomAmenity::select('price', 'quantity')->get();
 
         $this->amenity_sales = 0;
         $finalized_amenities = RoomAmenity::join('reservations', 'reservations.id', '=', 'room_amenities.reservation_id')
             ->whereIn('reservations.status', [ReservationStatus::CHECKED_OUT, ReservationStatus::COMPLETED])
             ->get();
-        // dd($finalized_amenities);
-        foreach ($finalized_amenities as $amenity) {
-            $this->amenity_sales += ($amenity->pivot->price * $amenity->pivot->quantity);
+        
+        if ($finalized_amenities->count() > 0) {
+            foreach ($finalized_amenities as $amenity) {
+                $this->amenity_sales += ($amenity->pivot->price * $amenity->pivot->quantity);
+            }
         }
-        // dd($this->popular_amenity);
+        
         return view('livewire.app.amenity.amenity-cards');
     }
 }
