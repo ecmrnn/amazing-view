@@ -129,9 +129,10 @@ class DashboardController extends Controller
 
             $area_chart_reservation = (new areaChartModel())
                 ->setColor('#2563EB');
-            foreach ($monthly_reservations_chart as $reservation) {
-                $area_chart_reservation->addPoint($months[$reservation->month - 1], $reservation->reservation_count);
-            };
+                foreach ($months as $index => $month) {
+                    $count = $monthly_reservations_chart->firstWhere('month', $index + 1)->reservation_count ?? 0;
+                    $area_chart_reservation->addPoint($month, $count);
+                }
 
             // Monthly Sales
             $monthly_sales = InvoicePayment::select(DB::raw('MONTH(payment_date) as month, sum(amount) as total_sales'))
@@ -142,9 +143,11 @@ class DashboardController extends Controller
 
             $area_chart_sales = (new areaChartModel())
                 ->setColor('#2563EB');
-            foreach ($monthly_sales as $sale) {
-                $area_chart_sales->addPoint($months[$sale->month - 1], $sale->total_sales);
-            };
+
+            foreach ($months as $index => $month) {
+                $sales = $monthly_sales->firstWhere('month', $index + 1)->total_sales ?? 0;
+                $area_chart_sales->addPoint($month, $sales);
+            }
 
             $data = [
                 'area_chart_reservation' => $area_chart_reservation,

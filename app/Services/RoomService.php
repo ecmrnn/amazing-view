@@ -149,15 +149,31 @@ class RoomService
     // Acceps the following arguments:
     // - Reservation to access the rooms pivot table
     public function release(Reservation $reservation, $selected_rooms, $status) {
-        $rooms = $reservation->rooms->whereIn('id', $selected_rooms->pluck('id'));
-        
-        foreach ($rooms as $room) {
-            $room->pivot->status = $status;
-            $room->pivot->save();
-
-            $room->status = RoomStatus::AVAILABLE->value;
-            $room->save();
-        }
+        DB::transaction(function () use ($reservation, $selected_rooms, $status) {
+            $rooms = $reservation->rooms->whereIn('id', $selected_rooms->pluck('id'));
+            
+            foreach ($rooms as $room) {
+                $room->pivot->status = $status;
+                $room->pivot->save();
+    
+                $reservation_count = $room->reservations()->whereIn('reservations.status', [
+                    ReservationStatus::AWAITING_PAYMENT->value,
+                    ReservationStatus::PENDING->value,
+                    ReservationStatus::CONFIRMED->value,
+                    ReservationStatus::CHECKED_IN->value,
+                ])
+                ->where('reservations.id', '!=', $reservation->id)
+                ->count();
+    
+                if ($reservation_count == 0) {
+                    $room->status = RoomStatus::AVAILABLE->value;
+                    $room->save();
+                } else {
+                    $room->status = RoomStatus::RESERVED->value;
+                    $room->save();
+                }
+            }
+        });
     }
 
     public function changeStatus(Room $room) {
