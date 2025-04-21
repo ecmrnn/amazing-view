@@ -26,6 +26,7 @@ class Reservation extends Model
 
     public static function rules(array $excepts = []) {
         $today = DateController::today();
+        
         $rules = [
             'date_in' => 'required|date|after_or_equal:' . $today,
             'date_out' => 'required|date|after_or_equal:date_in',

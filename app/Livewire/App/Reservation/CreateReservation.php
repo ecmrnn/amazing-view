@@ -5,6 +5,7 @@ namespace App\Livewire\App\Reservation;
 use App\Enums\ReservationStatus;
 use App\Enums\ServiceStatus;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\DateController;
 use App\Livewire\ServicesTable;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
@@ -99,7 +100,7 @@ class CreateReservation extends Component
     
     public function mount()
     {
-        $this->min_date = Carbon::now()->format('Y-m-d');
+        $this->min_date = DateController::today();
         $this->selected_rooms = collect();
         $this->selected_amenities = collect();
         $this->selected_services = collect();
