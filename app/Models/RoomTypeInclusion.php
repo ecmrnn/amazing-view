@@ -12,7 +12,7 @@ class RoomTypeInclusion extends Model
 
     protected $guarded = [];
 
-    public function roomTpe(): BelongsTo {
+    public function roomType(): BelongsTo {
         return $this->belongsTo(RoomType::class);
     }
 }

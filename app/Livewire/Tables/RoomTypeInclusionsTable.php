@@ -58,7 +58,7 @@ final class RoomTypeInclusionsTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return RoomTypeInclusion::query();
+        return RoomTypeInclusion::query()->whereBelongsTo($this->room_type);
     }
 
     public function relationSearch(): array
