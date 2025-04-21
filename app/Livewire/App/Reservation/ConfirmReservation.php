@@ -43,7 +43,7 @@ class ConfirmReservation extends Component
 
     public function rules() {
         return [
-            'amount' => 'required|integer|gt:500|max:' . ceil($this->total_amount),
+            'amount' => 'required|integer|gte:500|max:' . ceil($this->total_amount),
             'transaction_id' => 'required_unless:payment_method,cash',
             'payment_date' => 'date|required',
             'password' => 'required',

@@ -307,4 +307,6 @@
 
         <livewire:app.reservation-breakdown :reservation="$reservation" />
     </section>
+
+    <livewire:app.reservation.confirm-reservation :reservation="$reservation" />
 </div>

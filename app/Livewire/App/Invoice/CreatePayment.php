@@ -26,7 +26,7 @@ class CreatePayment extends Component
     #[Validate] public $payment_method = 'cash';
     #[Validate] public $transaction_id;
     #[Validate] public $purpose;
-    #[Validate] public $amount = 0;
+    #[Validate] public $amount = 500;
     
     public function mount(Invoice $invoice) {
         $this->invoice = $invoice;

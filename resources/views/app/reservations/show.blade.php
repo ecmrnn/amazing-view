@@ -13,9 +13,6 @@
     <livewire:app.reservation.show-reservation :reservation="$reservation" />
 
     @push('modals')
-        {{-- Proof of image modal --}}
-        <livewire:app.reservation.confirm-reservation :reservation="$reservation" />
-
         {{-- Modal for canceling reservation --}}
         <x-modal.full name="show-cancel-reservation" maxWidth="sm">
             <div x-data="{ reason: 'guest' }">

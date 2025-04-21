@@ -6,6 +6,7 @@ use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ShowReservation extends Component
@@ -22,7 +23,6 @@ class ShowReservation extends Component
     ];
 
     public $reservation;
-    public $new_reservation;
 
     public function downloadPdf()
     {
@@ -37,9 +37,9 @@ class ShowReservation extends Component
         }
     }
 
-    public function mount(Reservation $reservation)
-    {
-        $this->reservation = $reservation;
+    #[On('payment-added')]
+    public function test() {
+        $this->redirect(route('app.reservations.show', ['reservation' => $this->reservation->rid]), true);
     }
 
     public function render()
