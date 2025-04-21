@@ -116,5 +116,24 @@
         </x-note>
     </div>
 
+    <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+        <div class="flex items-start justify-between gap-5">
+            <hgroup>
+                <h2 class='font-semibold'>Inclusions</h2>
+                <p class='text-xs'>Enter the general inclusions for this room type</p>
+            </hgroup>
+
+            <button type="button" class="text-xs font-semibold text-blue-500" x-on:click="$dispatch('open-modal', 'add-inclusion-modal')">Add Inclusion</button>
+        </div>
+
+        @if ($room_type->inclusions->count() > 0)
+            <livewire:tables.room-type-inclusions-table :room_type="$room_type" />
+        @else
+            <div class="font-semibold text-center border rounded-md border-slate-200s">
+                <x-table-no-data.room_type_inclusion />
+            </div>
+        @endif
+    </div>
+
     <x-primary-button>Edit Room Type</x-primary-button> 
 </form>

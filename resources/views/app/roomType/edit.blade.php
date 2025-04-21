@@ -10,10 +10,16 @@
         </div>
     </x-slot:header>
 
-    <livewire:app.room-type.edit-room-type :room_type="$room_type" />
+    <div>
+        <livewire:app.room-type.edit-room-type :room_type="$room_type" />
+        
+        {{-- Modal --}}
+        <x-modal.full name='delete-room-type-modal' maxWidth='sm'>
+            <livewire:app.room-type.delete-room-type :room_type="$room_type" />
+        </x-modal.full>
 
-    {{-- Modal --}}
-    <x-modal.full name='delete-room-type-modal' maxWidth='sm'>
-        <livewire:app.room-type.delete-room-type :room_type="$room_type" />
-    </x-modal.full>
+        <x-modal.full name='add-inclusion-modal' maxWidth='sm'>
+            <livewire:app.room-type.create-inclusion :room_type="$room_type" />
+        </x-modal.full>
+    </div>
 </x-app-layout>  

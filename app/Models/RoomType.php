@@ -68,4 +68,8 @@ class RoomType extends Model
     public function reports(): HasMany {
         return $this->hasMany(Report::class);
     }
+
+    public function inclusions(): HasMany {
+        return $this->hasMany(RoomTypeInclusion::class);
+    }
 }

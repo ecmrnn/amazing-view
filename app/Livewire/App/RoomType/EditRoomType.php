@@ -13,7 +13,11 @@ class EditRoomType extends Component
 {
     use DispatchesToast, WithFilePond;
 
-    protected $listeners = ['room-type-edited' => '$refresh'];
+    protected $listeners = [
+        'room-type-edited' => '$refresh',
+        'inclusion-created' => '$refresh',
+        'inclusion-deleted' => '$refresh',
+    ];
 
     #[Validate] public $name;
     #[Validate] public $min_rate;

@@ -80,10 +80,18 @@ class PageController extends Controller
         $medias = MediaFile::where('page_id', $page->id)->pluck('path', 'key');
         $rooms = RoomType::all();
 
+        $mostPopularRoomType = RoomType::withCount(['rooms as total_reservations' => function ($query) {
+            $query->join('room_reservations', 'rooms.id', '=', 'room_reservations.room_id');
+        }])
+        ->orderByDesc('total_reservations')
+        ->first()
+        ->id;
+        
         return view('rooms', [
             'contents' => $contents,
             'medias' => $medias,
             'rooms' => $rooms,
+            'most_popular' => $mostPopularRoomType,
         ]);
     }
 

@@ -107,6 +107,5 @@
             <div class="max-w-xs">Upload a thumbnail and three high definition images that will showcase your new room here</div>
         </x-note>
     </div>
-
     <x-primary-button>Add Room Type</x-primary-button> 
 </form>
