@@ -169,7 +169,7 @@ class ReservationForm extends Component
     public function rules()
     {
         return [
-            'date_in' => 'required|date|after_or_equal:' . $this->today,
+            'date_in' => 'required|date|after_or_equal:' . Carbon::parse($this->today)->addDay()->format('Y-m-d'),
             'date_out' => 'required_if:reservation_type,overnight|date|after_or_equal:date_in',
             'senior_count' => 'required|integer',
             'pwd_count' => 'required|integer',
