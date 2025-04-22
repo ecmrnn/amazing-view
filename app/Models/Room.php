@@ -107,8 +107,8 @@ class Room extends Model
             ])
             ->whereHas('reservations', function ($query) use ($date_in, $date_out) {
                 $query->where(function ($q) use ($date_in, $date_out) {
-                    $q->where('date_in', '<=', $date_out)  // Starts before end of range
-                    ->where('date_out', '>=', $date_in); // Ends after start of range
+                    $q->where('date_in', '<', $date_out)  // Starts before end of range
+                    ->where('date_out', '>', $date_in); // Ends after start of range
                 })
                 ->whereIn('reservations.status', [
                     ReservationStatus::AWAITING_PAYMENT->value,
