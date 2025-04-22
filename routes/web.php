@@ -19,7 +19,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\AppendDefaultUserFilters;
 use App\Http\Middleware\CheckPageStatus;
 use Illuminate\Support\Facades\Route;
-use League\CommonMark\Extension\DefaultAttributes\ApplyDefaultAttributesProcessor;
 
 // Public Routes
 Route::middleware([CheckPageStatus::class])->name('guest.')->group(function () {
