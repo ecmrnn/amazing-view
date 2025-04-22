@@ -83,6 +83,17 @@ class Room extends Model
     // Get all reserved rooms between a specific range of dates
     public function scopeReservedRooms($query, $date_in, $date_out)
     {
+        $time_in = '';
+        $time_out = '';
+
+        if ($date_in == $date_out) {
+            $time_in = '08:00:00';
+            $time_out = '18:00:00';
+        } else {
+            $time_in = '14:00:00';
+            $time_out = '12:00:00';
+        }
+
         if ($date_in == $date_out) {
             return $query->whereIn('rooms.status', [
                 RoomStatus::RESERVED->value,
@@ -97,26 +108,28 @@ class Room extends Model
                     ReservationStatus::CONFIRMED->value,
                     ReservationStatus::CHECKED_IN->value,
                 ]);
-        });
+          });
         }
+        
+        $query = $query->whereIn('rooms.status', [
+            RoomStatus::RESERVED->value,
+            RoomStatus::OCCUPIED->value,
+            RoomStatus::UNAVAILABLE->value,
+        ])
+        ->whereHas('reservations', function ($query) use ($date_in, $date_out, $time_in, $time_out) {
+            $query->where(function ($q) use ($date_in, $date_out, $time_in, $time_out) {
+                $q->whereRaw('CONCAT(`date_in`, " ", `time_in`) < ?', [$date_out . ' ' . $time_out])
+                  ->whereRaw('CONCAT(`date_out`, " ", `time_out`) > ?', [$date_in . ' ' . $time_in]);
+            })
+            ->whereIn('reservations.status', [
+                ReservationStatus::AWAITING_PAYMENT->value,
+                ReservationStatus::PENDING->value,
+                ReservationStatus::CONFIRMED->value,
+                ReservationStatus::CHECKED_IN->value,
+            ]);
+        });    
 
-        return $query->whereIn('rooms.status', [
-                RoomStatus::RESERVED->value,
-                RoomStatus::OCCUPIED->value,
-                RoomStatus::UNAVAILABLE->value,
-            ])
-            ->whereHas('reservations', function ($query) use ($date_in, $date_out) {
-                $query->where(function ($q) use ($date_in, $date_out) {
-                    $q->where('date_in', '<', $date_out)  // Starts before end of range
-                    ->where('date_out', '>', $date_in); // Ends after start of range
-                })
-                ->whereIn('reservations.status', [
-                    ReservationStatus::AWAITING_PAYMENT->value,
-                    ReservationStatus::PENDING->value,
-                    ReservationStatus::CONFIRMED->value,
-                    ReservationStatus::CHECKED_IN->value,
-                ]);
-        });
+        return $query;
     }   
 
     public static function boot() {
@@ -132,3 +145,5 @@ class Room extends Model
         });
     }
 }
+
+// dd('2025-04-2514:00:00' >= '2025-04-2512:00:00' && '2025-04-2612:00:00' <= '2025-04-2414:00:00');
