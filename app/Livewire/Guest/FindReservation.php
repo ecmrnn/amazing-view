@@ -31,7 +31,6 @@ class FindReservation extends Component
     // Operations
     public $is_authorized = null;
     public $email;
-    public $encrypted_email;
     public $expires_at;
     public $otp;
     public $otp_input = [
@@ -164,7 +163,7 @@ class FindReservation extends Component
                 return;
             }
 
-            $this->encrypted_email = preg_replace('/(?<=...).(?=.*@)/u', '*', $this->reservation->user->email);
+            $this->email = $this->reservation->user->email;
 
             if (!empty($this->reservation->expires_at)) {
                 $this->expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->reservation->expires_at)->format('F d, Y \a\t h:i A');
