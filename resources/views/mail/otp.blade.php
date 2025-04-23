@@ -13,7 +13,7 @@
 
             <p style="padding: 40px 0; font-size: 30px; font-weight: bold; letter-spacing: .4px; text-align: center; color: #2b7fff; border-radius: 6px; background-color: #f8fafc; border: 1px solid #e2e8f0;">{{ $otp->otp }}</p>
 
-            <div style="max-width: 320px; width: 100%; text-align: center;">
+            <div style="max-width: 320px; width: 100%; text-align: center; margin: 0 auto;">
                 <p style="color: #ef4444; font-size: 16px;">Do not share your OTP!</p>
                 <p style="font-size: 14px;">If this is not you make sure to contact our staff to secure your reservation. Your OTP is valid only for 10 minutes.</p>
             </div>
