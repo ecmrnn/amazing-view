@@ -1,8 +1,9 @@
 <x-mail::message>
 # {{ $subject }}
 
+From, {{ $email }}
+
 {{ $message }}
 
-Thanks,<br>
 {{ config('app.name') }}
 </x-mail::message>

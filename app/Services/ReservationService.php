@@ -404,6 +404,9 @@ class ReservationService
         DB::transaction(function () use ($reservation) {
             $reservation->status = ReservationStatus::NO_SHOW;
             $reservation->save();
+
+            $reservation->invoice->status = InvoiceStatus::CANCELED;
+            $reservation->invoice->save();
     
             // Send email to guests with no-show reservations
             Mail::to($reservation->user->email)->queue(new NoShow($reservation));

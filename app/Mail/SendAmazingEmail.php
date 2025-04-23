@@ -29,7 +29,6 @@ class SendAmazingEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address($this->email),
             subject: $this->subject,
         );
     }

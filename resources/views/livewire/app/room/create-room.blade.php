@@ -132,33 +132,6 @@
             </x-form.input-group>
         </div>
 
-        <div class="p-5 border rounded-md border-slate-200">
-            <!-- Image -->
-            <x-form.input-group>
-                <div>
-                    <x-form.input-label for="image">Images</x-form.input-label>
-                    <p class="text-xs">Upload images of your new room here</p>
-                </div>
-
-                @if ($images->count() > 0)
-                    <div class="grid grid-cols-2 gap-2">
-                        @foreach ($images as $image)
-                            <x-img src="{{ $image }}" />
-                        @endforeach
-                    </div>
-                @endif
-        
-                <x-filepond::upload
-                    wire:model.live="image"
-                    placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
-                />
-
-                <x-form.input-error field="image" />
-            </x-form.input-group>
-
-            <x-primary-button type="button" wire:click='saveImage'>Save Image</x-primary-button>
-        </div>
-        
         <div class="flex justify-end gap-1">
             <x-secondary-button type="button" x-on:click="$wire.set('step', 1)">Back</x-secondary-button>
             <x-primary-button>Add Room</x-primary-button>
