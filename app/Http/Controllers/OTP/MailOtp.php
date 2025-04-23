@@ -15,9 +15,7 @@ class MailOtp extends Controller
         // Generate OTP
         $otp = random_int(100000, 999999);
 
-        $otp_record = Otp::where('email', $email)
-            ->whereDate('created_at', now()->toDateString())
-            ->first();
+        $otp_record = Otp::where('email', $email)->first();
         
         // Save OTP to database
         if ($otp_record) {
@@ -37,9 +35,7 @@ class MailOtp extends Controller
             ]);
         }
 
-        $otp_record = Otp::where('email', $email)
-            ->whereDate('created_at', now()->toDateString())
-            ->first();
+        $otp_record = Otp::where('email', $email)->first();
     
         // Send OTP to email
         Mail::to($email)->queue(new SendOtp($otp_record));

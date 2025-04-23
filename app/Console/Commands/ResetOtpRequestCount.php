@@ -27,6 +27,5 @@ class ResetOtpRequestCount extends Command
     public function handle()
     {
         Otp::query()->update(['request_count' => 0]);
-        $this->info('OTP request count has been reset.');
     }
 }

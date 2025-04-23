@@ -103,7 +103,6 @@ class FindReservation extends Component
     
     public function sendOtp() {
         $otp_record = Otp::where('email', $this->reservation->user->email)
-            ->whereDate('created_at', now()->toDateString())
             ->first();
 
         if ($otp_record && $otp_record->request_count > $this->otp_per_day) {
@@ -158,7 +157,6 @@ class FindReservation extends Component
         
         if ($this->reservation != null) {
             $otp_record = Otp::where('email', $this->reservation->user->email)
-                ->whereDate('created_at', now()->toDateString())
                 ->first();
 
             if ($otp_record && $otp_record->request_count > $this->otp_per_day) {

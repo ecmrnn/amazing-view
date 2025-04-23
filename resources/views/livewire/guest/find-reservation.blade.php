@@ -36,7 +36,7 @@
                             </hgroup>
                         </div>
 
-                        @if ($expires_at)
+                        @if ($reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT)
                             <x-warning-message>
                                 <div>
                                     <h2 class="text-lg font-semibold">This reservation is awaiting payment!</h2>
