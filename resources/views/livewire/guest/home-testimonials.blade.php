@@ -23,7 +23,7 @@
                 </div>
 
                 <div>
-                    <p class="text-lg font-semibold">{{ $testimonial->name }}</p>
+                    <p class="text-lg font-semibold text-blue-800">{{ $testimonial->name }}</p>
                     <p class="text-xs">{{ date_format(date_create($testimonial->created_at), 'F j, Y') }}</p>
                 </div>
             </div>
