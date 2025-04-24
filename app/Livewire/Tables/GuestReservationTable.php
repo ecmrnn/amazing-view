@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
@@ -112,7 +113,9 @@ final class GuestReservationTable extends PowerGridComponent
 
     public function actionsFromView($row)
     {
-        $view_link = $row->user->hasRole('guest') ? 'app.reservations.show-guest-reservations' : 'app.reservations.show';
+        $user = Auth::user();
+        
+        $view_link = $user->hasRole('guest') ? 'app.reservations.show-guest-reservations' : 'app.reservations.show';
         
         return view('components.table-actions.reservation', [
             'row' => $row,
