@@ -6,6 +6,7 @@ use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -25,6 +26,7 @@ class ShowReservation extends Component
     ];
 
     public $reservation;
+    public $is_late_checkout = false;
 
     public function downloadPdf()
     {
@@ -52,6 +54,7 @@ class ShowReservation extends Component
 
     public function render()
     {
+        $this->is_late_checkout = now()->format('Y-m-d h:i:s') > $this->reservation->date_out . ' ' . $this->reservation->time_out;
         return view('livewire.app.reservation.show-reservation');
     }
 }

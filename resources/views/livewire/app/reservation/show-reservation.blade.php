@@ -182,6 +182,23 @@
         </x-info-message>
     @endif
 
+    @if ($is_late_checkout)
+            <x-danger-message>
+                <div class="flex flex-col items-start justify-between gap-5 md:flex-row">
+                    <hgroup>
+                        <h2 class='font-semibold text-red-500'>This reservation is late for check-out!</h2>
+                        <p class='text-xs'>This guest checkout date is {{ date_format(date_create($reservation->date_out), 'F j, Y') . ' at ' . date_format(date_create($reservation->time_out), 'h:i A') }}.</p>
+                    </hgroup>
+
+                    <a href="{{ route('app.reservation.check-out', ['reservation' => $reservation->rid]) }}" wire:navigate>
+                        <x-danger-button type="button">
+                            Check-out
+                        </x-danger-button>
+                    </a>
+                </div>
+            </x-danger-message>
+        @endif
+
     <section x-data="{ show: false }" class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
         <div class="flex items-center gap-5">
             <div class="grid font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-md aspect-square w-full max-w-[50px] place-items-center">
