@@ -48,8 +48,16 @@ class UserService
 
     public function update(User $user, $data) {
         DB::transaction(function () use ($user, $data) {
-            $user->update($data);
+            
+            $roles = ['guest', 'receptionist', 'admin'];
 
+            $role = $roles[$data['role'] - 1];
+
+            if ($user->role != $data['role']) {
+                $user->assignRole($role);
+            }
+
+            $user->update($data);
         });
     }
 
