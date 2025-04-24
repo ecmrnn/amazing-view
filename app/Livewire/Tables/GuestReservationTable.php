@@ -41,7 +41,7 @@ final class GuestReservationTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Reservation::query()->whereBelongsTo($this->user);
+        return Reservation::query()->whereBelongsTo($this->user)->orderByDesc('id');
     }
 
     public function relationSearch(): array

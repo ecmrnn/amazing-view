@@ -22,7 +22,7 @@
                 <p style="margin: 0; font-size: 14px; text-transform: capitalize;"><span style="font-weight: bold;">Address:</span> {{ $reservation->user->address }}</p>
             </div>
 
-            <p style="margin-top: 20px; font-weight: bold;">Reservation Details</p>
+            <p style="margin-top: 20px; font-weight: bold; font-size: 16px;">Reservation Details</p>
 
             <div>
                 <p style="margin: 0; font-size: 14px;"><span style="font-weight: bold">Check-in Date:</span> {{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
