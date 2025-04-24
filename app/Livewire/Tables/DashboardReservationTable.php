@@ -3,7 +3,9 @@
 namespace App\Livewire\Tables;
 
 use App\Enums\ReservationStatus;
+use App\Enums\RoomStatus;
 use App\Models\Reservation;
+use App\Services\AuthService;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
@@ -18,11 +20,15 @@ use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
-use Illuminate\View\View; 
+use Illuminate\View\View;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
 
 final class DashboardReservationTable extends PowerGridComponent
 {
     use WithExport;
+
+    #[Validate] public $password;
 
     public function noDataLabel(): string|View
     { 
@@ -122,15 +128,34 @@ final class DashboardReservationTable extends PowerGridComponent
         ]);
     }
 
-    /*
-    public function actionRules($row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
+    #[On('delete-reservation')]
+    public function deleteReservation($id) {
+        $this->validate(['password' => $this->rules()['password']]);
+
+        $auth = new AuthService();
+        
+        if ($auth->validatePassword($this->password)) {
+            $reservation = Reservation::find($id);
+
+            if (!$reservation) {
+                $this->toast('Missing Reservation', 'info', 'Reservation cannot be found.');
+            } else {
+                foreach ($reservation->rooms as $room) {
+                    $room->status = RoomStatus::AVAILABLE->value;
+                    $room->save();
+                    
+                    $reservation->rooms()->detach($room->id);
+                }
+
+                $reservation->delete();
+        
+                $this->toast('Success', description: 'Reservation successfully deleted');
+            }
+        } else {
+            $this->addError('password', 'Password mismatch, try again.');
+        }
+        
+        $this->dispatch('reservation-deleted');
+        $this->reset('password');
     }
-    */
 }
