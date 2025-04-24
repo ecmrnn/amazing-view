@@ -41,7 +41,7 @@ class BillingService
     }
 
     public function addPayment(Invoice $invoice, $payment) {
-        $invoice = DB::transaction(function () use ($invoice, $payment) {
+        return DB::transaction(function () use ($invoice, $payment) {
             if ($invoice->reservation->status == ReservationStatus::AWAITING_PAYMENT->value) {
                 $invoice->reservation->status = ReservationStatus::PENDING->value;
                 $invoice->reservation->expires_at = null;
@@ -53,7 +53,7 @@ class BillingService
             }  
             
             $invoice->payments()->create([
-                'transaction_id' => Arr::get($payment, 'transaction_id', null),
+                'transaction_id' => Arr::get($payment, 'payment_method', 'gcash') == 'cash' ? null : Arr::get($payment, 'transaction_id', null),
                 'amount' => Arr::get($payment, 'amount', 0),
                 'payment_date' => Arr::get($payment, 'payment_date', now()),
                 'payment_method' => Arr::get($payment, 'payment_method', 'gcash'),
@@ -74,13 +74,10 @@ class BillingService
                 }
             }
     
-    
             $invoice->save();
 
             return $invoice->fresh();
         });
-
-        return $invoice;
     }
 
     public function issueInvoice(Invoice $invoice) {

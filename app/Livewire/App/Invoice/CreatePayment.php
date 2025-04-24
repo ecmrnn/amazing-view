@@ -113,7 +113,18 @@ class CreatePayment extends Component
                     </div>
                     <div x-show="payment_method != 'cash'" class="space-y-3">
                         <x-form.input-label for="transaction_id">Enter Reference No.</x-form.input-label>
-                        <x-form.input-text wire:model.live='transaction_id' label="Reference No." id="transaction_id" />
+
+                        <template x-if="payment_method == 'gcash'">
+                            <x-form.input-text wire:model.live='transaction_id'
+                                x-mask:dynamic="$input.startsWith('00')
+                                ? '9999 999 999999'
+                                : '**** **** **** **** **** **** **** **** **** ****'"
+                                label="Reference No." id="transaction_id" />
+                        </template>
+
+                        <template x-if="payment_method == 'bank'">
+                            <x-form.input-text wire:model.live='transaction_id' x-mask="**** **** **** **** **** **** **** **** **** ****" label="Reference No." id="transaction_id" />
+                        </template>
                         <x-filepond::upload
                         wire:model.live="proof_image_path"
                         placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"

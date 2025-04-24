@@ -115,19 +115,18 @@
 
             @if (!empty($reservation->expires_at))
                 <div style="padding: 20px; border: 1px solid #f0b100; border-radius: 8px; font-size: 16px; background-color: #fefce8; color: #894b00;">
-                    <div style="margin: 20px 0;">
+                    <div style="margin: 0;">
                         <p style="font-size: 16px; margin: 0; font-weight: bold;">Payment Methods</p>
                         <p style="font-size: 14px;">To confirm your reservation, a minimum amount of <x-currency />500.00 must be paid in the payment method below on or before <span style="font-weight: bold; color: #ef4444;">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</span>:</p>
                     </div>
     
                     <div>
-                        <p style="margin: 0; font-size: 14px; font-weight: bold;">GCash:</p>
                         <p style="margin: 0; font-size: 14px; font-weight: normal;"><span style="font-weight: bold;">GCash Number:</span> {{ Arr::get($settings, 'site_gcash_phone', '09171399334') }}</p>
                         <p style="margin: 0; font-size: 14px; font-weight: normal;"><span style="font-weight: bold;">Account Name:</span> {{ Arr::get($settings, 'site_gcash_name', 'Fabio Basbaño') }}</p>
                     </div>
                 </div>
             @else
-                <div style="padding: 20px; border: 1px solid #2b7fff; border-radius: 8px; background-color: #eff6ff; color: #193cb8; margin: 20px 0;">
+                <div style="padding: 20px; border: 1px solid #2b7fff; border-radius: 8px; background-color: #eff6ff; color: #193cb8;">
                     <p style="font-size: 16px; font-weight: bold; margin: 0;">Proof of Payment Uploaded</p>
                     <p style="font-size: 14px; margin: 0;">We have received the image you uploaded on the reservation form. Please wait for our receptionist to confirm your reservation.</p>
                 </div>
