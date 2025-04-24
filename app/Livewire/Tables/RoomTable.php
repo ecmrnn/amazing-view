@@ -30,6 +30,7 @@ final class RoomTable extends PowerGridComponent
     #[Validate] public $password;
 
     public string $tableName = 'RoomTable';
+    public string $sortField = 'room_number';
     public $room_type_id;
 
     public function rules() {
@@ -62,8 +63,7 @@ final class RoomTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return Room::with('roomType')
-            ->where('room_type_id', $this->room_type_id)
-            ->orderBy('room_number');
+            ->where('room_type_id', $this->room_type_id);
     }
 
     public function relationSearch(): array

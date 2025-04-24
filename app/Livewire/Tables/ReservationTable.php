@@ -31,6 +31,10 @@ final class ReservationTable extends PowerGridComponent
     use WithExport, DispatchesToast;
 
     public string $tableName = 'ReservationTable';
+    public string $primaryKey = 'reservations.id';
+    public string $sortField = 'reservations.id';
+    public string $sortDirection = 'desc';
+    
     #[Url] public $status;
     #[Validate] public string $password;
 
@@ -66,30 +70,49 @@ final class ReservationTable extends PowerGridComponent
         if ($this->status) {
             return Reservation::query()
                 ->with('rooms')
+                ->select([
+                    'reservations.*',
+                    'users.first_name',
+                    'users.last_name',
+                    'users.email'
+                ])
+                ->with('user')
+                ->join('users', 'users.id', '=', 'reservations.user_id')
                 ->whereHas('user', function ($query) {
                     $query->withTrashed();
                 })
-                ->whereStatus($this->status)
-                ->orderByDesc('id');
+                ->where('reservations.status', $this->status);
         }
 
         return Reservation::query()
             ->with('rooms')
+            ->select([
+                'reservations.*',
+                'users.first_name',
+                'users.last_name',
+                'users.email'
+            ])
+            ->with('user')
+            ->join('users', 'users.id', '=', 'reservations.user_id')
             ->whereHas('user', function ($query) {
                 $query->withTrashed();
-            })
-            ->with('user')
-            ->orderByDesc('id');
+            });
     }
 
     public function relationSearch(): array
     {
-        return [];
+        return [
+            'user' => [
+                'first_name',
+                'last_name',
+            ]
+        ];
     }
 
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
+            ->add('reservations.id')
             ->add('rid')
             ->add('rid_formatted', function ($reservation) {
                 return Blade::render('<div class="flex items-center gap-3"><x-copy text="' . $reservation->rid . '" /> ' . $reservation->rid . '</div>');
@@ -97,12 +120,26 @@ final class ReservationTable extends PowerGridComponent
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
-                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($reservation->date_in), 'F j, Y') . '</span>');
+                $date_in = $reservation->date_in;
+                $date_out = $reservation->date_out;
+
+                if ($date_in == $date_out) {
+                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_in), 'F j, Y') . ' - 8:00 AM</span>');
+                } 
+                
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_in), 'F j, Y') . ' - 2:00 PM</span>');
             })
 
             ->add('date_out')
             ->add('date_out_formatted', function ($reservation) {
-                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($reservation->date_out), 'F j, Y') . '</span>');
+                $date_in = $reservation->date_in;
+                $date_out = $reservation->date_out;
+
+                if ($date_in == $date_out) {
+                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_out), 'F j, Y') . ' - 6:00 AM</span>');
+                } 
+
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_out), 'F j, Y') . ' - 12:00 PM</span>');
             })
 
             ->add('status')
@@ -118,13 +155,9 @@ final class ReservationTable extends PowerGridComponent
                     </x-tooltip>'
                 );
             })
-            ->add('first_name')
-            ->add('first_name_formatted', function ($reservation) {
-                return ucwords(strtolower($reservation->user->first_name));
-            })
-            ->add('last_name')
-            ->add('last_name_formatted', function ($reservation) {
-                return ucwords(strtolower($reservation->user->last_name));
+            ->add('name')
+            ->add('name_formatted', function ($reservation) {
+                return Blade::render('<span class="inline-block w-max">' . ucwords(strtolower($reservation->user->first_name)) . " " . ucwords(strtolower($reservation->user->last_name)) . '</span>');
             });
     }
 
@@ -135,19 +168,14 @@ final class ReservationTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('First Name', 'first_name_formatted', 'first_name')
-                ->searchable(),
+            Column::make('Name', 'name_formatted', 'name')
+                ->searchableRaw('CONCAT(`first_name`, " ", `last_name`)'),
 
-            Column::make('Last Name', 'last_name_formatted', 'last_name')
-                ->searchable(),
+            Column::make('Check-in Date', 'date_in_formatted', 'date_in')
+                ->sortable(),
 
-            Column::make('Check in', 'date_in_formatted', 'date_in')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Check out', 'date_out_formatted', 'date_out')
-                ->sortable()
-                ->searchable(),
+            Column::make('Check-out Date', 'date_out_formatted', 'date_out')
+                ->sortable(),
                 
             Column::make('Status', 'status_formatted', 'status'),
         ];

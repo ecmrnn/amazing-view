@@ -29,6 +29,9 @@ final class GuestTable extends PowerGridComponent
     use WithExport, DispatchesToast;
 
     public string $tableName = 'GuestTable';
+    public string $primaryKey = 'reservations.id';
+    public string $sortField = 'reservations.id';
+    public string $sortDirection = 'desc';
     #[Url] public $status;
 
     public function noDataLabel(): string|View
@@ -53,21 +56,35 @@ final class GuestTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        $query = Reservation::query()->with('rooms')
-            ->whereDate('date_in', DateController::today())
-            ->orWhere('status', ReservationStatus::CHECKED_IN->value)
-            ->orderByDesc('rid');
-
+        $query = Reservation::query()
+            ->with('user')
+            ->select([
+                'reservations.*',
+                'users.first_name',
+                'users.last_name',
+            ])
+            ->join('users', 'users.id', '=', 'reservations.user_id')
+            ->where(function ($query) {
+                $query->whereDate('date_in', DateController::today())
+                      ->orWhere('reservations.status', ReservationStatus::CHECKED_IN->value);
+            });
+    
         if ($this->status) {
-            $query = Reservation::query()->with('rooms')
+            $query = Reservation::query()
+                ->with('user')
+                ->select([
+                    'reservations.*',
+                    'users.first_name',
+                    'users.last_name',
+                ])
+                ->join('users', 'users.id', '=', 'reservations.user_id')
                 ->whereDate('date_in', DateController::today())
-                ->where('status', $this->status)
+                ->where('reservations.status', $this->status)
                 ->orWhere(function ($q) {
                     if ($this->status == ReservationStatus::CHECKED_IN->value) {
-                        $q->whereStatus(ReservationStatus::CHECKED_IN->value);
+                        $q->where('reservations.status', ReservationStatus::CHECKED_IN->value);
                     }
-                })
-                ->orderByDesc('rid');
+                });
         }
 
         return $query;
@@ -93,16 +110,10 @@ final class GuestTable extends PowerGridComponent
                 return Blade::render('<div class="flex items-center gap-3 font-semibold"><div class="w-2 rounded-full aspect-square ' . $style . '"></div>' . $reservation->rid . '</div>');
             })
 
-            ->add('first_name')
-            ->add('first_name_formatted', function($reservation) {
-                return ucwords(strtolower($reservation->user->first_name));
+            ->add('name')
+            ->add('name_formatted', function ($reservation) {
+                return Blade::render('<span class="inline-block w-max">' . ucwords(strtolower($reservation->user->first_name)) . " " . ucwords(strtolower($reservation->user->last_name)) . '</span>');
             })
-            
-            ->add('last_name')
-            ->add('last_name_formatted', function($reservation) {
-                return ucwords(strtolower($reservation->user->last_name));
-            })
-
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
@@ -143,13 +154,8 @@ final class GuestTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('First Name', 'first_name_formatted', 'first_name')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Last Name', 'last_name_formatted', 'last_name')
-                ->sortable()
-                ->searchable(),
+            Column::make('Name', 'name_formatted', 'first_name')
+                ->searchableRaw('CONCAT(`first_name`, " ", `last_name`)'),
 
             Column::make('Check-in Date', 'date_in_formatted', 'date_in'),
 
@@ -170,12 +176,6 @@ final class GuestTable extends PowerGridComponent
             Filter::inputText('first_name')
                 ->placeholder('First Name'),
         ];
-    }
-
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
     }
 
     public function actionsFromView($row)

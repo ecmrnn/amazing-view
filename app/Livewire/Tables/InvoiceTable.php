@@ -24,6 +24,10 @@ final class InvoiceTable extends PowerGridComponent
     use WithExport;
 
     #[Url] public $status;
+    public string $primaryKey = 'invoices.id';
+    public string $sortField = 'invoices.id';
+    public string $sortDirection = 'desc';
+    public bool $multiSort = true;
 
     public function noDataLabel(): string|View
     { 
@@ -48,17 +52,38 @@ final class InvoiceTable extends PowerGridComponent
     public function datasource(): Builder
     {
         if (isset($this->status)) {
-            return Invoice::query()->where('status', $this->status)
+            return Invoice::query()
+                ->select([
+                    'invoices.*',
+                    'reservations.id',
+                    'users.first_name',
+                    'users.last_name',
+                    'users.email'
+                ])
                 ->with('reservation')
-                ->orderByDesc('created_at');
+                ->with('reservation.user')
+                ->where('status', $this->status)
+                ->join('reservations', 'reservations.id', '=', 'invoices.reservation_id')
+                ->join('users', 'users.id', '=', 'reservations.user_id');
         }
-        return Invoice::query()->with('reservation')
-            ->orderByDesc('created_at');;
+        return Invoice::query()
+            ->select([
+                'invoices.*',
+                'reservations.id',
+                'users.first_name',
+                'users.last_name',
+                'users.email'
+            ])
+            ->with('reservation')
+            ->with('reservation.user')
+            ->join('reservations', 'reservations.id', '=', 'invoices.reservation_id')
+            ->join('users', 'users.id', '=', 'reservations.user_id');
     }
 
     public function relationSearch(): array
     {
-        return [];
+        return [
+        ];
     }
 
     public function fields(): PowerGridFields
@@ -77,8 +102,9 @@ final class InvoiceTable extends PowerGridComponent
                 ');
             })
 
-            ->add('name', function ($invoice) {
-                return Blade::render('<span class="inline-block w-max">' . ucwords(strtolower($invoice->reservation->user->first_name)) . ' ' . ucwords(strtolower($invoice->reservation->user->last_name)) . '</span>');
+            ->add('name')
+            ->add('name_formatted', function ($invoice) {
+                return Blade::render('<span class="inline-block w-max">' . ucwords(strtolower($invoice->reservation->user->first_name)) . " " . ucwords(strtolower($invoice->reservation->user->last_name)) . '</span>');
             })
 
             ->add('email')
@@ -113,13 +139,15 @@ final class InvoiceTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Invoice ID', 'iid_formatted', 'iid')
+            Column::make('Invoice ID', 'iid_formatted', 'invoices.iid')
                 ->sortable()
                 ->searchable(),
-            Column::make('Name', 'name'),
 
-            Column::make('Email', 'email_formatted', 'email')
-                ->searchable(),
+            Column::make('Name', 'name_formatted', 'name')
+                ->searchableRaw('CONCAT(`first_name`, " ", `last_name`)'),
+
+            Column::make('Email', 'email_formatted', 'users.email')
+                ->searchableRaw('email'),
 
             Column::make('Issue Date', 'issue_date_formatted', 'issue_date'),
 

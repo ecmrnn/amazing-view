@@ -32,6 +32,8 @@ final class UserTable extends PowerGridComponent
 
     public $user;
     public $key;
+    public string $sortDirection = 'desc';
+    
     #[Validate] public $password;
     public $cancel_reservations;
     #[Url] public $status;
@@ -77,7 +79,7 @@ final class UserTable extends PowerGridComponent
             $query->whereRole($this->role);
         }
         
-        return $query->orderByDesc('created_at');
+        return $query;
     }
 
     public function noDataLabel(): string|View
@@ -94,8 +96,10 @@ final class UserTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
+            
             ->add('first_name', fn($user) => e(ucwords($user->first_name)))
             ->add('last_name', fn($user) => e(ucwords($user->last_name)))
+
             ->add('address')
             ->add('address_formatted', function ($user) {
                 if (!empty($user->address)) {
@@ -127,11 +131,11 @@ final class UserTable extends PowerGridComponent
         return [
             Column::make('Status', 'session_status'),
 
-            Column::make('First Name', 'first_name', 'first_name')
+            Column::make('First Name', 'first_name')
                 ->sortable()
                 ->searchable(),
             
-            Column::make('Last Name', 'last_name', 'last_name')
+            Column::make('Last Name', 'last_name')
                 ->sortable()
                 ->searchable(),
             
@@ -155,9 +159,9 @@ final class UserTable extends PowerGridComponent
         return [
             Filter::select('role', 'role')
                 ->dataSource([
-                    ['role' => 0, 'name' => 'Guest'],
-                    ['role' => 1, 'name' => 'Receptionist'],
-                    ['role' => 2, 'name' => 'Admin'],
+                    ['role' => UserRole::GUEST->value, 'name' => 'Guest'],
+                    ['role' => UserRole::RECEPTIONIST->value, 'name' => 'Receptionist'],
+                    ['role' => UserRole::ADMIN->value, 'name' => 'Admin'],
                 ])
                 ->optionLabel('name')
                 ->optionValue('role'),
@@ -171,7 +175,7 @@ final class UserTable extends PowerGridComponent
         ]);
     }
 
-    public function deactivateUser(Request $request, $id) {
+    public function deactivateUser($id) {
         $this->validate([
             'password' => $this->rules()['password'],
         ]);
