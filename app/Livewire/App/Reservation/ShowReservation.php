@@ -6,8 +6,10 @@ use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use PharIo\Manifest\AuthorElement;
 
 class ShowReservation extends Component
 {
@@ -38,8 +40,14 @@ class ShowReservation extends Component
     }
 
     #[On('payment-added')]
-    public function test() {
-        $this->redirect(route('app.reservations.show', ['reservation' => $this->reservation->rid]), true);
+    public function paymentAdded() {
+        $user = Auth::user();
+
+        if ($user->hasRole('guest')) {
+            return $this->redirect(route('app.reservations.show-guest-reservations', ['reservation' => $this->reservation->rid]), true);
+        }
+
+        return $this->redirect(route('app.reservations.show', ['reservation' => $this->reservation->rid]), true);
     }
 
     public function render()
