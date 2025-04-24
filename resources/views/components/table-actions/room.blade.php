@@ -16,7 +16,7 @@
     @endcan
 
     {{-- Modals --}}
-    <x-modal.full name='delete-room-{{ $row->id }}-modal' maxWidth='sm'>
+    {{-- <x-modal.full name='delete-room-{{ $row->id }}-modal' maxWidth='sm'>
         <section class="p-5 space-y-5 bg-white" x-on:room-deleted.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold text-red-500 capitalize">Delete room</h2>
@@ -34,5 +34,5 @@
                 <x-danger-button type="button" wire:click='deleteRoom({{ $row->id }})'>Yes, Delete</x-danger-button>
             </div>
         </section>
-    </x-modal.full>
+    </x-modal.full> --}}
 </div>
