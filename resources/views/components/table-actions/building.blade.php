@@ -36,8 +36,8 @@
             </hgroup>
 
             <x-form.input-group>
-                <x-form.input-label for="delete-{{ $row->id }}-password">Enter your password</x-form.input-label>
-                <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $row->id }}-password" />
+                <x-form.input-label for="delete-building-{{ $row->id }}-password">Enter your password</x-form.input-label>
+                <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-building-{{ $row->id }}-password" />
                 <x-form.input-error field="password" />
             </x-form.input-group>
 

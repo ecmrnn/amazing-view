@@ -55,11 +55,7 @@
                     </div>
                 </div>
 
-                <!-- Modals -->
-                <x-modal.full name='edit-building-{{ $building->id }}-modal' maxWidth='md'>
-                    <livewire:app.buildings.edit-building wire:key="edit-{{ $building->id }}" :building="$building" />
-                </x-modal.full>
-                
+                <!-- Modal -->
                 <x-modal.full name='delete-building-{{ $building->id }}-modal' maxWidth='sm'>
                     <livewire:app.buildings.delete-building wire:key="delete-{{ $building->id }}" :building="$building" />
                 </x-modal.full>

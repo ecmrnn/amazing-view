@@ -55,7 +55,7 @@
                     </div>
 
                     <div class="w-full space-y-2">
-                        <x-form.input-text id="name" label="Name" wire:model.live='name' class="w-full" />
+                        <x-form.input-text id="name-{{ $building->id }}" label="Name" wire:model.live='name' class="w-full" />
                         <x-form.input-error field="name" />
                     </div>
                 </div>
