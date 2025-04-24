@@ -263,7 +263,7 @@ class ConfirmReservation extends Component
                                     <p class="text-xs">This reservation is about to be confirmed</p>
                                 </hgroup>
 
-                                @if ($reservation->discounts)
+                                @if ($reservation->discounts->count() > 0)
                                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                                         <hgroup>
                                             <h2 class='text-sm font-semibold'>Discounts Applied</h2>
@@ -271,19 +271,19 @@ class ConfirmReservation extends Component
                                         </hgroup>
 
                                         <div>
-                                            @if ($discounts->image)
-                                                <x-img src="{{ $discounts->image }}" />
+                                            @if ($reservation->discounts->image)
+                                                <x-img src="{{ $reservation->discounts->image }}" />
                                             @endif
 
                                             <div class="flex items-center justify-between mt-5">
                                                 <div>
-                                                    <p class="text-sm font-semibold">{{ $discounts->description }}</p>
-                                                    <p class="text-xs">Amount: <x-currency />{{ number_format($discounts->amount, 2) }}</p>
+                                                    <p class="text-sm font-semibold">{{ $reservation->discounts->description }}</p>
+                                                    <p class="text-xs">Amount: <x-currency />{{ number_format($reservation->discounts->amount, 2) }}</p>
                                                 </div>
 
-                                                @if ($discounts->image)
+                                                @if ($reservation->discounts->image)
                                                     <x-tooltip text="Download Image" dir="left">
-                                                        <a href="{{ asset('storage/' . $discounts->image) }}" download>
+                                                        <a href="{{ asset('storage/' . $reservation->discounts->image) }}" download>
                                                             <x-icon-button x-ref="content">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-down-icon lucide-image-down"><path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21"/><path d="m14 19 3 3v-5.5"/><path d="m17 22 3-3"/><circle cx="9" cy="9" r="2"/></svg>
                                                             </x-icon-button>
