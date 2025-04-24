@@ -107,9 +107,10 @@ class CreatePayment extends Component
                             <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" name="payment_method" value="gcash" id="gcash" label="GCash" />
                             <x-form.input-radio x-model="payment_method" wire:model.live="payment_method" name="payment_method" value="bank" id="bank" label="Bank Transfer" />
                         </div>
-                        <x-form.input-error x-show="payment_method != 'cash'" field="transaction_id" />
+                        <div x-show="payment_method != 'cash'">
+                            <x-form.input-error field="transaction_id" />
+                        </div>
                         <x-form.input-error field="downpayment" />
-                        
                     </div>
                     <div x-show="payment_method != 'cash'" class="space-y-3">
                         <x-form.input-label for="transaction_id">Enter Reference No.</x-form.input-label>
