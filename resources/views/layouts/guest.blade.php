@@ -81,11 +81,13 @@
         </main>
 
         <div x-show="open"
+            x-cloak
             x-transition.opacity.duration.600ms 
             x-on:click="open = false"
             class="fixed inset-0 bg-gradient-to-b from-blue-800/75 to-blue-500 backdrop-blur-sm md:hidden"></div>
 
         <div x-cloak x-show="open" x-on:click.outside="open = false"
+                x-cloak
                 x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700" 
                 x-transition:enter-start="translate-x-full" 
                 x-transition:enter-end="translate-x-0" 
