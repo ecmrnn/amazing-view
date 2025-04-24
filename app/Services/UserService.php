@@ -54,6 +54,7 @@ class UserService
             $role = $roles[$data['role'] - 1];
 
             if ($user->role != $data['role']) {
+                $user->syncRoles([]);
                 $user->assignRole($role);
             }
 
