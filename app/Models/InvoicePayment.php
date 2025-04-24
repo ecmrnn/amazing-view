@@ -18,7 +18,7 @@ class InvoicePayment extends Model
             'payment_date' => 'required|date',
             'payment_method' => 'required',
             'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000|required_unless:payment_method,cash',
-            'transaction_id' => 'required_unless:payment_method,cash|regex:/^[A-Za-z0-9 ]+$/',
+            'transaction_id' => 'nullable|required_unless:payment_method,cash|regex:/^[A-Za-z0-9 ]+$/',
             'purpose' => 'required',
             'amount' => 'required|integer|min:1',
         ];
