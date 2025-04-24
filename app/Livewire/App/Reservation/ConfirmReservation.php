@@ -215,7 +215,11 @@ class ConfirmReservation extends Component
                                     @if (!empty($payment->proof_image_path))
                                         <x-form.input-group class="w-full">
                                             <x-form.input-label for='transaction_id'>Reference ID</x-form.input-label>
-                                            <x-form.input-text wire:model.live='transaction_id' id="transaction_id" class="w-full" label="Reference ID" />
+                                            <x-form.input-text wire:model.live='transaction_id' 
+                                                x-mask:dynamic="$input.startsWith('00')
+                                                    ? '9999 999 999999'
+                                                    : '**** **** **** **** **** **** **** **** **** ****'"
+                                                id="transaction_id" class="w-full" label="Reference ID" />
                                         </x-form.input-group>
                                     @endif
                                     <x-form.input-group class="w-full">
@@ -259,7 +263,7 @@ class ConfirmReservation extends Component
                                     <p class="text-xs">This reservation is about to be confirmed</p>
                                 </hgroup>
 
-                                @if ($reservation->discount)
+                                @if ($reservation->discounts)
                                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                                         <hgroup>
                                             <h2 class='text-sm font-semibold'>Discounts Applied</h2>
