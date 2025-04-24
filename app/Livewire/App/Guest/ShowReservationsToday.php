@@ -3,11 +3,13 @@
 namespace App\Livewire\App\Guest;
 
 use App\Enums\ReservationStatus;
+use App\Http\Controllers\DateController;
 use App\Models\Reservation;
 use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use PowerComponents\LivewirePowerGrid\Commands\CheckDependenciesCommand;
 
 class ShowReservationsToday extends Component
 {
@@ -49,8 +51,8 @@ class ShowReservationsToday extends Component
         ];
 
         $counts = Reservation::selectRaw('status, COUNT(*) as count')
-            ->whereDate('date_in', '<=', Carbon::today())
-            ->whereDate('date_out', '>=', Carbon::today())
+            ->whereDate('date_in', DateController::today())
+            ->orWhere('status', ReservationStatus::CHECKED_IN->value)
             ->whereIn('status', $statuses)
             ->groupBy('status')
             ->pluck('count', 'status');
@@ -61,12 +63,15 @@ class ShowReservationsToday extends Component
         
         $this->reservation_by_status['all'] = $counts->sum();
         $this->reservation_count = $this->status == '' 
-            ? Reservation::whereDate('date_in', '<=', Carbon::today())
-                ->whereDate('date_out', '>=', Carbon::today())
+            ? Reservation::whereDate('date_in', DateController::today())
+                ->orWhere('status', ReservationStatus::CHECKED_IN->value)
                 ->count() 
-            : Reservation::whereDate('date_in', '<=', Carbon::today())
-                ->whereDate('date_out', '>=', Carbon::today())
+            : Reservation::whereDate('date_in', DateController::today())
                 ->whereStatus($this->status)->count();
+
+        if ($this->status == ReservationStatus::CHECKED_IN->value) {
+            $this->reservation_count = Reservation::whereStatus(ReservationStatus::CHECKED_IN->value)->count();
+        }
     }
 
     public function render()

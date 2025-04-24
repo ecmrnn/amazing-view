@@ -3,6 +3,7 @@
 namespace App\Livewire\Tables;
 
 use App\Enums\ReservationStatus;
+use App\Http\Controllers\DateController;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
@@ -53,17 +54,19 @@ final class GuestTable extends PowerGridComponent
     public function datasource(): Builder
     {
         $query = Reservation::query()->with('rooms')
-            ->whereDate('date_in', '<=', Carbon::today())
-            ->whereDate('date_out', '>=', Carbon::today())
+            ->whereDate('date_in', DateController::today())
+            ->orWhere('status', ReservationStatus::CHECKED_IN->value)
             ->orderByDesc('rid');
 
-        if (!empty($this->status)) {
-            $query = Reservation::query()
-                ->where(function ($query) {
-                    $query->where('date_in', '<=', Carbon::today())
-                        ->where('date_out', '>=', Carbon::today());
-                })
+        if ($this->status) {
+            $query = Reservation::query()->with('rooms')
+                ->whereDate('date_in', DateController::today())
                 ->where('status', $this->status)
+                ->orWhere(function ($q) {
+                    if ($this->status == ReservationStatus::CHECKED_IN->value) {
+                        $q->whereStatus(ReservationStatus::CHECKED_IN->value);
+                    }
+                })
                 ->orderByDesc('rid');
         }
 

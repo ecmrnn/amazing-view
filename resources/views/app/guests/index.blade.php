@@ -5,7 +5,7 @@
                 <h1 class="text-xl font-bold leading-tight text-gray-800">
                     {{ __('Guests') }}
                 </h1>
-                <p class="text-xs">Manage your expecting guests here</p>
+                <p class="text-xs">Manage your guests here</p>
             </hgroup>
 
             <div class="flex items-center">
