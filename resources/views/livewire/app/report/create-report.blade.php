@@ -64,7 +64,7 @@
                     <di class="space-y-3">
                         <label for="end_date" class="text-sm font-semibold">End Date</label>
                         <x-form.input-group>
-                            <x-form.input-date x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
+                            <x-form.input-date max="{{ $max_date }}" x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
                             <x-form.input-error field="end_date" />
                         </x-form.input-group>
                     </di>
@@ -82,7 +82,7 @@
                 <div class="space-y-3">
                     <label for="start_date" class="text-sm font-semibold">Reservation Date</label>
                     <x-form.input-group>
-                        <x-form.input-date id="start_date" name="start_date" label="Start Date" wire:model.live='start_date' class="w-full" />
+                        <x-form.input-date max="{{ $max_date }}" id="start_date" name="start_date" label="Start Date" wire:model.live='start_date' class="w-full" />
                         <x-form.input-error field="start_date" />
                     </x-form.input-group>
                 </div>
@@ -110,7 +110,7 @@
                     <div class="space-y-3">
                         <label for="start_date" class="text-sm font-semibold">Start Date</label>
                         <x-form.input-group>
-                            <x-form.input-date x-on:input="$wire.setMinDate($el.value)" id="start_date" name="start_date" label="Start Date" wire:model.live='start_date' class="w-full" />
+                            <x-form.input-date max="{{ $max_date }}" x-on:input="$wire.setMinDate($el.value)" id="start_date" name="start_date" label="Start Date" wire:model.live='start_date' class="w-full" />
                             <x-form.input-error field="start_date" />
                         </x-form.input-group>
                     </div>
@@ -118,7 +118,7 @@
                     <div class="space-y-3">
                         <label for="end_date" class="text-sm font-semibold">End Date</label>
                         <x-form.input-group>
-                            <x-form.input-date x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
+                            <x-form.input-date max="{{ $max_date }}" x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
                             <x-form.input-error field="end_date" />
                         </x-form.input-group>
                     </div>
@@ -137,7 +137,7 @@
                     <div class="space-y-3">
                         <label for="start_date" class="text-sm font-semibold">Start Date</label>
                         <x-form.input-group>
-                            <x-form.input-date x-on:input="$wire.setMinDate($el.value)" id="start_date" name="start_date" label="Start Date" wire:model.live='start_date' class="w-full" />
+                            <x-form.input-date max="{{ $max_date }}" x-on:input="$wire.setMinDate($el.value)" id="start_date" name="start_date" label="Start Date" wire:model.live='start_date' class="w-full" />
                             <x-form.input-error field="start_date" />
                         </x-form.input-group>
                     </div>
@@ -145,7 +145,7 @@
                     <div class="space-y-3">
                         <label for="end_date" class="text-sm font-semibold">End Date</label>
                         <x-form.input-group>
-                            <x-form.input-date x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
+                            <x-form.input-date max="{{ $max_date }}" x-bind:disabled="start_date == '' || start_date == null" min="{{ !empty($min_date) ? $min_date : '' }}" id="end_date" name="end_date" label="End Date" wire:model.live='end_date' class="w-full" />
                             <x-form.input-error field="end_date" />
                         </x-form.input-group>
                     </div>
@@ -155,7 +155,7 @@
 
         <div class="flex justify-end gap-1">
             <x-secondary-button type='button' x-on:click="show = false">Cancel</x-secondary-button>
-            <x-primary-button wire:click="store()">Generate Report</x-primary-button>
+            <x-primary-button>Generate Report</x-primary-button>
         </div>
     </div>
 

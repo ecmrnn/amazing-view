@@ -189,7 +189,9 @@ final class ReportsTable extends PowerGridComponent
             if (!$report) {
                 $this->toast('Missing Report', 'info', 'Report cannot be found.');
             } else {
-                Storage::disk('public')->delete($report->path);
+                if (Storage::exists($report->path ?? 'null')) {
+                    Storage::disk('public')->delete($report->path);
+                }
         
                 $report->delete();
         

@@ -26,7 +26,7 @@
                         <tr class="border-b border-slate-200 last:border-b-0 odd:bg-slate-50">
                             <td class="px-4 py-1 text-xs font-semibold border-x border-slate-200">{{ $reservation->rid }}</td>
                             <td class="px-2 py-1 text-xs capitalize border-r border-slate-200">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</td>
-                            <td class="px-2 py-1 text-xs capitalize border-r border-slate-200">{{ $reservation->user->email }}</td>
+                            <td class="px-2 py-1 text-xs border-r border-slate-200">{{ $reservation->user->email }}</td>
                             <td class="px-2 py-1 text-xs border-r border-slate-200">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</td>
                             <td class="px-2 py-1 text-xs border-r border-slate-200">{{ date_format(date_create($reservation->date_our), 'F j, Y') }}</td>
                             <td class="px-2 py-1 text-xs border-r border-slate-200">

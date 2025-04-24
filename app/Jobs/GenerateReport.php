@@ -13,6 +13,7 @@ use App\Models\Invoice;
 use App\Models\Report;
 use App\Models\Reservation;
 use App\Models\RoomType;
+use App\Traits\DispatchesToast;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -51,7 +52,7 @@ class GenerateReport implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle()
     {
         switch ($this->report->type) {
             case ReportType::RESERVATION_SUMMARY->value:
@@ -67,6 +68,7 @@ class GenerateReport implements ShouldQueue
                 $this->generateRevenuePerformance($this->report, $this->size);
                 break;
         }
+
         broadcast(new ReportGenerated($this->report, $this->report->user_id));
     }
 
@@ -75,28 +77,28 @@ class GenerateReport implements ShouldQueue
             ->get();
 
         if ($report->format == 'pdf') {
-            Pdf::view('pdf.reports.reservation_summary', [
-                'reservations' => $reservations,
-                'report' => $report,
-            ])
-            ->withBrowsershot(function (Browsershot $browsershot) {
-                $browsershot->noSandbox();
-            })
-            ->format($size)
-            ->orientation(Orientation::Landscape)
-            ->margins(
-                $this->margin['top'],
-                $this->margin['right'],
-                $this->margin['bottom'],
-                $this->margin['left'],
-                Unit::Pixel)
-            ->headerView($this->headerView, [
-                'report' => $report
-            ])
-            ->footerView($this->footerView, [
-                'report' => $report
-            ])
-            ->save($this->path);
+                return Pdf::view('pdf.reports.reservation_summary', [
+                    'reservations' => $reservations,
+                    'report' => $report,
+                ])
+                ->withBrowsershot(function (Browsershot $browsershot) {
+                    $browsershot->noSandbox();
+                })
+                ->format($size)
+                ->orientation(Orientation::Landscape)
+                ->margins(
+                    $this->margin['top'],
+                    $this->margin['right'],
+                    $this->margin['bottom'],
+                    $this->margin['left'],
+                    Unit::Pixel)
+                ->headerView($this->headerView, [
+                    'report' => $report
+                ])
+                ->footerView($this->footerView, [
+                    'report' => $report
+                ])
+                ->save($this->path);
         } else {
             return (new ReservationSummaryExports($this->report))->store('public/csv/report/' . $this->filename);
         }

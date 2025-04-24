@@ -2,8 +2,12 @@
 
 namespace App\Livewire\App\Report;
 
+use App\Enums\ReportType;
+use App\Enums\ReservationStatus;
+use App\Http\Controllers\DateController;
 use App\Jobs\GenerateReport;
 use App\Models\Report;
+use App\Models\Reservation;
 use App\Models\RoomType;
 use App\Models\User;
 use App\Traits\DispatchesToast;
@@ -24,16 +28,12 @@ class CreateReport extends Component
     #[Validate] public $name;
     #[Validate] public $description;
     #[Validate] public $type;
-    #[Validate] public $format;
+    #[Validate] public $format = 'pdf';
     #[Validate] public $note;
     #[Validate] public $start_date;
     #[Validate] public $end_date;
     #[Validate] public $room_type_id;
     #[Validate] public $size = 'letter';
-
-    public function mount() {
-        $this->max_date = Carbon::tomorrow()->format('Y-m-d');
-    }
 
     public function getListeners() {
         return [
@@ -78,6 +78,17 @@ class CreateReport extends Component
             $this->reset();
         }
 
+        $this->max_date = DateController::tomorrow();
+
+        $this->start_date = $type == ReportType::INCOMING_RESERVATIONS->value
+            ? DateController::tomorrow()
+            : Carbon::now()->startOfMonth()->format('Y-m-d');
+
+        $end_of_month = Carbon::now()->endOfMonth()->format('Y-m-d');
+        $this->end_date = $this->max_date < $end_of_month
+            ? DateController::today()
+            : $end_of_month;
+        
         $this->type = $type;
         $this->dispatch('open-modal', 'generate-report');
     }
@@ -99,16 +110,49 @@ class CreateReport extends Component
         ]);
 
         $validated['user_id'] = Auth::user()->id;
+        $reservations = collect();
+
+        // Check 
+        switch ($this->type) {
+            case ReportType::RESERVATION_SUMMARY->value:
+                $reservations = Reservation::whereBetween('date_in', [$validated['start_date'], $validated['end_date']])
+                    ->get();
+                break;
+            case ReportType::INCOMING_RESERVATIONS->value:
+                $reservations = Reservation::whereDate('date_in', $validated['start_date'])
+                    ->whereStatus(ReservationStatus::CONFIRMED->value)
+                    ->get();
+                break;
+            case ReportType::OCCUPANCY_REPORT->value:
+                $room_type_id = $validated['room_type_id'];
+                $reservations = Reservation::whereBetween('date_in', [$validated['start_date'], $validated['end_date']])
+                    ->whereHas('rooms', function ($query) use ($room_type_id) {
+                        $query->where('room_type_id', $room_type_id);
+                    })
+                    ->whereIn('status', [ReservationStatus::CHECKED_IN, ReservationStatus::CHECKED_OUT])
+                    ->get();
+                break;
+            case ReportType::REVENUE_PERFORMANCE->value:
+                $reservations = Reservation::whereBetween('date_in', [$validated['start_date'], $validated['end_date']])
+                    ->whereStatus(ReservationStatus::CHECKED_OUT)
+                    ->get();
+                break;
+        }
+
+        if ($reservations->count() == 0) {
+            $this->toast('Insufficient Data', 'info', 'Not enough data for this report to generate');
+            return;
+        }
 
         // Store report to database
         $report = Report::create($validated);
 
+        // Generate report
+        GenerateReport::dispatch($report, $this->size);
+
         // Update path of the report
         $report->path = $report->format . '/report/' . $report->name . ' - ' . $report->rid . '.' . $report->format;
         $report->save();
-        
-        // Generate report
-        GenerateReport::dispatch($report, $this->size);
 
         $this->toast('Success!', description: 'Report created');
         $this->dispatch('pg:eventRefresh-ReportsTable');
