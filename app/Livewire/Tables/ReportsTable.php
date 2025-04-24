@@ -214,7 +214,10 @@ final class ReportsTable extends PowerGridComponent
         $reports = Report::whereIn('id', $this->checkboxValues)->get();
 
         foreach ($reports as $report) {
-            Storage::disk('public')->delete($report->path);
+            if (Storage::exists($report->path ?? 'null')) {
+                Storage::disk('public')->delete($report->path);
+            }
+    
             $report->delete();
         }
 
