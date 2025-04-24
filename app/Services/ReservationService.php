@@ -44,6 +44,14 @@ class ReservationService
 
     public function create($data) {
         $reservation = DB::transaction(function () use ($data) {
+            $time_in = '14:00:00';
+            $time_out = '12:00:00';
+
+            if ($data['date_in'] == $data['date_out']) {
+                $time_in = '08:00:00';
+                $time_out = '18:00:00';
+            }
+
             // Check if the selected rooms are available
             $reserved_rooms = Room::reservedRooms($data['date_in'], $data['date_out'])->pluck('id')->toArray();
             $selected_rooms = $data['selected_rooms'] ?? [];
@@ -97,6 +105,8 @@ class ReservationService
                 'promo_id' => $data['promo']->id ?? null,
                 'date_in' => Arr::get($data, 'date_in'),
                 'date_out' => Arr::get($data, 'date_out'),
+                'time_in' => $time_in,
+                'time_out' => $time_out,
                 'senior_count' => Arr::get($data, 'senior_count'),
                 'pwd_count' => Arr::get($data, 'pwd_count'),
                 'adult_count' => Arr::get($data, 'adult_count'),
@@ -430,10 +440,20 @@ class ReservationService
 
     public function reschedule(Reservation $reservation, $data) {
         DB::transaction(function () use ($reservation, $data) {
+            $time_in = '14:00:00';
+            $time_out = '12:00:00';
+
+            if ($data['date_in'] == $data['date_out']) {
+                $time_in = '08:00:00';
+                $time_out = '18:00:00';
+            }
+
             // Copy the old reservation to a new reservation
             $new_reservation = $reservation->replicate(['rid']);
             $new_reservation->date_in = $data['date_in'];
             $new_reservation->date_out = $data['date_out'];
+            $new_reservation->time_in = $time_in;
+            $new_reservation->time_out = $time_out;
             $new_reservation->rescheduled_from = $reservation->id;
             $new_reservation->status = $reservation->status;
             $new_reservation->save();
