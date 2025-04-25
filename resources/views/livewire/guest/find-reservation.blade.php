@@ -13,7 +13,7 @@
                 <div class="space-y-5">
                     <div class="flex gap-1">
                         <x-secondary-button wire:click='downloadPdf'>Download PDF</x-secondary-button>
-                        @if ($reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT)
+                        @if ($reservation->status == App\Enums\ReservationStatus::AWAITING_PAYMENT->value)
                             <x-primary-button x-on:click="$dispatch('open-modal', 'submit-payment-modal')">Submit Payment</x-primary-button>
                         @endif
                     </div>

@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <x-note>A minimum of <strong><x-currency />500.00</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we have sent to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </x-note>
+        <x-note>A minimum of <strong><x-currency />500.00</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we will send to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </x-note>
     
         <div class="space-y-5">
             <hgroup>
@@ -190,7 +190,7 @@
     <aside class="self-start p-5 space-y-5 bg-white rounded-lg shadow-sm">
         <hgroup>
             <h3 class="text-lg font-semibold">Submit Payment</h3>
-            <p class="text-sm">Upload your receipt here so that we can our staff can confirm your payment</p>
+            <p class="text-sm">Upload your receipt here so that our staff can confirm your payment</p>
         </hgroup>
 
         <div class="flex items-center gap-3" x-on:click="$dispatch('open-modal', 'show-discounts-modal')">
