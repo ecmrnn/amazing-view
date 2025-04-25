@@ -184,7 +184,7 @@
                     </div>
 
                     {{-- Reservation Details --}}
-                    <div class="grid grid-cols-1 gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
+                    <div class="grid grid-cols-1 gap-3 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
                         {{-- Check-in date --}}
                         <div class="flex items-center gap-3">
                             <x-icon>
@@ -202,7 +202,7 @@
                             </x-icon>
                             <div>
                                 <p class="text-sm font-semibold">{{ date_format(date_create($reservation->date_out), 'F j, Y') . ' at ' . date_format(date_create($reservation->time_out), 'g:i A') }}</p>
-                                <p class="text-xs">Check-in date and time</p>
+                                <p class="text-xs">Check-out date and time</p>
                             </div>
                         </div>
                         {{-- Total number of guests --}}

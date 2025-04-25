@@ -47,41 +47,61 @@
                 <p class="max-w-sm text-sm">Confirm the guest&apos;s details here</p>
             </hgroup>
 
-            <div class="flex items-center w-full gap-3 px-3 py-2 text-xs border rounded-md border-emerald-500 bg-emerald-50">
-                <svg class="self-start flex-shrink-0 text-emerald-800" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
-                <p class="text-emerald-800">Ready for check-in!</p>
+            <div class="flex items-center w-full gap-3 px-3 py-2 text-xs text-green-800 border border-green-500 rounded-md bg-green-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                <p>Ready for check-in!</p>
             </div>
 
-            <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200 ">
-                <hgroup class="flex items-center justify-between">
-                    <h3 class="text-base font-semibold">{{ $row->rid }}</h3>
-
-                    <x-status type="reservation" :status="$row->status" />
-                </hgroup>
-            </div>
-
-            <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
-                <div>
-                    <p class="text-base font-semibold capitalize">{{ $row->user->first_name . ' ' . $row->user->last_name }}</p>
-                    <p class="flex justify-between text-sm capitalize">Name</p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-5">
+            <div class="p-5 space-y-3 bg-white border rounded-md border-slate-200">
+                {{-- Reservation ID --}}
+                <div class="flex items-center gap-3">
+                    <x-icon>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-qr-code-icon lucide-qr-code"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+                    </x-icon>
                     <div>
-                        <p class="text-base font-semibold capitalize">{{ date_format(date_create($row->date_in), 'F j, Y') }}</p>
-                        <p class="flex justify-between text-sm capitalize">Check-in Date</p>
+                        <p class="text-sm font-semibold">{{ $row->rid }}</p>
+                        <p class="text-xs">Reservation ID</p>
                     </div>
+                </div>
+                {{-- Name --}}
+                <div class="flex items-center gap-3">
+                    <x-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </x-icon>
                     <div>
-                        <p class="text-base font-semibold capitalize">{{ date_format(date_create($row->date_out), 'F j, Y') }}</p>
-                        <p class="flex justify-between text-sm capitalize">Check-out Date</p>
+                        <p class="text-sm font-semibold">{{ $row->user->name() }}</p>
+                        <p class="text-xs">Name</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 space-y-3 bg-white border rounded-md border-slate-200">
+                {{-- Check-in date --}}
+                <div class="flex items-center gap-3">
+                    <x-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-up-icon lucide-calendar-arrow-up"><path d="m14 18 4-4 4 4"/><path d="M16 2v4"/><path d="M18 22v-8"/><path d="M21 11.343V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
+                    </x-icon>
+                    <div>
+                        <p class="text-sm font-semibold">{{ date_format(date_create($row->date_in), 'F j, Y') . ' at ' . date_format(date_create($row->time_in), 'g:i A') }}</p>
+                        <p class="text-xs">Check-in date and time</p>
+                    </div>
+                </div>
+                {{-- Check-in date --}}
+                <div class="flex items-center gap-3">
+                    <x-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down-icon lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
+                    </x-icon>
+                    <div>
+                        <p class="text-sm font-semibold">{{ date_format(date_create($row->date_out), 'F j, Y') . ' at ' . date_format(date_create($row->time_out), 'g:i A') }}</p>
+                        <p class="text-xs">Check-out date and time</p>
                     </div>
                 </div>
             </div>
             
             <x-loading wire:loading wire:target="checkIn">Checking-in the guest</x-loading>
             
-            <div class="flex justify-between gap-1">
-                <x-secondary-button type="button" x-on:click="show = false; $wire.set('reservation', null)">Cancel</x-secondary-button>
+            <div class="flex justify-end gap-1">
+                <x-secondary-button type="button" x-on:click="show = false;">Cancel</x-secondary-button>
                 <x-primary-button type="button" wire:click="checkIn({{ $row->id }})" wire:loading.attr='disabled'>Check-in</x-primary-button>
             </div>
         </div>
