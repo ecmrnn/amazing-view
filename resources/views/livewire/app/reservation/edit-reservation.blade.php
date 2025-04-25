@@ -123,29 +123,39 @@
                 </a>
             </div>
     
-            <div class="grid gap-5 lg:grid-cols-2">
-                <div class="grid gap-5 p-5 border rounded-md lg:grid-cols-2 border-slate-200">
+            <div class="grid grid-cols-1 gap-3 p-5 border rounded-md border-slate-200 sm:grid-cols-2">
+                {{-- Email Address --}}
+                <div class="flex items-center gap-3">
+                    <x-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-at-sign-icon lucide-at-sign"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>
+                    </x-icon>
                     <div>
-                        <p class="overflow-hidden font-semibold text-ellipsis whitespace-nowrap" title="{{ $reservation->user->email }}">{{ $reservation->user->email }}</p>
-                        <p class="text-xs">Email</p>
-                    </div>
-    
-                    <div>
-                        <p class="font-semibold">{{ $reservation->user->phone }}</p>
-                        <p class="text-xs">Contact No.</p>
-                    </div>
-                    <div class="lg:hidden">
-                        <p class="font-semibold">{{ $reservation->user->address }}</p>
-                        <p class="text-xs">Address</p>
+                        <p class="text-sm font-semibold">{{ $reservation->user->email }}</p>
+                        <p class="text-xs">Email Address</p>
                     </div>
                 </div>
-    
-                <div class="hidden p-5 border rounded-md lg:grid lg:grid-cols-2 border-slate-200">
-                    <div class="lg:col-span-2">
-                        <p class="font-semibold">{{ $reservation->user->address }}</p>
-                        <p class="text-xs">Address</p>
+                {{-- Phone --}}
+                <div class="flex items-center gap-3">
+                    <x-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                    </x-icon>
+                    <div>
+                        <p class="text-sm font-semibold">{{ substr($reservation->user->phone, 0, 4) . ' ' . substr($reservation->user->phone, 4, 3) . ' ' . substr($reservation->user->phone, 7) }}</p>
+                        <p class="text-xs">Phone</p>
                     </div>
                 </div>
+                {{-- Address --}}
+                @if ($reservation->user->address)
+                    <div class="flex items-center gap-3 sm:col-span-2">
+                        <x-icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pinned"><path d="M18 8c0 3.613-3.869 7.429-5.393 8.795a1 1 0 0 1-1.214 0C9.87 15.429 6 11.613 6 8a6 6 0 0 1 12 0"/><circle cx="12" cy="8" r="2"/><path d="M8.714 14h-3.71a1 1 0 0 0-.948.683l-2.004 6A1 1 0 0 0 3 22h18a1 1 0 0 0 .948-1.316l-2-6a1 1 0 0 0-.949-.684h-3.712"/></svg>
+                        </x-icon>
+                        <div>
+                            <p class="text-sm font-semibold line-clamp-1 hover:line-clamp-none">{{ $reservation->user->address }}</p>
+                            <p class="text-xs">Address</p>
+                        </div>
+                    </div>
+                @endif
             </div>
         </section>
 
@@ -174,31 +184,51 @@
                     </div>
 
                     {{-- Reservation Details --}}
-                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                        <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
+                    <div class="grid grid-cols-1 gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
+                        {{-- Check-in date --}}
+                        <div class="flex items-center gap-3">
+                            <x-icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-up-icon lucide-calendar-arrow-up"><path d="m14 18 4-4 4 4"/><path d="M16 2v4"/><path d="M18 22v-8"/><path d="M21 11.343V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
+                            </x-icon>
                             <div>
-                                <p class="font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</p>
-                                <p class="text-xs">Check-in Date</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold">{{ date_format(date_create($reservation->date_out), 'F j, Y') }}</p>
-                                <p class="text-xs">Check-out Date</p>
+                                <p class="text-sm font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') . ' at ' . date_format(date_create($reservation->time_in), 'g:i A') }}</p>
+                                <p class="text-xs">Check-in date and time</p>
                             </div>
                         </div>
-                        <div class="grid gap-5 p-5 border rounded-md sm:grid-cols-2 border-slate-200">
+                        {{-- Check-in date --}}
+                        <div class="flex items-center gap-3">
+                            <x-icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down-icon lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
+                            </x-icon>
                             <div>
-                                <p class="font-semibold">
+                                <p class="text-sm font-semibold">{{ date_format(date_create($reservation->date_out), 'F j, Y') . ' at ' . date_format(date_create($reservation->time_out), 'g:i A') }}</p>
+                                <p class="text-xs">Check-in date and time</p>
+                            </div>
+                        </div>
+                        {{-- Total number of guests --}}
+                        <div class="flex items-center gap-3">
+                            <x-icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </x-icon>
+                            <div>
+                                <p class="text-sm font-semibold">
                                     {{ $reservation->adult_count > 1 ? $reservation->adult_count . ' Adults' : $reservation->adult_count . ' Adult' }}
                                     @if ($reservation->children_count > 0)
                                         {{ ' & ' }}
                                         {{ $reservation->children_count > 1 ?  $reservation->children_count . ' Children' : $reservation->children_count . ' Child' }}
-                                    @endif
+                                    @endif    
                                 </p>
-                                <p class="text-xs">Total Number of Guests</p>
+                                <p class="text-xs">Total number of guests</p>
                             </div>
-                            @if ($reservation->senior_count > 0 || $reservation->pwd_count > 0)
+                        </div>
+                        @if ($reservation->senior_count > 0 || $reservation->pwd_count > 0)
+                            {{-- Total number of seniors and pwds --}}
+                            <div class="flex items-center gap-3">
+                                <x-icon>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility-icon lucide-accessibility"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>
+                                </x-icon>
                                 <div>
-                                    <p class="font-semibold">
+                                    <p class="text-sm font-semibold">
                                         @if ($reservation->senior_count > 0)
                                             {{ $reservation->senior_count > 1 ?  $reservation->senior_count . ' Seniors' : $reservation->senior_count . ' Senior' }}
                                         @endif
@@ -207,12 +237,12 @@
                                                 {{ ' & ' }}
                                             @endif
                                             {{ $reservation->pwd_count > 1 ?  $reservation->pwd_count . ' PWDs' : $reservation->pwd_count . ' PWD' }}
-                                        @endif
+                                        @endif   
                                     </p>
-                                    <p class="text-xs">Seniors and PWDs</p>
+                                    <p class="text-xs">Total number of guests</p>
                                 </div>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

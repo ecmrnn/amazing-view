@@ -54,7 +54,7 @@ class ShowReservation extends Component
 
     public function render()
     {
-        $this->is_late_checkout = now()->format('Y-m-d h:i:s') > $this->reservation->date_out . ' ' . $this->reservation->time_out;
+        $this->is_late_checkout = $this->reservation->status == ReservationStatus::CHECKED_IN->value && now()->format('Y-m-d h:i:s') > $this->reservation->date_out . ' ' . $this->reservation->time_out;
         return view('livewire.app.reservation.show-reservation');
     }
 }
