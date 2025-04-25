@@ -65,6 +65,8 @@ final class GuestTable extends PowerGridComponent
                 $query->whereDate('date_in', DateController::today())
                       ->orWhere('reservations.status', ReservationStatus::CHECKED_IN->value);
             });
+
+        logger(DateController::today());
     
         if ($this->status) {
             $query = Reservation::query()
