@@ -3,6 +3,7 @@
 namespace App\Livewire\Guest;
 
 use App\Enums\ReservationStatus;
+use App\Http\Controllers\DateController;
 use App\Http\Controllers\OTP\MailOtp;
 use App\Models\Otp;
 use App\Models\Reservation;
@@ -24,7 +25,8 @@ class FindReservation extends Component
     use DispatchesToast, WithFilePond;
     
     protected $listeners = [
-        'otp-sent' => '$refresh'
+        'otp-sent' => '$refresh',
+        'payment-submitted' => '$refresh',
     ];
 
     #[Url] public $reservation_id;
@@ -187,6 +189,8 @@ class FindReservation extends Component
     public function render()
     {
         $this->placeholder = 'R' . now()->format('ymd') . Random::generate(3, '0-9');
+        $this->payment_date = DateController::today();
+
         return view('livewire.guest.find-reservation');
     }
 }

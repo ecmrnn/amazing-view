@@ -118,44 +118,50 @@ class ConfirmReservation extends Component
             'password' => $this->rules()['password'],
         ]);
 
-        $auth = new AuthService;
-
-        if (!$auth->validatePassword($this->password)) {
-            $this->addError('password', 'Password mismatched, try again!');
-            return;
-        }
-
-        $data = [
-            'amount' => $this->amount,
-            'transaction_id' => $this->transaction_id,
-            'payment_date' => $this->payment_date,
-            'orid' => $this->payment->orid,
-            'senior_count' => $this->senior_count,
-            'pwd_count' => $this->pwd_count,
-            'invoice_note' => $this->invoice_note,
-        ];
-
-        // Validate senior and pwd count
-        if ($this->senior_count > 0 || $this->pwd_count > 0) {
-            $this->validate([
-                'senior_count' => 'nullable|lte:adult_count|integer',
-                'pwd_count' => 'nullable|integer',
-            ]);
-            
-            if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
-                $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
-                return false;
+        if ($this->can_confirm) {
+            $auth = new AuthService;
+    
+            if (!$auth->validatePassword($this->password)) {
+                $this->addError('password', 'Password mismatched, try again!');
+                return;
             }
+    
+            $data = [
+                'amount' => $this->amount,
+                'transaction_id' => $this->transaction_id,
+                'payment_date' => $this->payment_date,
+                'orid' => $this->payment->orid,
+                'senior_count' => $this->senior_count,
+                'pwd_count' => $this->pwd_count,
+                'invoice_note' => $this->invoice_note,
+            ];
+    
+            // Validate senior and pwd count
+            if ($this->senior_count > 0 || $this->pwd_count > 0) {
+                $this->validate([
+                    'senior_count' => 'nullable|lte:adult_count|integer',
+                    'pwd_count' => 'nullable|integer',
+                ]);
+                
+                if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
+                    $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
+                    return false;
+                }
+            }
+            
+            $service = new ReservationService;
+            $service->confirm($this->reservation, $data);
+    
+            // Send email about confirmed reservation
+            Mail::to($this->reservation->user->email)->queue(new Confirmed($this->reservation));
+    
+            $this->toast('Success!', description: 'Reservation confirmed!');
+            $this->dispatch('reservation-confirmed');
         }
-        
-        $service = new ReservationService;
-        $service->confirm($this->reservation, $data);
 
-        // Send email about confirmed reservation
-        Mail::to($this->reservation->user->email)->queue(new Confirmed($this->reservation));
-
-        $this->toast('Success!', description: 'Reservation confirmed!');
-        $this->dispatch('reservation-confirmed');
+        if ($this->can_discard) {
+            $this->discardPayment();
+        }
     }
 
     public function render()
