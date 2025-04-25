@@ -17,8 +17,8 @@ class UserCards extends Component
     public function render()
     {
         $total_accounts = User::withTrashed()->count();
-        $active_accounts = User::count();
-        $deactivated_accounts = User::onlyTrashed()->count();
+        $active_accounts = User::whereStatus(UserStatus::ACTIVE->value)->count();
+        $deactivated_accounts = User::whereStatus(UserStatus::INACTIVE->value)->count();
         $guest_accounts = User::select(DB::raw('count(*) as count'))
             ->whereRole(UserRole::GUEST)
             ->first();
