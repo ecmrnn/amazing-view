@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\ReservationStatus;
+use App\Http\Controllers\DateController;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use Carbon\Carbon;
@@ -30,7 +31,7 @@ class UpdateNoShowReservations extends Command
     public function handle()
     {
         $reservations = Reservation::whereStatus(ReservationStatus::CONFIRMED)
-            ->where('date_in', '<', Carbon::now()->format('Y-m-d'))
+            ->where('date_in', '<', DateController::today())
             ->get();
 
         if ($reservations->count() > 0) {

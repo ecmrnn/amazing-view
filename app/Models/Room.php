@@ -96,19 +96,26 @@ class Room extends Model
 
         if ($date_in == $date_out) {
             return $query->whereIn('rooms.status', [
-                RoomStatus::RESERVED->value,
-                RoomStatus::OCCUPIED->value,
-                RoomStatus::UNAVAILABLE->value,
-            ])
-            ->whereHas('reservations', function ($query) use ($date_in, $date_out) {
-                $query->where('date_in', $date_in)
-                ->whereIn('reservations.status', [
-                    ReservationStatus::AWAITING_PAYMENT->value,
-                    ReservationStatus::PENDING->value,
-                    ReservationStatus::CONFIRMED->value,
-                    ReservationStatus::CHECKED_IN->value,
-                ]);
-          });
+                    RoomStatus::RESERVED->value,
+                    RoomStatus::OCCUPIED->value,
+                    RoomStatus::UNAVAILABLE->value,
+                ])
+                ->whereHas('reservations', function ($query) use ($date_in, $date_out) {
+                    $query->where(function ($q) use ($date_in, $date_out)  {
+                        $q->whereBetween('date_in', [$date_in, $date_out])
+                        ->orWhereBetween('date_out', [$date_in, $date_out]);
+                    })
+                    ->orWhere(function ($q) use ($date_in, $date_out) {
+                        $q->whereDate('date_in', '<', $date_out)
+                            ->whereDate('date_out', '<', $date_in);
+                    })
+                    ->whereIn('reservations.status', [
+                        ReservationStatus::AWAITING_PAYMENT->value,
+                        ReservationStatus::PENDING->value,
+                        ReservationStatus::CONFIRMED->value,
+                        ReservationStatus::CHECKED_IN->value,
+                    ]);
+            });
         }
         
         $query = $query->whereIn('rooms.status', [
@@ -145,5 +152,3 @@ class Room extends Model
         });
     }
 }
-
-// dd('2025-04-2514:00:00' >= '2025-04-2512:00:00' && '2025-04-2612:00:00' <= '2025-04-2414:00:00');
