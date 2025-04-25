@@ -27,7 +27,6 @@ final class InvoiceTable extends PowerGridComponent
     public string $primaryKey = 'invoices.id';
     public string $sortField = 'invoices.id';
     public string $sortDirection = 'desc';
-    public bool $multiSort = true;
 
     public function noDataLabel(): string|View
     { 
@@ -82,8 +81,7 @@ final class InvoiceTable extends PowerGridComponent
 
     public function relationSearch(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public function fields(): PowerGridFields
@@ -91,7 +89,7 @@ final class InvoiceTable extends PowerGridComponent
         $invoice_statuses = ['Confirmed', 'Pending', 'Expired', 'Checked-in', 'Checked-out', 'Completed', 'Canceled'];
 
         return PowerGrid::fields()
-            ->add('id')
+            ->add('invoices.id')
             ->add('iid')
             ->add('iid_formatted', function ($invoice) {
                 return Blade::render('
@@ -139,7 +137,7 @@ final class InvoiceTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Invoice ID', 'iid_formatted', 'invoices.iid')
+            Column::make('Invoice ID', 'iid_formatted', 'iid')
                 ->sortable()
                 ->searchable(),
 
