@@ -11,7 +11,7 @@
         <tr>
             <p style="font-size: 16px;"><span style="font-weight: bold">We have received your request for reservation!</span></p>
 
-            <p style="font-size: 14px;">Hello, <span style="font-size: capitalize">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</span>!</p>
+            <p style="font-size: 14px;">Hello, <span style="font-size: capitalize">{{ $reservation->first_name . ' ' . $reservation->last_name }}</span>!</p>
             <p style="margin: 0; font-size: 14px;">We are thrilled to inform you that we have received your request to reserve our function hall for your upcoming event. We are excited to be a part of your special occasion!</p>
 
             <p style="font-size: 14px; font-weight: bold;">Reservation Details</p>
