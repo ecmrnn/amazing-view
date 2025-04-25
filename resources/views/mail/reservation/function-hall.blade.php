@@ -22,8 +22,8 @@
                 <p style="font-size: 14px; margin: 0;"><span style="font-weight: bold;">Event Description:</span> {{ $reservation->event_description }}</p>
             </div>
 
-            <div style="padding: 20px; border: 1px solid #2b7fff; border-radius: 8px; background-color: #eff6ff; color: #193cb8;">
-                <p style="font-size: 16px; font-weight: bold;">We&apos;ll be in touch!</p>
+            <div style="padding: 20px; border: 1px solid #2b7fff; border-radius: 8px; background-color: #eff6ff; color: #193cb8; margin-top: 20px;">
+                <p style="font-size: 16px; font-weight: bold; margin: 0;">We&apos;ll be in touch!</p>
                 <p style="margin: 0; font-size: 14px;">Kindly wait for one of the staff of Amazing View Mountain Resort to reach out to you via email to confirm this reservation. If you have any questions, feel free to give us a call or send a response to this email.</p>
             </div>
 
