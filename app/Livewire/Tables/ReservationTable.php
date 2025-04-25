@@ -120,26 +120,12 @@ final class ReservationTable extends PowerGridComponent
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
-                $date_in = $reservation->date_in;
-                $date_out = $reservation->date_out;
-
-                if ($date_in == $date_out) {
-                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_in), 'F j, Y') . ' - 8:00 AM</span>');
-                } 
-                
-                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_in), 'F j, Y') . ' - 2:00 PM</span>');
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($reservation->date_in), 'F j, Y') . ' - ' . date_format(date_create($reservation->time_in), 'g:i A') . '</span>');
             })
 
             ->add('date_out')
             ->add('date_out_formatted', function ($reservation) {
-                $date_in = $reservation->date_in;
-                $date_out = $reservation->date_out;
-
-                if ($date_in == $date_out) {
-                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_out), 'F j, Y') . ' - 6:00 AM</span>');
-                } 
-
-                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_out), 'F j, Y') . ' - 12:00 PM</span>');
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($reservation->date_out), 'F j, Y') . ' - ' . date_format(date_create($reservation->time_out), 'g:i A') . '</span>');
             })
 
             ->add('status')

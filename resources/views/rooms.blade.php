@@ -36,7 +36,7 @@
                     <div class="relative flex items-center gap-5">
                         <h3 class="text-2xl font-semibold">{{ $room->name }}</h3>
                         @if ($most_popular == $room->id)
-                            <p class="px-2 py-1 text-xs font-semibold text-yellow-800 border border-yellow-500 rounded-md bg-yellow-50">Most Popular!</p>
+                            <p class="px-2 py-1 text-xs font-semibold text-yellow-800 border border-yellow-500 rounded-md animate-bounce bg-yellow-50">Most Popular!</p>
                         @endif
                     </div>
                     <p class="text-justify indent-8">{{ $room->description }}</p>

@@ -7,15 +7,12 @@ use App\Http\Controllers\DateController;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
-use Carbon\Carbon as CarbonCarbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Attributes\Url;
-use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
@@ -101,13 +98,23 @@ final class GuestTable extends PowerGridComponent
             ->add('id')
             ->add('rid')
             ->add('rid_formatted', function ($reservation) {
-                $style = 'bg-green-500';
+                $ping = 'bg-green-400';
+                $style = 'bg-green-50 border border-green-500';
                 if ($reservation->date_out == Carbon::now()->format('Y-m-d')) {
-                    $style = 'bg-amber-500';
+                    $ping = 'bg-amber-400';
+                    $style = 'bg-amber-50 border border-amber-500';
                 } elseif ($reservation->date_out < Carbon::now()->format('Y-m-d')) {
-                    $style = 'bg-red-500';
+                    $ping = 'bg-red-400';
+                    $style = 'bg-red-50 border border-red-500';
                 }
-                return Blade::render('<div class="flex items-center gap-3 font-semibold"><div class="w-2 rounded-full aspect-square ' . $style . '"></div>' . $reservation->rid . '</div>');
+                return Blade::render('
+                    <div class="flex items-center gap-3 font-semibold">
+                        <span class="relative flex size-2">
+                            <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping ' . $ping . '"></span>
+                            <span class="relative inline-flex rounded-full size-2 ' . $style . '"></span>
+                        </span>' . 
+                        $reservation->rid .
+                    '</div>');
             })
 
             ->add('name')
@@ -117,26 +124,12 @@ final class GuestTable extends PowerGridComponent
 
             ->add('date_in')
             ->add('date_in_formatted', function ($reservation) {
-                $date_in = $reservation->date_in;
-                $date_out = $reservation->date_out;
-
-                if ($date_in == $date_out) {
-                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_in), 'F j, Y') . ' - 8:00 AM</span>');
-                } 
-                
-                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_in), 'F j, Y') . ' - 2:00 PM</span>');
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($reservation->date_in), 'F j, Y') . ' - ' . date_format(date_create($reservation->time_in), 'g:i A') . '</span>');
             })
 
             ->add('date_out')
             ->add('date_out_formatted', function ($reservation) {
-                $date_in = $reservation->date_in;
-                $date_out = $reservation->date_out;
-
-                if ($date_in == $date_out) {
-                    return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_out), 'F j, Y') . ' - 6:00 AM</span>');
-                } 
-
-                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($date_out), 'F j, Y') . ' - 12:00 PM</span>');
+                return Blade::render('<span class="inline-block w-max">' . date_format(date_create($reservation->date_out), 'F j, Y') . ' - ' . date_format(date_create($reservation->time_out), 'g:i A') . '</span>');
             })
 
             ->add('status_formatted', function ($reservation) {
