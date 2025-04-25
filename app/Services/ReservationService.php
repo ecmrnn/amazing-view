@@ -20,6 +20,7 @@ use App\Models\CancelledReservation;
 use App\Models\FunctionHallReservations;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\Settings;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
@@ -505,8 +506,11 @@ class ReservationService
                 'email' => $data['email'],
             ]);
 
+            $site_email = Settings::where('key', 'site_email')->pluck('value')->first();
+
             // Send email
             Mail::to($data['email'])->queue(new ReceivedFunctionHall($function_hall));
+            Mail::to($site_email)->queue(new ReceivedFunctionHall($function_hall));
         });
     }
 
