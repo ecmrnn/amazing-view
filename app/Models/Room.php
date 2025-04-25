@@ -101,13 +101,9 @@ class Room extends Model
                     RoomStatus::UNAVAILABLE->value,
                 ])
                 ->whereHas('reservations', function ($query) use ($date_in, $date_out) {
-                    $query->where(function ($q) use ($date_in, $date_out)  {
-                        $q->whereBetween('date_in', [$date_in, $date_out])
-                        ->orWhereBetween('date_out', [$date_in, $date_out]);
-                    })
-                    ->orWhere(function ($q) use ($date_in, $date_out) {
-                        $q->whereDate('date_in', '<', $date_out)
-                            ->whereDate('date_out', '<', $date_in);
+                    $query->where(function ($q) use ($date_in, $date_out) {
+                        $q->whereDate('date_in', '<=', $date_out)
+                            ->whereDate('date_out', '>=', $date_in);
                     })
                     ->whereIn('reservations.status', [
                         ReservationStatus::AWAITING_PAYMENT->value,
