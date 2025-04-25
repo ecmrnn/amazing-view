@@ -4,7 +4,7 @@
     'subtitle' => 'This is a default title',
 ])
 
-<div {{ $attributes->merge(['class' => 'flex items-center justify-between overflow-visible']) }}>
+<div {{ $attributes->merge(['class' => 'flex items-center justify-between overflow-visible bg-slate-50']) }}>
     <div class="px-5 py-3">
         <h2 class="font-semibold text-md">{{ html_entity_decode($title) }}</h2>
         <p x-show="expanded" class="text-xs">{{ $subtitle }}</p>

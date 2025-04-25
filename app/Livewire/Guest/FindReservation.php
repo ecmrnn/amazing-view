@@ -16,6 +16,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Nette\Utils\Random;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class FindReservation extends Component
@@ -32,6 +33,7 @@ class FindReservation extends Component
     public $is_authorized = null;
     public $email;
     public $expires_at;
+    public $placeholder;
     public $otp;
     public $otp_input = [
         'otp_1' => '',
@@ -154,7 +156,7 @@ class FindReservation extends Component
 
         $this->reservation = Reservation::where('rid', $this->reservation_id)->first();
         
-        if ($this->reservation != null) {
+        if ($this->reservation?->count() > 0) {
             $otp_record = Otp::where('email', $this->reservation->user->email)
                 ->first();
 
@@ -175,11 +177,16 @@ class FindReservation extends Component
 
             $this->reset('is_authorized', 'email');
             $this->dispatch('open-modal', 'enter-otp');
+            return;
         }
+
+        $this->toast('No Reservation Found!', 'info', 'Reservation ' . $this->reservation_id . ' does not exist');
+        return;
     }
 
     public function render()
     {
+        $this->placeholder = 'R' . now()->format('ymd') . Random::generate(3, '0-9');
         return view('livewire.guest.find-reservation');
     }
 }

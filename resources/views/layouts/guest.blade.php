@@ -47,13 +47,13 @@
             })"
         >
         <livewire:banner />
+
+        <x-navigations.guest />
         
         <div @class([
                 'sticky top-0 flex flex-col px-5 pb-5',
                 'sm:h-screen h-svh' => ! Request::is('reservation') && ! Request::is('search') && ! Request::is('function-hall'), 
             ])>
-            <x-navigations.guest />
-            
             <section class="relative flex-grow">
                 {{ $hero }}
             </section>

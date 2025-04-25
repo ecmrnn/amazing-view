@@ -1,11 +1,7 @@
 <div x-data="{ focusSearch() { document.getElementById('reservation_id').focus(); } }">
     @if ($is_authorized != 'authorized')
         <form wire:submit="submit" class="relative flex items-start justify-center max-w-sm gap-1 mx-auto mb-5">
-            <div class="space-y-3">
-                <x-form.input-search maxlength="12"  wire:model="reservation_id" label="Reservation ID" id="reservation_id" />
-                <x-form.input-error field="reservation_id" />
-            </div>
-
+            <x-form.input-search maxlength="12"  wire:model="reservation_id" label="Reservation ID" id="reservation_id" placeholder="e.g. {{ $placeholder }}" />
             <x-primary-button type="submit">Search</x-primary-button>
         </form>
     @endif
@@ -110,9 +106,6 @@
                 <svg class="mx-auto text-slate-200" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-x2-icon lucide-file-x-2"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m8 12.5-5 5"/><path d="m3 12.5 5 5"/></svg>
                 <p class="text-2xl font-semibold text-center text-red-500">No Reservation Found!</p>
                 <p class="max-w-sm mx-auto text-center">There are no reservations with that Reservation ID. If this is a mistake, kindly contact us <a href="{{ route('guest.contact') }}" class="text-blue-500 underline underline-offset-2" wire:navigate>here</a>.</p>
-                <div class="mx-auto mt-3 w-max">
-                    <x-secondary-button wire:click="resetSearch" x-on:click="focusSearch">Try Again</x-secondary-button>
-                </div>
             </div>
         @endif
     @endif

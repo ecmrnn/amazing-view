@@ -28,8 +28,8 @@
             </hgroup>
 
             <x-form.input-group>
-                <x-form.input-label for='inclusion-{{ $row->id }}'>Enter a new name</x-form.input-label>
-                <x-form.input-text x-model="name" id="inclusion-{{ $row->id }}" name="name" label="{{ $row->name }}" />
+                <x-form.input-label for='room-inclusion-{{ $row->id }}'>Enter a new name</x-form.input-label>
+                <x-form.input-text x-model="name" id="room-inclusion-{{ $row->id }}" name="name" label="{{ $row->name }}" />
                 <x-form.input-error field="name" />
             </x-form.input-group>
 
@@ -53,8 +53,8 @@
             </hgroup>
 
             <x-form.input-group>
-                <x-form.input-label for="delete-{{ $row->id }}-password">Enter your password to delete this inclusion.</x-form.input-label>
-                <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-{{ $row->id }}-password" />
+                <x-form.input-label for="delete-room-inclusion-{{ $row->id }}-password">Enter your password to delete this inclusion.</x-form.input-label>
+                <x-form.input-text wire:model.live="password" type="password" label="Password" id="delete-room-inclusion-{{ $row->id }}-password" />
                 <x-form.input-error field="password" />
             </x-form.input-group>
 

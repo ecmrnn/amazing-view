@@ -1,4 +1,4 @@
-<div class="w-full">
+<div class="sticky top-0 z-50 w-full px-5 bg-white">
     <nav class="py-2 text-sm font-semibold bg-white/90 before:backdrop-blur-xl before:backdrop-hack">
         <div class="max-w-screen-xl mx-auto">
             {{-- Desktop --}}

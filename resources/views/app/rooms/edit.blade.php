@@ -21,9 +21,9 @@
             <livewire:app.room.disable-room :room="$room" />
         </x-modal.full>
 
-        <x-modal.full name='delete-room-modal' maxWidth='sm'>
+        {{-- <x-modal.full name='delete-room-modal' maxWidth='sm'>
             <livewire:app.room.delete-room :room="$room" />
-        </x-modal.full>
+        </x-modal.full> --}}
 
         <x-modal.full name='add-inclusion-modal' maxWidth='sm'>
             <livewire:app.room.create-inclusion :room="$room" />  
