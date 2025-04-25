@@ -38,7 +38,7 @@ class CreateInclusion extends Component
     public function render()
     {
         return <<<'HTML'
-        <form class="p-5 space-y-5" wire:submit='store' x-on:inclusion-created.window="show = false">
+        <form class="p-5 space-y-5" wire:submit='store'>
             <hgroup>
                 <h2 class='text-lg font-semibold'>Add Inclusion</h2>
                 <p class='text-xs'>Describe your new inclusion for this room</p>
