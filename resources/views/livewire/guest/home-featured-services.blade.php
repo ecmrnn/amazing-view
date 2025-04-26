@@ -5,8 +5,8 @@
                 <x-img src="{{ $featured_service->image }}" />
     
                 <hgroup>
-                    <div class="p-2 text-xs font-semibold text-blue-800 rounded-full aspect-square w-max bg-blue-50">{{ sprintf("%02d", $key + 1) }}</div>
-                    <h3 class="text-2xl font-semibold text-blue-800">{{ $featured_service->title }}</h3>
+                    <div class="p-2 text-xs font-semibold text-blue-500 rounded-full aspect-square w-max bg-blue-50">{{ sprintf("%02d", $key + 1) }}</div>
+                    <h3 class="text-2xl font-semibold text-blue-500">{{ $featured_service->title }}</h3>
                 </hgroup>
     
                 <p class="text-justify">{{ $featured_service->description }}</p>
