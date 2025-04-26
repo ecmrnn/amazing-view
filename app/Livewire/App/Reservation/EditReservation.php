@@ -5,6 +5,7 @@ namespace App\Livewire\App\Reservation;
 use App\Enums\AmenityStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\ServiceStatus;
+use App\Http\Controllers\DateController;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Building;
@@ -85,6 +86,7 @@ class EditReservation extends Component
     public $rooms;
     public $reservation;
     public $slots;
+    public $can_reschedule;
 
     public function mount(Reservation $reservation)
     {
@@ -95,6 +97,7 @@ class EditReservation extends Component
         $this->selected_services = $reservation->services;
         $this->selected_amenities = collect();
         $this->available_rooms = collect();
+        $this->can_reschedule = DateController::today() < Carbon::parse($reservation->date_in)->subDays(2)->format('Y-m-d');
 
         $this->setProperties();
 

@@ -3,6 +3,7 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Enums\ReservationStatus;
+use App\Http\Controllers\DateController;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
@@ -20,6 +21,7 @@ class CancelReservation extends Component
     #[Validate] public $canceled_at;
     public $max_amount = 0;
     public $reservation;
+    public $max_date;
 
     public function rules() {
         return [
@@ -40,6 +42,7 @@ class CancelReservation extends Component
     public function mount(Reservation $reservation) {
         $this->reservation = $reservation;
         $this->canceled_at = Carbon::now()->format('Y-m-d');
+        $this->max_date = DateController::today();
         $this->calculateRefundAmount();
     }
 
@@ -93,20 +96,26 @@ class CancelReservation extends Component
     {
 
         return <<<'HTML'
-        <form wire:submit="cancel" x-data="{ refund_amount: @entangle('refund_amount'), reason: 'guest' }" class="p-5 space-y-5 bg-white" x-on:reservation-canceled.window="show = false">
+        <form wire:submit="cancel" x-data="{ refund_amount: @entangle('refund_amount'), reason: 'guest' }" class="p-5 space-y-5" x-on:reservation-canceled.window="show = false">
             <hgroup>
                 <h2 class="text-lg font-semibold capitalize">Reservation Cancellation</h2>
                 <p class="max-w-sm text-xs">Are you sure you really want to cancel this reservation?</p>
             </hgroup>
 
-            <x-note>The refund amount is automatically calculated based on the date of cancellation and check-in date.</x-note>
-            @if ($max_amount > 0)
-                <x-note>The maximum refund amount is based on the confirmed payments made: <x-currency />{{ number_format($max_amount, 2) }}</x-note>
-            @endif
+            <x-note>
+                <div class="space-y-5">
+                    <p>The refund amount is automatically calculated based on the date of cancellation and check-in date.</p>
+
+                    @if ($max_amount > 0)
+                        <p>The maximum refund amount is based on the confirmed payments made: <x-currency />{{ number_format($max_amount, 2) }}</p>
+                    @endif
+                </div>
+            </x-note>
+            
 
             <x-form.input-label for="canceled_by">Who wants to cancel?</x-form.input-label>
 
-            <div class="px-3 py-2 border rounded-md border-slate-200">
+            <div class="px-3 py-2 bg-white border rounded-md border-slate-200">
                 <x-form.input-radio name="canceled_by" wire:model.live="canceled_by" value="guest" id="guest" label="The guest want to cancel" />
                 <x-form.input-radio name="canceled_by" wire:model.live="canceled_by" value="management" id="management" label="The management want to cancel" />    
                 <x-form.input-error field="canceled_by" />
@@ -115,12 +124,12 @@ class CancelReservation extends Component
             <div class="grid grid-cols-2 gap-5">
                 <x-form.input-group>
                     <x-form.input-label for='canceled_at'>Date of cancellation</x-form.input-label>
-                    <x-form.input-date wire:model.live="canceled_at" id="canceled_at" name="canceled_at" x-on:change="$wire.calculateRefundAmount()" />
+                    <x-form.input-date wire:model.live="canceled_at" max="{{ $max_date }}" id="canceled_at" name="canceled_at" x-on:change="$wire.calculateRefundAmount()" class="w-full" />
                     <x-form.input-error field="canceled_at" />
                 </x-form.input-group>
                 <x-form.input-group>
                     <x-form.input-label for='refund_amount'>Enter refund amount</x-form.input-label>
-                    <x-form.input-number x-model="refund_amount" max="{{ $max_amount }}" wire:model.live="refund_amount" id="refund_amount" name="refund_amount" label="Refund Amount" />
+                    <x-form.input-currency x-model="refund_amount" max="{{ $max_amount }}" wire:model.live="refund_amount" id="refund_amount" name="refund_amount" label="Refund Amount" />
                     <x-form.input-error field="refund_amount" />
                 </x-form.input-group>
             </div>

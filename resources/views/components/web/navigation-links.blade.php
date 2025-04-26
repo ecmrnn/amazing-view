@@ -73,7 +73,7 @@ class="relative z-10 w-auto">
                         </div>
                     </div>
                 </a>
-                <a href="{{ route('guest.function-hall') }}" wire:navigate
+                {{-- <a href="{{ route('guest.function-hall') }}" wire:navigate
                     class="flex items-center gap-4 px-3 py-2 rounded-md group">
                     <div class="p-3 border rounded-md border-slate-200 bg-slate-50">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-theater-icon lucide-theater"><path d="M2 10s3-3 3-8"/><path d="M22 10s-3-3-3-8"/><path d="M10 2c0 4.4-3.6 8-8 8"/><path d="M14 2c0 4.4 3.6 8 8 8"/><path d="M2 10s2 2 2 5"/><path d="M22 10s-2 2-2 5"/><path d="M8 15h8"/><path d="M2 22v-1a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"/><path d="M14 22v-1a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"/></svg>
@@ -89,7 +89,7 @@ class="relative z-10 w-auto">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </div>
                     </div>
-                </a>
+                </a> --}}
                 <a href="{{ route('guest.search') }}" wire:navigate @click="navigationMenuClose()"
                     class="flex items-center gap-4 px-3 py-2 rounded-md group">
                     <div class="p-3 border rounded-md border-slate-200 bg-slate-50">

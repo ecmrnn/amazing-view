@@ -3,6 +3,7 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Enums\ReservationStatus;
+use App\Http\Controllers\DateController;
 use App\Models\Building;
 use App\Models\Reservation;
 use App\Models\Room;
@@ -23,6 +24,7 @@ class RescheduleReservation extends Component
     #[Validate] public $date_in;
     #[Validate] public $date_out;
     #[Validate] public $selected_rooms;
+    public $max_date;
     public $reservation;
     public $conflict_rooms;
     public $disable_date = false;
@@ -44,6 +46,7 @@ class RescheduleReservation extends Component
         $this->date_out = $reservation->date_out;
         $this->selected_rooms = $reservation->rooms;
         $this->reservation = $reservation;
+        $this->max_date = Carbon::parse($reservation->date_in)->addMonth()->format('Y-m-d');
 
         // Initialize the buildings and rooms
         $this->buildings = Building::with('rooms')->withCount('rooms')->get();
@@ -54,7 +57,7 @@ class RescheduleReservation extends Component
             ReservationStatus::PENDING->value,
             ReservationStatus::CONFIRMED->value
         ])) {
-            $this->min_date = Carbon::now()->format('Y-m-d');
+            $this->min_date = DateController::today();
         } else {
             $this->min_date = $reservation->date_in;
             $this->disable_date = true;
@@ -69,13 +72,18 @@ class RescheduleReservation extends Component
     public function rules() {
         return [
             'date_in' => 'required|date|after_or_equal:min_date',
-            'date_out' => 'required|date|after_or_equal:date_in',
+            'date_out' => 'required|date|after_or_equal:date_in|before_or_equal:' . $this->max_date,
         ];
     }
 
     public function messages() {
         return [
             'selected_rooms.required' => 'Please select a room first',
+            'date_in.required' => 'Select a :attribute',
+            'date_in.after_or_equal' => ':attribute must be after to today',
+            'date_out.required' => 'Select a :attribute',
+            'date_out.after_or_equal' => ':attribute must be after or equal to check-in date',
+            'date_out.before_or_equal' => 'Maximum duration of reservation is 1 month',
         ];
     }
     
@@ -238,8 +246,6 @@ class RescheduleReservation extends Component
         <form wire:submit="reschedule" class="p-5 space-y-5" x-on:reservation-details-updated.window="show = false"
             x-data="{
                 hide: true,
-                date_in: @entangle('date_in'),
-                date_out: @entangle('date_out'),
                 selected_rooms: @entangle('selected_rooms'),
                 is_map_view: $wire.entangle('is_map_view'),
             }">
@@ -259,12 +265,12 @@ class RescheduleReservation extends Component
                     <div class="grid grid-cols-2 gap-5 p-5 bg-white border rounded-md border-slate-200">
                         <x-form.input-group>
                             <x-form.input-label for='date_in'>New check-in date</x-form.input-label>
-                            <x-form.input-date x-model="date_in" min="{{ $min_date }}" id='date_in' name='date_in' class="w-full" />
+                            <x-form.input-date wire:model.live="date_in" min="{{ $min_date }}" id='date_in' name='date_in' class="w-full" />
                             <x-form.input-error field="date_in" />
                         </x-form.input-group>
                         <x-form.input-group>
                             <x-form.input-label for='date_out'>New check-out date</x-form.input-label>
-                            <x-form.input-date x-model="date_out" x-bind:min="date_in" id='date_out' name='date_out' class="w-full" />
+                            <x-form.input-date wire:model.live="date_out" max="{{ $max_date }}"  x-bind:min="date_in" id='date_out' name='date_out' class="w-full" />
                             <x-form.input-error field="date_out" />
                         </x-form.input-group>
                     </div>

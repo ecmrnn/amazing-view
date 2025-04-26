@@ -139,6 +139,7 @@ class ReservationForm extends Component
             'date_out.required_if' => 'Select a :attribute',
             'date_in.after_or_equal' => ':attribute must be after to today',
             'date_out.after_or_equal' => ':attribute must be after or equal to check-in date',
+            'date_out.before_or_equal' => 'Maximum duration of reservation is 1 month',
             
             'adult_count.required' => 'Enter number of :attribute',
             'adult_count.min' => 'Minimum number of :attribute is 1',
@@ -170,7 +171,7 @@ class ReservationForm extends Component
     {
         return [
             'date_in' => 'required|date|after_or_equal:' . Carbon::parse($this->today)->addDay()->format('Y-m-d'),
-            'date_out' => 'required_if:reservation_type,overnight|date|after_or_equal:date_in',
+            'date_out' => 'required_if:reservation_type,overnight|date|after_or_equal:date_in|before_or_equal:' . $this->max_date,
             'senior_count' => 'required|integer',
             'pwd_count' => 'required|integer',
             'adult_count' => 'required|integer|min:1',

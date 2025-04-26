@@ -126,12 +126,12 @@
                                 <p class="text-sm font-semibold">Room</p>
                                 <p class="text-xs">For overnight stays and daytour</p>
                             </a>
-                            <a x-show="dropdown" x-transition:enter.delay.50ms x-transition:leave.delay.50ms
+                            {{-- <a x-show="dropdown" x-transition:enter.delay.50ms x-transition:leave.delay.50ms
                                 href="{{ route('guest.function-hall')}}" wire:navigate
                                 class="block w-full px-5 py-3 border rounded-md border-slate-200">
                                 <p class="text-sm font-semibold">Function Hall</p>
                                 <p class="text-xs">For events and seminars</p>
-                            </a>
+                            </a> --}}
                             <a x-show="dropdown" x-transition:enter.delay.100ms x-transition:leave
                                 href="{{ route('guest.search') }}" wire:navigate
                                 class="block w-full px-5 py-3 border rounded-md border-slate-200">

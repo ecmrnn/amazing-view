@@ -27,7 +27,7 @@ Route::middleware([CheckPageStatus::class])->name('guest.')->group(function () {
     Route::get('/about', [PageController::class, 'about'])->name('about');
     Route::get('/contact', [PageController::class, 'contact'])->name('contact');
     Route::get('/reservation', [PageController::class, 'reservation'])->name('reservation');
-    Route::get('/function-hall', [PageController::class, 'functionHall'])->name('function-hall');
+    // Route::get('/function-hall', [PageController::class, 'functionHall'])->name('function-hall');
     Route::get('/search', [PageController::class, 'findReservation'])->name('search');
 });
 

@@ -102,6 +102,101 @@
         {{-- Step 5: Payment --}}
         @include('components.app.reservation.payment')
 
+        {{-- Reservation Breakdown --}}
+        <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
+            <hgroup>
+                <h2 class='font-semibold'>Reservation Breakdown</h2>
+                <p class='text-xs'>Check the summary of your reservation here</p>
+            </hgroup>
+            
+            @if ($selected_rooms->count() > 0 || $selected_services->count() > 0)
+                {{-- Breakdown --}}
+                <div class="w-full space-y-2">
+                    <p class="text-xs"><strong>Note:</strong> Quantity on rooms are the total nights the guest will stay.</p>
+                    <div class="w-full overflow-auto border rounded-md border-slate-200">
+                        <div class="min-w-[600px]">
+                            <div class="grid grid-cols-6 px-5 py-3 text-sm font-semibold bg-slate-50 text-zinc-800/60 border-slate-200">
+                                <p>No.</p>
+                                <p>Item</p>
+                                <p>Type</p>
+                                <p class="text-center">Quantity</p>
+                                <p class="text-right">Price</p>
+                                <p class="text-right">Total</p>
+                            </div>
+                    
+                            <div>
+                                <?php $counter = 0; ?>
+                                <!-- Rooms -->
+                                @foreach ($selected_rooms as $room)
+                                    <?php $counter++ ?>
+                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
+                                        <p class="font-semibold opacity-50">{{ $counter }}</p>
+                                        <p>{{ $room->room_number}}</p>
+                                        <p>Room</p>
+                                        <p class="text-center">{{ $night_count }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($room->rate, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($room->rate * $night_count, 2) }}</p>
+                                    </div>
+                                @endforeach
+                                <!-- Services -->
+                                @foreach ($selected_services as $service)
+                                    <?php $counter++ ?>
+                                    <div class="grid grid-cols-6 px-5 py-3 text-sm border-t border-solid hover:bg-slate-50 border-slate-200">
+                                        <p class="font-semibold opacity-50">{{ $counter }}</p>
+                                        <p>{{ $service->name }}</p>
+                                        <p>Service</p>
+                                        <p class="text-center">1</p>
+                                        <p class="text-right"><x-currency />{{ number_format($service->price, 2) }}</p>
+                                        <p class="text-right"><x-currency />{{ number_format($service->price, 2) }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Taxes --}}
+                <div class="flex justify-end text-sm">
+                    <table class="w-max">
+                        <tr>
+                            <td class="pr-5 font-semibold text-right">Subtotal</td>
+                            <td class="text-right"><x-currency />{{ number_format($breakdown['sub_total'], 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="pt-5 pr-5 text-right">Vatable Sales</td>
+                            <td class="pt-5 text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_sales'], 2) }}</td>
+                        </tr>
+                        @if ($breakdown['taxes']['vatable_exempt_sales'] > 0)
+                            <tr>
+                                <td class="pr-5 text-right">Vatable Exempt Sales</td>
+                                <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_exempt_sales'], 2) }}</td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td class="pr-5 text-right">VAT</td>
+                            <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vat'], 2) }}</td>
+                        </tr>
+                        @if ($breakdown['taxes']['other_charges'] > 0)
+                            <tr>
+                                <td class="pr-5 text-right">Other Charges</td>
+                                <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['other_charges'], 2) }}</td>
+                            </tr>
+                        @endif
+                        @if ($breakdown['taxes']['discount'] > 0)
+                            <tr>
+                                <td class="pr-5 text-right">Discount</td>
+                                <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td class="pt-5 pr-5 font-semibold text-right text-blue-500">Net Total</td>
+                            <td class="pt-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
+                        </tr>
+                    </table>
+                </div>
+            @endif
+        </div>
+
         <x-primary-button type="button" wire:click='submit' x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }">Create Reservation</x-primary-button>
     </section>
 </div>

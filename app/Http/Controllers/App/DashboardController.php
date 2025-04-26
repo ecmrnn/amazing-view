@@ -8,6 +8,7 @@ use App\Enums\RoomStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DateController;
 use App\Livewire\tables\ReservationTable;
 use App\Models\Announcement;
 use App\Models\Invoice;
@@ -53,7 +54,7 @@ class DashboardController extends Controller
             $available_rooms = Room::where('status', RoomStatus::AVAILABLE)
                 ->count();
             $pending_reservations = Reservation::where('status', ReservationStatus::PENDING)->count();
-            $due_invoices = Invoice::where('status', InvoiceStatus::DUE)->count();
+            $incoming_guests = Reservation::whereDate('date_in', DateController::today())->count();
             $area_chart = (new areaChartModel())
                 ->setColor('#2563EB')
                 ->addPoint('Jan', 10)
@@ -89,7 +90,7 @@ class DashboardController extends Controller
                 'guest_in' => $guest_in,
                 'available_rooms' => $available_rooms,
                 'pending_reservations' => $pending_reservations,
-                'due_invoices' => $due_invoices,
+                'incoming_guests' => $incoming_guests,
             ];
 
             $view = 'app.dashboard.receptionist';

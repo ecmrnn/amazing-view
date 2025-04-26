@@ -15,6 +15,7 @@ use App\Models\Room;
 use App\Models\RoomType;
 use App\Services\AdditionalServiceHandler;
 use App\Services\AmenityService;
+use App\Services\BillingService;
 use App\Services\CarService;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
@@ -53,6 +54,7 @@ class CreateReservation extends Component
     #[Validate] public $transaction_id;
     #[Validate] public $downpayment = 0;
     public $payment_method = 'cash';
+    public $breakdown;
     // Address
     public $region;
     public $province;
@@ -493,6 +495,27 @@ class CreateReservation extends Component
 
     public function render()
     {
+        $items = collect();
+
+        foreach ($this->selected_rooms as $room) {
+            $items->push([
+                'price' => $room->rate,
+                'quantity' => $this->night_count,
+                'type' => 'room',
+            ]);
+        }
+
+        foreach ($this->selected_services as $service) {
+            $items->push([
+                'price' => $service->price,
+                'quantity' => 1,
+                'type' => 'service',
+            ]);
+        }
+
+        $billing = new BillingService;
+        $this->breakdown =  $billing->rawTaxes(null, $items);
+                    
         $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
 
         return view('livewire.app.reservation.create-reservation');

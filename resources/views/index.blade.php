@@ -85,17 +85,17 @@
         <x-slot:subheading>Book your dream getaway!</x-slot:subheading>
 
         <div class="flex items-center justify-center gap-5">
-            <a href="{{ route('guest.reservation') }}" wire:navigate class="block w-full text-right">
+            <a href="{{ route('guest.reservation') }}" wire:navigate>
                 <x-secondary-button>
                     Book a Room
                 </x-secondary-button>
             </a>
-            <p>|</p>
+            {{-- <p>|</p>
             <a href="{{ route('guest.function-hall') }}" wire:navigate class="block w-full">
                 <x-secondary-button>
                     Book a Hall
                 </x-secondary-button>
-            </a>
+            </a> --}}
         </div>
     </x-section>
 

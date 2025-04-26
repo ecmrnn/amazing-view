@@ -68,6 +68,7 @@ class BillingService
                 
                 if ($invoice->balance <= 0) {
                     $invoice->balance = 0;
+                    $invoice->due_date = null;
                     $invoice->status = InvoiceStatus::PAID->value;
                 } else {
                     $invoice->status = InvoiceStatus::PARTIAL->value;
