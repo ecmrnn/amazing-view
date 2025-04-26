@@ -363,7 +363,7 @@ class ReservationService
                     'note' => $data['invoice_note'] ?? null,
                 ]);
 
-                if ($taxes['discount'] > 0 || $taxes['promo_discount']) {
+                if ($taxes['discount'] > 0) {
                     $reservation->discounts()->updateOrCreate(
                         ['description' => 'Senior and PWD discount'],
                         [
