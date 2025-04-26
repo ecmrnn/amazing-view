@@ -5,6 +5,7 @@ namespace App\Livewire\App\Profile;
 use App\Models\User;
 use App\Services\UserService;
 use App\Traits\DispatchesToast;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use phpDocumentor\Reflection\Types\This;
@@ -63,6 +64,7 @@ class EditProfile extends Component
         ]);
 
         $service = new UserService;
+        $validated['role'] = Auth::user()->role;
         $service->update($this->user, $validated);
 
         $this->toast('Success!', description: 'Profile edited successfully!');

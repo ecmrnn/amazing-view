@@ -48,7 +48,6 @@ class UserService
 
     public function update(User $user, $data) {
         DB::transaction(function () use ($user, $data) {
-            
             $roles = ['guest', 'receptionist', 'admin'];
 
             $role = $roles[$data['role'] - 1];
