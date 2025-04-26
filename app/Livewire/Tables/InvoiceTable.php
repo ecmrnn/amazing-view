@@ -61,7 +61,7 @@ final class InvoiceTable extends PowerGridComponent
                 ])
                 ->with('reservation')
                 ->with('reservation.user')
-                ->where('status', $this->status)
+                ->where('invoices.status', $this->status)
                 ->join('reservations', 'reservations.id', '=', 'invoices.reservation_id')
                 ->join('users', 'users.id', '=', 'reservations.user_id');
         }

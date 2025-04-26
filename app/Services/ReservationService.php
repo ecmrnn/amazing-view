@@ -80,6 +80,7 @@ class ReservationService
                     'role' => UserRole::GUEST,
                     'address' => $data['address'],
                     'password' => $auth_user->password ?? $password,
+                    'status' => UserStatus::ACTIVE
                 ]);
                 
                 $user->assignRole('guest');
