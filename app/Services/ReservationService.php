@@ -363,12 +363,15 @@ class ReservationService
                     'note' => $data['invoice_note'] ?? null,
                 ]);
 
-                $reservation->discounts()->updateOrCreate(
-                    ['description' => 'Senior and PWD discount'],
-                    [
-                        'amount' => $taxes['discount'] ?? 0,
-                    ]
-                );
+                if ($taxes['discount'] > 0 || $taxes['promo_discount']) {
+                    $reservation->discounts()->updateOrCreate(
+                        ['description' => 'Senior and PWD discount'],
+                        [
+                            'amount' => $taxes['discount'] ?? 0,
+                        ]
+                    );
+                }
+
             }
 
             GenerateReservationPDF::dispatch($reservation);
