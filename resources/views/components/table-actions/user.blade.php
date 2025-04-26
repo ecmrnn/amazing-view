@@ -50,6 +50,14 @@
                         <x-form.input-error field="password" />
                     </x-form.input-group>
 
+                    @if ($row->role == App\Enums\UserRole::ADMIN->value)
+                        <x-form.input-group>
+                            <x-form.input-label for="password-deactivate-admin-{{ $row->id }}">Enter the password of this Admin</x-form.input-label>
+                            <x-form.input-text wire:model="password_admin" type="password" label="{{ $row->name()}}'s password" id="password-deactivate-admin-{{ $row->id }}" />
+                            <x-form.input-error field="password_admin" />
+                        </x-form.input-group>
+                    @endif
+
                     <x-form.input-checkbox id="cancel_reservations-{{ $row->id }}" name="cancel_reservations" label="Cancel all pending reservations of this user" wire:model.live="cancel_reservations" />
 
                     <x-loading wire:loading wire:target='deactivateUser'>Deactivating user, please wait</x-loading>

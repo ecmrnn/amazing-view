@@ -35,6 +35,7 @@ final class UserTable extends PowerGridComponent
     public string $sortDirection = 'desc';
     
     #[Validate] public $password;
+    #[Validate] public $password_admin;
     public $cancel_reservations;
     #[Url] public $status;
     #[Url] public $role;
@@ -44,12 +45,14 @@ final class UserTable extends PowerGridComponent
     public function rules() {
         return [
             'password' => 'required',
+            'password_admin' => 'nullable',
         ];
     }
 
     public function messages() {
         return [
             'password.required' => 'Enter your password',
+            'password_admin.required' => 'Enter password of this Admin',
         ];
     }
 
@@ -176,33 +179,50 @@ final class UserTable extends PowerGridComponent
     }
 
     public function deactivateUser($id) {
-        $this->validate([
-            'password' => $this->rules()['password'],
-        ]);
+        $user = User::find($id);
 
-        $auth = new AuthService;
-
-        if ($auth->validatePassword($this->password)) {
-            $user = User::find($id);
-            $service = new UserService;
-            
-            if ($user->id == Auth::user()->id) {
-                $this->toast('Deactivation Failed', 'warning', 'You cannot deactivate your own account!');
-                $this->reset('password');
-                return;
+        if ($user) {
+            if ($user->hasRole('admin')) {
+                $this->validate([
+                    'password' => $this->rules()['password'],
+                    'password_admin' => 'required',
+                ]);
+            } else {
+                $this->validate([
+                    'password' => $this->rules()['password'],
+                ]);
             }
-
-            $service->deactivate($user, $this->cancel_reservations);
-
-            if ($user) {
+    
+            $auth = new AuthService;
+    
+            if ($auth->validatePassword($this->password)) {
+                $service = new UserService;
+                
+                if ($user->id == Auth::user()->id) {
+                    $this->toast('Deactivation Failed', 'warning', 'You cannot deactivate your own account!');
+                    $this->reset('password');
+                    return;
+                }
+    
+                if ($user->hasRole('admin')) {
+                    if ($auth->passwordMatch($user, $this->password_admin)) {
+                        $service->deactivate($user, $this->cancel_reservations);
+                    } else {
+                        $this->addError('password_admin', 'Password mismatched, try again!');
+                        return;
+                    }
+                } else {
+                    $service->deactivate($user, $this->cancel_reservations);
+                }
+                
                 $this->fillData();
                 $this->toast('User Deactivated', description: 'User successfully deactivated!');
                 $this->dispatch('user-status-changed');
                 $this->dispatch('force-logout-user');
-                $this->reset('password', 'cancel_reservations');
+                $this->reset('password', 'cancel_reservations', 'password_admin');
+            } else {
+                $this->addError('password', 'Password mismatched, try again!');
             }
-        } else {
-            $this->addError('password', 'Password mismatched, try again!');
         }
     }
 
