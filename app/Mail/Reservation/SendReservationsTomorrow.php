@@ -52,10 +52,10 @@ class SendReservationsTomorrow extends Mailable
      */
     public function attachments(): array
     {
-        // $path = 'app/public/' . $this->report->path;
-        // logger($path);
+        $path = 'app/public/' . $this->report->path;
+
         return [
-            // Attachment::fromPath(storage_path($path))
+            Attachment::fromPath(storage_path($path))
         ];
     }
 }

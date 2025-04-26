@@ -79,7 +79,8 @@ final class ReportsTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Report::query()->with('user');
+        return Report::query()->with('user')
+            ->whereNotNull('user_id');
     }
 
     public function relationSearch(): array
