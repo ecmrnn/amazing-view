@@ -9,9 +9,9 @@
 
         {{-- Main --}}
         <tr>
-            <p style="margin: 0; font-size: 16px; font-weight: bold;">Reservations for tomorrow, {{ date_format(date_create($report->start_date), 'F j, Y') }}</p>
+            <p style="margin: 0; font-size: 16px; font-weight: bold; margin-top: 20px;">Reservations for tomorrow, {{ date_format(date_create($report->start_date), 'F j, Y') }}</p>
 
-            <p style="margin: 0; margin-top: 20px; font-size: 14px;">Attached below is a report for your incoming reservations for tommorrow, you may use this report as a backup in case of system maintenance or loss of internet connection.</p>
+            <p style="margin: 20px 0; font-size: 14px;">Attached below is a report for your incoming reservations for tommorrow, you may use this report as a backup in case of system maintenance or loss of internet connection.</p>
         </tr>
 
         {{-- Footer --}}

@@ -20,7 +20,7 @@ Schedule::command('reservations:send-reservation-reminder-email')
     ->dailyAt('17:00');
 
 Schedule::job(new GenerateIncomingReservation)
-    ->everyFiveMinutes();
+    ->daily();
 
 /** 
  * Other operational commands
