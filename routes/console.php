@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\Reservation\GenerateIncomingReservation;
 use Illuminate\Support\Facades\Schedule;
 
 /** 
@@ -17,6 +18,9 @@ Schedule::command('reservations:no-show')
 // Send Reservation Reminder Email every day at 2:00 PM
 Schedule::command('reservations:send-reservation-reminder-email')
     ->dailyAt('17:00');
+
+Schedule::job(new GenerateIncomingReservation)
+    ->daily();
 
 /** 
  * Other operational commands

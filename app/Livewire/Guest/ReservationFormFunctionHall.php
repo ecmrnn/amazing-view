@@ -51,7 +51,6 @@ class ReservationFormFunctionHall extends Component
         $service = new ReservationService;
         $service->processFunctionHall($validated);
 
-        // Mail::to($this->email)->send(new \App\Mail\ReservationFormFunctionHall($data));
         $this->toast('Success!', description: 'Your reservation has been successfully submitted.');
         $this->dispatch('reservation-successful');
     }

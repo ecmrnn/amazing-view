@@ -8,6 +8,7 @@ use App\Mail\Reservation\Expire;
 use App\Mail\Reservation\NoShow;
 use App\Mail\Reservation\Received;
 use App\Mail\Reservation\Reminder;
+use App\Mail\Reservation\ThankYou;
 use App\Mail\Reservation\Updated;
 use App\Traits\DispatchesToast;
 use Illuminate\Support\Facades\Mail;
@@ -55,7 +56,7 @@ class SendReservationEmail extends Component
                 Mail::to($this->email)->queue(new Received($this->reservation));
                 break;
             case 'thank you':
-                // Mail::to($this->email)->queue(new ThankYou($this->reservation));
+                Mail::to($this->email)->queue(new ThankYou($this->reservation));
                 break;
             case 'expired':
                 Mail::to($this->email)->queue(new Expire($this->reservation));

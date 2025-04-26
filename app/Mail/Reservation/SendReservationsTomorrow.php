@@ -2,7 +2,9 @@
 
 namespace App\Mail\Reservation;
 
-use App\Models\Reservation;
+use App\Http\Controllers\DateController;
+use App\Models\Report;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -11,14 +13,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ThankYou extends Mailable
+class SendReservationsTomorrow extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public Reservation $reservation)
+    public function __construct(public Report $report)
     {
         //
     }
@@ -29,7 +31,7 @@ class ThankYou extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Thank You',
+            subject: 'Reservations for ' . Carbon::parse(DateController::tomorrow())->format('F j, Y'),
         );
     }
 
@@ -39,7 +41,7 @@ class ThankYou extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.reservation.thank-you',
+            view: 'mail.reservation.reservation-tomorrow',
         );
     }
 
@@ -50,10 +52,10 @@ class ThankYou extends Mailable
      */
     public function attachments(): array
     {
-        $filename = $this->reservation->invoice->iid . ' - ' . strtoupper($this->reservation->user->last_name) . '_' . strtoupper($this->reservation->user->first_name) . '.pdf';
-        $path = 'app/public/pdf/invoice/' . $filename;
+        // $path = 'app/public/' . $this->report->path;
+        // logger($path);
         return [
-            Attachment::fromPath(storage_path($path))
+            // Attachment::fromPath(storage_path($path))
         ];
     }
 }
