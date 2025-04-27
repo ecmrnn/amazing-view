@@ -220,16 +220,23 @@ class ReservationService
         }
 
         // Update the invoice
-        $breakdown = $this->handlers->get('billing')->breakdown($reservation->fresh());
-        $invoice_data = [
-            'total_amount' => $breakdown['sub_total'],
-            'downpayment' => $reservation->invoice->downpayment,
-            'balance' => $breakdown['sub_total'] - $reservation->invoice->downpayment,
-        ];
-        $invoice_data['status'] = $invoice_data['balance'] > 0 ? InvoiceStatus::PARTIAL->value : InvoiceStatus::PAID->value;
-
-        // Create the invoice
-        $this->handlers->get('billing')->update($reservation->invoice, $invoice_data);
+        $billing = new BillingService;
+        $taxes = $billing->taxes($reservation->fresh());
+        $payments = $reservation->invoice->payments->sum('amount');
+        $waive = $reservation->invoice->waive_amount;
+        
+        $reservation->invoice->sub_total = $taxes['net_total'];
+        $reservation->invoice->total_amount = $taxes['net_total'];
+        $reservation->invoice->balance = $taxes['net_total'] - $payments;
+        
+        // Apply waived amount
+        if ($reservation->invoice->balance >= $waive) {
+            $reservation->invoice->balance -=  $waive;
+        } else {
+            $reservation->invoice->balance = 0;
+        }
+        
+        $reservation->invoice->save();
 
         // Send update email
         Mail::to($reservation->user->email)->queue(new Updated($reservation));
