@@ -26,9 +26,9 @@
                 Amazing View Mountain Resort Management
             </p>
 
-            <div style="padding: 20px; border: 1px solid #2b7fff; border-radius: 8px; background-color: #eff6ff; color: #193cb8;">
-                <p style="font-size: 16px; font-weight: bold;">Check your Invoice</p>
-                <p style="font-size: 14px; margin: 0;">Attached on this email is your Reservation Invoice. If you have any concerns or questions, feel free to contact us at <span style="font-weight: bold;">{{ $settings['site_phone'] }}</span> or email us at <span style="font-weight: bold;">{{ $settings['site_email'] }}</span>.</p>
+            <div style="padding: 20px; border: 1px solid #2b7fff; border-radius: 8px; background-color: #eff6ff; color: #193cb8; margin-bottom: 20px;">
+                <p style="font-size: 16px; font-weight: bold; margin: 0;">Check your Invoice</p>
+                <p style="font-size: 14px; margin: 0; margin-top: 20px;">Attached on this email is your Reservation Invoice. If you have any concerns or questions, feel free to contact us at <span style="font-weight: bold;">{{ $settings['site_phone'] }}</span> or email us at <span style="font-weight: bold;">{{ $settings['site_email'] }}</span>.</p>
             </div>
         </tr>
 

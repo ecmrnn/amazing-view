@@ -102,7 +102,7 @@ class DashboardController extends Controller
             // Monthly Revenue
             $monthly_revenue = InvoicePayment::select(DB::raw('sum(amount) as revenue'))
                 ->whereMonth('payment_date', Carbon::now()->format('m'))
-                ->whereIn('invoices.status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE, InvoiceStatus::WAIVED])
+                ->whereIn('invoices.status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE, InvoiceStatus::ISSUED])
                 ->join('invoices', 'invoices.id', '=', 'invoice_payments.invoice_id')
                 ->first();
             
@@ -137,7 +137,7 @@ class DashboardController extends Controller
 
             // Monthly Sales
             $monthly_sales = InvoicePayment::select(DB::raw('MONTH(payment_date) as month, sum(amount) as total_sales'))
-                ->whereIn('invoices.status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE, InvoiceStatus::WAIVED])
+                ->whereIn('invoices.status', [InvoiceStatus::PARTIAL, InvoiceStatus::DUE, InvoiceStatus::ISSUED, InvoiceStatus::WAIVED])
                 ->join('invoices', 'invoices.id', '=', 'invoice_payments.invoice_id')
                 ->groupByRaw('MONTH(payment_date)')
                 ->get();

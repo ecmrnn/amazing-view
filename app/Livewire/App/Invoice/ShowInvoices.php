@@ -15,6 +15,7 @@ class ShowInvoices extends Component
         'partial' => 0,
         'paid' => 0,
         'pending' => 0,
+        'issued' => 0,
         'due' => 0,
         'canceled' => 0,
     ];
@@ -25,6 +26,7 @@ class ShowInvoices extends Component
             'partial' => InvoiceStatus::PARTIAL->value,
             'paid' => InvoiceStatus::PAID->value,
             'pending' => InvoiceStatus::PENDING->value,
+            'issued' => InvoiceStatus::ISSUED->value,
             'due' => InvoiceStatus::DUE->value,
             'canceled' => InvoiceStatus::CANCELED->value,
         ];
