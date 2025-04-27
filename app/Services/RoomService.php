@@ -120,7 +120,12 @@ class RoomService
                         'status' => $reservation->status,
                     ]);
     
-                    $room->status = RoomStatus::RESERVED->value;
+                    if ($reservation->status == ReservationStatus::CHECKED_IN->value) {
+                        $room->status = RoomStatus::OCCUPIED->value;
+                    } else {
+                        $room->status = RoomStatus::RESERVED->value;
+                    }
+
                     $room->save();
                 }
             } 
