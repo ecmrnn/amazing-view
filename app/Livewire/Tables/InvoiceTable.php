@@ -44,7 +44,8 @@ final class InvoiceTable extends PowerGridComponent
             Header::make()
                 ->showSearchInput(),
             Footer::make()
-                ->showPerPage(),
+                ->showPerPage()
+                ->showRecordCount(),
         ];
     }
 
