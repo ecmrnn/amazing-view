@@ -363,12 +363,14 @@
                 </div>
             </x-form.form-section>
             
-            <x-primary-button
-                x-bind:class="!can_select_a_room ? 'h-0 overflow-hidden scale-0' : 'h-full scale-100'"
-                x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }"
-                wire:click='submit'>
-                Continue
-            </x-primary-button>
+            <div class="flex justify-end">
+                <x-primary-button
+                    x-bind:class="!can_select_a_room ? 'h-0 overflow-hidden scale-0' : 'h-full scale-100'"
+                    x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }"
+                    wire:click='submit'>
+                    Continue
+                </x-primary-button>
+            </div>
         </div>
     </template>
 </div>

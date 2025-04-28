@@ -58,12 +58,12 @@ class ReservationForm extends Component
     #[Validate] public $email;
     #[Validate] public $phone;
     #[Validate] public $address = []; /* Complete concatenated Address property */
-    public $region;
-    public $province;
-    public $city;
-    public $baranggay;
-    public $street;
-    public $district; 
+    #[Validate] public $region;
+    #[Validate] public $province;
+    #[Validate] public $city;
+    #[Validate] public $baranggay;
+    #[Validate] public $street;
+    #[Validate] public $district; 
     // Car Properties
     public $cars;
     public $plate_number; 
@@ -182,6 +182,8 @@ class ReservationForm extends Component
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'required',
+            'street' => 'regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u',
+            'baranggay' => 'required',
             'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
         ];
     }
@@ -590,7 +592,16 @@ class ReservationForm extends Component
                             'city' => $this->city,
                             'province' => $this->province,
                         ];
+                        
                         $this->address = array_filter($this->address);
+
+                        $this->validate([
+                            'street' => 'regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
+                            'baranggay' => 'required',
+                            'district' => 'required_if:city,'.'City of Manila',
+                            'city' => 'required:',
+                            'province' => 'required_unless:region,'.'National Capital Region (NCR)',
+                        ]);
                     }
 
                     $this->validate([

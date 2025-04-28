@@ -135,7 +135,7 @@
     
                                 {{-- Regions & Provinces --}}
                                 <div class="flex flex-col gap-5 sm:flex-row">
-                                    <div class="w-full">
+                                    <div class="w-full space-y-2">
                                         <x-address.region
                                             :regions="$regions"
                                             wire:model.live="region"
@@ -143,53 +143,58 @@
                                             x-model="region" />
                                     </div>
                                     @if ($region != 'National Capital Region (NCR)')
-                                        <div class="w-full">
+                                        <div class="w-full space-y-2">
                                             <x-address.province
                                                 x-bind:disabled="region == '' || region == null"
                                                 :provinces="$provinces"
                                                 wire:model.live="province"
                                                 x-on:change="$wire.getCities(province)"
                                                 x-model="province" />
+                                            <x-form.input-error field="province" />
                                         </div>
                                     @endif
                                 </div>
                                 {{-- Cities & Manila Districts & Baranggays --}}
                                 <div class="flex flex-col gap-5 sm:flex-row">
                                     @if ($region == 'National Capital Region (NCR)')
-                                        <div class="w-full">
+                                        <div class="w-full space-y-2">
                                             <x-address.ncr.city
                                                 x-bind:disabled="region == '' || region == null"
                                                 wire:model.live="city"
                                                 x-on:change="$wire.getBaranggays(city)"
                                                 x-model="city" />
+                                            <x-form.input-error field="city" />
                                         </div>
                                         @if ($city == "City of Manila")
-                                            <div class="w-full">
+                                            <div class="w-full space-y-2">
                                                 <x-address.ncr.district
                                                     x-bind:disabled="city == '' || city == null"
                                                     :districts="$districts"
                                                     wire:model.live="district"
                                                     x-on:change="$wire.getDistrictBaranggays(district)"
                                                     x-model="district" />
+                                                <x-form.input-error field="district" />
                                             </div>
                                         @endif
                                     @else
-                                        <div class="w-full">
+                                        <div class="w-full space-y-2">
                                             <x-address.city
                                                 :cities="$cities"
                                                 x-bind:disabled="province == '' || province == null"
                                                 wire:model.live="city"
                                                 x-on:change="$wire.getBaranggays(city)"
                                                 x-model="city" />
+                                            <x-form.input-error field="city" />
                                         </div>
                                     @endif
-                                    <div class="w-full">
+                                    <div class="w-full space-y-2">
                                         <x-address.baranggay
                                             x-bind:disabled="city == '' || city == null || (city == 'City of Manila' && (district == '' || district == null))"
                                             :baranggays="$baranggays"
                                             wire:model.live="baranggay"
                                             x-model="baranggay"
                                         />
+                                        <x-form.input-error field="baranggay" />
                                     </div>
                                 </div>
                                 {{-- Street --}}
@@ -200,6 +205,7 @@
                                     label="Street (Optional)"
                                     id="street"
                                 />
+                                <x-form.input-error field="street" />
                             @else
                                 <x-form.input-group>
                                     <div>
