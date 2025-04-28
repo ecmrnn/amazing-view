@@ -79,7 +79,7 @@ class ReservationForm extends Component
     // Payment
     #[Validate] public $proof_image_path;
     #[Validate] public $transaction_id;
-    public $discount_attachment;
+    public $discount_attachments = [];
     public $promo_code;
     public $promo = null;
 
@@ -147,11 +147,11 @@ class ReservationForm extends Component
 
             'first_name.required' => 'Enter a :attribute',
             'first_name.min' => 'Minimum length of :attribute is 2',
-            'first_name.regex' => 'Name can only contain letters, hyphens, and apostrophes',
+            'first_name.regex' => 'Name can only contain letters and hyphens',
             
             'last_name.required' => 'Enter a :attribute',
             'last_name.min' => 'Minimum length of :attribute is 2',
-            'last_name.regex' => 'Name can only contain letters, hyphens, and apostrophes',
+            'last_name.regex' => 'Name can only contain letters and hyphens',
 
             'phone.required' => 'Enter a :attribute',
             'phone.min' => 'The length of :attribute must be 11',
@@ -162,7 +162,7 @@ class ReservationForm extends Component
             'email.email' => 'Enter a valid :attribute',
 
             'selected_rooms.required' => 'Select a room first',
-            'discount_attachment.required' => 'Upload Senior or PWD ID for confirmation',
+            'discount_attachments.required' => 'Upload Senior or PWD ID for confirmation',
         ];
     }
 
@@ -177,8 +177,8 @@ class ReservationForm extends Component
             'adult_count' => 'required|integer|min:1',
             'children_count' => 'integer|min:0',
             'selected_rooms' => 'required',
-            'first_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-\s]+$/u|max:255',
-            'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\'\-\s]+$/u|max:255',
+            'first_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u|max:255',
+            'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u|max:255',
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
             'address' => 'required',
@@ -200,30 +200,36 @@ class ReservationForm extends Component
         }
         $this->reset('proof_image_path');
 
-        $file_exists = !$this->discount_attachment ? false : file_exists($this->discount_attachment->getRealPath());
-        if ($file_exists) {
-            unlink($this->discount_attachment->getRealPath());
+        foreach ($this->discount_attachments as $key => $attachment) {
+            $file_exists = !$attachment ? false : file_exists($attachment->getRealPath());
+
+            if ($file_exists) {
+                unlink($attachment->getRealPath());
+            }
+
+            $this->reset('discount_attachments');
         }
-        $this->reset('discount_attachment');
 
         $this->step = $step;
         $this->toast('Uploaded files will be removed', 'info', 'Going back a previous step will remove all uploaded files');
     }
 
-    public function applyDiscount() {
+    public function applyDiscount($is_submitting = false) {
         $this->validate([
             'senior_count' => 'nullable|lte:adult_count|integer',
             'pwd_count' => 'nullable|integer',
         ]);
 
-        $file_exists = !$this->discount_attachment ?: file_exists($this->discount_attachment->getRealPath());
-        
-        if ($file_exists) {
-            $this->validate([
-                'discount_attachment' => 'nullable|mimes:jpg,jpeg,png|file|max:5000',
-            ]);
-        } else {
-            $this->discount_attachment = null;
+        foreach ($this->discount_attachments as $key => $attachment) {
+            $file_exists = !$attachment ?: file_exists($attachment->getRealPath());
+            
+            if ($file_exists) {
+                $this->validate([
+                    'discount_attachments.*' => 'nullable|mimes:jpg,jpeg,png|file|max:3000',
+                ]);
+            } else {
+                unset($this->discount_attachments[$key]);
+            }
         }
 
         if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
@@ -231,14 +237,17 @@ class ReservationForm extends Component
             return false;
         }
 
-        if (($this->senior_count > 0 || $this->pwd_count > 0) && !$this->discount_attachment) {
-            $this->addError('discount_attachment', 'Upload Senior or PWD ID for confirmation');
+        if (($this->senior_count > 0 || $this->pwd_count > 0) && !$this->discount_attachments) {
+            $this->addError('discount_attachments', 'Upload Senior or PWD ID for confirmation');
             return false;
+        }
+
+        if ($is_submitting) {
+            return true;
         }
 
         $this->dispatch('discount-applied');
         $this->toast('Success!', description: 'Senior and PWDs updated successfully!');
-        return true;
     }
 
     public function toggleRoom(Room $room)
@@ -494,11 +503,15 @@ class ReservationForm extends Component
             }
             $this->reset('proof_image_path');
 
-            $file_exists = !$this->discount_attachment ? false : file_exists($this->discount_attachment->getRealPath());
-            if ($file_exists) {
-                unlink($this->discount_attachment->getRealPath());
+            foreach ($this->discount_attachments as $key => $attachment) {
+                $file_exists = !$attachment ? false : file_exists($attachment->getRealPath());
+
+                if ($file_exists) {
+                    unlink($attachment->getRealPath());
+                }
+
+                $this->reset('discount_attachments');
             }
-            $this->reset('discount_attachment');
 
             $this->step -= 1;
         } else {
@@ -543,7 +556,6 @@ class ReservationForm extends Component
                     }
 
                     $this->step++;
-                    $this->toast('Success!', 'success', 'Next, Guest Details');
                     break;
                 case 2:
                     if (is_array($this->address)) {
@@ -587,7 +599,6 @@ class ReservationForm extends Component
                     $this->breakdown =  $billing->rawTaxes(null, $items);
 
                     $this->step++;
-                    $this->toast('Success!', 'success', 'Next, Payment');
                     break;
                 case 3:
                     $file_exists = !$this->proof_image_path ?: file_exists($this->proof_image_path->getRealPath());
@@ -600,7 +611,7 @@ class ReservationForm extends Component
                         $this->proof_image_path = null;
                     }
 
-                    if (!$this->applyDiscount()) {
+                    if (!$this->applyDiscount(true)) {
                         $this->toast('Oops!', 'warning', 'Please upload Senior or PWD ID for confirmation');
                         return;
                     }
@@ -657,7 +668,7 @@ class ReservationForm extends Component
         $validated['cars'] = $this->cars;
         $validated['note'] = null;
         $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address']), ',') : $validated['address'];
-        $validated['discount_attachment'] = $this->discount_attachment;
+        $validated['discount_attachments'] = $this->discount_attachments;
 
         $service = new ReservationService();
         $reservation = $service->create($validated);

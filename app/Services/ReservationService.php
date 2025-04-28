@@ -77,10 +77,10 @@ class ReservationService
                     'first_name' => $data['first_name'],
                     'last_name' => $data['last_name'],
                     'phone' => $data['phone'],
-                    'role' => UserRole::GUEST,
+                    'role' => UserRole::GUEST->value,
                     'address' => $data['address'],
                     'password' => $auth_user->password ?? $password,
-                    'status' => UserStatus::ACTIVE
+                    'status' => UserStatus::ACTIVE->value
                 ]);
                 
                 $user->assignRole('guest');
@@ -158,25 +158,38 @@ class ReservationService
             }
 
             // Create the discount
-            $discount = 0;
             if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
-                $guest_count = $reservation->children_count + $reservation->adult_count;
-                $discountable_guests = $reservation->pwd_count + $reservation->senior_count;
-    
-                $vatable_exempt_sales = ($breakdown['sub_total'] / 1.12) * ($discountable_guests / $guest_count);
-                $discount = ($vatable_exempt_sales * .2) * $discountable_guests;
-            }
-
-            $file_exists = file_exists($data['discount_attachment'] ? $data['discount_attachment']->getRealPath() : '');
-
-            if ($file_exists && ($data['senior_count'] > 0 || $data['pwd_count'] > 0)) {
-                $reservation->discounts()->create([
-                    'amount' => $discount,
-                    'description' => 'Senior and PWD discount',
-                    'image' => $data['discount_attachment']->store('discounts', 'public'),
+                $discounts = $reservation->discounts()->create([
+                    'amount' => 0,
+                    'description' => '',
                 ]);
-            }
+
+                if (!empty($data['discount_attachments'])) {
+                    foreach ($data['discount_attachments'] as $key => $attachment) {
+                        $file_exists = file_exists($attachment ? $attachment->getRealPath() : '');
+            
+                        if ($file_exists && ($data['senior_count'] > 0 || $data['pwd_count'] > 0)) {
+                            $description = '';
+            
+                            $description .= $data['senior_count'] > 0 ? 'Senior Discount ' : '';
+                            $description .= $data['pwd_count'] > 0 ? 'PWD Discount' : '';
+            
+                            if ($data['senior_count'] > 0 && $data['pwd_count'] > 0) {
+                                $description = 'Senior and PWD Discount';
+                            }
     
+                            $discounts->update([
+                                'description' => $description,
+                            ]);
+            
+                            $discounts->attachments()->create([
+                                'image' => $attachment->store('discounts', 'public'),
+                            ]);
+                        }
+                    }
+                }
+            }
+
             // Generate PDF
             GenerateReservationPDF::dispatch($reservation);
     
@@ -336,18 +349,17 @@ class ReservationService
 
     public function confirm(Reservation $reservation, $data) {
         DB::transaction(function () use ($reservation, $data) {
-            $reservation->status = ReservationStatus::CONFIRMED;
+            $reservation->status = ReservationStatus::CONFIRMED->value;
             $reservation->senior_count = $data['senior_count'] ?? $reservation->senior_count;
             $reservation->pwd_count = $data['pwd_count'] ?? $reservation->pwd_count;
             $reservation->save();
 
             foreach ($reservation->rooms as $room) {
-                $room->pivot->status = ReservationStatus::CONFIRMED;
+                $room->pivot->status = ReservationStatus::CONFIRMED->value;
                 $room->pivot->save();
             }
     
             $filename = $reservation->rid . ' - ' . strtoupper($reservation->user->last_name) . '_' . strtoupper($reservation->user->first_name) . '.pdf';
-            $path = 'public/pdf/reservation/' . $filename;
     
             if ($data['amount'] > 0) {
                 $reservation->invoice->payments()->updateOrCreate(

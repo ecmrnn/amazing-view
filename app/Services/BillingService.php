@@ -115,18 +115,20 @@ class BillingService
         if (!in_array($reservation->status, [
             ReservationStatus::AWAITING_PAYMENT->value,
             ReservationStatus::PENDING->value,
+            ReservationStatus::CONFIRMED->value,
         ])) {
             if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
+                $room_rates = 0; /* Needs to get the rooms that senior resides in  */
                 $guest_count = $reservation->children_count + $reservation->adult_count;
                 $discountable_guests = $reservation->pwd_count + $reservation->senior_count;
                 
-                $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
+                $vatable_sales = $room_rates / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
 
                 if ($guest_count == $discountable_guests) {
-                    $vatable_exempt_sales = ($sub_total / 1.12);
+                    $vatable_exempt_sales = ($room_rates / 1.12);
                     $discount = $vatable_exempt_sales * .2;
                 } else {
-                    $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
+                    $vatable_exempt_sales = ($room_rates / 1.12) * ($discountable_guests / $guest_count);
                     $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
                 }
             }

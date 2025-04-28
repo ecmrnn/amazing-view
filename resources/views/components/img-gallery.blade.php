@@ -34,7 +34,7 @@
 
     <div class="flex justify-between w-full">
         <x-tooltip text="Previous">
-            <x-icon-button x-ref="content" x-on:click="prev()">
+            <x-icon-button type="button" x-ref="content" x-on:click="prev()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
             </x-icon-button>
         </x-tooltip>
@@ -48,7 +48,7 @@
         </div>
 
         <x-tooltip text="Next">
-            <x-icon-button x-ref="content" x-on:click="next()">
+            <x-icon-button type="button" x-ref="content" x-on:click="next()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </x-icon-button>
         </x-tooltip>

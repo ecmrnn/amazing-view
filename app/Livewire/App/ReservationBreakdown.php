@@ -13,14 +13,18 @@ class ReservationBreakdown extends Component
     public $number = 0;
     public $night_count = 1;
     public $breakdown = [];
+    public $discount;
 
     public function mount(Reservation $reservation) {
         $this->reservation = $reservation;
+        $this->discount = $reservation->discounts->first()->description;
+
         $date_in = $reservation->date_in;
         $date_out = $reservation->date_out;
-
         $billing_service = new BillingService;
+        
         $this->night_count = Carbon::parse((string) $date_in)->diffInDays($date_out);
+        
         if ($this->night_count == 0) {
             $this->night_count = 1;
         }
@@ -150,13 +154,13 @@ class ReservationBreakdown extends Component
                     @endif
                     @if ($breakdown['taxes']['discount'] > 0)
                         <tr>
-                            <td class="pr-5 text-right">Discount</td>
+                            <td class="pr-5 text-right">LESS: {{ $discount }}</td>
                             <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
                         </tr>
                     @endif
                     @if ($breakdown['taxes']['promo_discount'] > 0)
                         <tr>
-                            <td class="pr-5 text-right">Promo Discount</td>
+                            <td class="pr-5 text-right">LESS: Promo Discount</td>
                             <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['promo_discount'], 2) }}&rpar;</td>
                         </tr>
                     @endif

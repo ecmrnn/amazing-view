@@ -4,6 +4,7 @@ namespace App\Livewire\App\Reservation;
 
 use App\Enums\ReservationStatus;
 use App\Mail\Reservation\Confirmed;
+use App\Models\DiscountAttachment;
 use App\Models\Reservation;
 use App\Services\AuthService;
 use App\Services\BillingService;
@@ -28,6 +29,7 @@ class ConfirmReservation extends Component
 
     public $total_amount;
     public $discount;
+    public $discount_attachments;
     public $senior_count;
     public $pwd_count;
     public $adult_count;
@@ -63,12 +65,12 @@ class ConfirmReservation extends Component
         $this->reservation = $reservation;
         $this->total_amount = $reservation->invoice->total_amount;
         $this->payment = $reservation->invoice->payments()->wherePurpose('downpayment')->first();
-        $this->discount = $reservation->discounts()->whereDescription('Senior and PWD discount')->first();
+        $this->discount = $reservation->discounts->first();
         $this->senior_count = $reservation->senior_count;
         $this->pwd_count = $reservation->pwd_count;
         $this->adult_count = $reservation->adult_count;
         $this->children_count = $reservation->children_count;
-
+        
         if ($this->payment) {
             $this->amount = (int) $this->payment->amount;
             $this->payment_date = $this->payment->payment_date;
@@ -183,6 +185,7 @@ class ConfirmReservation extends Component
                                         <div class="w-full overflow-auto border rounded-md max-h-96 border-slate-200">
                                             <img src="{{ asset('storage/' . $payment->proof_image_path) }}" alt="payment receipt" class="h-full" />
                                         </div>
+
                                         <div class="absolute top-0 flex gap-1 right-3">
                                             <x-tooltip text="Download" dir="top">
                                                 <a x-ref="content" href="{{ asset($payment->proof_image_path) }}" download="{{ $reservation->rid . ' - ' . 'Payment'}}">
@@ -278,8 +281,8 @@ class ConfirmReservation extends Component
                                         </hgroup>
 
                                         <div>
-                                            @if ($discount->image)
-                                                <x-img src="{{ $discount->image }}" />
+                                            @if ($discount->attachments->count() > 0)
+                                                <x-img-gallery :srcs="$discount->attachments->pluck('image')" />
                                             @endif
 
                                             <div class="flex items-center justify-between mt-5">

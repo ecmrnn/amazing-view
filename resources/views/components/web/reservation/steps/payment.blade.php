@@ -307,10 +307,11 @@
 
             <x-form.input-group>
                 <x-filepond::upload
-                    wire:model="discount_attachment"
+                    wire:model="discount_attachments"
+                    multiple
                     placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
                 />
-                <x-form.input-error field="discount_attachment" />
+                <x-form.input-error field="discount_attachments" />
                 <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Maximum image size &lpar;<strong class="text-blue-500">3MB or 3000kb</strong>&rpar;</p>
             </x-form.input-group>
             
