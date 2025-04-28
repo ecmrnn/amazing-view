@@ -80,6 +80,7 @@
                                         x-bind:disabled="region == '' || region == null"
                                          :provinces="$provinces" wire:model.live="province"
                                         x-on:change="$wire.getCities(province)" x-model="province" />
+                                    <x-form.input-error field="province" />
                                 </div>
                             @endif
                         </div>
@@ -91,6 +92,7 @@
                                         x-bind:disabled="region == '' || region == null"
                                         wire:model.live="city"
                                         x-on:change="$wire.getBaranggays(city)" x-model="city" />
+                                    <x-form.input-error field="city" />
                                 </div>
                                 @if ($city == 'City of Manila')
                                     <div class="w-full">
@@ -99,6 +101,7 @@
                                             :districts="$districts" wire:model.live="district"
                                             x-on:change="$wire.getDistrictBaranggays(district)"
                                             x-model="district" />
+                                        <x-form.input-error field="district" />
                                     </div>
                                 @endif
                             @else
@@ -107,6 +110,7 @@
                                         x-bind:disabled="province == '' || province == null"
                                         :cities="$cities" wire:model.live="city"
                                         x-on:change="$wire.getBaranggays(city)" x-model="city" />
+                                        <x-form.input-error field="city" />
                                 </div>
                             @endif
                             <div class="w-full">
@@ -114,11 +118,13 @@
                                     x-bind:disabled="city == '' || city == null || (city == 'City of Manila' && (district == '' || district == null))"
                                     :baranggays="$baranggays" wire:model.live="baranggay"
                                     x-model="baranggay" />
+                                    <x-form.input-error field="baranggay" />
                             </div>
                         </div>
                         {{-- Street --}}
                         <x-form.input-text wire:model.live="street" x-model="street"
                             label="Street (Optional)" id="street" class="capitalize" />
+                        <x-form.input-error field="street" />
                         <x-form.input-error field="address" />
                         {{-- Loaders --}}
                         <x-loading wire:loading wire:target="getProvinces">Loading <span x-text="region == 'National Capital Region (NCR)' ? 'Cities...' : 'Provinces...'"></span></x-loading>

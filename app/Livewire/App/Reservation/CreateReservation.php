@@ -56,12 +56,12 @@ class CreateReservation extends Component
     public $payment_method = 'cash';
     public $breakdown;
     // Address
-    public $region;
-    public $province;
-    public $city;
-    public $district;
-    public $baranggay;
-    public $street;
+    #[Validate] public $region;
+    #[Validate] public $province;
+    #[Validate] public $city;
+    #[Validate] public $district;
+    #[Validate] public $baranggay;
+    #[Validate] public $street;
     public $regions = [];
     public $provinces = [];
     public $cities = [];
@@ -411,7 +411,16 @@ class CreateReservation extends Component
                 'city' => $this->city,
                 'province' => $this->province,
             ];
+
             $this->address = array_filter($this->address);
+
+            $this->validate([
+                'street' => 'regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
+                'baranggay' => 'required',
+                'district' => 'required_if:city,'.'City of Manila',
+                'city' => 'required:',
+                'province' => 'required_unless:region,'.'National Capital Region (NCR)',
+            ]);
         }
 
         $this->validate([
