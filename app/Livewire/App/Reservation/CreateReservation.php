@@ -76,7 +76,7 @@ class CreateReservation extends Component
     public $max_senior_count;
     public $selected_building;
     #[Validate] public $quantity = 0;
-    public $discount_attachment;
+    public $discount_attachments = [];
     public $max_quantity = 0;
     public $available_amenities;
     public $available_room_types;
@@ -131,7 +131,7 @@ class CreateReservation extends Component
     public function messages() 
     {
         $messages = Reservation::messages();
-        $messages['discount_attachment.required'] = 'Upload Senior or PWD ID for confirmation';
+        $messages['discount_attachmentss.required'] = 'Upload Senior or PWD ID for confirmation';
         $messages['proof_image_path.required_unless'] = 'A payment receipt is required when payment is not cash';
         return $messages;   
     }
@@ -284,14 +284,16 @@ class CreateReservation extends Component
             'pwd_count' => 'nullable|integer',
         ]);
 
-        $file_exists = !$this->discount_attachment ?: file_exists($this->discount_attachment->getRealPath());
-        
-        if ($file_exists) {
-            $this->validate([
-                'discount_attachment' => 'nullable|mimes:jpg,jpeg,png|file|max:5000',
-            ]);
-        } else {
-            $this->discount_attachment = null;
+        foreach ($this->discount_attachments as $key => $attachment) {
+            $file_exists = !$attachment ?: file_exists($attachment->getRealPath());
+            
+            if ($file_exists) {
+                $this->validate([
+                    'discount_attachments.*' => 'nullable|mimes:jpg,jpeg,png|file|max:5000',
+                ]);
+            } else {
+                unset($this->discount_attachments[$key]);
+            }
         }
 
         if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
@@ -299,8 +301,8 @@ class CreateReservation extends Component
             return;
         }
 
-        if (($this->senior_count > 0 || $this->pwd_count > 0) && !$this->discount_attachment) {
-            $this->addError('discount_attachment', 'Upload Senior or PWD ID for confirmation');
+        if (($this->senior_count > 0 || $this->pwd_count > 0) && !$this->discount_attachments) {
+            $this->addError('discount_attachments', 'Upload Senior or PWD ID for confirmation');
             return false;
         }
 
@@ -476,7 +478,7 @@ class CreateReservation extends Component
         $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address']), ',') : $validated['address'];
         $validated['selected_rooms'] = $this->selected_rooms;
         $validated['selected_services'] = $this->selected_services;
-        $validated['discount_attachment'] = $this->discount_attachment;
+        $validated['discount_attachments'] = $this->discount_attachments;
         $validated['cars'] = $this->cars;
 
         $service = new ReservationService;

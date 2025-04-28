@@ -226,7 +226,7 @@
         <div class="w-full">
             <x-filepond::upload
                 wire:model.live="proof_image_path"
-                placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
+                placeholder="Drag & drop your images or <span class='filepond--label-action'> Browse </span>"
             />
             <x-form.input-error field="proof_image_path" />
             <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Maximum image size &lpar;<strong class="text-blue-500">1MB or 1024KB</strong>&rpar;</p>
