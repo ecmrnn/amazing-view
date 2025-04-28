@@ -493,6 +493,26 @@ class ReservationForm extends Component
         $this->baranggays = AddressController::getDistrictBaranggays($district);
     }
 
+    public function hasRoomConflict() {
+         // Check if the selected rooms are available
+         $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id')->toArray();
+         $has_conflict = false;
+
+         foreach ($this->selected_rooms as $room_id) {
+             if (in_array($room_id->id, $reserved_rooms)) {
+                 $this->removeRoom($room_id);
+                 $has_conflict = true;
+             }
+         }
+
+         if ($has_conflict) {
+            $this->step = 1;
+            $this->selectRoom();
+            $this->toast('Room is already reserved', 'info', 'Select another room');
+            return true;
+         }
+    }
+
     public function submit($previous = false)
     {
         if ($previous) {
@@ -532,6 +552,10 @@ class ReservationForm extends Component
                     if ($this->capacity < $this->adult_count + $this->children_count) {
                         $this->toast('Oops!', 'warning', 'Selected rooms cannot accommodate the number of guests.');
                         $this->addError('selected_rooms', 'Selected rooms cannot accommodate the number of guests.');
+                        return;
+                    }
+
+                    if ($this->hasRoomConflict()) {
                         return;
                     }
 
@@ -576,6 +600,10 @@ class ReservationForm extends Component
                         'phone' => $this->rules()['phone'],
                         'address' => $this->rules()['address'],
                     ]);
+
+                    if ($this->hasRoomConflict()) {
+                        return;
+                    }
 
                     $items = collect();
 
