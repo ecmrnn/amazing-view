@@ -34,7 +34,7 @@ class User extends Authenticatable
             'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u|max:255',
             'email' => 'required|unique:users,email|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
-            'address' => 'nullable',
+            'address' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
             'role' => 'required',
             'password' => ['required', 'confirmed', Password::min(8)
                 ->letters()
