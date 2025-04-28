@@ -22,6 +22,7 @@
                         <th class="px-2 py-1 text-xs text-left text-blue-500 uppercase border-slate-200 bg-blue-50 border-y">Check-out</th>
                         <th class="px-2 py-1 text-xs text-left text-blue-500 uppercase border-slate-200 bg-blue-50 border-y">Phone Number</th>
                         <th class="px-2 py-1 text-xs text-left text-blue-500 uppercase border-r border-slate-200 bg-blue-50 border-y">Rooms Reserved</th>
+                        <th class="px-2 py-1 text-xs text-left text-blue-500 uppercase border-r border-slate-200 bg-blue-50 border-y">Vehicles</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,8 +30,8 @@
                         <tr class="border-b border-slate-200 last:border-b-0 odd:bg-slate-100">
                             <td class="px-4 py-1 text-xs font-semibold border-x border-slate-200">{{ $reservation->rid }}</td>
                             <td class="px-2 py-1 text-xs capitalize border-r border-slate-200">{{ $reservation->user->first_name . ' ' . $reservation->user->last_name }}</td>
-                            <td class="px-2 py-1 text-xs border-r border-slate-200">{{ date_format(date_create($reservation->date_in), 'F j, Y') }}</td>
-                            <td class="px-2 py-1 text-xs border-r border-slate-200">{{ date_format(date_create($reservation->date_out), 'F j, Y') }}</td>
+                            <td class="px-2 py-1 text-xs border-r border-slate-200">{{ date_format(date_create($reservation->date_in), 'F j, Y') . ' - ' . date_format(date_create($reservation->time_in),'g:i A') }}</td>
+                            <td class="px-2 py-1 text-xs border-r border-slate-200">{{ date_format(date_create($reservation->date_out), 'F j, Y') . ' - ' . date_format(date_create($reservation->time_out),'g:i A') }}</td>
                             <td class="px-2 py-1 text-xs border-r border-slate-200">{{ substr($reservation->user->phone, 0, 4) . ' ' . substr($reservation->user->phone, 4, 3) . ' ' . substr($reservation->user->phone, 7) }}</td>
                             <td class="px-2 py-1 text-xs border-r border-slate-200">
                                 @foreach ($reservation->rooms as $room)
@@ -39,9 +40,16 @@
                                     </span>
                                 @endforeach
                             </td>
+                            <td class="px-2 py-1 text-xs border-r border-slate-200">
+                                @foreach ($reservation->cars as $car)
+                                    <span class="inline-block">
+                                        {{ $car->plate_number }}
+                                    </span>
+                                @endforeach
+                            </td>
                         </tr>
                     @endforeach
-                    <td class="px-2 py-1 text-xs text-center" colspan="6">Nothing follows...</td>
+                    <td class="px-2 py-1 pt-5 text-xs text-center" colspan="6">Nothing follows...</td>
                 </tbody>
             </table>
         </div>

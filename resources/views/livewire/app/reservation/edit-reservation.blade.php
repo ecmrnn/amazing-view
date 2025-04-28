@@ -503,15 +503,34 @@
                 floor_count: $wire.entangle('floor_count'),
                 column_count: $wire.entangle('column_count'),
                 }" wire:key="modal-{{ $modal_key }}">
-                <div class="p-5 pb-0">
+                <div class="p-5">
                     <hgroup>
                         <h2 class="text-lg font-semibold capitalize">{{ $selected_building->name }} Building</h2>
                         <p class="text-xs text-zinc-800">Click a room to reserve</p>
                     </hgroup>
                 </div>
 
+                <div class="grid grid-cols-4 gap-3 p-3 mx-5 mb-5 bg-white border rounded-md border-slate-200">
+                    <div class="flex items-center gap-3 text-xs font-semibold">
+                        <div class="border border-blue-500 rounded-md size-3 bg-blue-50"></div>
+                        <p>Selected</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs font-semibold">
+                        <div class="border border-green-500 rounded-md size-3 bg-green-50"></div>
+                        <p>Reserved</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs font-semibold">
+                        <div class="border border-red-500 rounded-md size-3 bg-red-50"></div>
+                        <p>Unavailable</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs font-semibold">
+                        <div class="border rounded-md border-slate-200 size-3"></div>
+                        <p>Available</p>
+                    </div>
+                </div>
+
                 {{-- Room List --}}
-                <section class="grid p-5 overflow-auto max-h-80 bg-slate-100/50 gap-x-1 gap-y-5" style="grid-template-columns: repeat({{ $column_count }}, 1fr)">
+                <section class="grid p-5 pt-0 overflow-auto max-h-80 bg-slate-100/50 gap-x-1 gap-y-5" style="grid-template-columns: repeat({{ $column_count }}, 1fr)">
                     <x-loading wire:loading wire:target='selectBuilding'>Amazing rooms incoming!</x-loading>
 
                     @php

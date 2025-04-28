@@ -25,8 +25,8 @@
             <p style="margin-top: 20px; font-weight: bold; font-size: 16px;">Reservation Details</p>
 
             <div>
-                <p style="margin: 0; font-size: 14px;"><span style="font-weight: bold">Check-in Date:</span> {{ date_format(date_create($reservation->date_in), 'F j, Y') . ' ' . date_format(date_create($reservation->time_in), 'g:i A') }}</p>
-                <p style="margin: 0; font-size: 14px;"><span style="font-weight: bold">Check-out Date:</span> {{ date_format(date_create($reservation->date_out), 'F j, Y') . ' ' . date_format(date_create($reservation->time_out), 'g:i A') }}</p>
+                <p style="margin: 0; font-size: 14px;"><span style="font-weight: bold">Check-in Date:</span> {{ date_format(date_create($reservation->date_in), 'F j, Y') . ' at ' . date_format(date_create($reservation->time_in), 'g:i A') }}</p>
+                <p style="margin: 0; font-size: 14px;"><span style="font-weight: bold">Check-out Date:</span> {{ date_format(date_create($reservation->date_out), 'F j, Y') . ' at ' . date_format(date_create($reservation->time_out), 'g:i A') }}</p>
                 <p style="margin: 0; font-size: 14px;"><span style="font-weight: bold">Number of Guests:</span> 
                     {{ $reservation->adult_count }} 
                     <span>

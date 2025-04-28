@@ -113,10 +113,10 @@ class BillingService
         
         // Compute for promos & discounts
         if (!in_array($reservation->status, [
-            ReservationStatus::AWAITING_PAYMENT->value,
-            ReservationStatus::PENDING->value,
-            ReservationStatus::CONFIRMED->value,
-        ])) {
+                ReservationStatus::AWAITING_PAYMENT->value,
+                ReservationStatus::PENDING->value,
+                ReservationStatus::CONFIRMED->value,
+            ])) {
             if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
                 $room_rates = 0; /* Needs to get the rooms that senior resides in  */
                 $guest_count = $reservation->children_count + $reservation->adult_count;
@@ -137,7 +137,7 @@ class BillingService
                 $promo_discount = $reservation->promo->amount;
             }
         }
-
+        
         // Add 'other charges'
         if(!empty($reservation->invoice->items)) {
             foreach ($reservation->invoice->items as $item) {
@@ -148,6 +148,7 @@ class BillingService
         $vat = $vatable_sales * .12;
         $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount - $promo_discount) + $other_charges;
 
+        
         return [
             'sub_total' => $sub_total,
             'vatable_sales' => $vatable_sales,
