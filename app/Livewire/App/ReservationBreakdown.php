@@ -17,7 +17,11 @@ class ReservationBreakdown extends Component
 
     public function mount(Reservation $reservation) {
         $this->reservation = $reservation;
-        $this->discount = $reservation->discounts->first()->description;
+        $this->discount = null;
+        
+        if ($this->reservation->discounts->first() != null) {
+            $this->discount = $this->reservation->discounts->first()->description;
+        }
 
         $date_in = $reservation->date_in;
         $date_out = $reservation->date_out;
