@@ -175,11 +175,17 @@ class BillingService
                         $promo_discount = $reservation->promo->amount;
                     }
                 }
+
+                // Add 'amenities'
+                foreach($room->amenitiesForReservation($reservation->id)->get() as $amenity) {
+                    $vatable_sales += ($amenity->pivot->price * $amenity->pivot->quantity) / 1.12;
+                }
             }
+
             // Add 'additional services'
             if ($reservation->services->count() > 0) {
                 foreach ($reservation->services as $service) {
-                    $vatable_sales += $service->price / 1.12;
+                    $vatable_sales += $service->pivot->price / 1.12;
                 }
             }
         }
@@ -263,10 +269,25 @@ class BillingService
                         $promo_discount = $invoice->reservation->promo->amount;
                     }
                 }
+
+                // Add 'amenities'
+                foreach($room->amenitiesForReservation($invoice->reservation->id)->get() as $amenity) {
+                    $vatable_sales += ($amenity->pivot->price * $amenity->pivot->quantity) / 1.12;
+                }
             }
 
-            if ($invoice->reservation->promo) {
-                $promo_discount = $invoice->reservation->promo->amount;
+            // Add 'additional services'
+            if ($invoice->reservation->services->count() > 0) {
+                foreach ($invoice->reservation->services as $service) {
+                    $vatable_sales += $service->pivot->price / 1.12;
+                }
+            }
+
+            // Add 'other charges'
+            if(!empty($invoice->items)) {
+                foreach ($invoice->items as $item) {
+                    $other_charges += $item->price * $item->quantity;
+                }
             }
         } else {
             $vatable_sales = $sub_total / 1.12;
@@ -407,9 +428,14 @@ class BillingService
                 'status' => InvoiceStatus::WAIVED,
             ]);
 
-            $invoice->reservation->status = ReservationStatus::CONFIRMED;
-            $invoice->reservation->expires_at = null;
-            $invoice->reservation->save();
+            if (in_array($invoice->reservation->status, [
+                ReservationStatus::AWAITING_PAYMENT->value,
+                ReservationStatus::PENDING->value,
+            ])) {
+                $invoice->reservation->status = ReservationStatus::CONFIRMED->value;
+                $invoice->reservation->expires_at = null;
+                $invoice->reservation->save();
+            }
 
             return $invoice;
         });
@@ -418,9 +444,6 @@ class BillingService
     public function retractWaive(Invoice $invoice, $amount) {
         return DB::transaction(function () use ($invoice, $amount) {
             $invoice->waive_amount -= $amount;
-            $invoice->reservation->status = ReservationStatus::CONFIRMED->value;
-            $invoice->reservation->expires_at = null;
-
             $invoice->reservation->save();
             $invoice->save();
 

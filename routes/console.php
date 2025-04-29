@@ -19,6 +19,11 @@ Schedule::command('reservations:no-show')
 Schedule::command('reservations:send-reservation-reminder-email')
     ->dailyAt('17:00');
 
+// Apply late check-out fees on checked-in reservations
+Schedule::command('reservation:apply-late-check-out-fee')
+    ->hourly();
+
+// Generate Incoming Reservations Report daily and send it to site_email
 Schedule::job(new GenerateIncomingReservation)
     ->daily();
 

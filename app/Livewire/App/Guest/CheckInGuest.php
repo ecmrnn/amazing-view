@@ -248,7 +248,9 @@ class CheckInGuest extends Component
             $service->checkIn($this->reservation);
             
             $this->toast('Success!', description: 'Guest checked-in!');
-            sleep(3);
+            $this->dispatch('checked-in');
+
+            sleep(5);
             $this->redirect(route('app.guests.index'), true);
             return;
         }
