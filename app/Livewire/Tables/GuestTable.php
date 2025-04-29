@@ -27,7 +27,7 @@ final class GuestTable extends PowerGridComponent
 
     public string $tableName = 'GuestTable';
     public string $primaryKey = 'reservations.id';
-    public string $sortField = 'reservations.id';
+    public string $sortField = 'reservations.date_in';
     public string $sortDirection = 'desc';
     #[Url] public $status;
 

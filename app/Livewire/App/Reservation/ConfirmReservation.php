@@ -34,6 +34,7 @@ class ConfirmReservation extends Component
     public $pwd_count;
     public $adult_count;
     public $children_count;
+    public $min_payment;
 
     public $is_valid = false;
     public $can_confirm = false;
@@ -46,7 +47,7 @@ class ConfirmReservation extends Component
 
     public function rules() {
         return [
-            'amount' => 'required|integer|gte:500|max:' . ceil($this->total_amount),
+            'amount' => 'required|integer|gte:' . $this->min_payment . '|max:' . ceil($this->total_amount),
             'transaction_id' => 'required_unless:payment_method,cash',
             'payment_date' => 'date|required',
             'password' => 'required',
@@ -70,11 +71,12 @@ class ConfirmReservation extends Component
         $this->pwd_count = $reservation->pwd_count;
         $this->adult_count = $reservation->adult_count;
         $this->children_count = $reservation->children_count;
+        $this->min_payment = $reservation->invoice->total_amount * .5;
         
         if ($this->payment) {
             $this->amount = (int) $this->payment->amount;
             $this->payment_date = $this->payment->payment_date;
-            $this->transaction_id = $this->payment->transaction_id ?? 'cash';
+            $this->transaction_id = $this->payment->transaction_id;
         }
     }
 

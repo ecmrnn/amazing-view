@@ -461,6 +461,13 @@ class ReservationForm extends Component
                                     ->orderBy('max_capacity')
                                     ->limit(3)
                                     ->get();
+
+        if ($this->suggested_rooms->count() == 0) {
+            $this->suggested_rooms = Room::whereNotIn('id', $reserved_rooms)
+                ->orderByDesc('max_capacity')
+                ->limit(3)
+                ->get();
+        }
     }
 
     // Populate 'available_rooms' property
@@ -535,7 +542,7 @@ class ReservationForm extends Component
                 return;
             }
         }
-        
+
         if ($previous) {
             // Delete temporary uploaded file
             $file_exists = !$this->proof_image_path ? false : file_exists($this->proof_image_path->getRealPath());
