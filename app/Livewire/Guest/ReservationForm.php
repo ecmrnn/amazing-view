@@ -12,6 +12,7 @@ use App\Models\Promo;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Models\Settings;
 use App\Models\User;
 use App\Services\AdditionalServiceHandler;
 use App\Services\BillingService;
@@ -688,9 +689,11 @@ class ReservationForm extends Component
                         ]);
                     }
 
+                    $settings = Settings::pluck('value', 'key');
+
                     $billing = new BillingService;
                     $this->breakdown =  $billing->rawTaxes(null, $items);
-                    $this->minimum_payment = $this->breakdown['taxes']['net_total'] * .5;
+                    $this->minimum_payment = $this->breakdown['taxes']['net_total'] * $settings['site_reservation_downpayment_percentage'];
                     $this->step = 3;
                     break;
                 case 3:

@@ -40,6 +40,12 @@ class EditGlobal extends Component
     #[Validate] public $site_gcash_name;
     #[Validate] public $site_gcash_qr;
 
+    /** 
+     * Reservation Configuration
+     */
+
+    #[Validate] public $site_reservation_downpayment_percentage;
+    
     public function rules() {
         return [
             'site_title' => 'required',
@@ -52,6 +58,8 @@ class EditGlobal extends Component
             'site_gcash_phone' => 'required|digits:11|starts_with:09',
             'site_gcash_name' => 'required',
             'site_gcash_qr' => 'nullable|image|max:1024',
+
+            'site_reservation_downpayment_percentage' => 'required|lte:.99|gte:.01',
         ];
     }
 
@@ -66,6 +74,7 @@ class EditGlobal extends Component
         
         $this->site_gcash_name = $this->settings['site_gcash_name'];
         $this->site_gcash_phone = $this->settings['site_gcash_phone'];
+        $this->site_reservation_downpayment_percentage = $this->settings['site_reservation_downpayment_percentage'];
     }
 
     public function saveBranding() {
@@ -158,6 +167,22 @@ class EditGlobal extends Component
         $this->dispatch('pond-reset');
         $this->dispatch('settings-updated');
         $this->toast('Success!', description: 'GCash Payment Information updated!');
+    }
+
+    public function saveReservation() {
+        $validated = $this->validate([
+            'site_reservation_downpayment_percentage' => $this->rules()['site_reservation_downpayment_percentage'],
+        ]);
+        
+        DB::transaction(function () use ($validated) {
+            Settings::where('key', 'site_reservation_downpayment_percentage')->first()->update([
+                'value' => $validated['site_reservation_downpayment_percentage']
+            ]);
+        });
+
+        $this->settings = Settings::pluck('value', 'key');
+        $this->dispatch('settings-updated');
+        $this->toast('Success!', description: 'Reservation Configuration updated!!');
     }
 
     public function render()

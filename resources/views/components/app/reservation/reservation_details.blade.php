@@ -6,6 +6,7 @@
                 <x-form.input-date
                     wire:model="date_in"
                     min="{{ $min_date }}"
+                    x-on:input="$wire.setMinDateOut()"
                     id="date_in" />
                 <x-form.input-error field="date_in" />
             </div>
@@ -14,6 +15,7 @@
                 <x-form.input-date
                     x-bind:disabled="date_in == '' || date_in == null"
                     wire:model="date_out"
+                    max="{{ $max_date }}"
                     x-bind:value="date_in == '' ? null : date_out" x-bind:min="date_in"
                     id="date_out" />
                 <x-form.input-error field="date_out" />

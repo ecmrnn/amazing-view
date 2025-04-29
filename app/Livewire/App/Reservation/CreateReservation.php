@@ -14,6 +14,7 @@ use App\Models\Promo;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Models\Settings;
 use App\Services\AdditionalServiceHandler;
 use App\Services\AmenityService;
 use App\Services\BillingService;
@@ -104,6 +105,7 @@ class CreateReservation extends Component
     public $promo = null;
     public $max_payment = 0;
     public $min_payment = 0;
+    public $max_date;
     
     public function mount()
     {
@@ -144,6 +146,10 @@ class CreateReservation extends Component
     public function validationAttributes()
     {
         return Reservation::validationAttributes();
+    }
+
+    public function setMinDateOut() {
+        $this->max_date = Carbon::parse($this->date_in)->addMonth()->format('Y-m-d');
     }
 
     public function toggleService(AdditionalServices $service)
@@ -552,10 +558,12 @@ class CreateReservation extends Component
             ]);
         }
 
+        $settings = Settings::pluck('value', 'key');
+
         $billing = new BillingService;
         $this->breakdown =  $billing->rawTaxes(null, $items);
         $this->max_payment = $this->breakdown['taxes']['net_total'];
-        $this->min_payment = $this->breakdown['taxes']['net_total'] * .5;
+        $this->min_payment = $this->breakdown['taxes']['net_total'] * $settings['site_reservation_downpayment_percentage'];
         $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
 
         return view('livewire.app.reservation.create-reservation');

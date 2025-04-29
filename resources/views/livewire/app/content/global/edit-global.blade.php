@@ -141,6 +141,30 @@
         </div>
     </form>
 
+    <form class="p-5 space-y-5 bg-white border rounded-lg border-slate-200" wire:submit='saveReservation'>
+        <hgroup>
+            <h2 class="font-semibold">Reservation Configuration</h2>
+            <p class="text-xs">Update your reservation requirements here</p>
+        </hgroup>
+
+        <div class="w-full sm:w-1/2">
+            <x-note>
+                Reservation Downpayment Percentage refers to the minimum amount that guests must pay for their submitted reservations.
+            </x-note>
+        </div>
+
+        <x-form.input-group>
+            <x-form.input-label for='reservation_downpayment_percentage'>Reservation Downpayment Percentage</x-form.input-label>
+            <x-form.input-text class="w-full sm:w-1/2" wire:model.live='site_reservation_downpayment_percentage' id="reservation_downpayment_percentage" name="reservation_downpayment_percentage" label="{{ $settings['site_reservation_downpayment_percentage'] }}" />
+            <x-form.input-error field="reservation_downpayment_percentage" />
+        </x-form.input-group>
+        
+        <div class="flex items-center justify-between">
+            <x-primary-button>Save</x-primary-button>
+            <x-loading wire:loading wire:target='saveReservation'>Updating changes, please wait</x-loading>
+        </div>
+    </form>
+
     <x-modal.full name='show-current-logo' maxWidth='sm'>
         <div class="p-5 space-y-5">
             <x-img src="{{ $settings['site_logo'] }}" alt="Logo of Amazing View" aspect="square" />

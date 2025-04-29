@@ -26,10 +26,11 @@ class Reservation extends Model
 
     public static function rules(array $excepts = []) {
         $today = DateController::today();
+        $max_date_out = Carbon::parse($today)->addMonth()->format('Y-m-d');
         
         $rules = [
             'date_in' => 'required|date|after_or_equal:' . $today,
-            'date_out' => 'required|date|after_or_equal:date_in',
+            'date_out' => 'required|date|after_or_equal:date_in|before_or_equal:' . $max_date_out,
             'senior_count' => 'nullable|integer',
             'pwd_count' => 'nullable|integer',
             'adult_count' => 'required|integer|min:1',

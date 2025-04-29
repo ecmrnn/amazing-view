@@ -6,6 +6,7 @@ use App\Enums\ReservationStatus;
 use App\Mail\Reservation\Confirmed;
 use App\Models\DiscountAttachment;
 use App\Models\Reservation;
+use App\Models\Settings;
 use App\Services\AuthService;
 use App\Services\BillingService;
 use App\Services\ReservationService;
@@ -71,7 +72,9 @@ class ConfirmReservation extends Component
         $this->pwd_count = $reservation->pwd_count;
         $this->adult_count = $reservation->adult_count;
         $this->children_count = $reservation->children_count;
-        $this->min_payment = $reservation->invoice->total_amount * .5;
+
+        $settings = Settings::pluck('value', 'key');
+        $this->min_payment = $reservation->invoice->total_amount * $settings['site_reservation_downpayment_percentage'];
         
         if ($this->payment) {
             $this->amount = (int) $this->payment->amount;
