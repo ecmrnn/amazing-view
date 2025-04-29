@@ -617,7 +617,6 @@ class ReservationForm extends Component
                         $this->last_name = Auth::user()->last_name;
                         $this->email = Auth::user()->email;
                         $this->phone = Auth::user()->phone;
-                        $this->address = Auth::user()->address;
                         $this->guest_found = true;
                     }
 
@@ -634,32 +633,37 @@ class ReservationForm extends Component
                     $this->step = 2;
                     break;
                 case 2:
-                    $this->address = [
-                        'street' => $this->street,
-                        'baranggay' => $this->baranggay,
-                        'district' => $this->district,
-                        'city' => $this->city,
-                        'province' => $this->province,
-                    ];
-                    
-                    $this->address = array_filter($this->address);
-
-                    $this->validate([
-                        'street' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
-                        'baranggay' => 'required',
-                        'district' => 'required_if:city,'.'City of Manila',
-                        'city' => 'required:',
-                        'province' => 'required_unless:region,'.'National Capital Region (NCR)',
-                    ]);
-                    
-                    $this->address = is_array($this->address) ? trim(implode(', ', $this->address), ',') : $this->address;
+                    if (!empty($regions) && $this->guest_found == false) {
+                        $this->address = [
+                            'street' => $this->street,
+                            'baranggay' => $this->baranggay,
+                            'district' => $this->district,
+                            'city' => $this->city,
+                            'province' => $this->province,
+                        ];
+                        
+                        $this->address = array_filter($this->address);
+    
+                        $this->validate([
+                            'street' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
+                            'baranggay' => 'required',
+                            'district' => 'required_if:city,'.'City of Manila',
+                            'city' => 'required:',
+                            'province' => 'required_unless:region,'.'National Capital Region (NCR)',
+                        ]);
+                        
+                        $this->address = is_array($this->address) ? trim(implode(', ', $this->address), ',') : $this->address;
+                    } else {
+                        $this->validate([
+                            'address' => $this->rules()['address'],
+                        ]);
+                    }
 
                     $this->validate([
                         'first_name' => $this->rules()['first_name'],
                         'last_name' => $this->rules()['last_name'],
                         'email' => $this->rules()['email'],
                         'phone' => $this->rules()['phone'],
-                        'address' => $this->rules()['address'],
                     ]);
 
                     if ($this->hasRoomConflict()) {
