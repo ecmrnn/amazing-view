@@ -17,6 +17,7 @@ class Received extends Mailable
 
     public $has_amenities = false;
     public $token = null;
+    public $minimum_payment;
     
     /**
      * Create a new message instance.
@@ -25,6 +26,7 @@ class Received extends Mailable
     {
         $this->has_amenities = RoomAmenity::where('reservation_id', $reservation->id)->exists();
         $this->token = Password::createToken($reservation->user);
+        $this->minimum_payment = 0;
     }
 
     /**

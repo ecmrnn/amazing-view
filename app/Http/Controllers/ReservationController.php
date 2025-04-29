@@ -85,6 +85,18 @@ class ReservationController extends Controller
         return response()->view('error.404', status: 404);
     }
 
+    public function checkIn($reservation) {
+        $reservation = Reservation::where('rid', $reservation)->first();
+
+        if ($reservation) {
+            return view('app.reservations.check-in', [
+                'reservation' => $reservation,
+            ]);
+        }
+
+        return response()->view('error.404', status: 404);
+    }
+
     public function guestReservations(User $user) {
         if ($user->id == Auth::user()->id) {
             return view('app.reservations.guest.index', [

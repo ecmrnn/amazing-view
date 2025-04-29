@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:receptionist|admin')->prefix('app')->name('app.')->group(function () {
         Route::resource('/guests', GuestController::class);
         Route::get('/guests/check-out/{reservation}', [ReservationController::class, 'checkOut'])->name('reservation.check-out');
+        Route::get('/guests/check-in/{reservation}', [ReservationController::class, 'checkIn'])->name('reservation.check-in');
         Route::resource('/reservations', ReservationController::class);
         Route::resource('/rooms', RoomTypeController::class); /* Room Types route */
         Route::resource('/rooms/{type}/room', RoomController::class); /* Specific room routes */

@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <x-note>A minimum of <strong><x-currency />500.00</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we will send to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </x-note>
+        <x-note>A minimum of <strong><x-currency />{{ number_format($minimum_payment, 2) }}</strong> must be paid to process your reservation. Kindly send an image of your receipt to the email we will send to your email<strong>{{ ' ' . $email }}</strong> or <strong>upload</strong> an image on the dropbox below. </x-note>
     
         <div class="space-y-5">
             <hgroup>
@@ -309,6 +309,7 @@
                 <x-filepond::upload
                     wire:model="discount_attachments"
                     multiple
+                    x-bind:max-files="pwd_count + senior_count"
                     placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
                 />
                 <x-form.input-error field="discount_attachments" />

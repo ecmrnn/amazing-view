@@ -33,7 +33,7 @@
     
                 <div class="flex justify-end gap-1">
                     <x-secondary-button type="button" x-on:click="show = false">Close</x-secondary-button>
-                    <x-danger-button type="submit" wire:loading.attr='disabled' x-on:click="$dispatch('delete-payment', { payment:{{ $row->id }} })">Delete</x-danger-button>
+                    <x-danger-button type="button" wire:loading.attr='disabled' x-on:click="$dispatch('delete-payment', { payment:{{ $row->id }} })">Delete</x-danger-button>
                 </div>
             </div>
         </x-modal.full>

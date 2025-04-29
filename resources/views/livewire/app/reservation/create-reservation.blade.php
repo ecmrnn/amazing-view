@@ -197,7 +197,9 @@
             @endif
         </div>
 
-        <x-primary-button type="button" wire:click='submit' x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }">Create Reservation</x-primary-button>
+        <div class="flex justify-end">
+            <x-primary-button type="button" wire:click='submit'>Create Reservation</x-primary-button>
+        </div>
     </section>
 </div>
 

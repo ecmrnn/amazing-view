@@ -31,13 +31,6 @@
                 {{-- Reservation Details --}}
                 <div class="space-y-5">
                     <div class="p-5 bg-white border rounded-lg border-slate-200">
-                        <hgroup>
-                            <h2 class="font-semibold">Reservation Details</h2>
-                            <p class="text-xs">Confirm reservation details here</p>
-                        </hgroup>
-                    </div>
-
-                    <div class="p-5 bg-white border rounded-lg border-slate-200">
                         <div class="space-y-5">
                             <hgroup>
                                 <h2 class="font-semibold">{{ $reservation->rid }}</h2>
@@ -278,6 +271,7 @@
                         
                         <livewire:tables.invoice-payment-table :invoice="$reservation->invoice" />
                     </div>
+                    
                     <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
                         <hgroup>
                             <h2 class="font-semibold">Rooms to be Checked-out</h2>
@@ -367,6 +361,15 @@
                             @endforeach
                         </div>
                     </div>
+
+                    <div class="p-5 space-y-5 bg-white border rounded-lg border-slate-200">
+                        <hgroup>
+                            <h2 class="font-semibold">Reservation Breakdown</h2>
+                            <p class="text-xs">Review reservation bills</p>
+                        </hgroup>
+                        <livewire:app.reservation-breakdown :reservation="$reservation" />
+                    </div>
+                    
                     <div class="flex justify-end gap-1">
                         <x-secondary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="button" x-on:click="$wire.set('step', 2)">Back</x-secondary-button>
                         <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="submit">Check Out</x-primary-button>

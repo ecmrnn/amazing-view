@@ -37,7 +37,7 @@ class CreatePayment extends Component
     public function rules() {
         $rules = InvoicePayment::rules();
         $min = $this->invoice->balance > 500 ? 500 : 1;
-        $rules['amount'] = 'required|numeric|min:' . $min . '|max:' . ceil($this->invoice->balance);
+        $rules['amount'] = 'required|numeric|min:' . $min . '|max:' . $this->invoice->balance;
         return $rules;
     }
 
@@ -48,6 +48,14 @@ class CreatePayment extends Component
         return $messages;
     }
 
+    public function changePurpose() {
+        if ((float) $this->amount == (float) $this->invoice->balance) {
+            $this->purpose = 'full payment';
+        } else {
+            $this->purpose = 'partial';
+        }
+    }
+
     public function store() {
         $user = Auth::user();
         if ($user->hasRole('guest')) {
@@ -55,6 +63,7 @@ class CreatePayment extends Component
                 'payment_date' => $this->rules()['payment_date'],
                 'payment_method' => $this->rules()['payment_method'],
                 'proof_image_path' => $this->rules()['proof_image_path'],
+                'purpose' => $this->rules()['purpose'],
                 'amount' => $this->rules()['amount'],
                 'proof_image_path' => $this->rules()['proof_image_path'],
             ]);
@@ -62,6 +71,7 @@ class CreatePayment extends Component
             $validated = $this->validate([
                 'payment_date' => $this->rules()['payment_date'],
                 'payment_method' => $this->rules()['payment_method'],
+                'purpose' => $this->rules()['purpose'],
                 'proof_image_path' => $this->rules()['proof_image_path'],
                 'transaction_id' => $this->rules()['transaction_id'],
                 'amount' => $this->rules()['amount'],
@@ -136,14 +146,14 @@ class CreatePayment extends Component
                     <x-form.input-error x-show="payment_method != 'cash'" field="proof_image_path" />
                     
                     <x-form.input-group>
-                        <x-form.input-label for="create_amount">Enter the amount paid</x-form.input-label>
-                        <x-form.input-currency wire:model.live='amount' id="create_amount" class="w-full" />
+                        <x-form.input-label for="create_amount-{{ $invoice->id }}">Enter the amount paid</x-form.input-label>
+                        <x-form.input-currency wire:model.live.debounce.150ms='amount' id="create_amount-{{ $invoice->id }}" wire:input="changePurpose()" class="w-full" />
                         <x-form.input-error field="amount" />
                     </x-form.input-group>
 
                     <x-form.input-group>
                         <x-form.input-label for='create_purpose'>Select purpose of payment</x-form.input-label>
-                        <x-form.select id="create_purpose">
+                        <x-form.select wire:model.live="purpose" id="create_purpose">
                             <option value="downpayment">Down Payment</option>
                             <option value="security deposit">Security Deposit</option>
                             <option value="partial">Partial Payment</option>

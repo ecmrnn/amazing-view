@@ -22,6 +22,6 @@
         {{-- Number input --}}
         <input
             {{ $attributes->merge(['class' => 'pl-8 bg-white peer py-2.5 transition-colors ease-in-out duration-200 w-full text-xs font-semibold rounded-md border-slate-200 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 invalid:bg-red-50 invalid:border-red-500 focus:invalid:border-red-500 disabled:bg-slate-50 disabled:hover:cursor-not-allowed']) }}
-            type="number" min="{{ $min }}" id="{{ $id }}" />
+            type="number" step="0.01" min="{{ $min }}" id="{{ $id }}" />
     </div>
 </div>

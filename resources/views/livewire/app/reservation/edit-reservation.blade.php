@@ -715,29 +715,95 @@
 
     {{-- For applying discounts on guests --}}
     <x-modal.full name='show-discounts-modal' maxWidth='sm' :click_outside="false">
-        <div class="p-5 space-y-5" x-on:apply-discount.window="show = false">
-            <hgroup>
-                <h2 class="text-lg font-semibold">Apply Discounts</h2>
-                <p class="text-xs">The number of seniors and PWDs are limited to the number of guests you have.</p>
-            </hgroup>
-
-            <div class="grid grid-cols-2 gap-5">
-                <x-form.input-group>
-                    <x-form.input-label for='senior_count'>Number of Seniors</x-form.input-label>
-                    <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Seniors" />
-                </x-form.input-group>
-                <x-form.input-group>
-                    <x-form.input-label for='pwd_count'>Number of PWDs</x-form.input-label>
-                    <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="PWD" />
-                </x-form.input-group>
+        <div x-data="{ discount: '' }" class="p-5" x-on:discount-applied.window="show = false">
+            <div x-show="discount == ''" class="space-y-5">
+                <hgroup>
+                    <h2 class='font-semibold'>Apply Discounts</h2>
+                    <p class='text-xs'>Select what type of discounts you want to apply</p>
+                </hgroup>
+                
+                @if (!$reservation->promo)
+                    <button type="button" class="inline-flex items-center w-full gap-5 p-5 text-left bg-white border rounded-md border-slate-200" x-on:click="discount = 'promo'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-percent-icon lucide-ticket-percent"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+                        
+                        <div>
+                            <h3 class="font-semibold">Promo Code</h3>
+                            <p class="text-xs">Enter your promo code</p>
+                        </div>
+                    </button>
+                @endif
+    
+                <button type="button" class="inline-flex items-center w-full gap-5 p-5 text-left bg-white border rounded-md border-slate-200" x-on:click="discount = 'discount'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility-icon lucide-accessibility"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>
+    
+                    <div>
+                        <h3 class="font-semibold">Senior and PWDs</h3>
+                        <p class="text-xs">Avail 20&#37; discount</p>
+                    </div>
+                </button>
+    
+                <div class="flex justify-end gap-1">
+                    <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
+                </div>
             </div>
-            
-            <x-form.input-error field="senior_count" />
-            <x-form.input-error field="pwd_count" />
-            
-            <div class="flex justify-end gap-1">
-                <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                <x-primary-button type="button" wire:click='applyDiscount'>Save</x-primary-button>
+    
+            <div x-show="discount == 'promo'" class="space-y-5">
+                <hgroup>
+                    <h2 class='font-semibold'>Promo Code</h2>
+                    <p class='text-xs'>Enter your promo code to avail discounts!</p>
+                </hgroup>
+    
+                <x-form.input-group>
+                    <x-form.input-label for='promo_code'>Enter promo code here</x-form.input-label>
+                    <x-form.input-text id="promo_code" name="promo_code" label="Promo Code" class="uppercase" wire:model.live='promo_code' />
+                    <x-form.input-error field="promo_code" />
+                </x-form.input-group>
+    
+                <x-loading wire:loading wire:target='applyPromo'>Checking promo, please wait</x-loading>
+    
+                <div class="flex justify-end gap-1">
+                    <x-secondary-button type="button" x-on:click="discount = ''">Cancel</x-secondary-button>
+                    <x-primary-button type="button" wire:click='applyPromo'>Apply</x-primary-button>
+                </div>
+            </div>
+    
+            <div x-show="discount == 'discount'" class="space-y-5">
+                <hgroup>
+                    <h2 class="font-semibold">Senior and PWDs</h2>
+                    <p class="text-xs">The number of seniors and PWDs are limited to the number of guests you have.</p>
+                </hgroup>
+    
+                <div class="grid grid-cols-2 gap-5">
+                    <x-form.input-group>
+                        <x-form.input-label for='senior_count'>Number of Seniors</x-form.input-label>
+                        <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Seniors" />
+                    </x-form.input-group>
+                
+                    <x-form.input-group>
+                        <x-form.input-label for='pwd_count'>Number of PWDs</x-form.input-label>
+                        <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="PWD" />
+                    </x-form.input-group>
+                </div>
+    
+                <x-form.input-group>
+                    <x-filepond::upload
+                        wire:model="discount_attachments"
+                        multiple
+                        placeholder="Drag & drop your image or <span class='filepond--label-action'> Browse </span>"
+                    />
+                    <x-form.input-error field="discount_attachments" />
+                    <p class="max-w-sm text-xs">Please upload an image &lpar;<strong class="text-blue-500">JPG, JPEG, PNG</strong>&rpar; of the payment slip for your down payment. Maximum image size &lpar;<strong class="text-blue-500">3MB or 3000kb</strong>&rpar;</p>
+                </x-form.input-group>
+                
+                <x-form.input-error field="senior_count" />
+                <x-form.input-error field="pwd_count" />
+    
+                <x-note>This will not be immediately applied and will require confirmation first upon your arrival at the resort.</x-note>
+    
+                <div class="flex justify-end gap-1">
+                    <x-secondary-button type="button" x-on:click="discount = ''">Cancel</x-secondary-button>
+                    <x-primary-button type="button" wire:click='applyDiscount'>Save</x-primary-button>
+                </div>
             </div>
         </div>
     </x-modal.full>

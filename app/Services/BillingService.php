@@ -51,10 +51,19 @@ class BillingService
             if (!empty($payment['proof_image_path'])) {
                 $payment['proof_image_path'] = $payment['proof_image_path']->store('payments', 'public');
             }  
-            
+
+            $purpose = '';
+
+            if ($invoice->balance - $payment['amount'] <= 0) {
+                $purpose = 'full payment';
+            } else {
+                $purpose = 'partial';
+            }
+
             $invoice->payments()->create([
                 'transaction_id' => Arr::get($payment, 'payment_method', 'gcash') == 'cash' ? null : Arr::get($payment, 'transaction_id', null),
                 'amount' => Arr::get($payment, 'amount', 0),
+                'purpose' => $purpose,
                 'payment_date' => Arr::get($payment, 'payment_date', now()),
                 'payment_method' => Arr::get($payment, 'payment_method', 'gcash'),
                 'proof_image_path' => Arr::get($payment, 'proof_image_path', null),
@@ -105,36 +114,73 @@ class BillingService
 
     public function taxes(Reservation $reservation) {
         $sub_total = $this->subtotal($reservation);
-        $vatable_sales = $sub_total / 1.12;
+        $vatable_sales = 0;
         $vatable_exempt_sales = 0;
+        $vat = 0;
         $discount = 0;
         $promo_discount = 0;
         $other_charges = 0;
-        
-        // Compute for promos & discounts
-        if (!in_array($reservation->status, [
-                ReservationStatus::AWAITING_PAYMENT->value,
-                ReservationStatus::PENDING->value,
-                ReservationStatus::CONFIRMED->value,
-            ])) {
-            if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
-                $room_rates = 0; /* Needs to get the rooms that senior resides in  */
-                $guest_count = $reservation->children_count + $reservation->adult_count;
-                $discountable_guests = $reservation->pwd_count + $reservation->senior_count;
-                
-                $vatable_sales = $room_rates / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
+        $guest_assigned = false;
 
-                if ($guest_count == $discountable_guests) {
-                    $vatable_exempt_sales = ($room_rates / 1.12);
-                    $discount = $vatable_exempt_sales * .2;
+        // Check if the guest in this reservation is already assigned to rooms
+        foreach ($reservation->rooms as $room) {
+            $guest_count = $room->pivot->regular_guest_count;
+            $discountable_guests_count = $room->pivot->discountable_guest_count; 
+
+            if ($guest_count > 0 || $discountable_guests_count > 0) {
+                $guest_assigned = true;
+                break;
+            }
+        }
+
+        if (in_array($reservation->status, [
+            ReservationStatus::AWAITING_PAYMENT->value,
+            ReservationStatus::PENDING->value,
+            ReservationStatus::CONFIRMED->value,
+        ]) && !$guest_assigned) {
+            $vatable_sales = $sub_total / 1.12;
+        } else {
+            foreach ($reservation->rooms as $room) {
+                $night_count = Carbon::parse((string) $reservation->date_in)->diffInDays($reservation->date_out);
+        
+                if ($night_count == 0) {
+                    $night_count = 1;
+                }
+
+                $guest_count = $room->pivot->regular_guest_count;
+                $discountable_guests_count = $room->pivot->discountable_guest_count; 
+                $total_guests = $guest_count + $discountable_guests_count;
+                $room_rate = $room->pivot->rate * $night_count;
+
+                if ($total_guests == 0) {
+                    $vatable_sales += $room_rate / 1.12;
                 } else {
-                    $vatable_exempt_sales = ($room_rates / 1.12) * ($discountable_guests / $guest_count);
-                    $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                    $vatable_sales += $room_rate / 1.12 * ($guest_count / $total_guests);
+                }
+                
+                // Compute for promos & discounts
+                if (in_array($reservation->status, [
+                        ReservationStatus::CHECKED_IN->value,
+                        ReservationStatus::CHECKED_OUT->value,
+                    ]) || $guest_assigned) {
+                    if ($discountable_guests_count > 0) {
+                        if ($total_guests == $discountable_guests_count) { 
+                            $vatable_exempt_sales += ($room_rate / 1.12);
+                        } else {
+                            $vatable_exempt_sales += ($room_rate / 1.12) * ($discountable_guests_count / $total_guests);
+                        }
+                    }
+    
+                    if ($reservation->promo) {
+                        $promo_discount = $reservation->promo->amount;
+                    }
                 }
             }
-
-            if ($reservation->promo) {
-                $promo_discount = $reservation->promo->amount;
+            // Add 'additional services'
+            if ($reservation->services->count() > 0) {
+                foreach ($reservation->services as $service) {
+                    $vatable_sales += $service->price / 1.12;
+                }
             }
         }
         
@@ -145,9 +191,9 @@ class BillingService
             }
         }
 
+        $discount = $vatable_exempt_sales * .2;
         $vat = $vatable_sales * .12;
-        $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount - $promo_discount) + $other_charges;
-
+        $net_total = (($vatable_sales + $vat + $vatable_exempt_sales + $other_charges) - $discount - $promo_discount);
         
         return [
             'sub_total' => $sub_total,
@@ -174,41 +220,59 @@ class BillingService
             }
         }
 
-        $vatable_sales = $sub_total / 1.12;
+        $vatable_sales = 0;
         $vatable_exempt_sales = 0;
         $discount = 0;
         $promo_discount = 0;
 
         if (!empty($invoice)) {
             // Compute for discounts
-            if (in_array($invoice->reservation->status, [
-                    ReservationStatus::AWAITING_PAYMENT->value,
-                    ReservationStatus::PENDING->value,
-                    ReservationStatus::CONFIRMED->value,
-                    ReservationStatus::CHECKED_OUT->value,
-                    ReservationStatus::COMPLETED->value,
-                ])) {
-                if ($invoice->reservation->senior_count > 0 || $invoice->reservation->pwd_count > 0) {
-                    $guest_count = $invoice->reservation->children_count + $invoice->reservation->adult_count;
-                    $discountable_guests = $invoice->reservation->pwd_count + $invoice->reservation->senior_count;
+            foreach ($invoice->reservation->rooms as $room) {
+                $night_count = Carbon::parse((string) $invoice->reservation->date_in)->diffInDays($invoice->reservation->date_out);
         
-                    $vatable_sales = $sub_total / 1.12 * (($guest_count - $discountable_guests) / $guest_count);
-                    
-                    if ($guest_count == $discountable_guests) {
-                        $vatable_exempt_sales = ($sub_total / 1.12);
-                        $discount = $vatable_exempt_sales * .2;
-                    } else {
-                        $vatable_exempt_sales = ($sub_total / 1.12) * ($discountable_guests / $guest_count);
-                        $discount = ($vatable_exempt_sales * .2) * $discountable_guests; 
+                if ($night_count == 0) {
+                    $night_count = 1;
+                }
+                
+                $guest_count = $room->pivot->regular_guest_count;
+                $discountable_guests_count = $room->pivot->discountable_guest_count; 
+                $total_guests = $guest_count + $discountable_guests_count;
+                $room_rate = $room->pivot->rate * $night_count;
+
+                if ($total_guests == 0) {
+                    $vatable_sales += $room_rate / 1.12;
+                } else {
+                    $vatable_sales += $room_rate / 1.12 * ($guest_count / $total_guests);
+                }
+                
+                // Compute for promos & discounts
+                if (!in_array($invoice->reservation->status, [
+                        ReservationStatus::AWAITING_PAYMENT->value,
+                        ReservationStatus::PENDING->value,
+                        ReservationStatus::CONFIRMED->value,
+                    ])) {
+                    if ($discountable_guests_count > 0) {
+                        if ($total_guests == $discountable_guests_count) { 
+                            $vatable_exempt_sales += ($room_rate / 1.12);
+                        } else {
+                            $vatable_exempt_sales += ($room_rate / 1.12) * ($discountable_guests_count / $total_guests);
+                        }
+                    }
+    
+                    if ($invoice->reservation->promo) {
+                        $promo_discount = $invoice->reservation->promo->amount;
                     }
                 }
-
-                if ($invoice->reservation->promo) {
-                    $promo_discount = $invoice->reservation->promo->amount;
-                }
             }
+
+            if ($invoice->reservation->promo) {
+                $promo_discount = $invoice->reservation->promo->amount;
+            }
+        } else {
+            $vatable_sales = $sub_total / 1.12;
         }
 
+        $discount = $vatable_exempt_sales * .2;
         $vat = $vatable_sales * .12;
         $net_total = (($vatable_sales + $vat + $vatable_exempt_sales) - $discount - $promo_discount) + $other_charges;
 

@@ -133,7 +133,7 @@
 
             <x-form.input-group>
                 <x-form.input-label for='promo_code'>Enter promo code here</x-form.input-label>
-                <x-form.input-text id="promo_code" name="promo_code" label="Promo Code" />
+                <x-form.input-text id="promo_code" wire:model.live='promo_code' name="promo_code" label="Promo Code" />
                 <x-form.input-error field="promo_code" />
             </x-form.input-group>
 

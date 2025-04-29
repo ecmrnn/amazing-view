@@ -22,10 +22,7 @@
         </div>
     </x-slot:header>
 
-    <livewire:app.guest.show-reservations-today />
-
-    {{-- Modal for confirming reservation --}}
-    <x-modal.full name="show-check-in-modal" maxWidth="sm">
-        <livewire:app.guest.check-in-guest />
-    </x-modal.full> 
+    <div>
+        <livewire:app.guest.show-reservations-today />
+    </div>
 </x-app-layout>

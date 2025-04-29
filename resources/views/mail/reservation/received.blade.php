@@ -117,7 +117,7 @@
                 <div style="padding: 20px; border: 1px solid #f0b100; border-radius: 8px; font-size: 16px; background-color: #fefce8; color: #894b00;">
                     <div style="margin: 0;">
                         <p style="font-size: 16px; margin: 0; font-weight: bold;">Payment Methods</p>
-                        <p style="font-size: 14px;">To confirm your reservation, a minimum amount of <x-currency />500.00 must be paid in the payment method below on or before <span style="font-weight: bold; color: #ef4444;">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</span>:</p>
+                        <p style="font-size: 14px;">To confirm your reservation, a minimum amount of <x-currency />{{ number_format($minimum_payment, 2) }} must be paid in the payment method below on or before <span style="font-weight: bold; color: #ef4444;">{{ date_format(date_create($reservation->expires_at), 'F d, Y \a\t h:i A') }}</span>:</p>
                     </div>
     
                     <div>

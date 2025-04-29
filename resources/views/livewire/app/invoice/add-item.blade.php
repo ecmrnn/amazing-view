@@ -195,7 +195,7 @@
                             @endif
                             @if ($breakdown['taxes']['discount'] > 0)
                                 <tr>
-                                    <td class="pr-5 text-right">Discount</td>
+                                    <td class="pr-5 text-right">LESS: {{ $discount }}</td>
                                     <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
                                 </tr>
                             @endif
@@ -206,9 +206,23 @@
                                 </tr>
                             @endif
                             <tr>
-                                <td class="pt-5 pr-5 font-semibold text-right text-blue-500">Net Total</td>
-                                <td class="pt-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
+                                <td class="py-5 pr-5 font-semibold text-right text-blue-500">Net Total</td>
+                                <td class="py-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
                             </tr>
+
+                            @if ($invoice->payments->count() > 0)
+                                @foreach ($invoice->payments as $payment) 
+                                    <tr>
+                                        <td class="pr-5 text-right capitalize">LESS: {{ $payment->purpose }}</td>
+                                        <td class="text-right">&lpar;<x-currency />{{ number_format($payment->amount, 2) }}&rpar;</td>
+                                    </tr>
+                                @endforeach
+
+                                <tr>
+                                    <td class="pt-5 pr-5 font-semibold text-right text-blue-500">Remaining Balance</td>
+                                    <td class="pt-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'] - $invoice->payments()->sum('amount'), 2) }}</td>
+                                </tr>
+                            @endif
                         </table>
                     </div>
                 </div>

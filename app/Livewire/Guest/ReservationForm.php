@@ -97,6 +97,7 @@ class ReservationForm extends Component
     public $breakdown;
     public $max_date;
     public $today;
+    public $minimum_payment = 0;
 
     public function mount() {
         $this->selected_rooms = collect();
@@ -181,7 +182,7 @@ class ReservationForm extends Component
             'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u|max:255',
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
-            'address' => 'required',
+            'address' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\,\.\s]+$/u',
             'street' => 'regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u',
             'baranggay' => 'required',
             'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
@@ -360,6 +361,7 @@ class ReservationForm extends Component
             $this->addError('adult_count', 'Total Seniors and PWDs cannot exceed total guests');
             return;
         }
+        
         if ($this->senior_count > $this->adult_count) {
             $this->addError('adult_count', 'Total seniors cannot exceed total adults');
             return;
@@ -596,12 +598,14 @@ class ReservationForm extends Component
                         $this->address = array_filter($this->address);
 
                         $this->validate([
-                            'street' => 'regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
+                            'street' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
                             'baranggay' => 'required',
                             'district' => 'required_if:city,'.'City of Manila',
                             'city' => 'required:',
                             'province' => 'required_unless:region,'.'National Capital Region (NCR)',
                         ]);
+
+                        $this->address = is_array($this->address) ? trim(implode(', ', $this->address), ',') : $this->address;
                     }
 
                     $this->validate([
@@ -636,7 +640,7 @@ class ReservationForm extends Component
 
                     $billing = new BillingService;
                     $this->breakdown =  $billing->rawTaxes(null, $items);
-
+                    $this->minimum_payment = $this->breakdown['taxes']['net_total'] * .5;
                     $this->step++;
                     break;
                 case 3:

@@ -10,6 +10,7 @@ use App\Livewire\ServicesTable;
 use App\Models\AdditionalServices;
 use App\Models\Amenity;
 use App\Models\Building;
+use App\Models\Promo;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -99,6 +100,10 @@ class CreateReservation extends Component
     public $color; 
     public $slots;
     public $net_total;
+    public $promo_code;
+    public $promo = null;
+    public $max_payment = 0;
+    public $min_payment = 0;
     
     public function mount()
     {
@@ -131,7 +136,7 @@ class CreateReservation extends Component
     public function messages() 
     {
         $messages = Reservation::messages();
-        $messages['discount_attachmentss.required'] = 'Upload Senior or PWD ID for confirmation';
+        $messages['discount_attachments.required'] = 'Upload Senior or PWD ID for confirmation';
         $messages['proof_image_path.required_unless'] = 'A payment receipt is required when payment is not cash';
         return $messages;   
     }
@@ -276,6 +281,26 @@ class CreateReservation extends Component
                 return $room_loc->id == $room->id;
             });
         }
+    }
+
+    public function applyPromo() {
+        $this->validate([
+            'promo_code' => 'required|exists:promos,code',
+        ]);
+
+        $promo = Promo::whereCode($this->promo_code)->first();
+
+        if ($promo) {
+            if ($promo->isValid($promo)) {
+                $this->promo = $promo;
+                $this->toast('Success!', description: 'Promo code applied successfully!');
+                $this->dispatch('discount-applied');
+                return;
+            }
+            $this->addError('promo_code', 'Promo code has expired');
+        }
+
+        $this->addError('promo_code', 'Promo code is invalid');
     }
 
     public function applyDiscount() {
@@ -438,6 +463,7 @@ class CreateReservation extends Component
             'address' => $this->rules()['address'],
             'transaction_id' => 'nullable|required_unless:payment_method,cash',
             'note' => $this->rules()['note'],
+            'downpayment' => 'integer|gte:min_payment|lte:max_payment|required',
         ]);
 
         $file_exists = !$this->proof_image_path ?: file_exists($this->proof_image_path->getRealPath());
@@ -448,11 +474,6 @@ class CreateReservation extends Component
             ]);
         } else {
             $this->proof_image_path = null;
-        }
-
-        if ($this->downpayment > 0 && $this->downpayment < 500) {
-            $this->addError('downpayment', 'The minimum amount for downpayment is 500.00');
-            return;
         }
 
         if ($this->adult_count + $this->children_count > $this->capacity) {
@@ -480,15 +501,16 @@ class CreateReservation extends Component
             'note' => $this->rules()['note'],
             'transaction_id' => 'nullable|required_unless:payment_method,cash',
             'proof_image_path' => 'nullable|required_unless:payment_method,cash|mimes:jpg,jpeg,png|image|max:3000',
+            'downpayment' => 'integer|gte:min_payment|lte:max_payment|required',
         ]);
 
-        $validated['downpayment'] = $this->downpayment;
         $validated['payment_method'] = $this->payment_method;
         $validated['address'] = is_array($validated['address']) ? trim(implode(', ', $validated['address']), ',') : $validated['address'];
         $validated['selected_rooms'] = $this->selected_rooms;
         $validated['selected_services'] = $this->selected_services;
         $validated['discount_attachments'] = $this->discount_attachments;
         $validated['cars'] = $this->cars;
+        $validated['promo'] = $this->promo;
 
         $service = new ReservationService;
         $reservation = $service->create($validated);
@@ -508,6 +530,12 @@ class CreateReservation extends Component
     {
         $items = collect();
 
+        $this->night_count = Carbon::parse((string) $this->date_in)->diffInDays($this->date_out);
+        
+        if ($this->night_count == 0) {
+            $this->night_count = 1;
+        }
+
         foreach ($this->selected_rooms as $room) {
             $items->push([
                 'price' => $room->rate,
@@ -526,7 +554,8 @@ class CreateReservation extends Component
 
         $billing = new BillingService;
         $this->breakdown =  $billing->rawTaxes(null, $items);
-                    
+        $this->max_payment = $this->breakdown['taxes']['net_total'];
+        $this->min_payment = $this->breakdown['taxes']['net_total'] * .5;
         $this->available_amenities = Amenity::where('quantity', '>', 0)->orderBy('name')->get();
 
         return view('livewire.app.reservation.create-reservation');

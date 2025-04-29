@@ -2,201 +2,266 @@
 
 namespace App\Livewire\App\Guest;
 
-use App\Enums\ReservationStatus;
-use App\Enums\RoomStatus;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Services\AuthService;
+use App\Services\BillingService;
 use App\Services\ReservationService;
 use App\Traits\DispatchesToast;
-use Illuminate\Support\Carbon;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
-use Nette\Utils\Random;
+use phpDocumentor\Reflection\Types\This;
 
 class CheckInGuest extends Component
 {
     use DispatchesToast;
 
     protected $listeners = [
-        'reservation-confirmed' => '$refresh',
+        'bulk-assigned' => '$refresh',
+        'payment-added' => '$refresh',
+        'payment-deleted' => '$refresh',
+        'pwd-senior-updated' => '$refresh',
     ];
 
+    public $step = 1;
     public $reservation;
-    public $reservation_rid;
-    public $placeholder;
-    public $date_in;
-    public $date_out;
+    public $guests;
+    public $disc_guests;
+    public $remaining_guests;
+    public $remaining_disc_guests;
+    public $room_guests; /* Collection */
+    public $collection_id;
+    public $breakdown_id;
+    #[Validate] public $password;
+
+    public function rules() {
+        return [
+            'password' => 'required',
+        ];
+    }
 
     public function messages() {
         return [
-            'reservation.required' => 'Enter the guest\'s Reservation ID'
+            'password.required' => 'Enter your password',
         ];
     }
 
-    public function getReservation() {
-        $this->validate([
-            'reservation_rid' => 'required'
-        ]);
+    public function mount(Reservation $reservation) {
+        $this->reservation = $reservation;
+        $this->remaining_guests = ($reservation->adult_count + $reservation->children_count) - ($reservation->senior_count + $reservation->pwd_count);
+        $this->remaining_disc_guests = $reservation->senior_count + $reservation->pwd_count;
+        $this->room_guests = collect();
+        $this->collection_id = uniqid();
 
-        $this->reservation = Reservation::where('rid', $this->reservation_rid)->first();
-        
-        if (empty($this->reservation)) {
-            return $this->toast('Oof, not found!', 'warning', 'Reservation not found!');
+        if ($this->reservation->rooms->count() > 1) {
+            foreach ($this->reservation->rooms as $room) {
+                $guests = $room->pivot->regular_guest_count > 0 ? $room->pivot->regular_guest_count : 0;
+                $disc_guests = $room->pivot->discountable_guest_count > 0 ? $room->pivot->discountable_guest_count : 0;
+
+                $this->room_guests->push([
+                    'id' => $room->id,
+                    'room_number' => $room->room_number,
+                    'max_capacity' => $room->max_capacity,
+                    'rate' => $room->pivot->rate,
+                    'guests' => $guests,
+                    'disc_guests' => $disc_guests,
+                ]);
+            }
+        } else {
+            $room = $this->reservation->rooms->first();
+            $disc_guests = $this->reservation->senior_count + $this->reservation->pwd_count;
+            $guests = ($this->reservation->adult_count + $this->reservation->children_count) - $disc_guests;
+
+            $this->room_guests->push([
+                'id' => $room->id,
+                'room_number' => $room->room_number,
+                'max_capacity' => $room->max_capacity,
+                'rate' => $room->pivot->rate,
+                'guests' => $guests,
+                'disc_guests' => $disc_guests,
+            ]);
+        }
+    }
+
+    public function goToStep($step) {
+        $this->step = $step;
+    }
+
+    public function saveGuests(Room $room, $guests, $disc_guests) {
+        if ($guests + $disc_guests > $room->max_capacity) {
+            $this->toast('Maximum Capacity Reached', 'info', 'Maximum capacity of this room is ' . $room->max_capacity);
+            return;
+        }
+
+        // Get the guests in
+        $guests_in = $this->room_guests->map(function ($_room) use ($room) {
+            if ($_room['id'] != $room->id) {
+                return $_room;
+            }
+        })->sum('guests');
+
+        $disc_guests_in = $this->room_guests->map(function ($_room) use ($room) {
+            if ($_room['id'] != $room->id) {
+                return $_room;
+            }
+        })->sum('disc_guests');
+
+        if ($guests_in + $guests > $this->remaining_guests) {
+            $this->toast('Insufficient Guest Count', 'info', 'Remaining guests are ' . $this->remaining_guests - $guests_in);
+            return;
+        }
+
+        if ($disc_guests_in + $disc_guests > $this->remaining_disc_guests) {
+            $this->toast('Insufficient Guest Count', 'info', 'Remaining Senior or PWD guests are ' . $this->remaining_disc_guests - $disc_guests_in);
+            return;
         }
         
-        $status = $this->reservation->status;
-        
-        $statusesWithMessages = [
-            [ 
-                'statuses' => [
-                    ReservationStatus::AWAITING_PAYMENT->value,
-                    ReservationStatus::PENDING->value,
-                ],
-                'message' => 'Reservation status must be confirmed'
-            ],
-            [
-                'statuses' => [
-                    ReservationStatus::EXPIRED->value,
-                    ReservationStatus::CANCELED->value,
-                    ReservationStatus::RESCHEDULED->value,
-                    ReservationStatus::NO_SHOW->value,
-                ],
-                'message' => 'Reservation is problematic!'
-            ],
-            [
-                'statuses' => [
-                    ReservationStatus::COMPLETED->value,
-                    ReservationStatus::CHECKED_OUT->value,
-                ],
-                'message' => 'Reservation is completed!'
-            ],
-            [
-                'statuses' => [
-                    ReservationStatus::CHECKED_IN->value,
-                ],
-                'message' => 'Guest is already in!'
-            ],
-        ];
-        
-        foreach ($statusesWithMessages as $group) {
-            if (in_array($status, $group['statuses'])) {
-                $this->reservation = null;
-                $this->toast('Check-in Failed', 'info', $group['message']);
-                return;
+        $this->room_guests = $this->room_guests->map(function ($_room) use ($room, $guests, $disc_guests) {
+            if ($_room['id'] == $room->id) {
+                if ($_room['guests'] != $guests) {
+                    if ($_room['guests'] > $guests) {
+                        $_room['guests'] = $_room['guests'] - ($_room['guests'] - $guests);
+                    } else {
+                        $_room['guests'] = $_room['guests'] + ( $guests - $_room['guests']);
+                    }
+                }
+
+                if ($_room['disc_guests'] != $disc_guests) {
+                    if ($_room['disc_guests'] > $disc_guests) {
+                        $_room['disc_guests'] = $_room['disc_guests'] - ($_room['disc_guests'] - $disc_guests);
+                    } else {
+                        $_room['disc_guests'] = $_room['disc_guests'] + ( $disc_guests - $_room['disc_guests']);
+                    }
+                }
+            }
+            return $_room;
+        });
+
+        $this->dispatch('guest-saved');
+    }
+
+    public function bulkAssign() {
+        foreach ($this->room_guests as $key) {
+            $room = Room::find($key['id']);
+            $max_capacity = $room->max_capacity;
+
+            // Check how many remaining guest can fit into each room
+            $guests = $key['guests'];
+            $disc_guests = $key['disc_guests'];
+            $capacity = $max_capacity - ($guests + $disc_guests);
+            
+            // Update the collection if capacity is greater than 0
+            if ($capacity > 0) {
+                // Calculate how many guest can fit into this room
+                $remaining_guests = $this->remaining_guests - $this->room_guests->sum('guests');
+                $guests = $capacity > $remaining_guests 
+                    ? $remaining_guests
+                    : $capacity;
+                
+                $this->room_guests = $this->room_guests->map(function ($_room) use ($room, $guests) {
+                    if ($_room['id'] == $room->id) {
+                        $_room['guests'] += $guests;
+                    }
+                    return $_room;
+                });
             }
         }
+
+        $this->collection_id = uniqid();
+        $this->toast('Success!', description: 'Guest bulk assigned!');
+        $this->dispatch('bulk-assigned');
+    }
+
+    public function validateSeniorPwd() {
+        // Get the guests in
+        $guests_in = $this->room_guests->sum('guests');
+        $disc_guests_in = $this->room_guests->sum('disc_guests');
+
+        // Verify that all guests are assigned to a specific room
+        if ( $disc_guests_in < $this->remaining_disc_guests) {
+            $this->toast('Assign Senior and PWDs', 'info', 'Assign seniors and PWDs to their respective rooms');
+            return;
+        }
         
-        // Passed all checks, now validate check-in date
-        $this->date_in = $this->reservation->date_in;
-        $this->date_out = $this->reservation->date_out;
+        // Check if all the guests are assigned to a room
+        if ( $guests_in < $this->remaining_guests) {
+            $this->dispatch('open-modal', 'bulk-assign-guests');
+            return;
+        }
+
+        // Store assigned guests to database
+        foreach ($this->reservation->rooms as $room) {
+            $_room = $this->room_guests->first(function ($_room) use ($room) {
+                if ($_room['id'] == $room->id) {
+                    return $_room;
+                }
+            });
+
+            $room->pivot->regular_guest_count = $_room['guests'];
+            $room->pivot->discountable_guest_count = $_room['disc_guests'];
+            $room->pivot->save();
+        }
+
+        // Update the invoice
+        $billing = new BillingService;
+        $taxes = $billing->taxes($this->reservation->fresh());
+        $payments = $this->reservation->invoice->payments->sum('amount');
+        $waive = $this->reservation->invoice->waive_amount;
         
-        if ($this->date_in !== Carbon::now()->format('Y-m-d')) {
-            $this->reservation = null;
-            return $this->toast(
-                'Check-in Failed',
-                'warning',
-                'Reservation check-in date is not until ' . Carbon::parse($this->date_in)->format('F j, Y') . '!'
-            );
+        $this->reservation->invoice->sub_total = $taxes['net_total'];
+        $this->reservation->invoice->total_amount = $taxes['net_total'];
+        $this->reservation->invoice->balance = $taxes['net_total'] - $payments;
+        
+        // Apply waived amount
+        if ($this->reservation->invoice->balance >= $waive) {
+            $this->reservation->invoice->balance -=  $waive;
+        } else {
+            $this->reservation->invoice->balance = 0;
+        }
+        
+        $this->reservation->invoice->save();
+
+        $this->breakdown_id = uniqid();
+        $this->step = 3;
+        $this->dispatch('pwd-senior-updated', ['reservation' => $this->reservation]);
+        return;
+    }
+
+    public function validatePayment() {
+        if ($this->reservation->invoice->balance > 0) {
+            $this->toast('Settle Payment First', 'warning', 'This reservation has outstanding balance.');
+            return;
+        } else {
+            $this->dispatch('open-modal', 'show-checkin-confirmation');
         }
     }
 
-    public function checkIn() {
-        // If a reservation was found
-        if (!empty($this->reservation)) {
+    public function checkin() {
+        $this->validate([
+            'password' => 'required',
+        ]);
+
+        $auth = new AuthService;
+
+        if ($auth->validatePassword($this->password)) {
             $service = new ReservationService;
             $service->checkIn($this->reservation);
-
-            $this->reset();
-            $this->dispatch('pg:eventRefresh-GuestTable');
-            $this->dispatch('guest-checked-in');
-            $this->toast('Success!', description: 'Success, guest checked-in!');
-        } else {
-            $this->toast('Oof, not found!', 'warning', 'Reservation not found!');
+            
+            $this->toast('Success!', description: 'Guest checked-in!');
+            sleep(3);
+            $this->redirect(route('app.guests.index'), true);
+            return;
         }
+
+        $this->addError('password', 'Password mismatched, try again!');
+    }
+
+    public function submit() {
+        // For deleting payment kailangan nag error di ko alam kung bakit...
     }
 
     public function render()
     {
-        $this->placeholder = 'R' . now()->format('ymd') . Random::generate(3, '0-9');
-        
-        return <<<'HTML'
-            <form wire:submit="checkIn" class="p-5 space-y-5" x-on:guest-checked-in.window="show = false">
-                <hgroup>
-                    <h2 class="text-lg font-semibold">Check-in Guest</h2>
-                    <p class="text-xs">Enter the <strong class="text-blue-500">Reservation ID</strong> of the guest you want to check-in</p>
-                </hgroup>
-
-                @if (!empty($reservation))
-                    <div class="flex items-center w-full gap-3 px-3 py-2 text-xs text-green-800 border border-green-500 rounded-md bg-green-50">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
-                        <p>Ready for check-in!</p>
-                    </div>
-
-                    <div class="p-5 space-y-3 bg-white border rounded-md border-slate-200">
-                        {{-- Reservation ID --}}
-                        <div class="flex items-center gap-3">
-                            <x-icon>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-qr-code-icon lucide-qr-code"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
-                            </x-icon>
-                            <div>
-                                <p class="text-sm font-semibold">{{ $reservation->rid }}</p>
-                                <p class="text-xs">Reservation ID</p>
-                            </div>
-                        </div>
-                        {{-- Name --}}
-                        <div class="flex items-center gap-3">
-                            <x-icon>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            </x-icon>
-                            <div>
-                                <p class="text-sm font-semibold">{{ $reservation->user->name() }}</p>
-                                <p class="text-xs">Name</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-5 space-y-3 bg-white border rounded-md border-slate-200">
-                        {{-- Check-in date --}}
-                        <div class="flex items-center gap-3">
-                            <x-icon>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-up-icon lucide-calendar-arrow-up"><path d="m14 18 4-4 4 4"/><path d="M16 2v4"/><path d="M18 22v-8"/><path d="M21 11.343V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
-                            </x-icon>
-                            <div>
-                                <p class="text-sm font-semibold">{{ date_format(date_create($reservation->date_in), 'F j, Y') . ' at ' . date_format(date_create($reservation->time_in), 'g:i A') }}</p>
-                                <p class="text-xs">Check-in date and time</p>
-                            </div>
-                        </div>
-                        {{-- Check-in date --}}
-                        <div class="flex items-center gap-3">
-                            <x-icon>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down-icon lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
-                            </x-icon>
-                            <div>
-                                <p class="text-sm font-semibold">{{ date_format(date_create($reservation->date_out), 'F j, Y') . ' at ' . date_format(date_create($reservation->time_out), 'g:i A') }}</p>
-                                <p class="text-xs">Check-out date and time</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center justify-between">
-                        <x-loading wire:loading wire:target="checkIn">Checking-in the guest</x-loading>
-                        
-                        <div class="flex gap-1 ml-auto">
-                            <x-secondary-button type="button" x-on:click="$wire.set('reservation', null)">Cancel</x-secondary-button>
-                            <x-primary-button type="submit">Check-in</x-primary-button>
-                        </div>
-                    </div>
-                @else
-                    <x-form.input-text label="Reservation ID" wire:model="reservation_rid" id="reservation" class="w-full" placeholder="e.g. {{ $placeholder }}" />
-                    <x-form.input-error field="reservation" />
-                    
-                    <x-loading wire:loading wire:target="getReservation">Finding reservation</x-loading>
-                    
-                    <div class="flex justify-end gap-1">
-                        <x-secondary-button type="button" x-on:click="show = false">Cancel</x-secondary-button>
-                        <x-primary-button type="button" wire:click="getReservation" wire:loading.attr="disabled">Find</x-primary-button>
-                    </div>
-                @endif
-            </form>
-        HTML;
+        return view('livewire.app.guest.check-in-guest');
     }
 }

@@ -5,10 +5,16 @@ namespace App\Livewire\App;
 use App\Models\Reservation;
 use App\Services\BillingService;
 use Illuminate\Support\Carbon;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ReservationBreakdown extends Component
 {
+    protected $listeners = [
+        'payment-added' => '$refresh',
+        'payment-deleted' => '$refresh',
+    ];
+    
     public $reservation;
     public $number = 0;
     public $night_count = 1;
@@ -33,6 +39,12 @@ class ReservationBreakdown extends Component
             $this->night_count = 1;
         }
 
+        $this->breakdown = $billing_service->breakdown($reservation);
+    }
+
+    #[On('pwd-senior-updated')]
+    public function test(Reservation $reservation) {
+        $billing_service = new BillingService;
         $this->breakdown = $billing_service->breakdown($reservation);
     }
 
@@ -142,12 +154,12 @@ class ReservationBreakdown extends Component
                     </tr>
                     @if ($breakdown['taxes']['vatable_exempt_sales'] > 0)
                         <tr>
-                            <td class="pr-5 text-right">Vatable Exempt Sales</td>
+                            <td class="pr-5 text-right">VAT Exempt Sales</td>
                             <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vatable_exempt_sales'], 2) }}</td>
                         </tr>
                     @endif
                     <tr>
-                        <td class="pr-5 text-right">VAT</td>
+                        <td class="pr-5 text-right">12% VAT</td>
                         <td class="text-right"><x-currency />{{ number_format($breakdown['taxes']['vat'], 2) }}</td>
                     </tr>
                     @if ($breakdown['taxes']['other_charges'] > 0)
@@ -159,20 +171,33 @@ class ReservationBreakdown extends Component
                     @if ($breakdown['taxes']['discount'] > 0)
                         <tr>
                             <td class="pr-5 text-right">LESS: {{ $discount }}</td>
-                            <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
+                            <td class="text-right">&lpar;<x-currency />{{ number_format($breakdown['taxes']['discount'], 2) }}&rpar;</td>
                         </tr>
                     @endif
                     @if ($breakdown['taxes']['promo_discount'] > 0)
                         <tr>
                             <td class="pr-5 text-right">LESS: Promo Discount</td>
-                            <td class="text-right"><x-currency />&lpar;{{ number_format($breakdown['taxes']['promo_discount'], 2) }}&rpar;</td>
+                            <td class="text-right">&lpar;<x-currency />{{ number_format($breakdown['taxes']['promo_discount'], 2) }}&rpar;</td>
                         </tr>
                     @endif
-
                     <tr>
-                        <td class="pt-5 pr-5 font-semibold text-right text-blue-500">Net Total</td>
-                        <td class="pt-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
+                        <td class="py-5 pr-5 font-semibold text-right text-blue-500">Net Total</td>
+                        <td class="py-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
                     </tr>
+
+                    @if ($reservation->invoice->payments->count() > 0)
+                        @foreach ($reservation->invoice->payments as $payment) 
+                            <tr>
+                                <td class="pr-5 text-right capitalize">LESS: {{ $payment->purpose }}</td>
+                                <td class="text-right">&lpar;<x-currency />{{ number_format($payment->amount, 2) }}&rpar;</td>
+                            </tr>
+                        @endforeach
+
+                        <tr>
+                            <td class="pt-5 pr-5 font-semibold text-right text-blue-500">Remaining Balance</td>
+                            <td class="pt-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'] - $reservation->invoice->payments()->sum('amount'), 2) }}</td>
+                        </tr>
+                    @endif
                 </table>
             </div>
         </div>

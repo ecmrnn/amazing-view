@@ -159,29 +159,25 @@ class ReservationService
 
             // Create the discount
             if ($reservation->senior_count > 0 || $reservation->pwd_count > 0) {
+                $description = '';
+                $description .= $data['senior_count'] > 0 ? 'Senior Discount ' : '';
+                $description .= $data['pwd_count'] > 0 ? 'PWD Discount' : '';
+
+                if ($data['senior_count'] > 0 && $data['pwd_count'] > 0) {
+                    $description = 'Senior and PWD Discount';
+                }
+                
                 $discounts = $reservation->discounts()->create([
                     'amount' => 0,
-                    'description' => '',
+                    'description' => $description,
                 ]);
 
+                
                 if (!empty($data['discount_attachments'])) {
-                    foreach ($data['discount_attachments'] as $key => $attachment) {
+                    foreach ($data['discount_attachments'] as $attachment) {
                         $file_exists = file_exists($attachment ? $attachment->getRealPath() : '');
             
                         if ($file_exists && ($data['senior_count'] > 0 || $data['pwd_count'] > 0)) {
-                            $description = '';
-            
-                            $description .= $data['senior_count'] > 0 ? 'Senior Discount ' : '';
-                            $description .= $data['pwd_count'] > 0 ? 'PWD Discount' : '';
-            
-                            if ($data['senior_count'] > 0 && $data['pwd_count'] > 0) {
-                                $description = 'Senior and PWD Discount';
-                            }
-    
-                            $discounts->update([
-                                'description' => $description,
-                            ]);
-            
                             $discounts->attachments()->create([
                                 'image' => $attachment->store('discounts', 'public'),
                             ]);

@@ -40,6 +40,7 @@ class AddItem extends Component
     public $room_number;
     public $services;
     public $max = 99999;
+    public $discount;
     #[Validate] public $amenity;
     #[Validate] public $service;
     #[Validate] public $name;
@@ -48,9 +49,9 @@ class AddItem extends Component
 
     public function mount($invoice = null) {
         $this->items = collect();
-
         if (!empty($invoice)) {
             $this->invoice = Invoice::find($invoice);
+            $this->discount = $this->invoice->reservation->discounts()->first()->description;
             $checked_in_rooms = $this->invoice->reservation->rooms()->where('room_reservations.status', ReservationStatus::CHECKED_IN->value)->get();
             
             if ($checked_in_rooms->count() > 0) {

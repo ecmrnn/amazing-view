@@ -87,6 +87,7 @@ class EditReservation extends Component
     public $reservation;
     public $slots;
     public $can_reschedule;
+    public $discount_attachments = [];
 
     public function mount(Reservation $reservation)
     {
@@ -467,21 +468,40 @@ class EditReservation extends Component
             'pwd_count' => 'nullable|integer',
         ]);
 
-        if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
-            $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
-            return;
-        }
-        if ($this->senior_count > $this->adult_count) {
-            $this->addError('adult_count', 'Total seniors cannot exceed total adults');
-            return;
+        foreach ($this->discount_attachments as $key => $attachment) {
+            $file_exists = !$attachment ?: file_exists($attachment->getRealPath());
+            
+            if ($file_exists) {
+                $this->validate([
+                    'discount_attachments.*' => 'nullable|mimes:jpg,jpeg,png|file|max:3000',
+                ]);
+            } else {
+                unset($this->discount_attachments[$key]);
+            }
         }
 
+        if ($this->senior_count + $this->pwd_count > $this->adult_count + $this->children_count) {
+            $this->addError('pwd_count', 'Total Seniors and PWDs cannot exceed total guests');
+            return false;
+        }
+
+        if (($this->senior_count > 0 || $this->pwd_count > 0) && !$this->discount_attachments) {
+            $this->addError('discount_attachments', 'Upload Senior or PWD ID for confirmation');
+            return false;
+        }
+
+        $this->dispatch('discount-applied');
+
+        $original_paths = [];
+        foreach ($this->discount_attachments as $key => $attachment) {
+            $original_paths[] = $attachment->getRealPath();
+        }
+        
         $this->dispatch('apply-discount', [
             'senior_count' => $this->senior_count,
             'pwd_count' => $this->pwd_count,
+            'discount_attachments' => $original_paths,
         ]);
-
-        $this->toast('Success', description: 'Senior and PWDs updated successfully!');
     }
 
     public function update() {

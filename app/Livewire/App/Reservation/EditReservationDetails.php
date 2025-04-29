@@ -2,12 +2,14 @@
 
 namespace App\Livewire\App\Reservation;
 
+use App\Enums\ReservationStatus;
 use App\Models\Building;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Services\RoomService;
 use App\Traits\DispatchesToast;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -28,6 +30,7 @@ class EditReservationDetails extends Component
     public $max_capacity;
     public $is_map_view = false;
     public $step = 1;
+    public $discount_attachments = [];
 
     public function mount(Reservation $reservation) {
         $this->reservation = $reservation;
@@ -109,6 +112,7 @@ class EditReservationDetails extends Component
     public function applyDiscount($data) {
         $this->senior_count = $data['senior_count'];
         $this->pwd_count = $data['pwd_count'];
+        $this->discount_attachments = $data['discount_attachments'];
     }
 
     public function updateGuests() {
@@ -166,6 +170,46 @@ class EditReservationDetails extends Component
                     return;
                 }
 
+                if ($this->senior_count > 0 || $this->pwd_count > 0) {
+                    if (in_array($this->reservation->status, [
+                        ReservationStatus::AWAITING_PAYMENT->value,
+                        ReservationStatus::PENDING->value,
+                        ReservationStatus::CONFIRMED->value,
+                    ])) {
+                        $description = '';
+            
+                        $description .= $this->senior_count > 0 ? 'Senior Discount ' : '';
+                        $description .= $this->pwd_count > 0 ? 'PWD Discount' : '';
+        
+                        if ($this->senior_count > 0 && $this->pwd_count > 0) {
+                            $description = 'Senior and PWD Discount';
+                        }
+
+                        $this->reservation->discounts()->updateOrCreate([
+                            'reservation_id' => $this->reservation->id
+                            ],[
+                            'amount' => 0,
+                            'description' => $description,
+                        ]);
+                    }
+
+                    foreach ($this->discount_attachments as $key => $attachment) {
+                        $file_exists = !$attachment ?: file_exists($attachment);
+                        $filename = basename($attachment);
+                        $image = 'discounts/' . $filename;
+                        
+                        if ($file_exists) {
+                            Storage::move('livewire-tmp/' . $filename, 'public/' . $image);
+
+                            $this->reservation->discounts->first()->attachments()->create([
+                                'image' => $image,
+                            ]);
+                        } else {
+                            unset($this->discount_attachments[$key]);
+                        }
+                    }
+                }
+
                 // Update rooms and guests
                 $this->reservation->update([
                     'adult_count' => $this->adult_count,
@@ -179,6 +223,7 @@ class EditReservationDetails extends Component
 
                 $this->toast('Edit Success!', description: 'Rooms and Guests edited successfully');
                 $this->dispatch('reservation-edited');
+                $this->dispatch('pond-reset');
                 break;
         }
     }

@@ -39,7 +39,7 @@ class ConfirmReservation extends Component
     public $can_confirm = false;
     public $can_discard = false;
     #[Validate] public $amount = 0;
-    #[Validate] public $transaction_id = 'cash';
+    #[Validate] public $transaction_id;
     #[Validate] public $payment_date;
     #[Validate] public $password;
     #[Validate] public $invoice_note;
@@ -276,50 +276,14 @@ class ConfirmReservation extends Component
                                 @if ($reservation->discounts->count() > 0)
                                     <div class="p-5 space-y-5 bg-white border rounded-md border-slate-200">
                                         <hgroup>
-                                            <h2 class='text-sm font-semibold'>Discounts Applied</h2>
-                                            <p class='text-xs'>Verify if the applied discount is valid</p>
+                                            <h2 class='text-sm font-semibold'>Uploaded IDs</h2>
+                                            <p class='text-xs'>Check if the uploaded ID is valid</p>
                                         </hgroup>
 
                                         <div>
                                             @if ($discount->attachments->count() > 0)
                                                 <x-img-gallery :srcs="$discount->attachments->pluck('image')" />
                                             @endif
-
-                                            <div class="flex items-center justify-between mt-5">
-                                                <div>
-                                                    <p class="text-sm font-semibold">{{ $discount->description }}</p>
-                                                    <p class="text-xs">Amount: <x-currency />{{ number_format($discount->amount, 2) }}</p>
-                                                </div>
-
-                                                @if ($discount->image)
-                                                    <x-tooltip text="Download Image" dir="left">
-                                                        <a href="{{ asset('storage/' . $discount->image) }}" download>
-                                                            <x-icon-button x-ref="content">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-down-icon lucide-image-down"><path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21"/><path d="m14 19 3 3v-5.5"/><path d="m17 22 3-3"/><circle cx="9" cy="9" r="2"/></svg>
-                                                            </x-icon-button>
-                                                        </a>
-                                                    </x-tooltip>
-                                                @endif
-                                            </div>
-                                        </div>
- 
-                                        <div x-data="{ senior_count: @entangle('senior_count'), pwd_count: @entangle('pwd_count') }">
-                                            <div class="grid grid-cols-2 gap-5">
-                                                <x-form.input-group>
-                                                    <x-form.input-label for='senior_count'>Seniors</x-form.input-label>
-                                                    <x-form.input-number x-model="senior_count" id="senior_count" name="senior_count" label="Senior Count" />
-                                                </x-form.input-group>
-
-                                                <x-form.input-group>
-                                                    <x-form.input-label for='pwd_count'>PWDs</x-form.input-label>
-                                                    <x-form.input-number x-model="pwd_count" id="pwd_count" name="pwd_count" label="Senior Count" />
-                                                </x-form.input-group>
-                                            </div>
-
-                                            <div class="mt-2">
-                                                <x-form.input-error field="senior_count" />
-                                                <x-form.input-error field="pwd_count" />
-                                            </div>
                                         </div>
                                     </div>
                                 @endif

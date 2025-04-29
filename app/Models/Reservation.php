@@ -118,7 +118,7 @@ class Reservation extends Model
     }
 
     public function rooms(): BelongsToMany {
-        return $this->belongsToMany(Room::class, 'room_reservations')->withPivot(['rate', 'status']);
+        return $this->belongsToMany(Room::class, 'room_reservations')->withPivot(['rate', 'status', 'discountable_guest_count', 'regular_guest_count']);
     }
 
     public function roomsForReservation($reservation) {

@@ -5,7 +5,7 @@
     </hgroup>
 
     <x-note>
-        <p>Minimum of <x-currency />500.00 must be paid for the reservation to be processed and confirmed.</p>
+        <p>Minimum of <x-currency />{{ number_format($min_payment, 2) }} must be paid for the reservation to be processed and confirmed.</p>
     </x-note>
 
     <div class="p-5 space-y-3 bg-white border rounded-lg">
@@ -23,7 +23,6 @@
 
         <x-form.input-error x-show="payment_method != 'cash'" field="transaction_id" />
         <x-form.input-error x-show="payment_method != 'cash'" field="proof_image_path" />
-        <x-form.input-error field="downpayment" />
     </div>
 
     <x-form.input-group x-show="payment_method != 'cash'">
@@ -42,8 +41,9 @@
     </div>
 
     {{-- Cash --}}
-    <div class="space-y-3">
+    <x-form.input-group>
         <x-form.input-label for="downpayment">Enter the amount paid</x-form.input-label>
         <x-form.input-currency x-model="downpayment" wire:model.live='downpayment' id="downpayment" class="w-min" />
-    </div>
+        <x-form.input-error field="downpayment" />
+    </x-form.input-group>
 </div>

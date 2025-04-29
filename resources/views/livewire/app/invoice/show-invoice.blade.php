@@ -75,7 +75,7 @@
                     :hasLink="false"
                     >
                     <x-slot:data>
-                        <x-currency />{{ number_format(ceil($invoice->balance), 2) }}
+                        <x-currency />{{ number_format($invoice->balance, 2) }}
                     </x-slot:data>
 
                     <x-slot:icon>
