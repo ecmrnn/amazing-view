@@ -183,7 +183,7 @@ class ReservationForm extends Component
             'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u|max:255',
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
-            'address' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\,\.\s]+$/u',
+            'address' => 'required|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\,\.\s]+$/u',
             'street' => 'regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u',
             'baranggay' => 'required',
             'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
@@ -610,27 +610,25 @@ class ReservationForm extends Component
                     $this->step = 2;
                     break;
                 case 2:
-                    if (is_array($this->address)) {
-                        $this->address = [
-                            'street' => $this->street,
-                            'baranggay' => $this->baranggay,
-                            'district' => $this->district,
-                            'city' => $this->city,
-                            'province' => $this->province,
-                        ];
-                        
-                        $this->address = array_filter($this->address);
+                    $this->address = [
+                        'street' => $this->street,
+                        'baranggay' => $this->baranggay,
+                        'district' => $this->district,
+                        'city' => $this->city,
+                        'province' => $this->province,
+                    ];
+                    
+                    $this->address = array_filter($this->address);
 
-                        $this->validate([
-                            'street' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
-                            'baranggay' => 'required',
-                            'district' => 'required_if:city,'.'City of Manila',
-                            'city' => 'required:',
-                            'province' => 'required_unless:region,'.'National Capital Region (NCR)',
-                        ]);
-
-                        $this->address = is_array($this->address) ? trim(implode(', ', $this->address), ',') : $this->address;
-                    }
+                    $this->validate([
+                        'street' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
+                        'baranggay' => 'required',
+                        'district' => 'required_if:city,'.'City of Manila',
+                        'city' => 'required:',
+                        'province' => 'required_unless:region,'.'National Capital Region (NCR)',
+                    ]);
+                    
+                    $this->address = is_array($this->address) ? trim(implode(', ', $this->address), ',') : $this->address;
 
                     $this->validate([
                         'first_name' => $this->rules()['first_name'],

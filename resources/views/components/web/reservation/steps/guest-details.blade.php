@@ -318,7 +318,7 @@
             </div>
         </x-form.form-section>
     
-        <div class="flex gap-1">
+        <div class="flex justify-end gap-1">
             <x-secondary-button wire:click="submit(true)">Back</x-secondary-button>
             <x-primary-button x-on:click="() => { $nextTick(() => { $refs.form.scrollIntoView({ behavior: 'smooth' }); }); }" type="submit">Continue</x-primary-button>
         </div>
