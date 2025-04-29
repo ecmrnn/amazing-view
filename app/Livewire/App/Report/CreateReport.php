@@ -88,6 +88,25 @@ class CreateReport extends Component
         $this->end_date = $this->max_date < $end_of_month
             ? DateController::today()
             : $end_of_month;
+
+        // Generate file name
+        switch ($type) {
+            case ReportType::RESERVATION_SUMMARY->value:
+                $this->name = 'Reservation Summary for the month of ' . Carbon::parse(DateController::today())->format('F');
+                break;
+            case ReportType::INCOMING_RESERVATIONS->value:
+                $this->name = 'Incoming Reservations for ' . Carbon::parse(DateController::tomorrow())->format('F j, Y');
+                break;
+            case ReportType::OCCUPANCY_REPORT->value:
+                $this->name = 'Occupancy Report for the month of ' . Carbon::parse(DateController::today())->format('F');
+                break;
+            case ReportType::REVENUE_PERFORMANCE->value:
+                $this->name = 'Revenue Perforamnce for the month of ' . Carbon::parse(DateController::today())->format('F');
+                break;
+            default:
+                $this->name = 'Amazing Filename';
+                break;
+        }
         
         $this->type = $type;
         $this->dispatch('open-modal', 'generate-report');
