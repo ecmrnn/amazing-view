@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Guest;
 
+use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
 use App\Enums\ServiceStatus;
 use App\Http\Controllers\AddressController;
@@ -519,6 +520,22 @@ class ReservationForm extends Component
 
     public function submit($previous = false)
     {
+        // Check if the email has a pending reservation
+        $guest = User::where('email', $this->email)->first();
+                    
+        if ($guest && $guest->reservations) {
+            $has_pending = $guest->reservations()->whereIn('status', [
+                ReservationStatus::AWAITING_PAYMENT->value,
+                ReservationStatus::PENDING->value,
+            ])->exists();
+            
+            if ($has_pending) {
+                $this->step = 1;
+                $this->toast('Pending Reservation Exists', 'info', 'Wait for our receptionist to confirm your reservation first.');
+                return;
+            }
+        }
+        
         if ($previous) {
             // Delete temporary uploaded file
             $file_exists = !$this->proof_image_path ? false : file_exists($this->proof_image_path->getRealPath());
@@ -583,7 +600,7 @@ class ReservationForm extends Component
                         }
                     }
 
-                    $this->step++;
+                    $this->step = 2;
                     break;
                 case 2:
                     if (is_array($this->address)) {
@@ -641,7 +658,7 @@ class ReservationForm extends Component
                     $billing = new BillingService;
                     $this->breakdown =  $billing->rawTaxes(null, $items);
                     $this->minimum_payment = $this->breakdown['taxes']['net_total'] * .5;
-                    $this->step++;
+                    $this->step = 3;
                     break;
                 case 3:
                     $file_exists = !$this->proof_image_path ?: file_exists($this->proof_image_path->getRealPath());
