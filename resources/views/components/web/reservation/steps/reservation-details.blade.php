@@ -140,7 +140,7 @@
             <x-form.form-section>
                 <x-form.form-header class="form-header" title="Select Accommodation" subtitle="Choose which rooms to reserve" />
             
-                <div x-show="can_select_a_room" x-collapse.duration.1000ms>
+                <div x-cloak x-show="can_select_a_room" x-collapse.duration.1000ms>
                     <x-form.form-body>
                         <div class="flex flex-col items-start justify-between gap-5 px-5 lg:flex-row">
                             <p class="max-w-sm text-sm">Browse our list of available rooms below or click the
@@ -253,6 +253,9 @@
                             <x-form.input-error field="selected_rooms" />
             
                             <div class="space-y-5">
+                                @php
+                                    $room
+                                @endphp
                                 @forelse ($room_types as $room)
                                     <div key="{{ $room->id }}" class="flex flex-col items-start justify-between gap-3 p-3 bg-white border rounded-lg shadow-sm sm:flex-row">
                                         <div class="flex flex-col items-start w-full gap-3 sm:flex-row">
@@ -327,7 +330,7 @@
             <x-form.form-section>
                 <x-form.form-header title="Add to your Stay" subtitle="Avail our additional services" />
             
-                <div x-show="can_select_a_room" x-collapse.duration.1000ms>
+                <div x-cloak x-show="can_select_a_room" x-collapse.duration.1000ms>
                     <x-form.form-body>
                         <div class="p-5 pt-0 space-y-5">
                             <p class="text-sm">Enhance your stay by availing our additional services!</p>

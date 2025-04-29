@@ -99,12 +99,14 @@ class ReservationForm extends Component
     public $max_date;
     public $today;
     public $minimum_payment = 0;
+    public $room_type_has_room;
 
     public function mount() {
         $this->selected_rooms = collect();
         $this->selected_services = collect();
         $this->available_room_types = collect();
         $this->cars = collect();
+        $this->room_type_has_room = collect();
 
         $this->today = DateController::today();
         $this->min_date_in = Carbon::parse($this->today)->addDay()->format('Y-m-d');
@@ -381,6 +383,28 @@ class ReservationForm extends Component
             $this->addError('adult_count', 'Maximum number of guest are ' . $max_guests);
             return;
         }
+
+        $reserved_rooms = Room::reservedRooms($this->date_in, $this->date_out)->pluck('id');
+        $this->room_type_has_room = collect();
+        $this->room_types = RoomType::with('rooms')->get();
+        
+        foreach ($this->room_types as $roomType) {
+            $room = Room::whereNotIn('id', $reserved_rooms)
+                ->where('room_type_id', $roomType->id)
+                ->count();
+            
+            if ($room > 0) {
+                $this->room_type_has_room = $this->room_type_has_room->push($roomType->id);
+            }
+        }
+
+        $room_type = $this->room_type_has_room;
+
+        $this->room_types = $this->room_types->filter(function ($rt) use ($room_type) {
+            if ($room_type->contains($rt->id)) {
+                return $rt;
+            }
+        });
 
         // Get the number of nights between 'date_in' and 'date_out'
         $this->night_count = Carbon::parse($this->date_in)->diffInDays(Carbon::parse($this->date_out));
