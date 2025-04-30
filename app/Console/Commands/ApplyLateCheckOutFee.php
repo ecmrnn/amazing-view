@@ -46,6 +46,9 @@ class ApplyLateCheckOutFee extends Command
                     $hours = ceil(Carbon::parse($date_out)->diffInHours(Carbon::parse($date . ' ' . $time)));
                     $price = 100;
 
+                    logger('Date and Time: ' . $date . ' ' . $time);
+                    logger('Hours: ' . $hours);
+
                     $reservation->invoice->items()->updateOrCreate(
                         [
                             'invoice_id' => $reservation->invoice->id,
