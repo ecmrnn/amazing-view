@@ -26,9 +26,9 @@ class DateController extends Controller
 
     public static function time() {
         if (env('APP_ENV') == 'local') {
-            return Carbon::createFromTimestamp($_SERVER['REQUEST_TIME'], env('APP_TIMEZONE'))->addDay()->format('h:i:s');
+            return Carbon::createFromTimestamp($_SERVER['REQUEST_TIME'], env('APP_TIMEZONE'))->addDay()->format('H:i:s');
         }
 
-        return Carbon::createFromTimestamp($_SERVER['REQUEST_TIME'], env('APP_TIMEZONE'))->addHours(8)->addDay()->format('h:i:s');
+        return Carbon::createFromTimestamp($_SERVER['REQUEST_TIME'], env('APP_TIMEZONE'))->addHours(8)->addDay()->format('H:i:s');
     }
 }
