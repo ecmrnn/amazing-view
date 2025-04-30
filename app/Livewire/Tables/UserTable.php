@@ -122,9 +122,22 @@ final class UserTable extends PowerGridComponent
             })
             ->add('session_status', function ($user) {
                 $session = DB::table('sessions')->where('user_id', $user->id)->first();
-                $status = $session ? SessionStatus::ONLINE->value : SessionStatus::OFFLINE->value;
+
+                $ping = 'bg-red-400';
+                $style = 'bg-red-50 border border-red-500';
                 
-                return Blade::render('<x-status type="session" :status="' . $status . '" />');
+                if ($session) {
+                    $ping = 'bg-green-400';
+                    $style = 'bg-green-50 border border-green-500';
+                }
+
+                return Blade::render('
+                    <div class="flex items-center gap-3 font-semibold">
+                        <span class="relative flex size-2">
+                            <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping ' . $ping . '"></span>
+                            <span class="relative inline-flex rounded-full size-2 ' . $style . '"></span>
+                        </span>
+                    </div>');
             })
             ->add('created_at');
     }
@@ -132,7 +145,7 @@ final class UserTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Status', 'session_status'),
+            Column::make('', 'session_status'),
 
             Column::make('First Name', 'first_name')
                 ->sortable()
