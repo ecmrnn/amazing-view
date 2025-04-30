@@ -95,7 +95,7 @@ class CreateReport extends Component
                 $this->name = 'Reservation Summary for the month of ' . Carbon::parse(DateController::today())->format('F');
                 break;
             case ReportType::INCOMING_RESERVATIONS->value:
-                $this->name = 'Incoming Reservations for ' . Carbon::parse(DateController::tomorrow())->format('F j, Y');
+                $this->name = 'Incoming Reservations for ' . Carbon::parse(DateController::tomorrow())->format('mdY');
                 break;
             case ReportType::OCCUPANCY_REPORT->value:
                 $this->name = 'Occupancy Report for the month of ' . Carbon::parse(DateController::today())->format('F');
