@@ -221,9 +221,7 @@ class BillingService
         foreach ($items as $item) {
             if ($item['type'] != 'others') {
                 $sub_total += $item['price'] * $item['quantity'];
-            } else {
-                $other_charges += $item['price'] * $item['quantity'];
-            }
+            } 
         }
 
         $vatable_sales = 0;
