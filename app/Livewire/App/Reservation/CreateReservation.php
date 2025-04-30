@@ -452,6 +452,8 @@ class CreateReservation extends Component
                 'city' => 'required:',
                 'province' => 'required_unless:region,'.'National Capital Region (NCR)',
             ]);
+
+            $this->address = trim(implode(', ', $this->address), ',');
         }
 
         $this->validate([

@@ -43,7 +43,7 @@ class ApplyLateCheckOutFee extends Command
             // Get the rooms not checked-out
             foreach ($reservation->rooms as $room) {
                 if ($room->pivot->status == ReservationStatus::CHECKED_IN->value) {
-                    $hours = floor(Carbon::parse($date_out)->diffInHours(Carbon::parse($date . ' ' . $time)));
+                    $hours = ceil(Carbon::parse($date_out)->diffInHours(Carbon::parse($date . ' ' . $time)));
                     $price = 100;
 
                     $reservation->invoice->items()->updateOrCreate(
