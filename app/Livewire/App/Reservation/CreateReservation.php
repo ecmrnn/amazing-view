@@ -446,7 +446,7 @@ class CreateReservation extends Component
             $this->address = array_filter($this->address);
 
             $this->validate([
-                'street' => 'regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\.\-\s]+$/u',
+                'street' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\.\-\s]+$/u',
                 'baranggay' => 'required',
                 'district' => 'required_if:city,'.'City of Manila',
                 'city' => 'required:',
@@ -454,6 +454,7 @@ class CreateReservation extends Component
             ]);
 
             $this->address = trim(implode(', ', $this->address), ',');
+
         }
 
         $this->validate([
