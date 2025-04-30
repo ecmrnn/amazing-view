@@ -40,7 +40,7 @@ class Reservation extends Model
             'last_name' => 'required|min:2|string|max:255|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u',
             'email' => 'required|email',
             'phone' => 'required|digits:11|starts_with:09',
-            'address' => 'required',
+            'address' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\.\-\s]+$/u',
             'note' => 'nullable|max:200',
         ];
 
