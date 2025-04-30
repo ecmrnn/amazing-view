@@ -26,18 +26,18 @@
                 <p style="margin: 0; font-size: 14px;"><strong style="font-weight: bold;">Expiration Date:</strong> {{ date_format(date_create($reservation->expires_at), 'F j, Y - h:i A') }}</p>
             </div>
 
-            <p style="margin: 0; font-size: 14px;">As a reminder, our policy states that reservations must be confirmed or modified within a certain period prior to the check-in date. Unfortunately, we did not receive a payment confirmation or modification request from you before the expiration date.</p>
+            <p style="margin: 0; font-size: 14px; margin: 20px 0;">As a reminder, our policy states that reservations must be confirmed or modified within a certain period prior to the check-in date. Unfortunately, we did not receive a payment confirmation or modification request from you before the expiration date.</p>
 
             <div style="padding: 20px; border-radius: 6px; background-color: #f8fafc; border: 1px solid #e2e8f0;">
-                <p style="font-weight: bold; font-size: 16px;">Next Steps:</p>
+                <p style="font-weight: bold; font-size: 16px; margin: 0;">Next Steps:</p>
 
-                <ul style="list-style-position: inside; margin-top: 20px; padding: 0;">
+                <ul style="list-style-position: inside; padding: 0; margin-top: 20px">
                     <li style="margin: 0; font-size: 14px;"><span style="font-weight: bold;">Rebooking:</span> If you would still like to stay with us, we encourage you to rebook your reservation. You can do so by visiting our website or contacting us directly.</li>
                     <li style="margin: 0; font-size: 14px;"><span style="font-weight: bold;">Assistance:</span> If you need assistance with rebooking or have any questions, please do not hesitate to reach out to our customer support team at <span style="font-weight: bold;">{{ Arr::get($settings, 'site_email', 'info@amazingviewmountainresort.com') }}</span> or give us a call at <span style="font-weight: bold;">{{ Arr::get($settings, 'site_phone', '09171399334') }}</span>.</li>
                 </ul>
             </div>
 
-            <p style="margin: 0; font-size: 14px;">We value your interest in staying at Amazing View Mountain Farm Resort and hope to welcome you soon. Thank you for your understanding.</p>
+            <p style="margin: 0; margin-top: 20px; font-size: 14px;">We value your interest in staying at Amazing View Mountain Farm Resort and hope to welcome you soon. Thank you for your understanding.</p>
 
             <div>
                 <p style="font-size: 14px; font-weight: bold;">Best regards,</p>

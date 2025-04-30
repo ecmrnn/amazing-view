@@ -3,13 +3,16 @@
 namespace App\Livewire\App\Reservation;
 
 use App\Models\Reservation;
+use Carbon\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Nette\Utils\Random;
 
 class FindReservation extends Component
 {
     #[Validate] public $rid;
     public $found = false;
+    public $placeholder;
 
     public function rules() {
         return [
@@ -33,6 +36,8 @@ class FindReservation extends Component
 
     public function render()
     {
+        $this->placeholder = 'R' . Carbon::now()->format('ymd') . Random::generate(3, '0-9');
+
         return <<<'HTML'
         <form wire:submit="submit" class="p-5 space-y-5">
             <hgroup>
@@ -42,7 +47,7 @@ class FindReservation extends Component
 
             <x-form.input-group>
                 <x-form.input-label for='rid'>Reservation ID</x-form.input-label>
-                <x-form.input-text id="rid" name="rid" label="RXXXXXXXXX" wire:model.live="rid" />
+                <x-form.input-text id="rid" name="rid" label="{{ $placeholder }}" wire:model.live="rid" />
                 <x-form.input-error field="rid" />
             </x-form.input-group>
 

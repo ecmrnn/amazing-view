@@ -282,15 +282,15 @@ class BillingService
                     $vatable_sales += $service->pivot->price / 1.12;
                 }
             }
-
-            // Add 'other charges'
-            if(!empty($invoice->items)) {
-                foreach ($invoice->items as $item) {
-                    $other_charges += $item->price * $item->quantity;
-                }
-            }
         } else {
             $vatable_sales = $sub_total / 1.12;
+        }
+
+        // Add 'other charges'
+        if(!empty($invoice->items)) {
+            foreach ($invoice->items as $item) {
+                $other_charges += $item->price * $item->quantity;
+            }
         }
 
         $discount = $vatable_exempt_sales * .2;
