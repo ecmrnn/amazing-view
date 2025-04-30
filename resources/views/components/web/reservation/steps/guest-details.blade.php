@@ -127,7 +127,7 @@
                             ">
     
     
-                            @if (!empty($regions) && $guest_found == false)
+                            @if (!empty($regions))
                                 <hgroup>
                                     <h2 class="font-semibold">Home Address</h2>
                                     <p class="max-w-sm text-xs">Kindly select your home address using the dropdown options below starting with your region.</p>

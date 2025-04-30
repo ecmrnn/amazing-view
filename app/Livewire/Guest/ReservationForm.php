@@ -465,7 +465,6 @@ class ReservationForm extends Component
             $this->last_name = $guest->last_name;
             $this->email = $guest->email;
             $this->phone = $guest->phone;
-            $this->address = $guest->address;
     
             $this->guest_found = true;
             $this->can_select_address = true;
@@ -634,7 +633,8 @@ class ReservationForm extends Component
                     $this->step = 2;
                     break;
                 case 2:
-                    if (is_array($this->address) || (!empty($regions) && $this->guest_found == false)) {
+                    
+                    if (is_array($this->address)) {
                         $this->address = [
                             'street' => $this->street,
                             'baranggay' => $this->baranggay,
@@ -644,7 +644,7 @@ class ReservationForm extends Component
                         ];
                         
                         $this->address = array_filter($this->address);
-    
+                        
                         $this->validate([
                             'street' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\,\-\s]+$/u',
                             'baranggay' => 'required',
@@ -653,7 +653,7 @@ class ReservationForm extends Component
                             'province' => 'required_unless:region,'.'National Capital Region (NCR)',
                         ]);
                         
-                        $this->address = is_array($this->address) ? trim(implode(', ', $this->address), ',') : $this->address;
+                        $this->address = trim(implode(', ', $this->address), ',');
                     } else {
                         $this->validate([
                             'address' => $this->rules()['address'],
