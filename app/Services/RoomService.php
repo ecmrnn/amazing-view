@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\InvoiceStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\RoomStatus;
 use App\Models\BuildingSlot;
@@ -142,6 +143,7 @@ class RoomService
             // Apply waived amount
             if ($reservation->invoice->balance >= $waive) {
                 $reservation->invoice->balance -=  $waive;
+                $reservation->invoice->status = InvoiceStatus::PARTIAL->value;
             } else {
                 $reservation->invoice->balance = 0;
             }
