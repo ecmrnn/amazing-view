@@ -40,6 +40,7 @@ class ConfirmReservation extends Component
     public $is_valid = false;
     public $can_confirm = false;
     public $can_discard = false;
+    #[Validate] public $payment_method;
     #[Validate] public $amount = 0;
     #[Validate] public $transaction_id;
     #[Validate] public $payment_date;
@@ -78,6 +79,7 @@ class ConfirmReservation extends Component
         
         if ($this->payment) {
             $this->amount = (int) $this->payment->amount;
+            $this->payment_method = $this->payment->payment_method;
             $this->payment_date = $this->payment->payment_date;
             $this->transaction_id = $this->payment->transaction_id;
         }
