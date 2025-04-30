@@ -110,9 +110,14 @@ class AmenityService
             // Apply waived amount
             if ($reservation->invoice->balance >= $waive) {
                 $reservation->invoice->balance -=  $waive;
-                $reservation->invoice->status = InvoiceStatus::PARTIAL->value;
             } else {
                 $reservation->invoice->balance = 0;
+            }
+
+            if ($reservation->invoice->balance > 0) {
+                $reservation->invoice->status = InvoiceStatus::PARTIAL->value;
+            } else {
+                $reservation->invoice->status = InvoiceStatus::PAID->value;
             }
             
             $reservation->invoice->save();
