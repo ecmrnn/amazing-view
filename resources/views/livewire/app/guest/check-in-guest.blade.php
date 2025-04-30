@@ -134,7 +134,7 @@
                             <p class='text-xs'>Review uploaded IDs here</p>
                         </hgroup>
 
-                        <div class="grid grid-cols-4 gap-5">
+                        <div class="grid grid-cols-2 gap-5 sm:grid-cols-4">
                             @foreach ($reservation->discounts->first()->attachments as $attachment)
                                 <div>
                                     <x-img src="{{ $attachment->image }}" :zoomable="true" />
