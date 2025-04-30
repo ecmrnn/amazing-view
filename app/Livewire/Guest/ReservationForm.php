@@ -429,7 +429,10 @@ class ReservationForm extends Component
                 'city' => $this->city,
                 'province' => $this->province,
             ];
+
             $this->address = array_filter($this->address);
+
+            $this->address = trim(implode(', ', $this->address), ',');            
         }
 
         // Validate the following variables
