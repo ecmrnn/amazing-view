@@ -142,10 +142,8 @@ class RoomService
             $reservation->invoice->balance = $taxes['net_total'] - $payments;
 
             // Apply waived amount
-            if ($reservation->invoice->balance >= $waive) {
+            if ((int) $waive > 0 && $reservation->invoice->balance >= $waive) {
                 $reservation->invoice->balance -=  $waive;
-            } else {
-                $reservation->invoice->balance = 0;
             }
 
             if ($reservation->invoice->balance > 0) {

@@ -74,7 +74,7 @@
                         <th class="font-semibold text-left">Check-out Details</th>
                         <td class="capitalize">{{ date_format(date_create($date_out), 'F j, Y') }} - 
                             @if ($date_in == $date_out)
-                                5:00 PM
+                                6:00 PM
                             @else
                                 12:00 PM
                             @endif

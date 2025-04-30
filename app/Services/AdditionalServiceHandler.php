@@ -51,51 +51,51 @@ class AdditionalServiceHandler
     // - Reservation instance
     // - Collection of services to attach
     public function sync(Reservation $reservation, $services) {
-        if ($reservation->services->count() > 0) {
-            foreach ($reservation->services as $service) {
-                $reservation->services()->detach($service->id);
-
-                $reservation->invoice->balance -= $service->price;
-                $reservation->invoice->total_amount -= $service->price;
-                $reservation->save();
+        DB::transaction(function () use ($reservation, $services) {
+            if ($reservation->services->count() > 0) {
+                foreach ($reservation->services as $service) {
+                    $reservation->services()->detach($service->id);
+    
+                    $reservation->invoice->balance -= $service->price;
+                    $reservation->invoice->total_amount -= $service->price;
+                    $reservation->save();
+                }
             }
-        }
-        if (!empty($services)) {
-            foreach ($services as $service) {
-                $reservation->services()->attach($service['id'], [
-                    'price' => $service['price'],
-                ]);
-
-                $reservation->invoice->balance += $service['price'];
-                $reservation->invoice->total_amount += $service['price'];
-                $reservation->save();
+            if (!empty($services)) {
+                foreach ($services as $service) {
+                    $reservation->services()->attach($service['id'], [
+                        'price' => $service['price'],
+                    ]);
+    
+                    $reservation->invoice->balance += $service['price'];
+                    $reservation->invoice->total_amount += $service['price'];
+                    $reservation->save();
+                }
             }
-        }
+    
+            // Update the invoice
+            $billing = new BillingService;
+            $taxes = $billing->taxes($reservation->fresh());
+            $payments = $reservation->invoice->payments->sum('amount');
+            $waive = $reservation->invoice->waive_amount;
+    
+            $reservation->invoice->sub_total = $taxes['net_total'];
+            $reservation->invoice->total_amount = $taxes['net_total'];
+            $reservation->invoice->balance = $taxes['net_total'] - $payments;
+            
+            // Apply waived amount
+            if ((int) $waive > 0 && $reservation->invoice->balance >= $waive) {
+                $reservation->invoice->balance -=  $waive;
+            } 
 
-        // Update the invoice
-        $billing = new BillingService;
-        $taxes = $billing->taxes($reservation->fresh());
-        $payments = $reservation->invoice->payments->sum('amount');
-        $waive = $reservation->invoice->waive_amount;
-
-        $reservation->invoice->sub_total = $taxes['net_total'];
-        $reservation->invoice->total_amount = $taxes['net_total'];
-        $reservation->invoice->balance = $taxes['net_total'] - $payments;
-
-        // Apply waived amount
-        if ($reservation->invoice->balance >= $waive) {
-            $reservation->invoice->balance -=  $waive;
-        } else {
-            $reservation->invoice->balance = 0;
-        }
-
-        if ($reservation->invoice->balance > 0) {
-            $reservation->invoice->status = InvoiceStatus::PARTIAL->value;
-        } else {
-            $reservation->invoice->status = InvoiceStatus::PAID->value;
-        }
-
-        $reservation->invoice->save();
+            if ($reservation->invoice->balance > 0) {
+                $reservation->invoice->status = InvoiceStatus::PARTIAL->value;
+            } else {
+                $reservation->invoice->status = InvoiceStatus::PAID->value;
+            }
+    
+            $reservation->invoice->save();
+        });
     }
 
     public function add($services, AdditionalServices $service)
