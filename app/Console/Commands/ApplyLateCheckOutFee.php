@@ -43,19 +43,22 @@ class ApplyLateCheckOutFee extends Command
             // Get the rooms not checked-out
             foreach ($reservation->rooms as $room) {
                 if ($room->pivot->status == ReservationStatus::CHECKED_IN->value) {
-                    $hours = ceil(Carbon::parse($date_out)->diffInHours(Carbon::parse($date . ' ' . $time)));
-                    $price = 100;
+                    $hours = floor(Carbon::parse($date_out)->diffInHours(Carbon::parse($date . ' ' . $time)));
 
-                    $reservation->invoice->items()->updateOrCreate(
-                        [
-                            'invoice_id' => $reservation->invoice->id,
-                            'room_id' => $room->id,
-                            'name' => 'Fee: Late check-out',
-                        ],[
-                            'quantity' => $hours,
-                            'price' => $price, /* Gagawin sa settings */
-                            'total' => $hours * $price,
-                        ]);
+                    if ($hours > 0) {
+                        $price = 100;
+    
+                        $reservation->invoice->items()->updateOrCreate(
+                            [
+                                'invoice_id' => $reservation->invoice->id,
+                                'room_id' => $room->id,
+                                'name' => 'Fee: Late check-out',
+                            ],[
+                                'quantity' => $hours,
+                                'price' => $price, /* Gagawin sa settings */
+                                'total' => $hours * $price,
+                            ]);
+                    }
                 }
             }
 
