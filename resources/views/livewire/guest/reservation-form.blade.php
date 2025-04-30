@@ -14,7 +14,6 @@
         children_count: $persist($wire.entangle('children_count')).using(sessionStorage),
         night_count: $persist($wire.entangle('night_count')).using(sessionStorage),
         capacity: $wire.entangle('capacity'),
-        address: $persist($wire.entangle('address')).using(sessionStorage),
 
         {{-- Guest Details --}}
         first_name: $persist($wire.entangle('first_name')).using(sessionStorage),
