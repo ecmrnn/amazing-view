@@ -67,6 +67,15 @@
     </div>
 
     <div class="space-y-5">
+        @if ($invoice->balance < 0)
+            <x-info-message>
+                <div>
+                    <h2 class="text-lg font-semibold">This bill has refundable amount</h2>
+                    <p class="text-xs">Amount: <x-currency />{{ number_format(abs($invoice->balance), 2) }}</p>
+                </div>
+            </x-info-message>
+        @endif
+
         {{-- Cards --}}
         <div class="rounded-md">
             @if ((int) $invoice->balance >= 0)
@@ -88,7 +97,7 @@
                     :hasLink="false"
                     >
                     <x-slot:data>
-                        <x-currency />{{ number_format(abs(ceil($invoice->balance)), 2) }}
+                        <x-currency />{{ number_format(abs($invoice->balance), 2) }}
                     </x-slot:data>
                     <x-slot:icon>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-banknote-arrow-down-icon lucide-banknote-arrow-down"><path d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"/><path d="m16 19 3 3 3-3"/><path d="M18 12h.01"/><path d="M19 16v6"/><path d="M6 12h.01"/><circle cx="12" cy="12" r="2"/></svg>

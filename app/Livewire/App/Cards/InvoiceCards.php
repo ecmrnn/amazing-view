@@ -16,9 +16,10 @@ class InvoiceCards extends Component
     public function render()
     {
         $this->total_balance = ceil(Invoice::whereIn('status', [InvoiceStatus::PENDING, InvoiceStatus::PARTIAL, InvoiceStatus::DUE])->where('balance', '>', 0)->sum('balance'));
-        $this->total_refund = abs(ceil(Invoice::whereIn('status', [InvoiceStatus::PENDING, InvoiceStatus::PARTIAL, InvoiceStatus::DUE])->where('balance', '<', 0)->sum('balance')));
+        $this->total_refund = abs(Invoice::where('balance', '<', 0)->sum('balance'));
         $this->pending_billing = Invoice::whereStatus(InvoiceStatus::PENDING)->count();
         $this->partial_billing = Invoice::whereStatus(InvoiceStatus::PARTIAL)->count();
+        
 
         return view('livewire.app.cards.invoice-cards');
     }
