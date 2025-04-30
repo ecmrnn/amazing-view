@@ -186,7 +186,7 @@ class ReservationForm extends Component
             'last_name' => 'required|min:2|string|regex:/^[A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u|max:255',
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|digits:11|starts_with:09',
-            'address' => 'required|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\,\.\s]+$/u',
+            'address' => 'nullable|regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\,\.\s]+$/u',
             'street' => 'regex:/^[0-9A-Za-zÀ-ÖØ-öø-ÿ\-\s]+$/u',
             'baranggay' => 'required',
             'proof_image_path' => 'nullable|mimes:jpg,jpeg,png|file|max:1000',
