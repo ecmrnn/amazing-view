@@ -70,7 +70,7 @@
         {{-- Cards --}}
         <div class="rounded-md">
             @if ((int) $invoice->balance >= 0)
-                <x-app.card
+                <x-app.card     
                     label="Remaining Balance"
                     :hasLink="false"
                     >

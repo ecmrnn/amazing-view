@@ -131,6 +131,7 @@ class RoomService
                 }
             } 
 
+            // Update the invoice
             $billing = new BillingService;
             $taxes = $billing->taxes($reservation->fresh());
             $payments = $reservation->invoice->payments->sum('amount');
