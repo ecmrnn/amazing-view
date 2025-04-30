@@ -92,7 +92,7 @@ class DashboardController extends Controller
                 'pending_reservations' => $pending_reservations,
                 'incoming_guests' => $incoming_guests,
             ];
-
+            
             $view = 'app.dashboard.receptionist';
         } elseif ($user->hasRole('admin')) {
             $view = 'app.dashboard.admin';            

@@ -111,10 +111,6 @@
             <x-modal.full name='find-room-modal' maxWidth='sm'>
                 <livewire:app.room.find-room />
             </x-modal.full>
-
-            <x-modal.full name='check-in-modal' maxWidth='sm'>
-                <livewire:app.guest.check-in-guest />
-            </x-modal.full>
         </div>
     </div>
 
