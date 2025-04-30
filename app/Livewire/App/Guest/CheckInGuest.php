@@ -72,14 +72,16 @@ class CheckInGuest extends Component
             $disc_guests = $this->reservation->senior_count + $this->reservation->pwd_count;
             $guests = ($this->reservation->adult_count + $this->reservation->children_count) - $disc_guests;
 
-            $this->room_guests->push([
-                'id' => $room->id,
-                'room_number' => $room->room_number,
-                'max_capacity' => $room->max_capacity,
-                'rate' => $room->pivot->rate,
-                'guests' => $guests,
-                'disc_guests' => $disc_guests,
-            ]);
+            if ($room) {
+                $this->room_guests->push([
+                    'id' => $room->id,
+                    'room_number' => $room->room_number,
+                    'max_capacity' => $room->max_capacity,
+                    'rate' => $room->pivot->rate,
+                    'guests' => $guests,
+                    'disc_guests' => $disc_guests,
+                ]);
+            }
         }
     }
 
