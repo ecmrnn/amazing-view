@@ -51,8 +51,11 @@ class AddItem extends Component
         $this->items = collect();
         if (!empty($invoice)) {
             $this->invoice = Invoice::find($invoice);
-            $this->discount = $this->invoice->reservation->discounts()->first()->description;
             $checked_in_rooms = $this->invoice->reservation->rooms()->where('room_reservations.status', ReservationStatus::CHECKED_IN->value)->get();
+            
+            if ($this->invoice->reservation->discounts->count() > 0) {
+                $this->discount = $this->invoice->reservation->discounts()->first()->description;
+            }
             
             if ($checked_in_rooms->count() > 0) {
                 $this->room_number = $checked_in_rooms->first()->room_number;
