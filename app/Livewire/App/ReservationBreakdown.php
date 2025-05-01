@@ -186,7 +186,10 @@ class ReservationBreakdown extends Component
                         <td class="py-5 font-semibold text-right text-blue-500"><x-currency />{{ number_format($breakdown['taxes']['net_total'], 2) }}</td>
                     </tr>
 
-                    @if ($reservation->invoice->payments->count() > 0)
+                    @if (!in_array($reservation->status, [
+                            App\Enums\ReservationStatus::AWAITING_PAYMENT->value,
+                            App\Enums\ReservationStatus::PENDING->value,
+                        ]) && $reservation->invoice->payments->count() > 0)
                         @foreach ($reservation->invoice->payments as $payment) 
                             <tr>
                                 <td class="pr-5 text-right capitalize">LESS: {{ $payment->purpose }}</td>
