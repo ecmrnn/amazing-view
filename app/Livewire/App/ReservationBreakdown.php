@@ -13,6 +13,7 @@ class ReservationBreakdown extends Component
     protected $listeners = [
         'payment-added' => '$refresh',
         'payment-deleted' => '$refresh',
+        'item-removed' => '$refresh',
     ];
     
     public $reservation;

@@ -67,7 +67,7 @@ class ConfirmReservation extends Component
     {
         $this->reservation = $reservation;
         $this->total_amount = $reservation->invoice->total_amount;
-        $this->payment = $reservation->invoice->payments()->wherePurpose('downpayment')->first();
+        $this->payment = $reservation->invoice->payments()->first();
         $this->discount = $reservation->discounts->first();
         $this->senior_count = $reservation->senior_count;
         $this->pwd_count = $reservation->pwd_count;
