@@ -28,7 +28,7 @@ class ProfileController extends Controller
             ]);
         }
 
-        return response()->view('error.403', status: 403);
+        return response()->view('errors.403', status: 403);
     }
 
     /**

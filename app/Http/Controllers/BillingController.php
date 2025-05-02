@@ -52,7 +52,7 @@ class BillingController extends Controller
             ]);
         }
 
-        return response()->view('error.404', status: 404);
+        return response()->view('errors.404', status: 404);
     }
 
     public function guestBillings(User $user) {
@@ -62,7 +62,7 @@ class BillingController extends Controller
             ]);
         }
 
-        return response()->view('error.403', status: 403);
+        return response()->view('errors.403', status: 403);
     }
 
     public function showGuestBillings(string $billing) {
@@ -74,6 +74,6 @@ class BillingController extends Controller
             ]);
         }
 
-        return response()->view('error.404', status: 404);
+        return response()->view('errors.404', status: 404);
     }
 }

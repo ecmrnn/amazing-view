@@ -70,7 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::fallback(function () {
-    return view('error.404');
+    return view('errors.404');
 });
 
 require __DIR__ . '/auth.php';

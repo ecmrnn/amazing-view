@@ -43,7 +43,7 @@ class ReservationController extends Controller
             ]);
         }
 
-        return response()->view('error.404', status: 404);
+        return response()->view('errors.404', status: 404);
     }
 
     /**
@@ -59,7 +59,7 @@ class ReservationController extends Controller
             ]);
         }
 
-        return response()->view('error.404', status: 404);
+        return response()->view('errors.404', status: 404);
     }
 
     public function updateNote(Request $request, Reservation $reservation) {
@@ -82,7 +82,7 @@ class ReservationController extends Controller
             ]);
         }
 
-        return response()->view('error.404', status: 404);
+        return response()->view('errors.404', status: 404);
     }
 
     public function checkIn($reservation) {
@@ -94,7 +94,7 @@ class ReservationController extends Controller
             ]);
         }
 
-        return response()->view('error.404', status: 404);
+        return response()->view('errors.404', status: 404);
     }
 
     public function guestReservations(User $user) {
@@ -104,7 +104,7 @@ class ReservationController extends Controller
             ]);
         } 
 
-        return response()->view('error.403', status: 403);
+        return response()->view('errors.403', status: 403);
     }
 
     public function showGuestReservations(string $reservation) {
@@ -116,6 +116,6 @@ class ReservationController extends Controller
             ]);
         }
 
-        return response()->view('error.404', status: 404);
+        return response()->view('errors.404', status: 404);
     }
 }

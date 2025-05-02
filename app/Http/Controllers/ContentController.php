@@ -27,7 +27,7 @@ class ContentController extends Controller
         $page = Page::find($id);
 
         if (!$page) {
-            return response()->view('error.404', status:404);
+            return response()->view('errors.404', status:404);
         }
 
         return view('app.content.edit', [

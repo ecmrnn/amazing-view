@@ -31,10 +31,10 @@ class CheckPageStatus
         
         switch ($page->status ?? 0) {
             case PageStatus::DISABLED->value:
-                return response()->view('error.404', status: 404);
+                return response()->view('errors.404', status: 404);
                 break;
             case PageStatus::MAINTENANCE->value:
-                return response()->view('error.503', status: 503);
+                return response()->view('errors.503', status: 503);
                 break;
             default:
                 return $next($request);
