@@ -24,7 +24,7 @@ class Confirmed extends Mailable
      */
     public function __construct(public Reservation $reservation)
     {
-        $this->refund_date = Carbon::parse($reservation->date_in)->subWeek();
+        $this->refund_date = Carbon::parse($reservation->date_in)->subDays(8);
     }
 
     /**

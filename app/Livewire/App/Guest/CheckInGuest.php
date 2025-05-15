@@ -239,25 +239,15 @@ class CheckInGuest extends Component
     }
 
     public function checkin() {
-        $this->validate([
-            'password' => 'required',
-        ]);
+        $service = new ReservationService;
+        $service->checkIn($this->reservation);
+        
+        $this->toast('Success!', description: 'Guest checked-in!');
+        $this->dispatch('checked-in');
 
-        $auth = new AuthService;
-
-        if ($auth->validatePassword($this->password)) {
-            $service = new ReservationService;
-            $service->checkIn($this->reservation);
-            
-            $this->toast('Success!', description: 'Guest checked-in!');
-            $this->dispatch('checked-in');
-
-            sleep(5);
-            $this->redirect(route('app.guests.index'), true);
-            return;
-        }
-
-        $this->addError('password', 'Password mismatched, try again!');
+        sleep(5);
+        $this->redirect(route('app.guests.index'), true);
+        return;
     }
 
     public function submit() {

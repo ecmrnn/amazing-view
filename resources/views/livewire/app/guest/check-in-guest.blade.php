@@ -358,12 +358,6 @@
                 <p class="text-xs">You are about to check-in this rooms, are you sure?</p>
             </hgroup>
 
-            <x-form.input-group>
-                <x-form.input-label for='password-checkout'>Enter your password</x-form.input-label>
-                <x-form.input-text type="password" wire:model.live='password' id="password-checkout" name="password-checkout" label="Password" />
-                <x-form.input-error field="password" />
-            </x-form.input-group>
-
             <x-loading wire:loading wire:target='checkout'>Processing checkin, please wait</x-loading>
 
             <div class="flex justify-end gap-1">

@@ -27,6 +27,7 @@
         </header>
 
         <div>
+            <h2><strong>TIN #:</strong> 123-268-821-000</h2>
             @if ($invoice->issue_date)
                 <h2><strong>Date Issued:</strong> {{ date_format(date_create($invoice->issue_date), 'F j, Y') }}</h2>
             @else
